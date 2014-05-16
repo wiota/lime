@@ -34,10 +34,16 @@ app.config['DIRECTORY_INDEX'] = 'index.html'
 app.config['HOST'] = "www.maggiecasey.com"
 
 from portphilio_admin.views import api
-from portphilio_admin.views import admin
-admin.db = db
-admin.config = app.config
 api.db = db
 api.config = app.config
 app.register_blueprint(api.mod)
+
+from portphilio_admin.views import admin
+admin.db = db
+admin.config = app.config
 app.register_blueprint(admin.mod)
+
+from portphilio_admin.views import upload
+upload.db = db
+upload.config = app.config
+app.register_blueprint(upload.mod)
