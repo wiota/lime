@@ -1,89 +1,100 @@
 
 // Models
+
 window.Work = Backbone.Model.extend();
- 
-// Collections
-window.WorkSet = Backbone.Collection.extend({
-    // Reference to this collection's model.
-    model:Work,
-    url:"/api/v1/work/sculpture"
-});
- 
+
+window.Category = Backbone.Model.extend();
+
+window.Tag = Backbone.Model.extend
+
+
 // Views
-window.WorkSetView = Backbone.View.extend({
- 
-    //tagName:'ul',
-    el: $('#workSet'),
+window.SubsetPanel = Backbone.View.extend({
+  el: $('#subset_panel'),
 
-    initialize:function () {
-        this.model.bind("reset", this.render, this);
-    },
+  empty: function () {
+    $(this.el).html();
+  },
+
+  change_border_color: function(color){
+  
+    $(this.el).css({'border-color': color});
+  },
+
+  render: function (el) {
+    $(this.el).html(el);
+  }
+
+
+});
+
+window.CategoryView = Backbone.View.extend({
+  tagName: 'ul',
+
+  template:_.template($('#category_summary').html()),
+
+  initialize: function(){
+    
+  },
+
+  render: function(slug){
+    $(this.el).html(this.template({_id:'537226708b4f7325f20004c3',display_name:"SCULPTURE"}));
+    return this;
+  }
+
+
+
+});
+
+window.CategoryViewItem = Backbone.View.extend({
+  tagName: 'li',
+
+});
+
+window.WelcomeView = Backbone.View.extend({
  
-    render:function (eventName) {
-        _.each(this.model.models, function (work) {
-            $(this.el).append(new WorkSetItemView({model:work}).render().el);
-        }, this);
+    template:_.template($('#welcome_summary').html()),
+
+    render:function (content) {
+        $(this.el).html(this.template(content));
         return this;
     }
  
 });
 
-window.WorkSetItemView = Backbone.View.extend({
- 
-    tagName:"li",
- 
-    template:_.template($('#work-list-item').html()),
-
-    render:function (eventName) {
-        $(this.el).html(this.template(this.model.toJSON()));
-        return this;
-    }
- 
-});
-
-
- 
 // Router
 var AppRouter = Backbone.Router.extend({
- 
-    routes:{
-      "":"list",
-      "works/:id":"workDetails"
-    },
- 
- 
-    list:function () {
-      this.workSet = new WorkSet();
-      var v = this.workSetView = new WorkSetView({model:this.workSet});
+  
+  routes:{
+  "":"default_set",
+  "categories/:slug":"categories"
+  },
 
-      this.workSet.fetch({reset: true});
+  initialize: function(){
+    this.subsetPanel = new SubsetPanel();
 
-      /*
-      this.workSet.fetch({
-        success: function(collection, response, options){
-          //alert(collection.models);
-          //v.reset();
-          v.render();
+  },
+
+  default_set:function () {
+
+    this.subsetPanel.empty();
+    this.subsetPanel.change_border_color("#0ff");
+    this.subsetPanel.render(new WelcomeView().render({message: 'Hello', link: "#categories/sculpture"}).el);
 
 
-        }, 
-        error: function(){
-          alert("error");
-        }
-      });
-      */
+  },
 
-    },
- 
-    workDetails:function (id) {
-      alert("Details");
-    }
+  categories:function (slug) {
+    this.subsetPanel.empty();
+
+    //this.category = 
+    this.subsetPanel.change_border_color("#ff0");
+    this.subsetPanel.render(new CategoryView().render(slug).el);
+    
+
+  }
  
 });
  
 var app = new AppRouter();
 Backbone.history.start();
-
-$('#refresh').click(function(){
-  app.workSet.fetch({reset: true});
-})

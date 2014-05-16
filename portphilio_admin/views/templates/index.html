@@ -8,18 +8,36 @@
 
   <style type='text/css'>
     body {margin:0; padding: 0; font-family: 'Helvetica', 'Arial', 'san-serif';}
-    .collection {
-      display:none;
+
+    ul {margin: 0; padding:0;}
+
+    .summary {
       background-color: #eee; 
       width: 45%; 
       padding: 1%;
       margin: 1.5%; 
-      float:left;}
+      float:left;
+      }
+
+    #subset_panel {border: 1px solid #f00; overflow: auto;}
+
+    .viewname {font-size: 9px; background-color: #bbb;}
   </style>
 
-  <script type="text/template" id="work-list-item">
-    <li class='title'><a href=''><%= _id %> - <%= name %></a></li>
+  <script type="text/template" id="work_in_set">
+    <li class='title'><span class='viewname'>work_in_set</span><a href=''><%= _id %> - <%= name %></a></li>
   </script>
+
+  <script type="text/template" id="category_summary">
+    <div class='summary'><span class='viewname'>category_summary</span><%= _id %> - <%= display_name %></div>
+  </script>
+
+  <script type="text/template" id="welcome_summary">
+    <div class='welcome summary'><span class='viewname'>welcome_summary</span><%= message %>
+      <a href='<%= link %>'><%= link %></a>
+    </div>
+  </script>
+
 
 <script src='{{ url_for('admin.static', filename='js/underscore.js') }}'></script>
 <script src='{{ url_for('admin.static', filename='js/jquery.min.js') }}'></script>
@@ -32,14 +50,14 @@
 
 </head>
 <body class=''>
+
+  <div id='subset_panel'>
     
-    <ul id='workSet'>
+    <ul id='subset'>
       
     </ul>
 
-
-<!--<a id='refresh'>Refresssshhhhhh</a>-->
-
+  </div>
   <script src='{{ url_for('admin.static', filename='js/work.js') }}'></script>
 
 </body>
