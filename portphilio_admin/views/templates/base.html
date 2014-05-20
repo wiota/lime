@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Portphilio</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
+  </head>
+
+  <body>
+    <div>
+  {% if current_user.is_anonymous() %}
+    <a href="{{ url_for('auth.login') }}">log in</a>
+  {% else %}
+    Currently logged in as: <b>{{ current_user.username }} </b> -- <a href=" {{ url_for('auth.logout') }} ">Logout</a>
+  {% endif %}
+    </div>
+    {%- block topbar -%}
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <h2>
+              <a href="/" class="brand">My Travelog</a> <small>Subtitle goes here!</small>
+          </h2>
+        </div>
+        <div class="collapse navbar-collapse">
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+    {%- endblock -%}
+
+    <div class="container">
+      <div class="content">
+        {% block page_header %}{% endblock %}
+  {% for message in get_flashed_messages() %}
+    <div class=flash>{{ message }}</div>
+  {% endfor %}
+        {% block content %}{% endblock %}
+      </div>
+    </div>
+    {% block js_footer %}{% endblock %}
+  </body>
+</html>
