@@ -1,5 +1,6 @@
 from flask import Blueprint
 from flask import Flask, render_template, request, redirect, Response, url_for
+from flask import current_app as app
 import time
 import os
 import json
@@ -21,9 +22,8 @@ mod = Blueprint(
 def index():
     return render_template('upload.html')
 
+
 # Listen for POST requests to yourdomain.com/submit_form/
-
-
 @mod.route("/submit_form/", methods=["POST"])
 def submit_form():
     # Collect the data posted from the HTML form in account.html:
@@ -44,11 +44,9 @@ def submit_form():
 def sign_s3():
     # Load necessary information into the application:
     AWS_ACCESS_KEY = os.environ.get('AWS_ACCESS_KEY_ID')
-    print AWS_ACCESS_KEY
     AWS_SECRET_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
-    print AWS_SECRET_KEY
-    S3_BUCKET = os.environ.get('S3_BUCKET')
-    print S3_BUCKET
+    # Bucket is the hostname with periods replaced with underscores
+    S3_BUCKET = app.config['HOST'].replace('.', '_')
 
     # Collect information on the file from the GET parameters of the request:
     object_name = urllib.quote_plus(request.args.get('s3_object_name'))
