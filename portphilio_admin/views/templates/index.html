@@ -9,27 +9,59 @@
   <style type='text/css'>
     body {margin:0; padding: 0; font-family: 'Helvetica', 'Arial', 'san-serif';}
 
-    ul {margin: 0; padding:0;}
+    ul {margin: 0; padding:0;list-style-type: none;}
+
+    a {text-decoration: none; color: #000;}
 
     .summary {
       background-color: #eee; 
       width: 45%; 
       padding: 1%;
       margin: 1.5%; 
-      float:left;
+      
       }
+
+    .childlist {
+      
+      width: 47%; 
+      margin: 1.5%; 
+      
+      }
+
+    .work_in_set {
+      background-color: #f0f0f0; 
+      padding: 1%;
+      margin: 1.5% 0; 
+
+    }
+
+    .childlist {}
+
 
     #subset_panel {border: 1px solid #f00; overflow: auto;}
 
-    .viewname {font-size: 9px; background-color: #bbb;}
+    .viewname {display:none;font-size: 9px; background-color: #bbb;}
+    .viewname:hover {display:block;}
+
   </style>
 
   <script type="text/template" id="work_in_set">
-    <li class='title'><span class='viewname'>work_in_set</span><a href=''><%= _id %> - <%= name %></a></li>
+    <li class='work_in_set'>
+      <span class='viewname'>work_in_set</span>
+      <a href=''><%= slug %> - <%= title %></a></li>
+  </script>
+
+  <script type="text/template" id="listing">
+    <div class='default_listing'>
+     
+    </div>
   </script>
 
   <script type="text/template" id="category_summary">
-    <div class='summary'><span class='viewname'>category_summary</span><%= _id %> - <%= display_name %></div>
+    <div class='summary'>
+      <span class='viewname'>category_summary</span>
+      <%= _id %> - <%= slug %> - <%= display_name %>
+    </div>
   </script>
 
   <script type="text/template" id="welcome_summary">
@@ -42,6 +74,7 @@
 <script src='{{ url_for('admin.static', filename='js/underscore.js') }}'></script>
 <script src='{{ url_for('admin.static', filename='js/jquery.min.js') }}'></script>
 <script src='{{ url_for('admin.static', filename='js/backbone.js') }}'></script>
+
   
 
   
@@ -58,6 +91,9 @@
     </ul>
 
   </div>
+
+  <script src='{{ url_for('admin.static', filename='js/admin_backbone_models.js') }}'></script>
+  <script src='{{ url_for('admin.static', filename='js/admin_backbone_views.js') }}'></script>
   <script src='{{ url_for('admin.static', filename='js/work.js') }}'></script>
 
 </body>
