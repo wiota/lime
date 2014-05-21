@@ -24,10 +24,13 @@ class User(Document, UserMixin):
     def is_anonymous(self):
         return False
 
+class Host(Document):
+    hostname = StringField(required=True)
+    bucketname = StringField(required=True)
+    owner = ReferenceField(User, required=True)
 
 class Client(User):
-    hostname = StringField(required=True)
-
+    hosts = ListField(ReferenceField(Host))
 
 class Administrator(User):
     admin = BooleanField(default=True)
