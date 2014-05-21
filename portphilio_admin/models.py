@@ -1,16 +1,19 @@
 from portphilio_admin import db
 from flask_login import UserMixin
-import mongoengine
+from mongoengine import *
 import bson
 
 
-class User(db.Document, UserMixin):
-    id = mongoengine.ObjectIdField(
+class User(Document, UserMixin):
+    id = ObjectIdField(
         primary_key=True,
         default=lambda: bson.ObjectId())
-    email = db.EmailField(required=True)
-    username = db.StringField(required=True, max_length=50)
-    password = db.StringField(required=True)
+    email = EmailField(required=True)
+    username = StringField(required=True, max_length=50)
+    password = StringField(required=True)
+    admin = BooleanField(default=False)
+
+    meta = {'allow_inheritance': True}
 
     def is_authenticated(self):
         return True
@@ -20,3 +23,10 @@ class User(db.Document, UserMixin):
 
     def is_anonymous(self):
         return False
+
+
+class Client(User):
+    hostname = StringField(required=True)
+
+class Administrator(User):
+    admin = BooleanField(default=True)

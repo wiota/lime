@@ -1,10 +1,10 @@
 from flask import Blueprint, request, redirect, render_template, url_for, flash
 
-from portphilio_admin.models import User
+from portphilio_admin.models import *
 from flask.ext.login import LoginManager
 from flask.ext.login import login_required, login_user, logout_user
 from flask.ext.wtf import Form
-from wtforms import TextField, PasswordField
+from wtforms import TextField, PasswordField, BooleanField
 from wtforms.validators import Required, Email, EqualTo
 from werkzeug import check_password_hash, generate_password_hash
 from flask.ext.login import LoginManager
@@ -69,6 +69,7 @@ class RegisterForm(Form):
         Required(),
         EqualTo('password', message='Passwords must match')
     ])
+    admin = BooleanField('Check if admin', [Required()])
 
     def __init__(self, *args, **kwargs):
         Form.__init__(self, *args, **kwargs)
@@ -93,7 +94,8 @@ def register():
     if form.validate_on_submit():
         # create an user instance not yet stored in the database
         user = User(username=form.username.data, email=form.email.data,
-                    password=generate_password_hash(form.password.data))
+                    password=generate_password_hash(form.password.data),
+                    admin=form.admin.data)
         # Insert the record in our database and commit it
         user.save()
 
