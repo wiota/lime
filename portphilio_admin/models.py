@@ -54,26 +54,29 @@ class Video(Media):
 class Sound(Media):
     pass
 
+class Work(Document):
+    title = StringField(required=True)
+    slug = StringField(required=True)
+    medium = StringField()
+    size = StringField()
+    date = StringField()
+    description = StringField()
+    media = ListField(ReferenceField(Media))
+
+    owner = ReferenceField(User, required=True)
 
 class Subset(Document):
-    subset = ListField(ReferenceField(Media))
+    subset = ListField(ReferenceField(Work))
     slug = StringField(required=True)
     title = StringField(required=True)
     meta = {'allow_inheritance': True}
     owner = ReferenceField(User, required=True)
 
-
 class Category(Subset):
     pass
 
-
 class Tag(Subset):
     pass
-
-
-class Work(Subset):
-    pass
-
 
 class Body(Document):
     subset = ListField(ReferenceField(Subset))
