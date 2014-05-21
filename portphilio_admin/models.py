@@ -28,5 +28,50 @@ class User(Document, UserMixin):
 class Client(User):
     hostname = StringField(required=True)
 
+
 class Administrator(User):
     admin = BooleanField(default=True)
+
+#
+
+
+class Media(Document):
+    meta = {'allow_inheritance': True}
+    owner = ReferenceField(User, required=True)
+
+
+class Photo(Media):
+    href = StringField(required=True)
+
+
+class Video(Media):
+    pass
+
+
+class Sound(Media):
+    pass
+
+
+class Subset(Document):
+    subset = ListField(ReferenceField(Media))
+    slug = StringField(required=True)
+    title = StringField(required=True)
+    meta = {'allow_inheritance': True}
+    owner = ReferenceField(User, required=True)
+
+
+class Category(Subset):
+    pass
+
+
+class Tag(Subset):
+    pass
+
+
+class Work(Subset):
+    pass
+
+
+class Body(Document):
+    subset = ListField(ReferenceField(Subset))
+    owner = ReferenceField(User, required=True)
