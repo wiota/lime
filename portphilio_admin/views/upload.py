@@ -45,8 +45,9 @@ def sign_s3():
     # Load necessary information into the application:
     AWS_ACCESS_KEY = os.environ.get('AWS_ACCESS_KEY_ID')
     AWS_SECRET_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
-    # Bucket is the hostname with periods replaced with underscores
-    S3_BUCKET = app.config['HOST'].replace('.', '_')
+
+    # TODO: Get this from somewhere else...
+    S3_BUCKET = "portphilio_maggiecasey"
 
     # Collect information on the file from the GET parameters of the request:
     object_name = urllib.quote_plus(request.args.get('s3_object_name'))
