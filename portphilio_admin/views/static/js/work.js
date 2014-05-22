@@ -1,4 +1,4 @@
-var explain = function(){
+var examine = function(){
   var s = ">";
   for (prop in this){
     s += prop + "\n";
@@ -6,16 +6,24 @@ var explain = function(){
   console.log(s);
 }
 
-window.Backbone.Model.prototype.explain = explain;
-window.Backbone.View.prototype.explain = explain;
+window.Backbone.Model.prototype.examine = examine;
+window.Backbone.View.prototype.examine = examine;
+
 
 // Router
 var AppRouter = Backbone.Router.extend({
   
   routes:{
-  "":"default_set",
-  "categories/":"getCategories",
-  "categories/:slug":"getCategory"
+  "":"portfolio",
+  
+  "category":"categoryList",
+  "category/":"categoryList",
+  "category/:id":"getCategory",
+
+  "work":"workList",
+  "work/":"workList",
+  "work/:id":"getWork"
+
   },
 
   initialize: function(){
@@ -24,26 +32,34 @@ var AppRouter = Backbone.Router.extend({
 
   },
 
-  default_set:function () {
-    this.subsetPanel.empty();
-    this.subsetPanel.render(new WelcomeView().render({message: 'Hello', link: "#categories/sculpture"}).el);
+  // Body of work
+  portfolio: function() {
 
+    this.welcome = new WelcomeView();
+    this.welcome.message = {message: 'Hello'}
+
+    this.subsetPanel.empty();
+    this.subsetPanel.setView(this.welcome);
+
+    this.subsetPanel.render();
+  },
+
+  // Category
+  categoryList: function() {
+    this.subsetPanel.empty();
+    this.subsetPanel.text("categoryList");
 
   },
 
-  getCategories:function () {
-    alert('categories');
+  getCategory: function(id) {
 
-  },
+    // Do we assume the category archtype? Or do we wait for the 
 
-  getCategory:function (slug) {
-    this.subsetPanel.empty();
-
-    this.category = new Category({slug: slug});
-    this.categoryView = new CategoryView({model:this.category});
+    this.category = new Category({slug: id, archtype: 'category'});
+    this.defaultListingView = new DefaultListingView({model:this.category});
     
-
-    this.subsetPanel.setView(this.categoryView);
+    this.subsetPanel.empty();
+    this.subsetPanel.setView(this.defaultListingView);
 
     this.subsetPanel.listenTo(
       this.category, 
@@ -53,11 +69,46 @@ var AppRouter = Backbone.Router.extend({
 
     this.category.fetch({
       success: function(model, response, options){
-        // console.log(model.toJSON());
+        //console.log(model.toJSON());
       }
     });
+  },
+
+  // Work
+
+  workList: function(){
+    this.subsetPanel.empty();
+    this.subsetPanel.text("workList");
+
+  },
+
+  getWork: function(id){
+    this.subsetPanel.empty();
+    
+    this.work = new Work({
+      "_id": "537226708b4f7325f20004c3", 
+      "archtype": "work",
+      "title": "Work 1", 
+      "slug": "work-1", 
+      "media": [
+        {
+          "_id":"328u3897932", 
+          "archtype": "photo", 
+          "href": "https://s3.amazonaws.com/portphilio/TrainFromTurmoilToHappyClouds.jpg"
+        }
+      ]
+    })
+
+    this.defaultListingView = new DefaultListingView({model:this.work});
+
+    this.subsetPanel.empty();
+    this.subsetPanel.setView(this.defaultListingView);
+
+    this.subsetPanel.render();
+
 
   }
+
  
 });
  

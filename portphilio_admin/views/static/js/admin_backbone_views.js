@@ -1,14 +1,20 @@
 // Portphillio Admin Backbone Views
 
+/* ------------------------------------------------------------------- */
 // Subset Panel
+/* ------------------------------------------------------------------- */
 
 window.SubsetPanel = Backbone.View.extend({
   el: $('#subset_panel'),
 
   view: null,
 
-  empty: function () {
-    $(this.el).html();
+  empty: function() {
+    $(this.el).html("");
+  },
+
+  text: function(text){
+    $(this.el).html(text);
   },
 
   setView: function(view){
@@ -16,20 +22,63 @@ window.SubsetPanel = Backbone.View.extend({
 
   },
 
-  render: function () {
+  render: function() {
     // Summary
-    if(!this.view) {console.log('Error: no view set')}
-    $(this.el).html(this.view.render().el);
+    if(!this.view) {
+      console.log('Error: no view set')
+    } else {
+      $(this.el).html(this.view.render().el);
+    }
   }
 
 });
 
-// Category
+/* ------------------------------------------------------------------- */
+// Listings
+/* ------------------------------------------------------------------- */
 
-window.CategoryView = Backbone.View.extend({
+window.DefaultListingView = Backbone.View.extend({
+  // type aware
+
   tagName: 'div',
+  className: 'listing',
+  archtype: null,
 
-  template:_.template($('#listing').html()),
+  initialize: function(){
+    this.archtype = this.model.get("archtype") || 'default';
+
+    // add class based on archtype
+    // would rather do this above statically
+    $(this.el).addClass(this.archtype);
+
+    switch (this.archtype){
+      case 'category':
+        this.summary = new CategorySummaryView({model:this.model});
+        this.list = new CategoryChildrenView({model:this.model});
+        break;
+      
+      case 'work':
+        this.summary = new WorkSummaryView({model:this.model});
+        this.list = new WorkChildrenView({model:this.model});
+        break;
+    }
+
+    
+    $(this.el).append(this.summary.el)
+    $(this.el).append(this.list.el);
+  },
+
+  render: function(){
+    this.summary.render();
+    this.list.render();
+    return this;
+  }
+
+})
+
+window.CategoryListingView = Backbone.View.extend({
+  tagName: 'div',
+  className: 'listing',
 
   initialize: function(){
     this.summary = new CategorySummaryView({model:this.model})
@@ -47,14 +96,15 @@ window.CategoryView = Backbone.View.extend({
 
 })
 
+/* ------------------------------------------------------------------- */
+// Summaries
+/* ------------------------------------------------------------------- */
+
 window.CategorySummaryView = Backbone.View.extend({
   tagName: 'div',
+  className: 'summary',
 
   template:_.template($('#category_summary').html()),
-
-  initialize: function(){
-    
-  },
 
   render: function(){
     $(this.el).html(this.template(this.model.toJSON()));
@@ -62,6 +112,23 @@ window.CategorySummaryView = Backbone.View.extend({
   }
 
 });
+
+window.WorkSummaryView = Backbone.View.extend({
+  tagName: 'div',
+  className: 'work summary',
+
+  template:_.template($('#work_summary').html()),
+
+  render: function(){
+    $(this.el).html(this.template(this.model.toJSON()));
+    return this;
+  }
+
+});
+
+/* ------------------------------------------------------------------- */
+// Children
+/* ------------------------------------------------------------------- */
 
 window.CategoryChildrenView = Backbone.View.extend({
   tagName: 'ul',
@@ -71,19 +138,43 @@ window.CategoryChildrenView = Backbone.View.extend({
     var works = this.model.get("works")
     var list_el = $(this.el);
     _.each(works, function(work){
-      //var w = new Work(work);
-      //console.log(w.get("title"));
-      list_el.append(new WorkChildrenItemView({model: new Work(work)}).render().el);
-      
+      list_el.append(new WorkChildItemView({model: new Work(work)}).render().el);  
     });
 
   }
 });
 
-window.WorkChildrenItemView = Backbone.View.extend({
+window.WorkChildrenView = Backbone.View.extend({
+  tagName: 'ul',
+  className: 'childlist',
+
+  render: function(){
+    var media = this.model.get("media")
+    var list_el = $(this.el);
+    _.each(media, function(medium){
+      list_el.append(new MediaChildItemView({model: new Media(medium)}).render().el);  
+    });
+
+  }
+});
+
+window.WorkChildItemView = Backbone.View.extend({
   tagName: 'li',
+  className: 'work_in_set',
 
   template:_.template($('#work_in_set').html()),
+
+  render: function(){
+    $(this.el).html(this.template(this.model.toJSON()));
+    return this
+  }
+});
+
+window.MediaChildItemView = Backbone.View.extend({
+  tagName: 'li',
+  className: 'photo_in_set',
+
+  template:_.template($('#photo_in_set').html()),
 
   render: function(){
     //console.log(this.model.get("slug"));
@@ -92,14 +183,22 @@ window.WorkChildrenItemView = Backbone.View.extend({
   }
 });
 
-// Welcome (temporary)
+/* ------------------------------------------------------------------- */
+// Welcome
+/* ------------------------------------------------------------------- */
+
 
 window.WelcomeView = Backbone.View.extend({
  
+    tagName: "div",
+    className: "welcome summary",
+
     template:_.template($('#welcome_summary').html()),
 
-    render:function (content) {
-        $(this.el).html(this.template(content));
+    message: {message: 'Default message'},
+
+    render:function () {
+        $(this.el).html(this.template(this.message));
         return this;
     }
  

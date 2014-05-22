@@ -2,93 +2,63 @@
 <html>
 <head>
   <meta charset='utf-8'>
-  <title>Backbone test</title>
+  <title>Admin</title>
 
   <meta name='viewport' content='width=device-width, initial-scale=1'>
 
-  <style type='text/css'>
-    body {margin:0; padding: 0; font-family: 'Helvetica', 'Arial', 'san-serif';}
+  <link rel='stylesheet' href='{{ url_for('admin.static', filename='css/ui.css') }}' type='text/css' media='all' />
 
-    ul {margin: 0; padding:0;list-style-type: none;}
+  <script src='{{ url_for('admin.static', filename='js/underscore.js') }}'></script>
+  <script src='{{ url_for('admin.static', filename='js/jquery.min.js') }}'></script>
+  <script src='{{ url_for('admin.static', filename='js/backbone.js') }}'></script>
 
-    a {text-decoration: none; color: #000;}
-
-    .summary {
-      background-color: #eee; 
-      width: 45%; 
-      padding: 1%;
-      margin: 1.5%; 
-      
-      }
-
-    .childlist {
-      
-      width: 47%; 
-      margin: 1.5%; 
-      
-      }
-
-    .work_in_set {
-      background-color: #f0f0f0; 
-      padding: 1%;
-      margin: 1.5% 0; 
-
-    }
-
-    .childlist {}
-
-
-    #subset_panel {border: 1px solid #f00; overflow: auto;}
-
-    .viewname {display:none;font-size: 9px; background-color: #bbb;}
-    .viewname:hover {display:block;}
-
-  </style>
-
-  <script type="text/template" id="work_in_set">
-    <li class='work_in_set'>
-      <span class='viewname'>work_in_set</span>
-      <a href=''><%= slug %> - <%= title %></a></li>
-  </script>
+  <!-- Listing -->  
 
   <script type="text/template" id="listing">
-    <div class='default_listing'>
-     
-    </div>
+    <!-- no use yet -->
   </script>
 
+  <!-- Summary -->
+
   <script type="text/template" id="category_summary">
-    <div class='summary'>
       <span class='viewname'>category_summary</span>
       <%= _id %> - <%= slug %> - <%= display_name %>
-    </div>
+  </script>
+
+  <script type="text/template" id="work_summary">
+      <span class='viewname'>work_summary</span>
+      <%= _id %> - <%= slug %> - <%= title %>
+  </script>
+
+  <!-- Child -->
+
+  <script type="text/template" id="work_in_set">
+      <span class='viewname'>work_in_set</span>
+      <a href=''><%= slug %> - <%= name %></a>
+  </script>
+
+  <script type="text/template" id="photo_in_set">
+      <span class='viewname'>photo_in_set</span>
+      <a href='<%= href %>'><%= _id %> - <%= archtype %> - <img src="<%= href %>" alt="" /></a>
   </script>
 
   <script type="text/template" id="welcome_summary">
-    <div class='welcome summary'><span class='viewname'>welcome_summary</span><%= message %>
-      <a href='<%= link %>'><%= link %></a>
-    </div>
-  </script>
-
-
-<script src='{{ url_for('admin.static', filename='js/underscore.js') }}'></script>
-<script src='{{ url_for('admin.static', filename='js/jquery.min.js') }}'></script>
-<script src='{{ url_for('admin.static', filename='js/backbone.js') }}'></script>
-
-  
-
-  
-
-
+    <span class='viewname'>welcome_summary</span><%= message %>
+  </script> 
 
 </head>
 <body class=''>
+  
+  <div id='admin_nav'>
+    <a href='/'>home</a>
+    <a href='/#category'>category list</a>
+    <a href='/#category/sculpture'>sculpture</a>
+    <a href='/#work'>work list</a>
+    <a href='/#work/23'>work 23</a>
+  </div>
 
   <div id='subset_panel'>
     
-    <ul id='subset'>
-      
-    </ul>
 
   </div>
 
