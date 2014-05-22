@@ -32,4 +32,4 @@ def work_individual():
 @mod.route('/category/<id>')
 @login_required
 def category_id(id):
-    return Category.objects(pwner=current_user.id, id=id).to_bson()
+    return Category.objects(owner=current_user.id, id=id).to_bson()
