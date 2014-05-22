@@ -30,5 +30,8 @@ def to_dict(ret, deref_list=[]):
     """
     retdict = ret.to_mongo().to_dict()
     for ref in deref_list:
-        retdict[ref] = [x.to_mongo().to_dict() for x in ret._data[ref]]
+        if isinstance(ret._data[ref], list):
+            retdict[ref] = [x.to_mongo().to_dict() for x in ret._data[ref]]
+        else:
+            retdict[ref] = ret._data[ref].to_mongo().to_dict()
     return retdict
