@@ -1,10 +1,9 @@
-<!DOCTYPE html>
-<html>
-<head>
+{% extends "base.html" %}
+{% block head %}
   <title>S3 Upload test</title>
-</head>
-<body>
+{% endblock %}
 
+{% block content %}
 <h1>Upload a New Image</h1>
 
 <hr />
@@ -26,7 +25,9 @@
 
     <input type="submit" value="Upload image" />
 </form>
+{% endblock %}
 
+{% block js_footer %}
 <script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.js"></script>
 <script type="text/javascript" src='{{ url_for('upload.static', filename='js/lodash.min.js') }}'></script>
 <script type="text/javascript" src='{{ url_for('admin.static', filename='js/s3upload.js') }}'></script>
@@ -54,6 +55,4 @@ $().ready(function() {
     $('#files').on("change", s3_upload);
 });
 </script>
-</body>
-</html>
-
+{% endblock %}

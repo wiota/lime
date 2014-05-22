@@ -8,6 +8,9 @@ import base64
 import hmac
 import urllib
 from hashlib import sha1
+from flask.ext.login import login_required
+from flask.ext.login import current_user
+from portphilio_admin.models import *
 
 mod = Blueprint(
     'upload',
@@ -19,12 +22,14 @@ mod = Blueprint(
 
 
 @mod.route('/')
+@login_required
 def index():
     return render_template('upload.html')
 
 
 # Listen for POST requests to yourdomain.com/submit_form/
 @mod.route("/submit_form/", methods=["POST"])
+@login_required
 def submit_form():
     # Collect the data posted from the HTML form in account.html:
     data1 = request.form["data1"]
@@ -41,13 +46,12 @@ def submit_form():
 
 # Listen for GET requests to yourdomain.com/sign_s3/
 @mod.route('/sign_s3/')
+@login_required
 def sign_s3():
     # Load necessary information into the application:
     AWS_ACCESS_KEY = os.environ.get('AWS_ACCESS_KEY_ID')
     AWS_SECRET_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
-
-    # TODO: Get this from somewhere else...
-    S3_BUCKET = "portphilio_maggiecasey"
+    S3_BUCKET = Host.objects.get(owner=current_user.id).bucketname
 
     # Collect information on the file from the GET parameters of the request:
     object_name = urllib.quote_plus(request.args.get('s3_object_name'))
