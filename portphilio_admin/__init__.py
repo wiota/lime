@@ -60,6 +60,7 @@ app.register_blueprint(auth)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
+login_manager.login_view = "auth.login"
 
 from portphilio_admin.models import User
 

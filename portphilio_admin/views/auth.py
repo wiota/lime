@@ -7,7 +7,6 @@ from flask.ext.wtf import Form
 from wtforms import TextField, PasswordField, BooleanField
 from wtforms.validators import Required, Email, EqualTo
 from werkzeug import check_password_hash, generate_password_hash
-from flask.ext.login import LoginManager
 
 from flask import current_app as app
 
@@ -25,7 +24,7 @@ def login():
         user = User.objects.get(id=form.user.id)
         login_user(user)
         flash("Logged in successfully.")
-        return redirect(url_for("admin.index"))
+        return redirect(request.args.get("next") or url_for("admin.index"))
     flash("Invalid credentials, please try again")
     return render_template("login.html", form=form, ref=ref)
 
