@@ -24,18 +24,19 @@ class User(Document, UserMixin):
     def is_anonymous(self):
         return False
 
+
 class Host(Document):
     hostname = StringField(required=True)
     bucketname = StringField(required=True)
     owner = ReferenceField(User, required=True)
 
+
 class Client(User):
     hosts = ListField(ReferenceField(Host))
 
+
 class Administrator(User):
     admin = BooleanField(default=True)
-
-#
 
 
 class Media(Document):
@@ -54,6 +55,7 @@ class Video(Media):
 class Sound(Media):
     pass
 
+
 class Work(Document):
     title = StringField(required=True)
     slug = StringField(required=True)
@@ -62,8 +64,8 @@ class Work(Document):
     date = StringField()
     description = StringField()
     media = ListField(ReferenceField(Media))
-
     owner = ReferenceField(User, required=True)
+
 
 class Subset(Document):
     subset = ListField(ReferenceField(Work))
@@ -72,11 +74,14 @@ class Subset(Document):
     meta = {'allow_inheritance': True}
     owner = ReferenceField(User, required=True)
 
+
 class Category(Subset):
-    pass
+    _expand_fields = ['subset']
+
 
 class Tag(Subset):
     pass
+
 
 class Body(Document):
     subset = ListField(ReferenceField(Subset))

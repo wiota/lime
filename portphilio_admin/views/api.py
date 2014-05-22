@@ -20,10 +20,8 @@ def work_name(name):
 
 @mod.route('/category/<id>')
 def category_id(id):
-    ret = {"result" : to_dict(Category.objects.with_id(id).select_related(1), ["subset"])}
-    return bsonify(**ret)
+    return Category.objects.with_id(id).to_bson()
 
 @mod.route('/category/')
 def work_individual():
-    ret = {"result" : [to_dict(x) for x in Category.objects]}
-    return bsonify(**ret)
+    return Category.objects.to_bson()
