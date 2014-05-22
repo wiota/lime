@@ -1,7 +1,5 @@
 // Models
 
-window.Work = Backbone.Model.extend();
-
 window.Category = Backbone.Model.extend({
 
   urlRoot: "api/v1/work",
@@ -15,4 +13,9 @@ window.Category = Backbone.Model.extend({
   }
 });
 
+
+window.Work = Backbone.Model.extend();
+
 window.Tag = Backbone.Model.extend();
+
+window.Media = Backbone.Model.extend();
