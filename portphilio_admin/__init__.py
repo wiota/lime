@@ -14,9 +14,6 @@ app.debug = os.environ.get('FLASK_DEBUG') == 'True'
 # Tell jinja to trim blocks
 app.jinja_env.trim_blocks = True
 
-# TODO Get this from the current_user proxy
-app.config['HOST'] = "www.maggiecasey.com"
-
 # For CSRF usage
 app.config['SECRET_KEY'] = os.environ.get('CSRF_SECRET_KEY')
 
