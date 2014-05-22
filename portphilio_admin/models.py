@@ -57,6 +57,7 @@ class Sound(Media):
 
 
 class Work(Document):
+    _expand_fields = ['media']
     title = StringField(required=True)
     slug = StringField(required=True)
     medium = StringField()
