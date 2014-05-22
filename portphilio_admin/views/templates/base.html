@@ -2,38 +2,31 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Portphilio</title>
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
+    {% block head %}
+        <title>Portphilio</title>
+    {% endblock %}
   </head>
 
   <body>
-    <div>
+    {%- block topbar -%}
+    <div class="navbar navbar-inverse navbar-fixed-top" style="border:2px solid #f00; padding:5px">
+    <div style="float:right">
   {% if current_user.is_anonymous() %}
     <a href="{{ url_for('auth.login') }}">log in</a>
   {% else %}
     Currently logged in as: <b>{{ current_user.username }} </b> -- <a href=" {{ url_for('auth.logout') }} ">Logout</a>
   {% endif %}
     </div>
-    {%- block topbar -%}
-    <div class="navbar navbar-inverse navbar-fixed-top">
-      <div class="container">
-        <div class="navbar-header">
-          <h2>
-              <a href="/" class="brand">Portphilio</a> <small>Subtitle goes here!</small>
-          </h2>
-        </div>
-        <div class="collapse navbar-collapse">
-        </div><!--/.nav-collapse -->
-      </div>
-    </div>
-    {%- endblock -%}
-
-    <div class="container">
-      <div class="content">
-        {% block page_header %}{% endblock %}
+    <a href="/" class="brand">Portphilio</a> <small>Subtitle goes here!</small>
+  {% block page_header %}{% endblock %}
   {% for message in get_flashed_messages() %}
     <div class=flash>{{ message }}</div>
   {% endfor %}
+    </div>
+    {%- endblock -%}
+    <div class="container">
+      <div class="content">
         {% block content %}{% endblock %}
       </div>
     </div>
