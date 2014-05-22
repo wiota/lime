@@ -2,9 +2,7 @@
 {% block head %}
   
   {{ super() }}
-
-  <script src='{{ url_for('admin.static', filename='js/underscore.js') }}'></script>
-  <script src='{{ url_for('admin.static', filename='js/jquery.min.js') }}'></script>
+  
   <script src='{{ url_for('admin.static', filename='js/backbone.js') }}'></script>
   
 {% endblock %}

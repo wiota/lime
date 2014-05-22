@@ -72,8 +72,6 @@ var AppRouter = Backbone.Router.extend({
       this.subsetPanel.render
     );
 
-    this.categoryStorage.add({"title":"ha"})
-    
 
     this.category.fetch({
       success: this.category.fetchSuccess
