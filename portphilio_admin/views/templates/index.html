@@ -19,37 +19,33 @@
   <!-- Summary -->
 
   <script type="text/template" id="category_summary">
-      <span class='viewname'>category_summary</span>
-      <%= _id %> - <%= slug %> - <%= display_name %>
+    <div class='category_title'><%= title %></div>
   </script>
 
-  <script type="text/template" id="work_summary">
-      <span class='viewname'>work_summary</span>
-      <%= _id %> - <%= slug %> - <%= title %>
+  <script type="text/template" id="work_summary">  
+    <div class='work_title'><%= title %></div>
   </script>
 
   <!-- Child -->
 
   <script type="text/template" id="work_in_set">
-      <span class='viewname'>work_in_set</span>
-      <a href=''><%= slug %> - <%= name %></a>
+    <a href='#work/<%= _id %>'><%= title %></a>
   </script>
 
   <script type="text/template" id="photo_in_set">
-      <span class='viewname'>photo_in_set</span>
-      <a href='<%= href %>'><%= _id %> - <%= archtype %> - <img src="<%= href %>" alt="" /></a>
+    <a href='<%= href %>'><%= _id %> - <%= archtype %> - <img src="<%= href %>" alt="" /></a>
   </script>
 
   <script type="text/template" id="welcome_summary">
-    <span class='viewname'>welcome_summary</span><%= message %>
+    <%= message %>
   </script> 
 {% endblock %}
 
 {% block content %}
   <div id='admin_nav'>
     <a href='/'>home</a>
-    <a href='/#category'>category list</a>
-    <a href='/#category/sculpture'>sculpture</a>
+    <a href='/#category'>category flat list</a>
+    <a href='/#category/537e13d0e5884fb9186aaac7'>sculpture</a>
     <a href='/#work'>work list</a>
     <a href='/#work/23'>work 23</a>
   </div>
