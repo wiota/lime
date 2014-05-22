@@ -1,14 +1,15 @@
 {% extends "base.html" %}
 {% block head %}
-  <title>Admin</title>
-
-  <meta name='viewport' content='width=device-width, initial-scale=1'>
-
-  <link rel='stylesheet' href='{{ url_for('admin.static', filename='css/ui.css') }}' type='text/css' media='all' />
+  
+  {{ super() }}
 
   <script src='{{ url_for('admin.static', filename='js/underscore.js') }}'></script>
   <script src='{{ url_for('admin.static', filename='js/jquery.min.js') }}'></script>
   <script src='{{ url_for('admin.static', filename='js/backbone.js') }}'></script>
+  
+{% endblock %}
+
+{% block backbone_templates %}
 
   <!-- Listing -->
 
@@ -39,6 +40,7 @@
   <script type="text/template" id="welcome_summary">
     <%= message %>
   </script> 
+
 {% endblock %}
 
 {% block content %}

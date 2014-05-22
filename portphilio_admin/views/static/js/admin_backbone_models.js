@@ -4,21 +4,25 @@ Backbone.Model.prototype.parse = function(response){
   return response.result;
 }
 
-//console.log(Backbone.Model.prototype.isNew);
+Backbone.Model.prototype.idAttribute = "_id";
 
 window.Category = Backbone.Model.extend({
   urlRoot: "api/v1/category",
-  url: function(){
-    var base =
-      _.result(this, 'urlRoot') ||
-      _.result(this.collection, 'url') ||
-      urlError();
-    //if (this.isNew()) return base;
-    return base.replace(/([^\/])$/, '$1/') + encodeURIComponent(this.get("_id"));
+
+  initialize: function(){
+    _.bindAll(this, "fetchSuccess", "fetchError");
+  },
+
+  fetchSuccess: function(model, response, options){
+    this.collection.add(model);
+    //console.log(this.collection.toJSON());
+  },
+
+  fetchError: function(model, response, options){
+    alert(response);
   }
 
 });
-
 
 window.Work = Backbone.Model.extend();
 
@@ -28,9 +32,16 @@ window.Media = Backbone.Model.extend();
 
 // Collections
 
+
 window.CategoryCollection = Backbone.Collection.extend({
   model: Category,
-  url: "api/v1/category"
+  url: "api/v1/category",
+  initialize: function(){
+    this.on('add', function(category){
+      console.log("Added " + category.get("title"))
+    });
+
+  }
 
 
 })

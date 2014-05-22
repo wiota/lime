@@ -31,6 +31,8 @@ var AppRouter = Backbone.Router.extend({
     this.subsetPanel = new SubsetPanel();
     this.subsetPanel.stopListening();
 
+    this.categoryStorage = new CategoryCollection();
+
   },
 
   // Body of work
@@ -58,7 +60,7 @@ var AppRouter = Backbone.Router.extend({
     this.archtype = 'Subset.Category';
     this.listclass = 'subset category listing'
 
-    this.category = new Category({_id: id, archtype: this.archtype});
+    this.category = new Category({_id: id, archtype: this.archtype},{collection:this.categoryStorage});
     this.defaultListingView = new DefaultListingView({model:this.category, className: this.listclass});
     
     this.subsetPanel.empty();
@@ -70,10 +72,11 @@ var AppRouter = Backbone.Router.extend({
       this.subsetPanel.render
     );
 
+    this.categoryStorage.add({"title":"ha"})
+    
+
     this.category.fetch({
-      success: function(model, response, options){
-        //console.log(model.toJSON());
-      }
+      success: this.category.fetchSuccess
     });
   },
 

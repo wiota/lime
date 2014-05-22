@@ -3,33 +3,57 @@
   <head>
     <meta charset="utf-8">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
+    
     {% block head %}
-        <title>Portphilio</title>
+    
+    <title>Admin</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel='stylesheet' href='{{ url_for('admin.static', filename='css/admin_user.css') }}' type='text/css' media='all' />
+    <link rel='stylesheet' href='{{ url_for('admin.static', filename='css/admin_ui.css') }}' type='text/css' media='all' />
+
+    <script src='{{ url_for('admin.static', filename='js/underscore.js') }}'></script>
+    <script src='{{ url_for('admin.static', filename='js/jquery.min.js') }}'></script>
+    <script src='{{ url_for('admin.static', filename='js/flash.js') }}'></script>
+
     {% endblock %}
+
+    {% block backbone_templates %}
+        
+    {% endblock %}    
+
   </head>
 
   <body>
-    {%- block topbar -%}
-    <div class="navbar navbar-inverse navbar-fixed-top" style="border:2px solid #f00; padding:5px">
-    <div style="float:right">
-  {% if current_user.is_anonymous() %}
-    <a href="{{ url_for('auth.login') }}">log in</a>
-  {% else %}
-    Currently logged in as: <b>{{ current_user.username }} </b> -- <a href=" {{ url_for('auth.logout') }} ">Logout</a>
-  {% endif %}
-    </div>
-    <a href="/" class="brand">Portphilio</a> <small>Subtitle goes here!</small>
-  {% block page_header %}{% endblock %}
-  {% for message in get_flashed_messages() %}
-    <div class=flash>{{ message }}</div>
-  {% endfor %}
+    {%- block user -%}
+    <div class="admin_user_menu">
+      {% if current_user.is_anonymous() %}
+        <div class='admin_user'>
+          <a href="{{ url_for('auth.login') }}">log in</a>
+        </div>
+      {% else %}
+        <div class='admin_user'>
+          <b>{{ current_user.username }} </b>
+          <div class='admin_user_nav'>
+            <a href=" {{ url_for('auth.logout') }} ">Logout</a>
+          </div>
+        </div>
+      {% endif %}
     </div>
     {%- endblock -%}
-    <div class="container">
-      <div class="content">
-        {% block content %}{% endblock %}
+    
+    
+      {% for message in get_flashed_messages() %}
+      <div class='admin_flashes'>
+          <div class='flash'>{{ message }}</div>
       </div>
+      {% endfor %}
+    
+
+    <div class="content">
+      {% block content %}{% endblock %}
     </div>
+    
     {% block js_footer %}{% endblock %}
+
   </body>
 </html>
