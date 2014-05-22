@@ -41,23 +41,18 @@ window.DefaultListingView = Backbone.View.extend({
   // type aware
 
   tagName: 'div',
-  className: 'listing',
   archtype: null,
 
   initialize: function(){
-    this.archtype = this.model.get("archtype") || 'default';
-
-    // add class based on archtype
-    // would rather do this above statically
-    $(this.el).addClass(this.archtype);
+    this.archtype = this.model.get("archtype") || null;
 
     switch (this.archtype){
-      case 'category':
+      case 'Subset.Category':
         this.summary = new CategorySummaryView({model:this.model});
         this.list = new CategoryChildrenView({model:this.model});
         break;
       
-      case 'work':
+      case 'Subset.Work':
         this.summary = new WorkSummaryView({model:this.model});
         this.list = new WorkChildrenView({model:this.model});
         break;
@@ -107,6 +102,7 @@ window.CategorySummaryView = Backbone.View.extend({
   template:_.template($('#category_summary').html()),
 
   render: function(){
+    console.log(this.model.toJSON());
     $(this.el).html(this.template(this.model.toJSON()));
     return this;
   }
@@ -135,10 +131,10 @@ window.CategoryChildrenView = Backbone.View.extend({
   className: 'childlist',
 
   render: function(){
-    var works = this.model.get("works")
+    var subset = this.model.get("subset");
     var list_el = $(this.el);
-    _.each(works, function(work){
-      list_el.append(new WorkChildItemView({model: new Work(work)}).render().el);  
+    _.each(subset, function(subset){
+      list_el.append(new WorkChildItemView({model: new Work(subset)}).render().el);  
     });
 
   }

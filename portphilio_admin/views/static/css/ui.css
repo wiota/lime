@@ -42,11 +42,13 @@ a {text-decoration: none; color: #000;}
   
   }
 
-.category.listing .summary {}
+.category.listing .summary {
+  background-color: #ff0;
+}
 .tag.listing .summary {}
 .work.listing .summary {}
 
-/* Children (one for each subset archtype) */
+/* Child List (one for each subset archtype) */
 
 .childlist {
   width: 47%; 
@@ -76,9 +78,3 @@ a {text-decoration: none; color: #000;}
 .photo_in_set img {max-width: 100%;}
 
 .video_in_set {}
-
-/* debugging views */
-
-.viewname {display:none;font-size: 9px; background-color: #bbb;}
-div:hover .viewname,
-ul:hover .viewname {display:block;}

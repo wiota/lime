@@ -6,8 +6,9 @@ var examine = function(){
   console.log(s);
 }
 
-window.Backbone.Model.prototype.examine = examine;
-window.Backbone.View.prototype.examine = examine;
+Backbone.Model.prototype.examine = examine;
+Backbone.View.prototype.examine = examine;
+
 
 
 // Router
@@ -47,16 +48,18 @@ var AppRouter = Backbone.Router.extend({
   // Category
   categoryList: function() {
     this.subsetPanel.empty();
-    this.subsetPanel.text("categoryList");
+    
 
   },
 
   getCategory: function(id) {
 
     // Do we assume the category archtype? Or do we wait for the 
+    this.archtype = 'Subset.Category';
+    this.listclass = 'subset category listing'
 
-    this.category = new Category({slug: id, archtype: 'category'});
-    this.defaultListingView = new DefaultListingView({model:this.category});
+    this.category = new Category({_id: id, archtype: this.archtype});
+    this.defaultListingView = new DefaultListingView({model:this.category, className: this.listclass});
     
     this.subsetPanel.empty();
     this.subsetPanel.setView(this.defaultListingView);
