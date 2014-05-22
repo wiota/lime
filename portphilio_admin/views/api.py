@@ -9,6 +9,10 @@ from flask.ext.login import current_user
 
 mod = Blueprint('api', __name__, url_prefix='/api/v1')
 
+@mod.route('/body')
+@login_required
+def body():
+    return Body.objects.get(owner=current_user.id).to_bson()
 
 @mod.route('/work')
 @login_required
