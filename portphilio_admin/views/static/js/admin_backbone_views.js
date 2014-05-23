@@ -46,7 +46,13 @@ window.DefaultListingView = Backbone.View.extend({
   initialize: function(){
     this.archtype = this.model.get("archtype") || null;
 
+    //alert(this.archtype);
+
     switch (this.archtype){
+      case 'Subset.Portfolio':
+        this.summary = new PortfolioSummaryView({model:this.model});
+        this.list = new PortfolioChildrenView({model:this.model});
+        break;
       case 'Subset.Category':
         this.summary = new CategorySummaryView({model:this.model});
         this.list = new CategoryChildrenView({model:this.model});
@@ -95,6 +101,19 @@ window.CategoryListingView = Backbone.View.extend({
 // Summaries
 /* ------------------------------------------------------------------- */
 
+window.PortfolioSummaryView = Backbone.View.extend({
+  tagName: 'div',
+  className: 'summary',
+  template:_.template($('#portfolio_summary').html()),
+
+  render: function(){
+    console.log(this.model.toJSON());
+    $(this.el).html(this.template(this.model.toJSON()));
+    return this;
+  }
+
+});
+
 window.CategorySummaryView = Backbone.View.extend({
   tagName: 'div',
   className: 'summary',
@@ -126,6 +145,20 @@ window.WorkSummaryView = Backbone.View.extend({
 // Children
 /* ------------------------------------------------------------------- */
 
+window.PortfolioChildrenView = Backbone.View.extend({
+  tagName: 'ul',
+  className: 'childlist',
+
+  render: function(){
+    var subset = this.model.get("subset");
+    var list_el = $(this.el);
+    _.each(subset, function(subset){
+      list_el.append(new CategoryChildItemView({model: new Work(subset)}).render().el);  
+    });
+
+  }
+});
+
 window.CategoryChildrenView = Backbone.View.extend({
   tagName: 'ul',
   className: 'childlist',
@@ -151,6 +184,22 @@ window.WorkChildrenView = Backbone.View.extend({
       list_el.append(new MediaChildItemView({model: new Media(medium)}).render().el);  
     });
 
+  }
+});
+
+/* ------------------------------------------------------------------- */
+// Children Items
+/* ------------------------------------------------------------------- */
+
+window.CategoryChildItemView = Backbone.View.extend({
+  tagName: 'li',
+  className: 'category_in_set',
+
+  template:_.template($('#category_in_set').html()),
+
+  render: function(){
+    $(this.el).html(this.template(this.model.toJSON()));
+    return this
   }
 });
 

@@ -31,20 +31,38 @@ var AppRouter = Backbone.Router.extend({
     this.subsetPanel = new SubsetPanel();
     this.subsetPanel.stopListening();
 
+    // Set up body of work
+    
+    // Set up collection based storage of fetched objects
     this.categoryStorage = new CategoryCollection();
+    this.workStorage = new CategoryCollection();
 
   },
 
   // Body of work
   portfolio: function() {
 
-    this.welcome = new WelcomeView();
-    this.welcome.message = {message: 'Hello'}
+    this.portfolioArchtype = 'Subset.Portfolio';
+    this.portfolio = new Portfolio({archtype: this.portfolioArchtype});
+
+
+    this.listclass = 'subset portfolio listing'
+
+    this.defaultListingView = new DefaultListingView({model:this.portfolio, className: this.listclass});
 
     this.subsetPanel.empty();
-    this.subsetPanel.setView(this.welcome);
+    this.subsetPanel.setView(this.defaultListingView);
 
-    this.subsetPanel.render();
+    this.subsetPanel.listenTo(
+      this.portfolio, 
+      "change", 
+      this.subsetPanel.render
+    );
+
+    this.portfolio.fetch({
+      success: this.portfolio.fetchSuccess
+    });
+
   },
 
   // Category
@@ -87,8 +105,23 @@ var AppRouter = Backbone.Router.extend({
   },
 
   getWork: function(id){
-    this.subsetPanel.empty();
+
+    this.archtype = 'Subset.Work';
+    this.listclass = 'subset work listing'
     
+    this.work = new Work({_id: id, archtype: this.archtype},{collection:this.workStorage});
+    this.defaultListingView = new DefaultListingView({model:this.work, className: this.listclass});
+    
+    this.subsetPanel.empty();
+    this.subsetPanel.setView(this.defaultListingView);
+
+    this.subsetPanel.listenTo(
+      this.work, 
+      "change", 
+      this.subsetPanel.render
+    );
+
+    /*
     this.work = new Work({
       "_id": "537226708b4f7325f20004c3", 
       "archtype": "work",
@@ -102,13 +135,11 @@ var AppRouter = Backbone.Router.extend({
         }
       ]
     })
-
-    this.defaultListingView = new DefaultListingView({model:this.work});
-
-    this.subsetPanel.empty();
-    this.subsetPanel.setView(this.defaultListingView);
-
-    this.subsetPanel.render();
+    */
+  
+    this.work.fetch({
+      success: this.work.fetchSuccess
+    });
 
 
   }

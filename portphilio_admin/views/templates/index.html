@@ -2,7 +2,7 @@
 {% block head %}
   
   {{ super() }}
-  
+
   <script src='{{ url_for('admin.static', filename='js/backbone.js') }}'></script>
   
 {% endblock %}
@@ -17,6 +17,10 @@
 
   <!-- Summary -->
 
+  <script type="text/template" id="portfolio_summary">
+    <div class='portfolio_title'><%= _id %></div>
+  </script>
+
   <script type="text/template" id="category_summary">
     <div class='category_title'><%= title %></div>
   </script>
@@ -27,12 +31,16 @@
 
   <!-- Child -->
 
+  <script type="text/template" id="category_in_set">
+    <a href='#category/<%= _id %>'><i class='info_tag'><%= _cls %> - <%= _id %></i><%= title %></a>
+  </script>
+
   <script type="text/template" id="work_in_set">
-    <a href='#work/<%= _id %>'><%= title %></a>
+    <a href='#work/<%= _id %>'><i class='info_tag'><%= _id %></i><%= title %></a>
   </script>
 
   <script type="text/template" id="photo_in_set">
-    <a href='<%= href %>'><%= _id %> - <%= archtype %> - <img src="<%= href %>" alt="" /></a>
+    <a href='<%= href %>'><i class='info_tag'><%= _cls %> - <%= _id %></i><img src="<%= href %>" alt="" /></a>
   </script>
 
   <script type="text/template" id="welcome_summary">
@@ -43,11 +51,9 @@
 
 {% block content %}
   <div id='admin_nav'>
-    <a href='/'>home</a>
+    <a href='/'>portfolio</a>
     <a href='/#category'>category flat list</a>
-    <a href='/#category/537e13d0e5884fb9186aaac7'>sculpture</a>
-    <a href='/#work'>work list</a>
-    <a href='/#work/23'>work 23</a>
+    <a href='/#work'>work flat list</a>
   </div>
 
   <div id='subset_panel'></div>

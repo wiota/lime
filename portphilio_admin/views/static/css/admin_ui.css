@@ -18,11 +18,12 @@ a {text-decoration: none; color: #000;}
   color: #fff;
   }
 
-/* subset panel */
+/* Subset Panel */
 
 #subset_panel {
   border: 4px solid #237ab1; overflow: auto;
   margin: .5% .5% .5% .5%;
+  min-height: 400px;
   }
 
 /* Listing (one for each subset archtype) */
@@ -61,7 +62,16 @@ a {text-decoration: none; color: #000;}
 
 /* Child in set (one for each archtype that can be in a set) */
 
-.category_in_set {}
+.childlist li {
+  position: relative;
+  }
+
+.category_in_set {
+  background-color: #ff0; 
+  padding: 1%;
+  margin: 1.5% 0; 
+  }
+
 .tag_in_set {}
 .work_in_set {
   background-color: #f0f0f0; 
@@ -70,11 +80,24 @@ a {text-decoration: none; color: #000;}
   }
 
 .photo_in_set {
-  background-color: #f0f0f0; 
-  padding: 1%;
+  background-color: #fff; 
   margin: 1.5% 0;
   }
+
   
 .photo_in_set img {max-width: 100%;}
 
 .video_in_set {}
+
+/* Overlays */
+
+li i.info_tag {display:none;}
+li:hover i.info_tag {display:block;}
+
+i.info_tag {
+  position: absolute;
+  background-color: rgba(0,0,0,.5);
+  color: #fff;
+  padding: .5%;
+  font-size: 10px;
+  }
