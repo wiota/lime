@@ -69,6 +69,7 @@ window.DefaultListingView = Backbone.View.extend({
     $(this.el).append(this.list.el);
   },
 
+  // should happen only when data exists
   render: function(){
     this.summary.render();
     this.list.render();
@@ -190,6 +191,10 @@ window.WorkChildrenView = Backbone.View.extend({
 /* ------------------------------------------------------------------- */
 // Children Items
 /* ------------------------------------------------------------------- */
+
+window.emptyListItem = Backbone.View.extend({
+  tagName: 'li',
+});
 
 window.CategoryChildItemView = Backbone.View.extend({
   tagName: 'li',
