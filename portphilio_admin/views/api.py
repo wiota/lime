@@ -1,7 +1,7 @@
-from portphilio_admin.models import *
 from flask import Blueprint
 from flask import current_app as app
-from portphilio_admin.tools import bsonify, to_dict
+from portphilio_lib.tools import bsonify, to_dict
+from portphilio_lib.models import *
 from bson.json_util import dumps
 from flask.ext.login import login_required
 from flask.ext.login import current_user

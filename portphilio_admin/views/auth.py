@@ -1,6 +1,6 @@
 from flask import Blueprint, request, redirect, render_template, url_for, flash
 
-from portphilio_admin.models import *
+from portphilio_lib.models import *
 from flask.ext.login import LoginManager
 from flask.ext.login import login_required, login_user, logout_user
 from flask.ext.wtf import Form
