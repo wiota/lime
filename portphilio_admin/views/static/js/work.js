@@ -9,13 +9,15 @@ var examine = function(){
 Backbone.Model.prototype.examine = examine;
 Backbone.View.prototype.examine = examine;
 
-
-
+/* ------------------------------------------------------------------- */
 // Router
+// for admin
+/* ------------------------------------------------------------------- */
+
 var AppRouter = Backbone.Router.extend({
   
   routes:{
-  "":"portfolio",
+  "":"getPortfolio",
   
   "category":"categoryList",
   "category/":"categoryList",
@@ -28,119 +30,70 @@ var AppRouter = Backbone.Router.extend({
   },
 
   initialize: function(){
-    this.subsetPanel = new SubsetPanel();
-    this.subsetPanel.stopListening();
 
-    // Set up body of work
     
-    // Set up collection based storage of fetched objects
+    // Collection-based storage
+    // this.portfolioStorage = new PortfolioCollection();
+    this.portfolioStorage = portfolioStorage.initialize();
     this.categoryStorage = new CategoryCollection();
-    this.workStorage = new CategoryCollection();
+    this.workStorage = new WorkCollection();
+
+    // Panel for Listings
+    this.subsetPanel = new SubsetPanel();
 
   },
 
+  list: function(collection, id){
+    console.log(collection + " " + id);
+  },
+
   // Body of work
-  portfolio: function() {
+  getPortfolio: function() {
 
-    this.portfolioArchtype = 'Subset.Portfolio';
-    this.portfolio = new Portfolio({archtype: this.portfolioArchtype});
-
+    var portfolio = this.portfolioStorage.lookup();
 
     this.listclass = 'subset portfolio listing'
+    this.listingView = new listingView({model:portfolio, className: this.listclass});
 
-    this.defaultListingView = new DefaultListingView({model:this.portfolio, className: this.listclass});
-
-    this.subsetPanel.empty();
-    this.subsetPanel.setView(this.defaultListingView);
-
-    this.subsetPanel.listenTo(
-      this.portfolio, 
-      "change", 
-      this.subsetPanel.render
-    );
-
-    this.portfolio.fetch({
-      success: this.portfolio.fetchSuccess
-    });
+    this.subsetPanel.setModel(portfolio);
+    this.subsetPanel.setView(this.listingView);
+    this.subsetPanel.refresh();
 
   },
 
   // Category
   categoryList: function() {
     this.subsetPanel.empty();
-    
-
   },
 
   getCategory: function(id) {
 
-    // Do we assume the category archtype? Or do we wait for the 
-    this.archtype = 'Subset.Category';
+    var category = this.categoryStorage.lookup(id);
+
     this.listclass = 'subset category listing'
-
-    this.category = new Category({_id: id, archtype: this.archtype},{collection:this.categoryStorage});
-    this.defaultListingView = new DefaultListingView({model:this.category, className: this.listclass});
+    this.listingView = new listingView({model:category, className: this.listclass});
     
-    this.subsetPanel.empty();
-    this.subsetPanel.setView(this.defaultListingView);
-
-    this.subsetPanel.listenTo(
-      this.category, 
-      "change", 
-      this.subsetPanel.render
-    );
-
-
-    this.category.fetch({
-      success: this.category.fetchSuccess
-    });
+    this.subsetPanel.setModel(category);
+    this.subsetPanel.setView(this.listingView);
+    this.subsetPanel.refresh();
+    
   },
 
   // Work
-
   workList: function(){
     this.subsetPanel.empty();
-    this.subsetPanel.text("workList");
-
   },
 
   getWork: function(id){
 
-    this.archtype = 'Subset.Work';
+    var work = this.workStorage.lookup(id);
+
     this.listclass = 'subset work listing'
+    this.listingView = new listingView({model:work, className: this.listclass});
     
-    this.work = new Work({_id: id, archtype: this.archtype},{collection:this.workStorage});
-    this.defaultListingView = new DefaultListingView({model:this.work, className: this.listclass});
-    
-    this.subsetPanel.empty();
-    this.subsetPanel.setView(this.defaultListingView);
-
-    this.subsetPanel.listenTo(
-      this.work, 
-      "change", 
-      this.subsetPanel.render
-    );
-
-    /*
-    this.work = new Work({
-      "_id": "537226708b4f7325f20004c3", 
-      "archtype": "work",
-      "title": "Work 1", 
-      "slug": "work-1", 
-      "media": [
-        {
-          "_id":"328u3897932", 
-          "archtype": "photo", 
-          "href": "https://s3.amazonaws.com/portphilio/TrainFromTurmoilToHappyClouds.jpg"
-        }
-      ]
-    })
-    */
-  
-    this.work.fetch({
-      success: this.work.fetchSuccess
-    });
-
+    this.subsetPanel.setModel(work);
+    this.subsetPanel.setView(this.listingView);
+    this.subsetPanel.refresh();
 
   }
 

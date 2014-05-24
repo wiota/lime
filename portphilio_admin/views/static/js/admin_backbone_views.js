@@ -6,20 +6,43 @@
 
 window.SubsetPanel = Backbone.View.extend({
   el: $('#subset_panel'),
-
   view: null,
+  currentModelReference: null,
+
+  setView: function(view){
+    this.view = view;
+  },
+
+  setModel: function(model){
+    this.model = model;
+  },
 
   empty: function() {
     $(this.el).html("");
   },
 
-  text: function(text){
-    $(this.el).html(text);
+  refresh: function(){
+    //console.log(this.model);
+    this.stopListening();
+    this.empty();
+    
+    this.listenTo(
+      this.model, 
+      "change", 
+      this.render
+    );
+
+    //alert(this.model.isFetched());
+
+    if(this.model.isFetched()){
+      this.render();
+    }
+    
+
   },
 
-  setView: function(view){
-    this.view = view;
-
+  text: function(text){
+    $(this.el).html(text);
   },
 
   render: function() {
@@ -37,7 +60,7 @@ window.SubsetPanel = Backbone.View.extend({
 // Listings
 /* ------------------------------------------------------------------- */
 
-window.DefaultListingView = Backbone.View.extend({
+window.listingView = Backbone.View.extend({
   // type aware
 
   tagName: 'div',
@@ -49,7 +72,7 @@ window.DefaultListingView = Backbone.View.extend({
     //alert(this.archtype);
 
     switch (this.archtype){
-      case 'Subset.Portfolio':
+      case 'Portfolio':
         this.summary = new PortfolioSummaryView({model:this.model});
         this.list = new PortfolioChildrenView({model:this.model});
         break;
@@ -64,6 +87,8 @@ window.DefaultListingView = Backbone.View.extend({
         break;
     }
 
+    // what to do if object requested is not of a valid type?
+    // what to render if listing has no children (possibly in children view)
     
     $(this.el).append(this.summary.el)
     $(this.el).append(this.list.el);
@@ -74,6 +99,10 @@ window.DefaultListingView = Backbone.View.extend({
     this.summary.render();
     this.list.render();
     return this;
+  },
+
+  renderEmpty: function(){
+
   }
 
 })
@@ -108,7 +137,7 @@ window.PortfolioSummaryView = Backbone.View.extend({
   template:_.template($('#portfolio_summary').html()),
 
   render: function(){
-    console.log(this.model.toJSON());
+    //console.log(this.model.toJSON());
     $(this.el).html(this.template(this.model.toJSON()));
     return this;
   }
@@ -198,7 +227,7 @@ window.emptyListItem = Backbone.View.extend({
 
 window.CategoryChildItemView = Backbone.View.extend({
   tagName: 'li',
-  className: 'category_in_set',
+  className: 'category_in_set child',
 
   template:_.template($('#category_in_set').html()),
 
@@ -210,7 +239,7 @@ window.CategoryChildItemView = Backbone.View.extend({
 
 window.WorkChildItemView = Backbone.View.extend({
   tagName: 'li',
-  className: 'work_in_set',
+  className: 'work_in_set child',
 
   template:_.template($('#work_in_set').html()),
 
@@ -222,7 +251,7 @@ window.WorkChildItemView = Backbone.View.extend({
 
 window.MediaChildItemView = Backbone.View.extend({
   tagName: 'li',
-  className: 'photo_in_set',
+  className: 'photo_in_set child',
 
   template:_.template($('#photo_in_set').html()),
 
