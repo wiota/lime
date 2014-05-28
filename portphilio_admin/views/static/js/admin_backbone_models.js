@@ -84,7 +84,7 @@ window.Media = Backbone.Model.extend();
 
 window.portfolioStorage = {
   portfolio: null,
-  archtype: 'Portfolio',
+  archetype: 'Portfolio',
 
   initialize: function(){
     _.bindAll(this, "fetchSuccess", "fetchError");
@@ -96,7 +96,7 @@ window.portfolioStorage = {
   },
 
   fetch: function(){
-    var portfolio = new Portfolio({archtype: this.archtype});
+    var portfolio = new Portfolio({archetype: this.archetype});
 
     portfolio.fetch({
       success: this.fetchSuccess,
@@ -123,7 +123,7 @@ window.portfolioStorage = {
 window.CategoryCollection = Backbone.Collection.extend({
   model: Category,
   url: "api/v1/category",
-  archtype: 'Subset.Category', // archtype that will be stored here
+  archetype: 'Subset.Category', // archetype that will be stored here
 
   initialize: function(){
     _.bindAll(this, "fetchSuccess", "fetchError");
@@ -138,7 +138,7 @@ window.CategoryCollection = Backbone.Collection.extend({
   },
 
   fetchOne: function(id){
-    var category = new Category({_id: id, archtype: this.archtype});
+    var category = new Category({_id: id, archetype: this.archetype});
 
     category.fetch({
       success: this.fetchSuccess,
@@ -165,7 +165,7 @@ window.CategoryCollection = Backbone.Collection.extend({
 window.WorkCollection = Backbone.Collection.extend({
   model: Work,
   url: "api/v1/work",
-  archtype: 'Subset.Work', // archtype that will be stored here
+  archetype: 'Subset.Work', // archetype that will be stored here
 
   initialize: function(){
     _.bindAll(this, "fetchSuccess", "fetchError");
@@ -179,7 +179,7 @@ window.WorkCollection = Backbone.Collection.extend({
   },
 
   fetchOne: function(id){
-    var work = new Work({_id: id, archtype: this.archtype});
+    var work = new Work({_id: id, archetype: this.archetype});
 
     work.fetch({
       success: this.fetchSuccess,

@@ -20,7 +20,7 @@ a {text-decoration: none; color: #000;}
 
 /* Subset Panel */
 
-#subset_panel {
+#listing_panel {
   border: 4px solid #237ab1; overflow: auto;
   margin: .5% .5% .5% .5%;
   min-height: 400px;
@@ -43,6 +43,10 @@ a {text-decoration: none; color: #000;}
   margin: 1.5%; 
   
   }
+
+.portfolio.listing .summary {
+  background-color: #a6dcff;
+}
 
 .category.listing .summary {
   background-color: #ff0;

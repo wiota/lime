@@ -33,13 +33,12 @@ var AppRouter = Backbone.Router.extend({
 
     
     // Collection-based storage
-    // this.portfolioStorage = new PortfolioCollection();
     this.portfolioStorage = portfolioStorage.initialize();
     this.categoryStorage = new CategoryCollection();
     this.workStorage = new WorkCollection();
 
     // Panel for Listings
-    this.subsetPanel = new SubsetPanel();
+    this.listingPanel = new ListingPanel();
 
   },
 
@@ -51,14 +50,7 @@ var AppRouter = Backbone.Router.extend({
   getPortfolio: function() {
 
     var portfolio = this.portfolioStorage.lookup();
-
-    this.listclass = 'subset portfolio listing'
-    this.listingView = new listingView({model:portfolio, className: this.listclass});
-
-    this.subsetPanel.setModel(portfolio);
-    this.subsetPanel.setView(this.listingView);
-    this.subsetPanel.refresh();
-
+    this.listingPanel.list(portfolio);
   },
 
   // Category
@@ -67,16 +59,8 @@ var AppRouter = Backbone.Router.extend({
   },
 
   getCategory: function(id) {
-
     var category = this.categoryStorage.lookup(id);
-
-    this.listclass = 'subset category listing'
-    this.listingView = new listingView({model:category, className: this.listclass});
-    
-    this.subsetPanel.setModel(category);
-    this.subsetPanel.setView(this.listingView);
-    this.subsetPanel.refresh();
-    
+    this.listingPanel.list(category);
   },
 
   // Work
@@ -85,16 +69,8 @@ var AppRouter = Backbone.Router.extend({
   },
 
   getWork: function(id){
-
     var work = this.workStorage.lookup(id);
-
-    this.listclass = 'subset work listing'
-    this.listingView = new listingView({model:work, className: this.listclass});
-    
-    this.subsetPanel.setModel(work);
-    this.subsetPanel.setView(this.listingView);
-    this.subsetPanel.refresh();
-
+    this.listingPanel.list(work);
   }
 
  

@@ -1,219 +1,136 @@
 // Portphillio Admin Backbone Views
 
 /* ------------------------------------------------------------------- */
-// Subset Panel
-/* ------------------------------------------------------------------- */
-
-window.SubsetPanel = Backbone.View.extend({
-  el: $('#subset_panel'),
-  view: null,
-  currentModelReference: null,
-
-  setView: function(view){
-    this.view = view;
-  },
-
-  setModel: function(model){
-    this.model = model;
-  },
-
-  empty: function() {
-    $(this.el).html("");
-  },
-
-  refresh: function(){
-    //console.log(this.model);
-    this.stopListening();
-    this.empty();
-    
-    this.listenTo(
-      this.model, 
-      "change", 
-      this.render
-    );
-
-    //alert(this.model.isFetched());
-
-    if(this.model.isFetched()){
-      this.render();
-    }
-    
-
-  },
-
-  text: function(text){
-    $(this.el).html(text);
-  },
-
-  render: function() {
-    // Summary
-    if(!this.view) {
-      console.log('Error: no view set')
-    } else {
-      $(this.el).html(this.view.render().el);
-    }
-  }
-
-});
-
-/* ------------------------------------------------------------------- */
 // Listings
 /* ------------------------------------------------------------------- */
 
-window.listingView = Backbone.View.extend({
-  // type aware
-
+window.ListingView = Backbone.View.extend({ // Abstract class - do not instantiate! 
+  
   tagName: 'div',
-  archtype: null,
+  archetype: null,
 
   initialize: function(){
-    this.archtype = this.model.get("archtype") || null;
-
-    //alert(this.archtype);
-
-    switch (this.archtype){
-      case 'Portfolio':
-        this.summary = new PortfolioSummaryView({model:this.model});
-        this.list = new PortfolioChildrenView({model:this.model});
-        break;
-      case 'Subset.Category':
-        this.summary = new CategorySummaryView({model:this.model});
-        this.list = new CategoryChildrenView({model:this.model});
-        break;
-      
-      case 'Subset.Work':
-        this.summary = new WorkSummaryView({model:this.model});
-        this.list = new WorkChildrenView({model:this.model});
-        break;
-    }
-
-    // what to do if object requested is not of a valid type?
-    // what to render if listing has no children (possibly in children view)
-    
-    $(this.el).append(this.summary.el)
-    $(this.el).append(this.list.el);
+    this.subViews = []; 
   },
 
-  // should happen only when data exists
   render: function(){
-    this.summary.render();
-    this.list.render();
+    _.each(this.subViews, function(subView){
+      this.$el.append(subView.render().el);
+    }, this)
     return this;
-  },
-
-  renderEmpty: function(){
-
   }
-
 })
 
-window.CategoryListingView = Backbone.View.extend({
-  tagName: 'div',
-  className: 'listing',
-
+window.PortfolioListingView = ListingView.extend({
   initialize: function(){
-    this.summary = new CategorySummaryView({model:this.model})
-    this.list = new CategoryChildrenView({model:this.model});
-
-    $(this.el).append(this.summary.el)
-    $(this.el).append(this.list.el);
-  },
-
-  render: function(){
-    this.summary.render();
-    this.list.render();
-    return this;
+    ListingView.prototype.initialize.apply(this, arguments);
+    this.subViews.push(new PortfolioSummaryView({model:this.model}));
+    this.subViews.push(new PortfolioChildListView({model:this.model}));
   }
+})
 
+window.CategoryListingView = ListingView.extend({
+  initialize: function(){
+    ListingView.prototype.initialize.apply(this, arguments);
+    this.subViews.push(new CategorySummaryView({model:this.model}));
+    this.subViews.push(new CategoryChildListView({model:this.model}));
+  }
+})
+
+window.WorkListingView = ListingView.extend({
+  initialize: function(){
+    ListingView.prototype.initialize.apply(this, arguments);
+    this.subViews.push(new WorkSummaryView({model:this.model}));
+    this.subViews.push(new WorkChildListView({model:this.model}));
+  }
 })
 
 /* ------------------------------------------------------------------- */
 // Summaries
 /* ------------------------------------------------------------------- */
 
-window.PortfolioSummaryView = Backbone.View.extend({
+window.SummaryView = Backbone.View.extend({
   tagName: 'div',
   className: 'summary',
+
+  render: function(){
+    this.$el.html(this.template(this.model.toJSON()));
+    return this;
+  }
+
+});
+
+window.PortfolioSummaryView = SummaryView.extend({
   template:_.template($('#portfolio_summary').html()),
-
-  render: function(){
-    //console.log(this.model.toJSON());
-    $(this.el).html(this.template(this.model.toJSON()));
-    return this;
-  }
-
 });
 
-window.CategorySummaryView = Backbone.View.extend({
-  tagName: 'div',
-  className: 'summary',
-
+window.CategorySummaryView = SummaryView.extend({
   template:_.template($('#category_summary').html()),
-
-  render: function(){
-    //console.log(this.model.toJSON());
-    $(this.el).html(this.template(this.model.toJSON()));
-    return this;
-  }
-
 });
 
-window.WorkSummaryView = Backbone.View.extend({
-  tagName: 'div',
-  className: 'work summary',
-
+window.WorkSummaryView = SummaryView.extend({
   template:_.template($('#work_summary').html()),
-
-  render: function(){
-    $(this.el).html(this.template(this.model.toJSON()));
-    return this;
-  }
-
 });
 
 /* ------------------------------------------------------------------- */
 // Children
 /* ------------------------------------------------------------------- */
 
-window.PortfolioChildrenView = Backbone.View.extend({
+// what to render if listing has no children (possibly in children view)
+window.ChildListView = Backbone.View.extend({
   tagName: 'ul',
   className: 'childlist',
 
   render: function(){
     var subset = this.model.get("subset");
-    var list_el = $(this.el);
+    var list_el = this.$el;
     _.each(subset, function(subset){
       list_el.append(new CategoryChildItemView({model: new Work(subset)}).render().el);  
     });
-
+    return this;
   }
 });
 
-window.CategoryChildrenView = Backbone.View.extend({
+
+window.PortfolioChildListView = Backbone.View.extend({
   tagName: 'ul',
   className: 'childlist',
 
   render: function(){
     var subset = this.model.get("subset");
-    var list_el = $(this.el);
+    var list_el = this.$el;
     _.each(subset, function(subset){
-      list_el.append(new WorkChildItemView({model: new Work(subset)}).render().el);  
+      list_el.append(new CategoryChildItemView({model: new Work(subset)}).render().el);  
     });
-
+    return this;
   }
 });
 
-window.WorkChildrenView = Backbone.View.extend({
+window.CategoryChildListView = Backbone.View.extend({
+  tagName: 'ul',
+  className: 'childlist',
+
+  render: function(){
+    var subset = this.model.get("subset");
+    var list_el = this.$el;
+    _.each(subset, function(subset){
+      list_el.append(new WorkChildItemView({model: new Work(subset)}).render().el);  
+    });
+    return this;
+  }
+});
+
+window.WorkChildListView = Backbone.View.extend({
   tagName: 'ul',
   className: 'childlist',
 
   render: function(){
     var media = this.model.get("media")
-    var list_el = $(this.el);
+    var list_el = this.$el;
     _.each(media, function(medium){
       list_el.append(new MediaChildItemView({model: new Media(medium)}).render().el);  
     });
-
+    return this;
   }
 });
 
@@ -232,7 +149,7 @@ window.CategoryChildItemView = Backbone.View.extend({
   template:_.template($('#category_in_set').html()),
 
   render: function(){
-    $(this.el).html(this.template(this.model.toJSON()));
+    this.$el.html(this.template(this.model.toJSON()));
     return this
   }
 });
@@ -244,7 +161,7 @@ window.WorkChildItemView = Backbone.View.extend({
   template:_.template($('#work_in_set').html()),
 
   render: function(){
-    $(this.el).html(this.template(this.model.toJSON()));
+    this.$el.html(this.template(this.model.toJSON()));
     return this
   }
 });
@@ -257,28 +174,75 @@ window.MediaChildItemView = Backbone.View.extend({
 
   render: function(){
     //console.log(this.model.get("slug"));
-    $(this.el).html(this.template(this.model.toJSON()));
+    this.$el.html(this.template(this.model.toJSON()));
     return this
   }
 });
 
+
 /* ------------------------------------------------------------------- */
-// Welcome
+// Listing Panel
 /* ------------------------------------------------------------------- */
 
+window.ListingPanel = Backbone.View.extend({
+  el: $('#listing_panel'),
+  view: null,
+  model: null,
+  archetype: null,
+  dictionary: {
+    "Portfolio": PortfolioListingView,
+    "Subset.Category": CategoryListingView,
+    "Subset.Work": WorkListingView,
+  },
 
-window.WelcomeView = Backbone.View.extend({
- 
-    tagName: "div",
-    className: "welcome summary",
+  list: function(model){
+    // archetype/view dictionary?
 
-    template:_.template($('#welcome_summary').html()),
-
-    message: {message: 'Default message'},
-
-    render:function () {
-        $(this.el).html(this.template(this.message));
-        return this;
+    this.model = model;
+    var archetype = model.get("archetype");
+    var className = archetype.toLowerCase().split(".").join(" ") + " listing";
+    
+    if(this.view){
+      this.view.remove();
     }
- 
+
+    var factory = this.dictionary[archetype];
+    this.view = new factory({"model":this.model, "className": className});
+    this.refresh();
+  
+  },
+
+  empty: function() {
+    this.$el.html("");
+  },
+
+  refresh: function(){
+    this.stopListening();
+    this.empty();
+    
+    // Set up panel to listen to model and render on change
+    // Could be more granular, automatically setting up 
+    // event handlers for each child
+    this.listenTo(
+      this.model, 
+      "change", 
+      this.render
+    );
+
+    if(this.model.isFetched()){
+      this.render();
+    }
+    
+
+  },
+
+  render: function() {
+    this.$el.html(this.view.render().el);
+  },
+
+  renderError: function() {
+    this.$el.html(this.view.render("Unsupported Type").el);
+    
+  }
+
 });
