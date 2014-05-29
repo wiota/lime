@@ -4,6 +4,13 @@ ul {margin: 0; padding:0;list-style-type: none;}
 
 a {text-decoration: none; color: #000;}
 
+.delete {
+  float:right;
+  color: #f00;
+  cursor: pointer;
+  text-decoration: underline;
+  }
+
 #admin_nav {
   overflow: auto;
   margin: 0;
@@ -12,8 +19,8 @@ a {text-decoration: none; color: #000;}
 #admin_nav a {
   display:block;
   float:left;
-  margin: .5% 0 .5% .5%;
-  padding: .2% .5%;
+  margin: .5% 0 0 .5%;
+  padding: 5px .5%;
   background-color: #237ab1;
   color: #fff;
   }
@@ -45,7 +52,8 @@ a {text-decoration: none; color: #000;}
   }
 
 .portfolio.listing .summary {
-  background-color: #a6dcff;
+  background-color: #fff;
+  padding: 0%;
 }
 
 .category.listing .summary {

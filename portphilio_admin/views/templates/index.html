@@ -22,7 +22,7 @@
   </script>
 
   <script type="text/template" id="category_summary">
-    <div class='category_title'><%= title %></div>
+    <div class='category_title'><%= title %><a class='delete'>delete</a></div>
   </script>
 
   <script type="text/template" id="work_summary">  
@@ -49,8 +49,8 @@
 {% block content %}
   <div id='admin_nav'>
     <a href='/#'>portfolio</a>
-    <a href='/#category'>category flat list</a>
-    <a href='/#work'>work flat list</a>
+    <!--<a href='/#category'>category flat list</a>
+    <a href='/#work'>work flat list</a>-->
   </div>
 
   <div id='listing_panel'></div>

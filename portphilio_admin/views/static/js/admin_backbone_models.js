@@ -31,38 +31,53 @@ window.Portfolio = Backbone.Model.extend({
 
 });
 
+
+/* ------------------------------------------------------------------- */
+// Subset - Abstract class - do not instantiate!
+/* ------------------------------------------------------------------- */
+
+window.Subset = Backbone.Model.extend({ 
+  initialize: function(){
+    this.fetched = false;
+    this.deep = false;
+  },
+  isFetched: function(){
+    return this.fetched;
+  },
+  isDeep: function(){
+    return this.deep;
+  }
+});
+
 /* ------------------------------------------------------------------- */
 // Category
 /* ------------------------------------------------------------------- */
 
-window.Category = Backbone.Model.extend({
+window.Category = Subset.extend({
   urlRoot: "api/v1/category",
-
-  initialize: function(){
-    this.fetched = false;
-  },
-
-  isFetched: function(){
-    return this.fetched;
-  },
-
-  validate: function(attrs, options){
-    if(_.has(attrs, 'title')){
-      console.log('has title')
-      return
-    }
-    console.log('does not has title')
-    return "Error";
-  }
-
 });
 
 /* ------------------------------------------------------------------- */
 // Work
 /* ------------------------------------------------------------------- */
 
-window.Work = Backbone.Model.extend({
+window.Work = Subset.extend({
   urlRoot: "api/v1/work",
+});
+
+/* ------------------------------------------------------------------- */
+// Tag
+/* ------------------------------------------------------------------- */
+
+window.Tag = Backbone.Model.extend({
+  urlRoot: "api/v1/tag",
+});
+
+/* ------------------------------------------------------------------- */
+// Media - Abstract class - do not instantiate!
+/* ------------------------------------------------------------------- */
+
+window.Media = Backbone.Model.extend({  
   initialize: function(){
     this.fetched = false;
   },
@@ -70,12 +85,14 @@ window.Work = Backbone.Model.extend({
   isFetched: function(){
     return this.fetched;
   }
-
 });
 
-window.Tag = Backbone.Model.extend();
+/* ------------------------------------------------------------------- */
+// Photo
+/* ------------------------------------------------------------------- */
 
-window.Media = Backbone.Model.extend();
+
+window.Photo = Media.extend({})
 
 /* ------------------------------------------------------------------- */
 // Collections
@@ -84,7 +101,7 @@ window.Media = Backbone.Model.extend();
 
 window.portfolioStorage = {
   portfolio: null,
-  archetype: 'Portfolio',
+  _cls: 'Portfolio',
 
   initialize: function(){
     _.bindAll(this, "fetchSuccess", "fetchError");
@@ -96,7 +113,7 @@ window.portfolioStorage = {
   },
 
   fetch: function(){
-    var portfolio = new Portfolio({archetype: this.archetype});
+    var portfolio = new Portfolio({_cls: this._cls});
 
     portfolio.fetch({
       success: this.fetchSuccess,
@@ -107,29 +124,28 @@ window.portfolioStorage = {
   },
 
   fetchSuccess: function(model, response, options){
-    console.log("Fetched portfolio");
+    //console.log("Fetched portfolio");
     this.portfolio = model;
     model.fetched = true;
   },
 
   fetchError: function(model, response, options){
-    console.log("Portfolio fetch unsucessful " + response);
+    //console.log("Portfolio fetch unsucessful " + response);
   }
   
 }
 
+/* ------------------------------------------------------------------- */
+// SubsetCollection - Abstract class - do not instantiate!
+/* ------------------------------------------------------------------- */
 
-
-window.CategoryCollection = Backbone.Collection.extend({
-  model: Category,
-  url: "api/v1/category",
-  archetype: 'Subset.Category', // archetype that will be stored here
-
+window.SubsetCollection = Backbone.Collection.extend({
+  
   initialize: function(){
     _.bindAll(this, "fetchSuccess", "fetchError");
 
     this.on('add', function(model, collection){
-      console.log("Added Category " + model.get("title"));
+      console.log("Added " + this._cls + model.get("title"));
     }, this);
   },
 
@@ -138,66 +154,46 @@ window.CategoryCollection = Backbone.Collection.extend({
   },
 
   fetchOne: function(id){
-    var category = new Category({_id: id, archetype: this.archetype});
+    var subset = new this.model({_id: id, _cls: this._cls});
 
-    category.fetch({
+    subset.fetch({
       success: this.fetchSuccess,
       error: this.fetchError
     });
 
-    return category;
+    return subset;
   },
 
   fetchSuccess: function(model, response, options){
-    console.log("Fetched "+model.get("title"));
+    //console.log("Fetched "+model.get("title"));
     model.fetched = true;
     this.add(model);
   },
 
   fetchError: function(model, response, options){
-    console.log("Fetch unsucessful " + response);
+    //console.log("Fetch unsucessful " + response);
   }
 
 })
 
+/* ------------------------------------------------------------------- */
+// CategoryCollection
+/* ------------------------------------------------------------------- */
 
+window.CategoryCollection = SubsetCollection.extend({
+  model: Category,
+  url: "api/v1/category",
+  _cls: 'Subset.Category'
+})
 
-window.WorkCollection = Backbone.Collection.extend({
+window.WorkCollection = SubsetCollection.extend({
   model: Work,
   url: "api/v1/work",
-  archetype: 'Subset.Work', // archetype that will be stored here
+  _cls: 'Subset.Work'
+})
 
-  initialize: function(){
-    _.bindAll(this, "fetchSuccess", "fetchError");
-    this.on('add', function(model){
-      console.log("Added Model " + model.get("title"))
-    }, this);
-  },
-
-  lookup: function(id){
-    return this.get(id) || this.fetchOne(id);
-  },
-
-  fetchOne: function(id){
-    var work = new Work({_id: id, archetype: this.archetype});
-
-    work.fetch({
-      success: this.fetchSuccess,
-      error: this.fetchError
-    });
-
-    return work;
-  },
-
-  fetchSuccess: function(model, response, options){
-    console.log("Fetched "+model.get("title"));
-    model.fetched = true;
-    this.add(model);
-  },
-
-  fetchError: function(model, response, options){
-    console.log("Fetch unsucessful " + response);
-  }
-
-
+window.PhotoCollection = SubsetCollection.extend({
+  model: Photo,
+  url: "api/v1/photo",
+  _cls: 'Media.Photo'
 })
