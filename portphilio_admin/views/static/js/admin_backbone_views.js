@@ -102,6 +102,19 @@ window.SummaryView = Backbone.View.extend({ // Abstract class - do not instantia
   render: function(){
     this.$el.html(this.template(this.model.toJSON()));
     return this;
+  }, 
+  events:{
+    "click .delete":"delete"
+  },
+  delete: function(){
+    this.model.destroy({
+      success: function(){
+        console.log('Delete Success!');
+      },
+      error: function(model, response, options){
+        console.log(response);
+      }
+    });
   }
 
 });
