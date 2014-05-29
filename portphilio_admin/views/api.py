@@ -33,3 +33,10 @@ def work_individual():
 @login_required
 def category_id(id):
     return Category.objects.get(owner=current_user.id, id=id).to_bson()
+
+@mod.route('/<subset_type>/<id>', methods=['DELETE'])
+@login_required
+def delete_by_id(subset_type, id):
+    # TODO: delete!
+    app.logger.debug("Deleted ID: %s", str(id))
+    return '', 204
