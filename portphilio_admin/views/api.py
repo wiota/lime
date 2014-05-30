@@ -37,6 +37,5 @@ def category_id(id):
 @mod.route('/<subset_type>/<id>', methods=['DELETE'])
 @login_required
 def delete_by_id(subset_type, id):
-    # TODO: delete!
-    app.logger.debug("Deleted ID: %s", str(id))
+    Subset.objects.get(id=id).delete()
     return '', 204
