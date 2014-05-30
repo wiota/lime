@@ -74,10 +74,10 @@ window.Tag = Backbone.Model.extend({
 });
 
 /* ------------------------------------------------------------------- */
-// Media - Abstract class - do not instantiate!
+// Medium - Abstract class - do not instantiate!
 /* ------------------------------------------------------------------- */
 
-window.Media = Backbone.Model.extend({  
+window.Medium = Backbone.Model.extend({  
   initialize: function(){
     this.fetched = false;
   },
@@ -92,7 +92,7 @@ window.Media = Backbone.Model.extend({
 /* ------------------------------------------------------------------- */
 
 
-window.Photo = Media.extend({})
+window.Photo = Medium.extend({})
 
 /* ------------------------------------------------------------------- */
 // Collections
@@ -168,6 +168,12 @@ window.SubsetCollection = Backbone.Collection.extend({
     //console.log("Fetched "+model.get("title"));
     model.fetched = true;
     this.add(model);
+    _.each(model.get('subset'), function(subsetitem){
+      
+      console.log(subsetitem._cls);
+    })
+    
+
   },
 
   fetchError: function(model, response, options){
@@ -195,5 +201,5 @@ window.WorkCollection = SubsetCollection.extend({
 window.PhotoCollection = SubsetCollection.extend({
   model: Photo,
   url: "api/v1/photo",
-  _cls: 'Media.Photo'
+  _cls: 'Subset.Medium.Photo'
 })

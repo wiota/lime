@@ -24,7 +24,7 @@ window.WorkChildItemView = ChildItemView.extend({
   template:_.template($('#work_in_set').html()),
 });
 
-window.MediaChildItemView = ChildItemView.extend({
+window.MediumChildItemView = ChildItemView.extend({
   className: 'photo_in_set child',
   template:_.template($('#photo_in_set').html())
 });
@@ -46,12 +46,12 @@ window.ChildListView = Backbone.View.extend({
   typeViewDictionary: {
     'Subset.Category': CategoryChildItemView,
     'Subset.Work': WorkChildItemView,
-    'Media.Photo': MediaChildItemView 
+    'Subset.Medium.Photo': MediumChildItemView 
   },
   typeWorkDictionary: {
     'Subset.Category': Category,
     'Subset.Work': Work,
-    'Media.Photo': Photo
+    'Subset.Medium.Photo': Photo
   },
 
   render: function(){
@@ -72,7 +72,7 @@ window.ChildListView = Backbone.View.extend({
       // One dictionary!!!!!!!!!!!!!!!!!!!!!!!!!!
       var model = new modelFactory(child);
       
-      console.log("Child Item "+index+" type: " + _cls);
+      //console.log("Child Item "+index+" type: " + _cls);
       
       var childItemView = new viewFactory({'model':model});
       this.$el.append(childItemView.render().el);
