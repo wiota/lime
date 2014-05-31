@@ -44,3 +44,8 @@ def category_id(id):
 def delete_by_id(subset_type, id):
     Subset.objects.get(id=id).delete()
     return '', 204
+
+@mod.route('/work/form/')
+@login_required
+def work_form():
+    return Work().to_form()
