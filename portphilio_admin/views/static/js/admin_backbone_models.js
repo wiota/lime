@@ -14,7 +14,7 @@ Backbone.Model.prototype.idAttribute = "_id";
 // Body or Portfolio
 /* ------------------------------------------------------------------- */
 
-window.Portfolio = Backbone.Model.extend({
+App.Portfolio = Backbone.Model.extend({
   urlRoot: "api/v1/body",
 
   url: function(){
@@ -36,7 +36,7 @@ window.Portfolio = Backbone.Model.extend({
 // Subset - Abstract class - do not instantiate!
 /* ------------------------------------------------------------------- */
 
-window.Subset = Backbone.Model.extend({ 
+App.Subset = Backbone.Model.extend({ 
   initialize: function(){
     this.fetched = false;
     this.deep = false;
@@ -53,7 +53,7 @@ window.Subset = Backbone.Model.extend({
 // Category
 /* ------------------------------------------------------------------- */
 
-window.Category = Subset.extend({
+App.Category = App.Subset.extend({
   urlRoot: "api/v1/category",
 });
 
@@ -61,15 +61,43 @@ window.Category = Subset.extend({
 // Work
 /* ------------------------------------------------------------------- */
 
-window.Work = Subset.extend({
+App.Work = App.Subset.extend({
   urlRoot: "api/v1/work",
+  formFields: {
+    "title":{
+      label: 'Title',
+      required: 'true', 
+      type: 'text'
+    },
+    "description": {
+      label: 'Description',
+      required: 'true', 
+      type: 'textarea'
+    },
+    "medium": {
+      label: 'Medium',
+      required: 'true', 
+      type: 'text'
+    }
+  },
+
+  events: {
+    'change':'change'
+  },
+
+  change: function(){
+    console.log("Model " + this.get('title') + "changed");
+  }
+
+
+
 });
 
 /* ------------------------------------------------------------------- */
 // Tag
 /* ------------------------------------------------------------------- */
 
-window.Tag = Backbone.Model.extend({
+App.Tag = Backbone.Model.extend({
   urlRoot: "api/v1/tag",
 });
 
@@ -77,7 +105,7 @@ window.Tag = Backbone.Model.extend({
 // Medium - Abstract class - do not instantiate!
 /* ------------------------------------------------------------------- */
 
-window.Medium = Backbone.Model.extend({  
+App.Medium = Backbone.Model.extend({  
   initialize: function(){
     this.fetched = false;
   },
@@ -92,14 +120,14 @@ window.Medium = Backbone.Model.extend({
 /* ------------------------------------------------------------------- */
 
 
-window.Photo = Medium.extend({})
+App.Photo = App.Medium.extend({})
 
 /* ------------------------------------------------------------------- */
 // Collections
 // for admin
 /* ------------------------------------------------------------------- */
 
-window.portfolioStorage = {
+App.portfolioStorage = {
   portfolio: null,
   _cls: 'Portfolio',
 
@@ -113,7 +141,7 @@ window.portfolioStorage = {
   },
 
   fetch: function(){
-    var portfolio = new Portfolio({_cls: this._cls});
+    var portfolio = new App.Portfolio({_cls: this._cls});
 
     portfolio.fetch({
       success: this.fetchSuccess,
@@ -139,13 +167,13 @@ window.portfolioStorage = {
 // SubsetCollection - Abstract class - do not instantiate!
 /* ------------------------------------------------------------------- */
 
-window.SubsetCollection = Backbone.Collection.extend({
+App.SubsetCollection = Backbone.Collection.extend({
   
   initialize: function(){
     _.bindAll(this, "fetchSuccess", "fetchError");
 
     this.on('add', function(model, collection){
-      console.log("Added " + this._cls + model.get("title"));
+      //console.log("Added " + this._cls + model.get("title"));
     }, this);
   },
 
@@ -170,7 +198,7 @@ window.SubsetCollection = Backbone.Collection.extend({
     this.add(model);
     _.each(model.get('subset'), function(subsetitem){
       
-      console.log(subsetitem._cls);
+      //console.log(subsetitem._cls);
     })
     
 
@@ -186,20 +214,20 @@ window.SubsetCollection = Backbone.Collection.extend({
 // CategoryCollection
 /* ------------------------------------------------------------------- */
 
-window.CategoryCollection = SubsetCollection.extend({
-  model: Category,
+App.CategoryCollection = App.SubsetCollection.extend({
+  model: App.Category,
   url: "api/v1/category",
   _cls: 'Subset.Category'
 })
 
-window.WorkCollection = SubsetCollection.extend({
-  model: Work,
+App.WorkCollection = App.SubsetCollection.extend({
+  model: App.Work,
   url: "api/v1/work",
   _cls: 'Subset.Work'
 })
 
-window.PhotoCollection = SubsetCollection.extend({
-  model: Photo,
+App.PhotoCollection = App.SubsetCollection.extend({
+  model: App.Photo,
   url: "api/v1/photo",
   _cls: 'Subset.Medium.Photo'
 })

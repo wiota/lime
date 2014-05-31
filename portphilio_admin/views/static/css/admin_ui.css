@@ -4,12 +4,6 @@ ul {margin: 0; padding:0;list-style-type: none;}
 
 a {text-decoration: none; color: #000;}
 
-.delete {
-  float:right;
-  color: #f00;
-  cursor: pointer;
-  text-decoration: underline;
-  }
 
 #admin_nav {
   overflow: auto;
@@ -25,13 +19,28 @@ a {text-decoration: none; color: #000;}
   color: #fff;
   }
 
-/* Subset Panel */
+/* Listing Panel */
 
 #listing_panel {
-  border: 4px solid #237ab1; overflow: auto;
-  margin: .5% .5% .5% .5%;
+  overflow: auto;
+  margin: 2% 0;
+  width: 50%;
   min-height: 400px;
   }
+
+/* Action Panel */
+
+#action_panel {
+  background-color: #88cbf2;
+  overflow: auto;
+  margin: 2% 0;
+  width: 50%;
+  min-height: 400px;
+  float:right;
+  }
+
+/* -------------------------------------------------------------------  */
+/* Listing Panel */
 
 /* Listing (one for each subset archtype) */
 
@@ -45,9 +54,9 @@ a {text-decoration: none; color: #000;}
 .summary {
   position: relative;
   background-color: #eee; 
-  width: 45%; 
-  padding: 1%;
-  margin: 1.5%; 
+  width: 95%; 
+  padding: 4% 1%;
+  margin: 0 1.5% 1.5%; 
   
   }
 
@@ -64,8 +73,8 @@ a {text-decoration: none; color: #000;}
 
 /* Child List (one for each subset archtype) */
 
-.childlist {
-  width: 47%; 
+ul.childlist {
+  width: 97%; 
   margin: 1.5%; 
   }
 
@@ -102,12 +111,50 @@ a {text-decoration: none; color: #000;}
 
 .video_in_set {}
 
+/* In Set Menus */
+
+.in_set_menu {
+  position:absolute;
+  width: 40%;
+  padding: 1%;
+  top:0;
+  right: 0;
+}
+
+.in_set_menu a {
+  display:block;
+  float: right;
+  padding: .2% 4%;
+  margin: 0 0 0 1%;
+  cursor: pointer;
+  text-decoration: underline;
+  background-color: rgba(255,255,255,0.8);
+  }
+
+.delete {
+  color: #f00;
+  }
+
+.delete:hover {
+  color: #900;
+  }
+
+.update {
+  color: #f80;
+  }
+
+.update:hover {
+  color: #930;
+  }
+
+
+
 /* Overlays */
 
 .child i.info_tag,
 .summary i.info_tag {display:none;}
 .child:hover i.info_tag,
-.summary:hover i.info_tag {display:block;}
+.summary:hover i.info_tag {display:none;}
 
 i.info_tag {
   position: absolute;
@@ -117,4 +164,23 @@ i.info_tag {
   color: #fff;
   padding: .5%;
   font-size: 12px;
+  }
+
+/* -------------------------------------------------------------------  */
+/* Action Panel */
+
+#action_panel label {
+  font-size: 10px;
+  display:block;
+  padding: 1%;
+  margin: 1.5% 1.5% .5%;
+  }
+
+#action_panel .input {
+  width: 95%;
+  padding: 1%;
+  margin: .5% 1.5%;
+  font-size: 14px;
+  border-style:none;
+  background-color: #fff;
   }

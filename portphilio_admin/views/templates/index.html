@@ -22,7 +22,10 @@
   </script>
 
   <script type="text/template" id="category_summary">
-    <div class='category_title'><%= title %><a class='delete'>delete</a></div>
+    <div class='category_title'><%= title %>
+    <div class='in_set_menu'>
+      <a class='delete'>delete</a></div>
+    </div>
   </script>
 
   <script type="text/template" id="work_summary">  
@@ -37,10 +40,29 @@
 
   <script type="text/template" id="work_in_set">
     <a href='#work/<%= _id %>'><i class='info_tag'><%= _id %></i><%= title %></a>
+    <div class='in_set_menu'>
+      <a class='update'>update</a>
+      <a class='delete'>delete</a>
+    </div>
   </script>
 
   <script type="text/template" id="photo_in_set">
     <a href='<%= href %>'><i class='info_tag'><%= _cls %> - <%= _id %></i><img src="<%= href %>" alt="" /></a>
+  </script>
+
+
+  <!-- Form tempates -->
+
+  <script type="text/template" id="text">
+    <label for='<%= key %>'><%= field.label %></label><input class='input' type='text' id='<%= key %>' value='<%= value %>' />
+  </script>
+
+  <script type="text/template" id="textarea">
+    <label for='<%= key %>'><%= field.label %></label><textarea class='input' id='<%= key %>'><%= value %></textarea>
+  </script>
+
+  <script type="text/template" id="update_form">
+    <label for='title'>Title</label><input type='text' id='title' value='<%= title %>' />
   </script>
 
 
@@ -53,10 +75,15 @@
     <a href='/#work'>work flat list</a>-->
   </div>
 
+
+  <div id='action_panel'></div>
   <div id='listing_panel'></div>
+
 {% endblock %}
 
 {% block js_footer %}
+
+  <script src='{{ url_for('admin.static', filename='js/admin_app.js') }}'></script>
   <script src='{{ url_for('admin.static', filename='js/admin_backbone_models.js') }}'></script>
   <script src='{{ url_for('admin.static', filename='js/admin_backbone_views.js') }}'></script>
   <script src='{{ url_for('admin.static', filename='js/work.js') }}'></script>
