@@ -5,6 +5,7 @@
 
 
 Backbone.Model.prototype.parse = function(response){
+  if(response.result);
   return response.result;
 }
 
@@ -37,16 +38,47 @@ App.Portfolio = Backbone.Model.extend({
 /* ------------------------------------------------------------------- */
 
 App.Subset = Backbone.Model.extend({ 
+  formSerialization: null,
+
   initialize: function(){
     this.fetched = false;
     this.deep = false;
   },
+
   isFetched: function(){
     return this.fetched;
   },
+
   isDeep: function(){
     return this.deep;
+  },
+
+  hasForm: function(){
+    //console.log(this.formSerialization);
+    if(!this.formSerialization){
+      return false;
+    } else {
+      return true;
+    }
+  }, 
+
+  fetchForm: function(){
+    $.ajax({
+    type: 'GET',
+    url: '/api/v1/work/form/',
+    // type of data we are expecting in return:
+    dataType: 'json',
+    timeout: 1000,
+    context: this,
+    success: function(data){
+      this.formSerialization = data;
+      this.trigger("hasForm");
+    }
+})
+
+
   }
+
 });
 
 /* ------------------------------------------------------------------- */
@@ -63,23 +95,6 @@ App.Category = App.Subset.extend({
 
 App.Work = App.Subset.extend({
   urlRoot: "api/v1/work",
-  formFields: {
-    "title":{
-      label: 'Title',
-      required: 'true', 
-      type: 'text'
-    },
-    "description": {
-      label: 'Description',
-      required: 'true', 
-      type: 'textarea'
-    },
-    "medium": {
-      label: 'Medium',
-      required: 'true', 
-      type: 'text'
-    }
-  },
 
   events: {
     'change':'change'

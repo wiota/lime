@@ -279,54 +279,20 @@ App.ListingPanel = Backbone.View.extend({
 // Action Forms
 /* ------------------------------------------------------------------- */
 
-App.fieldListView = Backbone.View.extend({
-
-
-  render: function(){
-    _.each(this.model.formFields, function(field){
-      this.$el.html(field.Title);
-    })
-  }
-
-})
-
-App.updateWorkForm = Backbone.View.extend({
+App.Form = Backbone.View.extend({
   tagName: 'form',
   templates: {
     "text": _.template($('#text').html()),
-    "textarea": _.template($('#textarea').html()),
+    "textarea": _.template($('#textarea').html())
   },
 
   events : {
-        "change input" :"changed",
-        "change textarea" :"changed"
+    "change input" :"changed",
+    "change textarea" :"changed"
   },
 
   initialize: function () {
-      _.bindAll(this, "changed");
-  },
-
-  render: function(){
-    
-    _.each(this.model.formFields, function(field, key){
-
-      // Set value from model
-      // Is this a good solution to populating fields
-      // Can it be used to prevent template errors?
-      value = this.model.get(key) || '';
-
-      // Select template based on field.type
-      var templateFunction = this.templates[field.type];
-
-      // Pass key, field, and value to form input template function and append result
-      var formInput = $(templateFunction({'key':key, "field":field, "value": value}));
-      formInput.appendTo(this.$el);
-
-    
-    }, this);
-
-    return this;
-
+    _.bindAll(this, "changed");
   },
 
   changed: function(evt){
@@ -338,7 +304,34 @@ App.updateWorkForm = Backbone.View.extend({
     this.model.save();
   },
 
+  render: function(){  
+    console.log(this.model.formSerialization.formFields);
+    _.each(this.model.formSerialization.formFields, function(field, key){
 
+      // Set value from model
+      // Is this a good solution to populating fields
+      // Can it be used to prevent template errors?
+      value = this.model.get(key) || '';
+
+      // Select template based on field.type
+      // Causes a problem if the field type does not have a template
+      var templateFunction = this.templates[field.type];
+
+      // Pass key, field, and value to form input template function and append result
+      var formInput = $(templateFunction({'key':key, "field":field, "value": value}));
+      formInput.appendTo(this.$el);
+
+    
+    }, this);
+
+    return this;
+  }
+
+})
+
+App.updateWorkForm = App.Form.extend({
+  
+  
 })
 
 /* ------------------------------------------------------------------- */
@@ -363,10 +356,23 @@ App.ActionPanel = Backbone.View.extend({
     var _cls = model.get('_cls');
     var className = _cls.toLowerCase().split('.').join(' ') + ' form';
 
+    
+
     if(formtype == 'update' && model.get("_cls") == 'Subset.Work'){
       this.form = new App.updateWorkForm({model: this.model, 'className': className});
     }
-    this.render();
+
+    if(this.model.hasForm()){
+      this.render();  
+    } else {
+      this.model.fetchForm();
+      this.listenTo(
+        this.model,
+        'hasForm',
+        this.render
+      )
+    }
+    
     //this.render(model.get('title'))
   },
 
