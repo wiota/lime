@@ -1,6 +1,6 @@
 from flask import Blueprint, request
 from flask import current_app as app
-from portphilio_lib.tools import bsonify, to_dict, update_document
+from portphilio_lib.tools import bsonify, to_dict, update_document, make_response
 from portphilio_lib.models import *
 from bson.json_util import dumps
 from flask.ext.login import login_required
@@ -50,7 +50,7 @@ def put_work(id):
             owner=current_user.id,
             id=id),
         data).save()
-    return '', 204
+    return make_response(), 204
 
 
 @mod.route('/category/')
@@ -69,7 +69,7 @@ def category_id(id):
 @login_required
 def delete_by_id(subset_type, id):
     Subset.objects.get(id=id).delete()
-    return '', 204
+    return make_response(), 204
 
 
 @mod.route('/work/form/')
