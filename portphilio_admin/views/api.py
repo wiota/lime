@@ -49,3 +49,13 @@ def delete_by_id(subset_type, id):
 @login_required
 def work_form():
     return Work().to_form()
+
+@mod.route('/category/form/')
+@login_required
+def category_form():
+    return Category().to_form()
+
+@mod.route('/medium/form/')
+@login_required
+def medium_form():
+    return Medium().to_form()
