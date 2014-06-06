@@ -1,6 +1,6 @@
 from flask import Blueprint, request
 from flask import current_app as app
-from portphilio_lib.tools import bsonify, to_dict, update_document
+from portphilio_lib.tools import bsonify, to_dict, update_document, make_response
 from portphilio_lib.models import *
 from bson.json_util import dumps
 from flask.ext.login import login_required
@@ -22,10 +22,19 @@ def body():
     return Body.objects.get(owner=current_user.id).to_bson()
 
 
-@mod.route('/work/')
+@mod.route('/work/', methods=['GET'])
 @login_required
 def work():
     return Work.objects(owner=current_user.id).to_bson()
+
+
+@mod.route('/work/', methods=['POST'])
+@login_required
+def post_work():
+    data = request.form.to_dict()
+    data['owner'] = current_user.id
+    work = Work(**data).save()
+    return work.to_bson(), 200
 
 
 @mod.route('/work/<id>', methods=['GET'])
@@ -35,6 +44,7 @@ def work_name(id):
 
 
 @mod.route('/work/<id>', methods=['PUT'])
+@login_required
 def put_work(id):
     data = request.json
     id = data['_id']
@@ -50,13 +60,22 @@ def put_work(id):
             owner=current_user.id,
             id=id),
         data).save()
-    return '', 204
+    return make_response(), 204
 
 
-@mod.route('/category/')
+@mod.route('/category/', methods=['GET'])
 @login_required
 def work_individual():
     return Category.objects(owner=current_user.id).to_bson()
+
+
+@mod.route('/category/', methods=['POST'])
+@login_required
+def post_category():
+    data = request.form.to_dict()
+    data['owner'] = current_user.id
+    category = Category(**data).save()
+    return Category.to_bson(), 200
 
 
 @mod.route('/category/<id>')
@@ -69,7 +88,7 @@ def category_id(id):
 @login_required
 def delete_by_id(subset_type, id):
     Subset.objects.get(id=id).delete()
-    return '', 204
+    return make_response(), 204
 
 
 @mod.route('/work/form/')
