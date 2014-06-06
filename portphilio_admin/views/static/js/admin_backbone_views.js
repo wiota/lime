@@ -163,9 +163,7 @@ App.WorkSummaryView = App.SummaryView.extend({
 // Listings
 /* ------------------------------------------------------------------- */
 
-App.ListingView = Backbone.View.extend({ 
-  // Default class - do instantiate! 
-  // Model is set to subset being listed
+App.ListingView = Backbone.View.extend({ // Akin to FormView
   tagName: 'div',
   _cls: null,
 
@@ -177,6 +175,16 @@ App.ListingView = Backbone.View.extend({
       new viewFactory({model:this.model}),
       new App.SubsetListView({model:this.model})
     ]
+
+    this.listenTo(
+      this.model, 
+      'change', 
+      this.render
+    );
+
+    if(this.model.isFetched()){
+      this.render();
+    }
   },
 
   render: function(){
@@ -212,36 +220,11 @@ App.ListingPanel = Backbone.View.extend({
     }
 
     this.view = new App.ListingView({'model':this.model, 'className': className});
-    this.refresh();
+    this.$el.html(this.view.el)
   
   },
 
-  // This function is not appropriately named
-  // It is designed to set up automatic rendering and
-  // contains logic as to whether to render initally
-  refresh: function(){
-    //this.stopListening();
-    //this.empty();
-    this.$el.html(this.view.el)
-
-
-    // Listening may require more granularity
-    this.listenTo(
-      this.model, 
-      'change', 
-      this.render
-    );
-
-    if(this.model.isFetched()){
-      this.render();
-    }
-
-    console.log('Refreshing Listing Panel');
-
-  },
-
   render: function() {
-    console.log('Rendering Listing Panel');
     this.view.render();
   }
 
@@ -253,7 +236,7 @@ App.ListingPanel = Backbone.View.extend({
 // Action Forms
 /* ------------------------------------------------------------------- */
 
-App.Form = Backbone.View.extend({
+App.FormView = Backbone.View.extend({ // Akin to ListingView
   tagName: 'form',
   templates: {
     "text": _.template($('#text').html()),
@@ -267,6 +250,18 @@ App.Form = Backbone.View.extend({
 
   initialize: function () {
     _.bindAll(this, "changed");
+
+    if(this.model.hasForm()){
+      this.render();  
+    } else {
+      this.model.fetchForm();
+      this.listenTo(
+        this.model,
+        'hasForm',
+        this.render
+      )
+    }
+
   },
 
   changed: function(evt){
@@ -302,7 +297,7 @@ App.Form = Backbone.View.extend({
 
 })
 
-App.updateWorkForm = App.Form.extend({
+App.updateWorkForm = App.FormView.extend({
   
   
 })
@@ -315,10 +310,6 @@ App.ActionPanel = Backbone.View.extend({
   el: $('#action_panel'),
   form: null,
   model: null,
-  
-  formDictionary: {
-    
-  },
 
   initialize: function(){
     this.$el.html('');
@@ -329,41 +320,12 @@ App.ActionPanel = Backbone.View.extend({
     var _cls = model.get('_cls');
     var className = _cls.toLowerCase().split('.').join(' ') + ' form';
 
-    this.form = new App.Form({model: this.model, 'className': className});
-
-    if(this.model.hasForm()){
-      this.render();  
-    } else {
-      this.model.fetchForm();
-      this.listenTo(
-        this.model,
-        'hasForm',
-        this.render
-      )
-    }
-    
-    //this.render(model.get('title'))
-  },
-
-  refresh: function(){
-    this.stopListening();
-    this.empty();
-
-    this.listenTo(
-      this.model, 
-      'change', 
-      this.render
-    );
-
-    this.render();
-  },
-
-  empty: function() {
-    this.$el.html('');
+    this.form = new App.FormView({model: this.model, 'className': className});
+    this.$el.html(this.form.el);
   },
 
   render: function() {
-    this.$el.html(this.form.render().el);
+    this.form.render();
   }
 
 });
