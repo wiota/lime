@@ -86,7 +86,23 @@ App.Subset = Backbone.Model.extend({
         this.trigger("hasForm");
       }
     })
+  },
+
+  saveSubset: function(){
+    var list = this.get('subset');
+    var propertyName = "_id";
+    var data = {}
+    data.subset = _.pluck(list, propertyName);
+
+    var options = {
+      'url': this.url() + '/subset/',
+      'data': JSON.stringify(data)
+    }
+    
+    Backbone.sync('update', this, options)
   }
+
+
 
 });
 

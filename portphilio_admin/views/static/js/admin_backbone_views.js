@@ -138,12 +138,18 @@ App.SummaryView = Backbone.View.extend({ // Abstract class - do not instantiate!
   },
 
   events:{
-    "click .update":"updateForm"
+    "click .update":"updateForm",
+    "click .save_order":"saveSubset"
   },
 
   updateForm: function(){
     App.actionPanel.loadForm('update', this.model);
   },
+
+  saveSubset: function(){
+    this.model.saveSubset();
+    //this.model.save({"subset": order});
+  }
 
 });
 
