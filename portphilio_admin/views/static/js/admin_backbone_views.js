@@ -81,27 +81,17 @@ App.emptyListItem = Backbone.View.extend({
 
 // what to render if listing has no children (possibly in children view)
 
-App.ChildListView = Backbone.View.extend({
+App.SubsetListView = Backbone.View.extend({
   tagName: 'ul',
   className: 'childlist',
-  typeViewDictionary: {
-    'Subset.Category': App.CategoryChildItemView,
-    'Subset.Work': App.WorkChildItemView,
-    'Subset.Medium.Photo': App.MediumChildItemView 
-  },
-  typeWorkDictionary: {
-    'Subset.Category': App.Category,
-    'Subset.Work': App.Work,
-    'Subset.Medium.Photo': App.Photo
-  },
 
   render: function(){
     children = this.model.get('subset');
     //console.log(children.length);
     _.each(children, function(child, index){
       var _cls = child['_cls'];
-      var viewFactory = this.typeViewDictionary[_cls];
-      var modelFactory = this.typeWorkDictionary[_cls];
+      var viewFactory = App.typeDictionary[_cls]['listItemView'];;
+      var modelFactory = App.typeDictionary[_cls]['model'];
       
       // children should be stored and retrieved in collection
       // then they should be looked up
@@ -125,11 +115,11 @@ App.ChildListView = Backbone.View.extend({
   }
 });
 
-App.PortfolioChildListView = App.ChildListView.extend({});
+App.PortfolioSubsetListView = App.SubsetListView.extend({});
 
-App.CategoryChildListView = App.ChildListView.extend({});
+App.CategorySubsetListView = App.SubsetListView.extend({});
 
-App.WorkChildListView = App.ChildListView.extend({});
+App.WorkSubsetListView = App.SubsetListView.extend({});
 
 
 /* ------------------------------------------------------------------- */
@@ -176,13 +166,20 @@ App.WorkSummaryView = App.SummaryView.extend({
 // Listings
 /* ------------------------------------------------------------------- */
 
-App.ListingView = Backbone.View.extend({ // Abstract class - do not instantiate! 
-  
+App.ListingView = Backbone.View.extend({ 
+  // Default class - do instantiate! 
+  // Model is set to subset being listed
   tagName: 'div',
   _cls: null,
 
   initialize: function(){
-    this.subViews = []; 
+    var _cls = this.model.get('_cls');
+    var viewFactory = App.typeDictionary[_cls]['summaryView'];
+
+    this.subViews = [
+      new viewFactory({model:this.model}),
+      new App.SubsetListView({model:this.model})
+    ]
   },
 
   render: function(){
@@ -193,29 +190,11 @@ App.ListingView = Backbone.View.extend({ // Abstract class - do not instantiate!
   }
 })
 
-App.PortfolioListingView = App.ListingView.extend({
-  initialize: function(){
-    App.ListingView.prototype.initialize.apply(this, arguments);
-    this.subViews.push(new App.PortfolioSummaryView({model:this.model}));
-    this.subViews.push(new App.ChildListView({model:this.model}));
-  }
-})
+App.PortfolioListingView = App.ListingView.extend({})
 
-App.CategoryListingView = App.ListingView.extend({
-  initialize: function(){
-    App.ListingView.prototype.initialize.apply(this, arguments);
-    this.subViews.push(new App.CategorySummaryView({model:this.model}));
-    this.subViews.push(new App.ChildListView({model:this.model}));
-  }
-})
+App.CategoryListingView = App.ListingView.extend({})
 
-App.WorkListingView = App.ListingView.extend({
-  initialize: function(){
-    App.ListingView.prototype.initialize.apply(this, arguments);
-    this.subViews.push(new App.WorkSummaryView({model:this.model}));
-    this.subViews.push(new App.ChildListView({model:this.model}));
-  }
-})
+App.WorkListingView = App.ListingView.extend({})
 
 /* ------------------------------------------------------------------- */
 // Listing Panel
@@ -225,11 +204,6 @@ App.ListingPanel = Backbone.View.extend({
   el: $('#listing_panel'),
   view: null,
   model: null,
-  typeViewDictionary: {
-    'Portfolio': App.PortfolioListingView,
-    'Subset.Category': App.CategoryListingView,
-    'Subset.Work': App.WorkListingView
-  },
 
   list: function(model){
     this.model = model;
@@ -240,12 +214,14 @@ App.ListingPanel = Backbone.View.extend({
       this.view.remove();
     }
 
-    var viewFactory = App.typeDictionary[_cls]['listingView'];
-    this.view = new viewFactory({'model':this.model, 'className': className});
+    this.view = new App.ListingView({'model':this.model, 'className': className});
     this.refresh();
   
   },
 
+  // This function is not appropriately named
+  // It is designed to set up automatic rendering and
+  // contains logic as to whether to render initally
   refresh: function(){
     this.stopListening();
     this.empty();
