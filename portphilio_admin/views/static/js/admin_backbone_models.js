@@ -37,7 +37,7 @@ App.Portfolio = Backbone.Model.extend({
 // Subset - Abstract class - do not instantiate!
 /* ------------------------------------------------------------------- */
 
-App.Subset = Backbone.Model.extend({ 
+App.Subset = Backbone.Model.extend({
   formSerialization: null,
   formUrl: null,
 
@@ -46,7 +46,7 @@ App.Subset = Backbone.Model.extend({
     this.fetched = false;
     this.deep = false;
   },
-  
+
   events: {
     'change':'change'
   },
@@ -70,7 +70,7 @@ App.Subset = Backbone.Model.extend({
     } else {
       return true;
     }
-  }, 
+  },
 
   fetchForm: function(){
     console.log("Fetching Form " + this.formUrl);
@@ -90,18 +90,15 @@ App.Subset = Backbone.Model.extend({
 
   saveSubset: function(){
     var list = this.get('subset');
-    var propertyName = "_id";
-    var data = {}
-    data.subset = _.pluck(list, propertyName);
 
     var options = {
       'url': this.url() + '/subset/',
-      'data': JSON.stringify(data)
+      'contentType' : "application/json",
+      'data': {'subset' : JSON.stringify(_.pluck(list, '_id'))}
     }
-    
+
     Backbone.sync('update', this, options)
   }
-
 
 
 });
@@ -134,7 +131,7 @@ App.Tag = Backbone.Model.extend({
 // Medium - Abstract class - do not instantiate!
 /* ------------------------------------------------------------------- */
 
-App.Medium = Backbone.Model.extend({  
+App.Medium = Backbone.Model.extend({
   initialize: function(){
     this.fetched = false;
   },
@@ -189,7 +186,7 @@ App.portfolioStorage = {
   fetchError: function(model, response, options){
     //console.log("Portfolio fetch unsucessful " + response);
   }
-  
+
 }
 
 /* ------------------------------------------------------------------- */
@@ -197,7 +194,7 @@ App.portfolioStorage = {
 /* ------------------------------------------------------------------- */
 
 App.SubsetCollection = Backbone.Collection.extend({
-  
+
   initialize: function(){
     _.bindAll(this, "fetchSuccess", "fetchError");
 
@@ -226,10 +223,10 @@ App.SubsetCollection = Backbone.Collection.extend({
     model.fetched = true;
     this.add(model);
     _.each(model.get('subset'), function(subsetitem){
-      
+
       //console.log(subsetitem._cls);
     })
-    
+
 
   },
 
