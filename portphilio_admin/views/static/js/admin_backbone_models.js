@@ -39,6 +39,7 @@ App.Portfolio = Backbone.Model.extend({
 
 App.Subset = Backbone.Model.extend({ 
   formSerialization: null,
+  formUrl: null,
 
   initialize: function(){
     this.fetched = false;
@@ -65,7 +66,7 @@ App.Subset = Backbone.Model.extend({
   fetchForm: function(){
     $.ajax({
     type: 'GET',
-    url: '/api/v1/work/form/',
+    url: this.formUrl,
     // type of data we are expecting in return:
     dataType: 'json',
     timeout: 1000,
@@ -95,6 +96,7 @@ App.Category = App.Subset.extend({
 
 App.Work = App.Subset.extend({
   urlRoot: "api/v1/work",
+  formUrl: "/api/v1/work/form/",
 
   events: {
     'change':'change'

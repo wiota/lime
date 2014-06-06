@@ -240,7 +240,7 @@ App.ListingPanel = Backbone.View.extend({
       this.view.remove();
     }
 
-    var viewFactory = this.typeViewDictionary[_cls];
+    var viewFactory = App.typeDictionary[_cls]['listingView'];
     this.view = new viewFactory({'model':this.model, 'className': className});
     this.refresh();
   
@@ -356,7 +356,6 @@ App.ActionPanel = Backbone.View.extend({
     var _cls = model.get('_cls');
     var className = _cls.toLowerCase().split('.').join(' ') + ' form';
 
-    
 
     if(formtype == 'update' && model.get("_cls") == 'Subset.Work'){
       this.form = new App.updateWorkForm({model: this.model, 'className': className});
