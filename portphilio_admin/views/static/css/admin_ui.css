@@ -1,6 +1,6 @@
 body {margin:0; padding: 0; font-family: 'Helvetica', 'Arial', 'san-serif';}
 
-ul {margin: 0; padding:0;list-style-type: none;}
+ul, ol {margin: 0; padding:0;list-style-type: none;}
 
 a {text-decoration: none; color: #000;}
 
@@ -73,18 +73,18 @@ a {text-decoration: none; color: #000;}
 
 /* Child List (one for each subset archtype) */
 
-ul.childlist {
+ol.subset_list {
   width: 97%; 
   margin: 1.5%; 
   }
 
-.category.listing .childlist
-.tag.listing .childlist {}
-.work.listing .childlist {}
+.category.listing .subset_list
+.tag.listing .subset_list {}
+.work.listing .subset_list {}
 
 /* Child in set (one for each archtype that can be in a set) */
 
-.childlist li {
+.subset_list li {
   position: relative;
   }
 

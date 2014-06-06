@@ -41,6 +41,7 @@ App.ChildItemView = Backbone.View.extend({ // Abstract class - do not instantiat
 
   render: function(){
     this.$el.html(this.template(this.model.toJSON()));
+    this.delegateEvents();
     return this
   },
 
@@ -82,12 +83,12 @@ App.emptyListItem = Backbone.View.extend({
 // what to render if listing has no children (possibly in children view)
 
 App.SubsetListView = Backbone.View.extend({
-  tagName: 'ul',
-  className: 'childlist',
+  tagName: 'ol',
+  className: 'subset_list',
 
   render: function(){
     children = this.model.get('subset');
-    //console.log(children.length);
+    this.$el.empty();
     _.each(children, function(child, index){
       var _cls = child['_cls'];
       var viewFactory = App.typeDictionary[_cls]['listItemView'];;
@@ -132,21 +133,17 @@ App.SummaryView = Backbone.View.extend({ // Abstract class - do not instantiate!
 
   render: function(){
     this.$el.html(this.template(this.model.toJSON()));
+    this.delegateEvents();
     return this;
-  }, 
-  events:{
-    "click .delete":"delete"
   },
-  delete: function(){
-    this.model.destroy({
-      success: function(){
-        console.log('Delete Success!');
-      },
-      error: function(model, response, options){
-        console.log(response);
-      }
-    });
-  }
+
+  events:{
+    "click .update":"updateForm"
+  },
+
+  updateForm: function(){
+    App.actionPanel.loadForm('update', this.model);
+  },
 
 });
 
@@ -223,8 +220,10 @@ App.ListingPanel = Backbone.View.extend({
   // It is designed to set up automatic rendering and
   // contains logic as to whether to render initally
   refresh: function(){
-    this.stopListening();
-    this.empty();
+    //this.stopListening();
+    //this.empty();
+    this.$el.html(this.view.el)
+
 
     // Listening may require more granularity
     this.listenTo(
@@ -237,14 +236,13 @@ App.ListingPanel = Backbone.View.extend({
       this.render();
     }
 
-  },
+    console.log('Refreshing Listing Panel');
 
-  empty: function() {
-    this.$el.html('');
   },
 
   render: function() {
-    this.$el.html(this.view.render().el);
+    console.log('Rendering Listing Panel');
+    this.view.render();
   }
 
 });
@@ -263,8 +261,8 @@ App.Form = Backbone.View.extend({
   },
 
   events : {
-    "change input" :"changed",
-    "change textarea" :"changed"
+    "keyup input" :"changed",
+    "keyup textarea" :"changed"
   },
 
   initialize: function () {
@@ -277,11 +275,10 @@ App.Form = Backbone.View.extend({
     var obj = {};
     obj[changed.id] = value;
     this.model.set(obj);
-    this.model.save();
+    //this.model.save();
   },
 
   render: function(){  
-    console.log(this.model.formSerialization.formFields);
     _.each(this.model.formSerialization.formFields, function(field, key){
 
       // Set value from model
@@ -332,10 +329,7 @@ App.ActionPanel = Backbone.View.extend({
     var _cls = model.get('_cls');
     var className = _cls.toLowerCase().split('.').join(' ') + ' form';
 
-
-    if(formtype == 'update' && model.get("_cls") == 'Subset.Work'){
-      this.form = new App.updateWorkForm({model: this.model, 'className': className});
-    }
+    this.form = new App.Form({model: this.model, 'className': className});
 
     if(this.model.hasForm()){
       this.render();  

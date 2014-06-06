@@ -42,8 +42,17 @@ App.Subset = Backbone.Model.extend({
   formUrl: null,
 
   initialize: function(){
+    this.formUrl = this.urlRoot + "/form/",
     this.fetched = false;
     this.deep = false;
+  },
+  
+  events: {
+    'change':'change'
+  },
+
+  change: function(){
+    console.log("Model " + this.get('title') + "changed");
   },
 
   isFetched: function(){
@@ -64,20 +73,19 @@ App.Subset = Backbone.Model.extend({
   }, 
 
   fetchForm: function(){
+    console.log("Fetching Form " + this.formUrl);
     $.ajax({
-    type: 'GET',
-    url: this.formUrl,
-    // type of data we are expecting in return:
-    dataType: 'json',
-    timeout: 1000,
-    context: this,
-    success: function(data){
-      this.formSerialization = data;
-      this.trigger("hasForm");
-    }
-})
-
-
+      type: 'GET',
+      url: this.formUrl,
+      // type of data we are expecting in return:
+      dataType: 'json',
+      timeout: 1000,
+      context: this,
+      success: function(data){
+        this.formSerialization = data;
+        this.trigger("hasForm");
+      }
+    })
   }
 
 });
@@ -96,18 +104,6 @@ App.Category = App.Subset.extend({
 
 App.Work = App.Subset.extend({
   urlRoot: "api/v1/work",
-  formUrl: "/api/v1/work/form/",
-
-  events: {
-    'change':'change'
-  },
-
-  change: function(){
-    console.log("Model " + this.get('title') + "changed");
-  }
-
-
-
 });
 
 /* ------------------------------------------------------------------- */
