@@ -28,7 +28,6 @@ App.typeDictionary = {
   'Medium.Video': {},
   'Medium.Audio': {},
   'Medium.Text': {},
-  'Medium.Material': {},
-
+  'Medium.Material': {}
 }
 
