@@ -52,6 +52,7 @@ $(document).ready(function() {
   App.portfolioStorage.initialize();
   App.categoryStorage = new App.CategoryCollection();
   App.workStorage = new App.WorkCollection();
+  App.photoStorage = new App.PhotoCollection();
 
   App.typeDictionary = {
     'Portfolio': {
@@ -79,7 +80,7 @@ $(document).ready(function() {
     },
     'Subset.Medium.Photo': {
       'model': App.Medium,
-      'collection': App.mediumStorage,
+      'collection': App.photoStorage,
       'listItemView': App.MediumChildItemView,
       'summaryView': App.MediumSummaryView
     },

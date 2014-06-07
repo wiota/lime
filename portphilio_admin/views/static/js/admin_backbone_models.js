@@ -139,7 +139,12 @@ App.Medium = Backbone.Model.extend({
 
   isFetched: function(){
     return this.fetched;
+  },
+
+  isDeep: function(){
+    return false;
   }
+
 });
 
 /* ------------------------------------------------------------------- */
@@ -222,21 +227,35 @@ App.SubsetCollection = Backbone.Collection.extend({
   fetchSuccess: function(model, response, options){
     //console.log("Fetched "+model.get("title"));
     model.fetched = true;
+    this.storeAndReference(model);
+
+  },
+
+  fetchError: function(model, response, options){
+    //console.log("Fetch unsucessful " + response);
+  },
+
+  storeAndReference: function(model){
     this.add(model);
+    var subsetReferences = [];
+
     _.each(model.get('subset'), function(subsetitem){
+
       var collection = App.typeDictionary[subsetitem._cls]['collection'];
       var Model = App.typeDictionary[subsetitem._cls]['model'];
 
       var new_model = new Model(subsetitem);
       new_model.deep = false;
       collection.add(new_model);
+      subsetReferences.push(new_model);
     })
 
-
-  },
-
-  fetchError: function(model, response, options){
-    //console.log("Fetch unsucessful " + response);
+    // This would reference the objects, however,
+    // it creates a conflict in rendering the view because
+    // the change event fires before referencing and
+    // the view expects either referenced or dereferenced
+    // but not both
+    //model.set({'subset': subsetReferences});
   }
 
 })

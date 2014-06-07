@@ -56,15 +56,15 @@
   <!-- Form tempates -->
 
   <script type="text/template" id="text">
-    <label for='<%= key %>'><%= field.label %></label><input class='input' type='text' id='<%= key %>' value='<%= value %>' />
+    <label for='<%= id %>'><%= label %></label><input class='input' type='text' id='<%= id %>' value='<%= value %>' />
   </script>
 
   <script type="text/template" id="textarea">
-    <label for='<%= key %>'><%= field.label %></label><textarea class='input' id='<%= key %>'><%= value %></textarea>
+    <label for='<%= id %>'><%= label %></label><textarea class='input' id='<%= id %>'><%= value %></textarea>
   </script>
 
-  <script type="text/template" id="submit">
-    <input class='input <%= cls %>' type='submit' value='<%= val %>' />
+  <script type="text/template" id="button">
+    <input class='input <%= cls %>' type='button' value='<%= label %>' />
   </script>
 
   <script type="text/template" id="update_form">

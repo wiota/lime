@@ -80,17 +80,20 @@ App.emptyListItem = Backbone.View.extend({
 // ChildLists
 /* ------------------------------------------------------------------- */
 
-// what to render if listing has no children (possibly in children view)
+// what to render if listing has no listItems (possibly in listItems view)
 
 App.SubsetListView = Backbone.View.extend({
   tagName: 'ol',
   className: 'subset_list',
 
   render: function(){
-    children = this.model.get('subset');
+    listItems = this.model.get('subset');
     this.$el.empty();
-    _.each(children, function(child, index){
-      var _cls = child['_cls'];
+
+    _.each(listItems, function(listItem, index){
+
+      // Could I make this accept both models or objects
+      var _cls = listItem['_cls']; // || listItem.get('_cls');
       var viewFactory = App.typeDictionary[_cls]['listItemView'];;
       var modelFactory = App.typeDictionary[_cls]['model'];
 
@@ -102,12 +105,18 @@ App.SubsetListView = Backbone.View.extend({
 
       // Here we should make a call to the collection that matches the type
       // One dictionary!!!!!!!!!!!!!!!!!!!!!!!!!!
-      var model = new modelFactory(child);
+      var model = new modelFactory(listItem);
 
       //console.log('Child Item '+index+' type: ' + _cls);
 
       var childItemView = new viewFactory({'model':model});
       this.$el.append(childItemView.render().el);
+
+      childItemView.listenTo(
+      model,
+      'change',
+      childItemView.render
+    );
 
 
       //this.$el.append(new CategoryChildItemView({model: new Work(child)}).render().el);
@@ -252,13 +261,14 @@ App.FormView = Backbone.View.extend({ // Akin to ListingView
   templates: {
     'text': _.template($('#text').html()),
     'textarea': _.template($('#textarea').html()),
-    'submit': _.template($('#submit').html())
+    'button': _.template($('#button').html())
   },
 
   events : {
     'keyup input' :'changed',
     'keyup textarea' :'changed',
-    'click .save': 'saved'
+    'click .save': 'save',
+    'click .cancel': 'close'
   },
 
   initialize: function () {
@@ -290,9 +300,13 @@ App.FormView = Backbone.View.extend({ // Akin to ListingView
     console.log('changed '+ this.model.get('title'));
   },
 
-  saved: function(){
+  save: function(){
     this.model.save();
     return false;
+  },
+
+  close: function(){
+    this.remove();
   },
 
   render: function(){
@@ -308,14 +322,15 @@ App.FormView = Backbone.View.extend({ // Akin to ListingView
       var templateFunction = this.templates[field.type];
 
       // Pass key, field, and value to form input template function and append result
-      var formInput = $(templateFunction({'key':key, 'field':field, 'value': value}));
+      var formInput = $(templateFunction({'id':key, 'label':field.label, 'value': value}));
       formInput.appendTo(this.$el);
 
 
     }, this);
 
-    var formInput = $(this.templates['submit']({'val':'Save', 'cls': 'save'}));
-    formInput.appendTo(this.$el);
+    $(this.templates['button']({'label':'Save', 'cls': 'save'})).appendTo(this.$el);
+    $(this.templates['button']({'label':'Cancel', 'cls': 'cancel'})).appendTo(this.$el);
+
 
     return this;
   }
