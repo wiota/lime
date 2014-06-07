@@ -76,7 +76,18 @@ def post_category():
     data['slug'] = slugify(data['title'])
     data['owner'] = current_user.id
     category = Category(**data).save()
-    return Category.to_bson(), 200
+    return category.to_bson(), 200
+
+
+@mod.route('/photo/', methods=['POST'])
+@login_required
+def post_category():
+    data = request.json
+    data['slug'] = ''   # TODO: temporary...
+    data['title'] = ''  # TODO: temporary...
+    data['owner'] = current_user.id
+    photo = Photo(**data).save()
+    return photo.to_bson(), 200
 
 
 @mod.route('/category/<id>')
