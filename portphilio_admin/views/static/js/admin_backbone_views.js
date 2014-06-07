@@ -12,7 +12,7 @@
 // ChildItems
 /* ------------------------------------------------------------------- */
 
-App.ChildItemView = Backbone.View.extend({ // Abstract class - do not instantiate! 
+App.ChildItemView = Backbone.View.extend({ // Abstract class - do not instantiate!
   tagName: 'li',
   className: 'child',
 
@@ -32,7 +32,7 @@ App.ChildItemView = Backbone.View.extend({ // Abstract class - do not instantiat
       success: this.destroySuccess,
       error: this.destroyError
     });
-  
+
   },
 
   updateForm: function(){
@@ -93,7 +93,7 @@ App.SubsetListView = Backbone.View.extend({
       var _cls = child['_cls'];
       var viewFactory = App.typeDictionary[_cls]['listItemView'];;
       var modelFactory = App.typeDictionary[_cls]['model'];
-      
+
       // children should be stored and retrieved in collection
       // then they should be looked up
       // is the view the appropriate place to do this? No
@@ -103,14 +103,14 @@ App.SubsetListView = Backbone.View.extend({
       // Here we should make a call to the collection that matches the type
       // One dictionary!!!!!!!!!!!!!!!!!!!!!!!!!!
       var model = new modelFactory(child);
-      
+
       //console.log("Child Item "+index+" type: " + _cls);
-      
+
       var childItemView = new viewFactory({'model':model});
       this.$el.append(childItemView.render().el);
-      
 
-      //this.$el.append(new CategoryChildItemView({model: new Work(child)}).render().el);  
+
+      //this.$el.append(new CategoryChildItemView({model: new Work(child)}).render().el);
     }, this);
     return this;
   }
@@ -127,7 +127,7 @@ App.WorkSubsetListView = App.SubsetListView.extend({});
 // Summaries
 /* ------------------------------------------------------------------- */
 
-App.SummaryView = Backbone.View.extend({ // Abstract class - do not instantiate! 
+App.SummaryView = Backbone.View.extend({ // Abstract class - do not instantiate!
   tagName: 'div',
   className: 'summary',
 
@@ -148,7 +148,6 @@ App.SummaryView = Backbone.View.extend({ // Abstract class - do not instantiate!
 
   saveSubset: function(){
     this.model.saveSubset();
-    //this.model.save({"subset": order});
   }
 
 });
@@ -183,8 +182,8 @@ App.ListingView = Backbone.View.extend({ // Akin to FormView
     ]
 
     this.listenTo(
-      this.model, 
-      'change', 
+      this.model,
+      'change',
       this.render
     );
 
@@ -220,14 +219,14 @@ App.ListingPanel = Backbone.View.extend({
     this.model = model;
     var _cls = model.get('_cls');
     var className = _cls.toLowerCase().split('.').join(' ') + ' listing';
-    
+
     if(this.view){
       this.view.remove();
     }
 
     this.view = new App.ListingView({'model':this.model, 'className': className});
     this.$el.html(this.view.el)
-  
+
   },
 
   render: function() {
@@ -258,7 +257,7 @@ App.FormView = Backbone.View.extend({ // Akin to ListingView
     _.bindAll(this, "changed");
 
     if(this.model.hasForm()){
-      this.render();  
+      this.render();
     } else {
       this.model.fetchForm();
       this.listenTo(
@@ -267,6 +266,8 @@ App.FormView = Backbone.View.extend({ // Akin to ListingView
         this.render
       )
     }
+
+
 
   },
 
@@ -277,9 +278,11 @@ App.FormView = Backbone.View.extend({ // Akin to ListingView
     obj[changed.id] = value;
     this.model.set(obj);
     //this.model.save();
+
+    console.log('changed '+ this.model.get('title'));
   },
 
-  render: function(){  
+  render: function(){
     _.each(this.model.formSerialization.formFields, function(field, key){
 
       // Set value from model
@@ -295,7 +298,7 @@ App.FormView = Backbone.View.extend({ // Akin to ListingView
       var formInput = $(templateFunction({'key':key, "field":field, "value": value}));
       formInput.appendTo(this.$el);
 
-    
+
     }, this);
 
     return this;
@@ -304,8 +307,8 @@ App.FormView = Backbone.View.extend({ // Akin to ListingView
 })
 
 App.updateWorkForm = App.FormView.extend({
-  
-  
+
+
 })
 
 /* ------------------------------------------------------------------- */

@@ -7,6 +7,7 @@ App.typeDictionary = {
     'summaryView': App.PortfolioSummaryView
   },
   'Subset.Category': {
+    'collection': App.categoryStorage,
     'model': App.Category,
     'listingView': App.ListingView,
     'summaryView': App.CategorySummaryView,
@@ -15,6 +16,7 @@ App.typeDictionary = {
   },
   'Subset.Work': {
     'model': App.Work,
+    'collection': App.workStorage,
     'listingView': App.ListingView,
     'summaryView': App.WorkSummaryView,
     'listItemView': App.WorkChildItemView,
@@ -22,6 +24,7 @@ App.typeDictionary = {
   },
   'Subset.Medium.Photo': {
     'model': App.Medium,
+    'collection': App.mediumStorage,
     'listItemView': App.MediumChildItemView,
     'summaryView': App.MediumSummaryView
   },

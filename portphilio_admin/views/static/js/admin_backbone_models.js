@@ -199,7 +199,7 @@ App.SubsetCollection = Backbone.Collection.extend({
     _.bindAll(this, "fetchSuccess", "fetchError");
 
     this.on('add', function(model, collection){
-      //console.log("Added " + this._cls + model.get("title"));
+      console.log("Added " + this._cls + " " + model.get("title") + " - " + model.isDeep());
     }, this);
   },
 
@@ -223,8 +223,12 @@ App.SubsetCollection = Backbone.Collection.extend({
     model.fetched = true;
     this.add(model);
     _.each(model.get('subset'), function(subsetitem){
+      var collection = App.typeDictionary[subsetitem._cls]['collection'];
+      var Model = App.typeDictionary[subsetitem._cls]['model'];
 
-      //console.log(subsetitem._cls);
+      var new_model = new Model(subsetitem);
+      new_model.deep = false;
+      collection.add(new_model);
     })
 
 
