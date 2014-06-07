@@ -32,7 +32,7 @@ def work():
 def post_work():
     data = request.form.to_dict()
     data['owner'] = current_user.id
-    data['slug'] = sluggify(data['title'])
+    data['slug'] = slugify(data['title'])
     work = Work(**data).save()
     return work.to_bson(), 200
 
