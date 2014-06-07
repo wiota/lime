@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from flask import current_app as app
-from portphilio_lib.tools import bsonify, to_dict, update_document
+from portphilio_lib.tools import bsonify, to_dict, update_document, slugify
 from portphilio_lib.models import *
 from flask.ext.login import login_required
 from flask.ext.login import current_user
@@ -32,6 +32,7 @@ def work():
 def post_work():
     data = request.form.to_dict()
     data['owner'] = current_user.id
+    data['slug'] = sluggify(data['title'])
     work = Work(**data).save()
     return work.to_bson(), 200
 
@@ -59,7 +60,7 @@ def put_work(id):
             owner=current_user.id,
             id=id),
         data).save()
-    return jsonify(result="success"), 200 #TODO: Should be a 204
+    return jsonify(result="success"), 200  # TODO: Should be a 204
 
 
 @mod.route('/category/', methods=['GET'])
@@ -86,15 +87,18 @@ def category_id(id):
 @mod.route('/category/<id>/subset/', methods=['PUT'])
 @login_required
 def put_subset(id):
-    Category.objects(owner=current_user.id, id=id).update_one(set__subset=request.json['subset'])
-    return jsonify(result="success"), 200 #TODO: Should be a 204
+    Category.objects(
+        owner=current_user.id,
+        id=id).update_one(
+        set__subset=request.json['subset'])
+    return jsonify(result="success"), 200  # TODO: Should be a 204
 
 
 @mod.route('/<subset_type>/<id>', methods=['DELETE'])
 @login_required
 def delete_by_id(subset_type, id):
     Subset.objects.get(id=id).delete()
-    return jsonify(result="success"), 200 #TODO: Should be a 204
+    return jsonify(result="success"), 200  # TODO: Should be a 204
 
 
 @mod.route('/work/form/')
