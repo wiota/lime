@@ -53,11 +53,11 @@ a {text-decoration: none; color: #000;}
 
 .summary {
   position: relative;
-  background-color: #eee; 
-  width: 95%; 
+  background-color: #eee;
+  width: 95%;
   padding: 4% 1%;
-  margin: 0 1.5% 1.5%; 
-  
+  margin: 0 1.5% 1.5%;
+
   }
 
 .portfolio.listing .summary {
@@ -74,8 +74,8 @@ a {text-decoration: none; color: #000;}
 /* Child List (one for each subset archtype) */
 
 ol.subset_list {
-  width: 97%; 
-  margin: 1.5%; 
+  width: 97%;
+  margin: 1.5%;
   }
 
 .category.listing .subset_list
@@ -89,24 +89,24 @@ ol.subset_list {
   }
 
 .category_in_set {
-  background-color: #ff0; 
+  background-color: #ff0;
   padding: 1%;
-  margin: 1.5% 0; 
+  margin: 1.5% 0;
   }
 
 .tag_in_set {}
 .work_in_set {
-  background-color: #f0f0f0; 
+  background-color: #f0f0f0;
   padding: 1%;
-  margin: 1.5% 0; 
-  }
-
-.photo_in_set {
-  background-color: #fff; 
   margin: 1.5% 0;
   }
 
-  
+.photo_in_set {
+  background-color: #fff;
+  margin: 1.5% 0;
+  }
+
+
 .photo_in_set img {max-width: 100%;}
 
 .video_in_set {}
@@ -170,17 +170,41 @@ i.info_tag {
 /* Action Panel */
 
 #action_panel label {
-  font-size: 10px;
+  font-size: 11px;
   display:block;
   padding: 1%;
-  margin: 1.5% 1.5% .5%;
+  margin: 1.5% 1.5% 0%;
   }
 
 #action_panel .input {
   width: 95%;
   padding: 1%;
-  margin: .5% 1.5%;
+  margin: 0% 1.5% 1.5%;
   font-size: 14px;
   border-style:none;
   background-color: #fff;
   }
+
+#action_panel .input.save,
+#action_panel .input.cancel {
+  float:left;
+  width: 33%;
+  padding: 1%;
+  margin: 2.5% 0 2.5% 1.5%;
+  font-family: 'Helvetica', 'Arial', 'san-serif';
+  font-size: 18px;
+  font-weight: bold;
+}
+
+#action_panel .input.save {
+  border-style:none;
+  outline:none;
+  color: #fff;
+  background-color: #237ab1;
+}
+
+#action_panel .input.cancel {
+  border-style:none;
+  color: #333;
+  background-color: #eee;
+}
