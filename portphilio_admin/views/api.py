@@ -96,10 +96,10 @@ def category_id(id):
     return Category.objects.get(owner=current_user.id, id=id).to_bson()
 
 
-@mod.route('/category/<id>/subset/', methods=['PUT'])
+@mod.route('/<subset_type>/<id>/subset/', methods=['PUT'])
 @login_required
-def put_subset(id):
-    Category.objects(
+def put_subset(subset_type, id):
+    Subset.objects(
         owner=current_user.id,
         id=id).update_one(
         set__subset=request.json['subset'])
