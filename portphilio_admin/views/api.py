@@ -30,7 +30,7 @@ def work():
 @mod.route('/work/', methods=['POST'])
 @login_required
 def post_work():
-    data = request.form.to_dict()
+    data = request.json
     data['owner'] = current_user.id
     data['slug'] = slugify(data['title'])
     work = Work(**data).save()
