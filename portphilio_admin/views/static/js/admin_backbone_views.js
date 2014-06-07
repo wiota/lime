@@ -17,12 +17,12 @@ App.ChildItemView = Backbone.View.extend({ // Abstract class - do not instantiat
   className: 'child',
 
   events:{
-    "click .delete":"delete",
-    "click .update":"updateForm"
+    'click .delete':'delete',
+    'click .update':'updateForm'
   },
 
   initialize: function(){
-    _.bindAll(this, "destroySuccess", "destroyError");
+    _.bindAll(this, 'destroySuccess', 'destroyError');
     this.bind('destroy', this.destroySuccess, this);
   },
 
@@ -104,7 +104,7 @@ App.SubsetListView = Backbone.View.extend({
       // One dictionary!!!!!!!!!!!!!!!!!!!!!!!!!!
       var model = new modelFactory(child);
 
-      //console.log("Child Item "+index+" type: " + _cls);
+      //console.log('Child Item '+index+' type: ' + _cls);
 
       var childItemView = new viewFactory({'model':model});
       this.$el.append(childItemView.render().el);
@@ -138,12 +138,18 @@ App.SummaryView = Backbone.View.extend({ // Abstract class - do not instantiate!
   },
 
   events:{
-    "click .update":"updateForm",
-    "click .save_order":"saveSubset"
+    'click .update':'updateForm',
+    'click .save_order':'saveSubset',
+    'click .add_work':'addForm'
   },
 
   updateForm: function(){
     App.actionPanel.loadForm('update', this.model);
+  },
+
+  addForm: function(){
+    var newWork = new App.Work({'_cls': 'Subset.Work'});
+    App.actionPanel.loadForm('add', newWork);
   },
 
   saveSubset: function(){
@@ -244,17 +250,19 @@ App.ListingPanel = Backbone.View.extend({
 App.FormView = Backbone.View.extend({ // Akin to ListingView
   tagName: 'form',
   templates: {
-    "text": _.template($('#text').html()),
-    "textarea": _.template($('#textarea').html())
+    'text': _.template($('#text').html()),
+    'textarea': _.template($('#textarea').html()),
+    'submit': _.template($('#submit').html())
   },
 
   events : {
-    "keyup input" :"changed",
-    "keyup textarea" :"changed"
+    'keyup input' :'changed',
+    'keyup textarea' :'changed',
+    'click .save': 'saved'
   },
 
   initialize: function () {
-    _.bindAll(this, "changed");
+    _.bindAll(this, 'changed');
 
     if(this.model.hasForm()){
       this.render();
@@ -282,6 +290,11 @@ App.FormView = Backbone.View.extend({ // Akin to ListingView
     console.log('changed '+ this.model.get('title'));
   },
 
+  saved: function(){
+    this.model.save();
+    return false;
+  },
+
   render: function(){
     _.each(this.model.formSerialization.formFields, function(field, key){
 
@@ -295,11 +308,14 @@ App.FormView = Backbone.View.extend({ // Akin to ListingView
       var templateFunction = this.templates[field.type];
 
       // Pass key, field, and value to form input template function and append result
-      var formInput = $(templateFunction({'key':key, "field":field, "value": value}));
+      var formInput = $(templateFunction({'key':key, 'field':field, 'value': value}));
       formInput.appendTo(this.$el);
 
 
     }, this);
+
+    var formInput = $(this.templates['submit']({'val':'Save', 'cls': 'save'}));
+    formInput.appendTo(this.$el);
 
     return this;
   }
@@ -325,6 +341,7 @@ App.ActionPanel = Backbone.View.extend({
   },
 
   loadForm: function(formtype, model){
+    console.log(formtype);
     this.model = model;
     var _cls = model.get('_cls');
     var className = _cls.toLowerCase().split('.').join(' ') + ' form';

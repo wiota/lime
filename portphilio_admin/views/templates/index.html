@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 {% block head %}
-  
+
   {{ super() }}
 
   <script src='{{ url_for('admin.static', filename='js/backbone.js') }}'></script>
-  
+
 {% endblock %}
 
 {% block backbone_templates %}
@@ -26,10 +26,11 @@
     <div class='in_set_menu'>
       <a class='update'>update</a>
       <a class='save_order'>save order</a>
+      <a class='add_work'>add work</a>
     </div>
   </script>
 
-  <script type="text/template" id="work_summary">  
+  <script type="text/template" id="work_summary">
     <div class='work_title'><%= title %></div>
   </script>
 
@@ -60,6 +61,10 @@
 
   <script type="text/template" id="textarea">
     <label for='<%= key %>'><%= field.label %></label><textarea class='input' id='<%= key %>'><%= value %></textarea>
+  </script>
+
+  <script type="text/template" id="submit">
+    <input class='input <%= cls %>' type='submit' value='<%= val %>' />
   </script>
 
   <script type="text/template" id="update_form">

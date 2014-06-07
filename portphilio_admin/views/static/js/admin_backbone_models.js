@@ -42,7 +42,7 @@ App.Subset = Backbone.Model.extend({
   formUrl: null,
 
   initialize: function(){
-    this.formUrl = this.urlRoot + "/form/",
+    this.formUrl = this.urlRoot + "form/",
     this.fetched = false;
     this.deep = false;
   },
@@ -92,7 +92,7 @@ App.Subset = Backbone.Model.extend({
     var list = this.get('subset');
 
     var options = {
-      'url': this.url() + '/subset/',
+      'url': this.url() + 'subset/',
       'contentType' : "application/json",
       'data': JSON.stringify({'subset' : _.pluck(list, '_id')})
     }
@@ -108,7 +108,7 @@ App.Subset = Backbone.Model.extend({
 /* ------------------------------------------------------------------- */
 
 App.Category = App.Subset.extend({
-  urlRoot: "api/v1/category",
+  urlRoot: "api/v1/category/",
 });
 
 /* ------------------------------------------------------------------- */
@@ -116,7 +116,8 @@ App.Category = App.Subset.extend({
 /* ------------------------------------------------------------------- */
 
 App.Work = App.Subset.extend({
-  urlRoot: "api/v1/work",
+  urlRoot: "api/v1/work/",
+  //_cls: "Subset.Work"
 });
 
 /* ------------------------------------------------------------------- */
@@ -124,7 +125,7 @@ App.Work = App.Subset.extend({
 /* ------------------------------------------------------------------- */
 
 App.Tag = Backbone.Model.extend({
-  urlRoot: "api/v1/tag",
+  urlRoot: "api/v1/tag/",
 });
 
 /* ------------------------------------------------------------------- */
