@@ -37,12 +37,6 @@ def post_work():
     return work.to_bson(), 200
 
 
-@mod.route('/work/<id>', methods=['GET'])
-@login_required
-def work_name(id):
-    return Work.objects.get(owner=current_user.id, id=id).to_bson()
-
-
 @mod.route('/work/<id>', methods=['PUT'])
 @login_required
 def put_work(id):
@@ -90,10 +84,10 @@ def post_category():
     return photo.to_bson(expand=False), 200
 
 
-@mod.route('/category/<id>')
+@mod.route('/<subset_type>/<id>')
 @login_required
-def category_id(id):
-    return Category.objects.get(owner=current_user.id, id=id).to_bson()
+def subset_id(subset_type, id):
+    return Subset.objects.get(owner=current_user.id, id=id).to_bson()
 
 
 @mod.route('/<subset_type>/<id>/subset/', methods=['PUT'])
