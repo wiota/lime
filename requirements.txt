@@ -10,4 +10,5 @@ mongoengine==0.8.7
 newrelic==2.18.1.15
 pymongo==2.7
 pytz==2013b
+translitcodec==0.3
 wsgiref==0.1.2
