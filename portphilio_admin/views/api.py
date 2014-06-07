@@ -72,7 +72,8 @@ def work_individual():
 @mod.route('/category/', methods=['POST'])
 @login_required
 def post_category():
-    data = request.form.to_dict()
+    data = request.json
+    data['slug'] = slugify(data['title'])
     data['owner'] = current_user.id
     category = Category(**data).save()
     return Category.to_bson(), 200
