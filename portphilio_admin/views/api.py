@@ -95,7 +95,7 @@ def put_category(id):
 
 @mod.route('/photo/', methods=['POST'])
 @login_required
-def post_category():
+def post_photo():
     data = request.json
     data['slug'] = ''   # TODO: temporary...
     data['title'] = ''  # TODO: temporary...
