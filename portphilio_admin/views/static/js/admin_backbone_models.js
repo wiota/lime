@@ -118,7 +118,7 @@ App.Subset = Backbone.Model.extend({
     var options = {
       'url': this.url() + '/subset/',
       'contentType' : "application/json",
-      'data': JSON.stringify({'subset' : _.pluck(list, '_id')})
+      'data': JSON.stringify({'subset' : _.pluck(list, 'id')})
     }
 
     Backbone.sync('update', this, options)
