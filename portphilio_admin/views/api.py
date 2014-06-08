@@ -73,6 +73,26 @@ def post_category():
     return category.to_bson(), 200
 
 
+@mod.route('/category/<id>', methods=['PUT'])
+@login_required
+def put_category(id):
+    data = request.json
+    id = data['_id']
+
+    # TODO: This is temporary...
+    del data['_id']
+    del data['_cls']
+    del data['owner']
+    del data['subset']
+
+    update_document(
+        Category.objects.get(
+            owner=current_user.id,
+            id=id),
+        data).save()
+    return jsonify(result="success"), 200  # TODO: Should be a 204
+
+
 @mod.route('/photo/', methods=['POST'])
 @login_required
 def post_category():
