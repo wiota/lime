@@ -67,38 +67,61 @@ $(document).ready(function() {
   App.typeDictionary = {
     'Portfolio': {
       'model': App.Portfolio,
-      'listingView': App.ListingView,
+      'collection': App.portfolioStorage,
       'summaryView': App.PortfolioSummaryView,
-      'listItemView': App.PortfolioChildItemView,
-      'summaryView': App.PortfolioSummaryView
+      'listingView': App.ListingView,
+      'listItemView': App.PortfolioChildItemView
     },
     'Subset.Category': {
-      'collection': App.categoryStorage,
       'model': App.Category,
-      'listingView': App.ListingView,
+      'collection': App.categoryStorage,
       'summaryView': App.CategorySummaryView,
-      'listItemView': App.CategoryChildItemView,
-      'summaryView': App.CategorySummaryView
+      'listingView': App.ListingView,
+      'listItemView': App.CategoryChildItemView
     },
     'Subset.Work': {
       'model': App.Work,
       'collection': App.workStorage,
-      'listingView': App.ListingView,
       'summaryView': App.WorkSummaryView,
-      'listItemView': App.WorkChildItemView,
-      'summaryView': App.WorkSummaryView
+      'listingView': App.ListingView,
+      'listItemView': App.WorkChildItemView
     },
     'Subset.Medium.Photo': {
-      'model': App.Medium,
+      'model': App.Photo,
       'collection': App.photoStorage,
-      'listItemView': App.MediumChildItemView,
-      'summaryView': App.MediumSummaryView
-    },
-    'Medium.Video': {},
-    'Medium.Audio': {},
-    'Medium.Text': {},
-    'Medium.Material': {}
+      'listItemView': App.PhotoChildItemView,
+      'formView': App.PhotoUploadForm
+    }
   }
 
   Backbone.history.start();
+
+
+
+
+
+  /* TODO
+  App.Factories.Models = {
+
+    'category': App.Subset.extend({
+      urlRoot: "api/v1/category/",
+    }),
+
+    'work': App.Subset.extend({
+      urlRoot: "api/v1/work/",
+    }),
+
+  }
+
+  new App.Factories['category']();
+
+  App.Factories = {
+    "Subset.Work": function(){alert("hi");}
+  }
+
+  App.Factories['Subset.Work']();
+
+  */
+
+
 });

@@ -3,9 +3,9 @@
   <head>
     <meta charset="utf-8">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
-    
+
     {% block head %}
-    
+
     <title>Admin</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <link rel='stylesheet' href='{{ url_for('admin.static', filename='css/admin_user.css') }}' type='text/css' media='all' />
@@ -13,13 +13,14 @@
 
     <script src='{{ url_for('admin.static', filename='js/underscore.js') }}'></script>
     <script src='{{ url_for('admin.static', filename='js/jquery.min.js') }}'></script>
+    <script type="text/javascript" src='{{ url_for('admin.static', filename='js/s3upload.js') }}'></script>
     <script src='{{ url_for('admin.static', filename='js/flash.js') }}'></script>
 
     {% endblock %}
 
     {% block backbone_templates %}
-        
-    {% endblock %}    
+
+    {% endblock %}
 
   </head>
 
@@ -40,19 +41,19 @@
       {% endif %}
     </div>
     {%- endblock -%}
-    
-    
+
+
       {% for message in get_flashed_messages() %}
       <div class='admin_flashes'>
           <div class='flash'>{{ message }}</div>
       </div>
       {% endfor %}
-    
+
 
     <div class="content">
       {% block content %}{% endblock %}
     </div>
-    
+
     {% block js_footer %}{% endblock %}
 
   </body>

@@ -4,20 +4,15 @@
 {% endblock %}
 
 {% block content %}
-<h1>Upload a New Image</h1>
-
-<hr />
-
-<h2>Select an image</h2>
 
 <input type="file" id="files"/>
-<p id="status">Please select a file</p>
+
 <div style="border:1px solid gray;width:300px;"  id="preview"><img src="/static/media/default.png" style="width:300px;" /></div>
 
 <h2>Additional information</h2>
 
 <form method="POST" action="submit_form/">
-    <input type="hidden" id="image_url" name="image_url" value="/static/media/default.png" />
+    <input type="hidden" id="image_url" name="image_url" value="" />
     <input type="text" name="data1" placeholder="Arbitrary Data 1" /><br />
     <input type="text" name="data2" placeholder="Arbitrary Data 2" /><br /><br />
     <hr />

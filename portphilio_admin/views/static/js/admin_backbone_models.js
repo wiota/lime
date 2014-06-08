@@ -12,28 +12,6 @@ Backbone.Model.prototype.parse = function(response){
 Backbone.Model.prototype.idAttribute = "_id";
 
 /* ------------------------------------------------------------------- */
-// Body or Portfolio
-/* ------------------------------------------------------------------- */
-
-App.Portfolio = Backbone.Model.extend({
-  urlRoot: "api/v1/body",
-
-  url: function(){
-    return this.urlRoot;
-  },
-
-  initialize: function(){
-    this.fetched = false;
-  },
-
-  isFetched: function(){
-    return this.fetched;
-  }
-
-});
-
-
-/* ------------------------------------------------------------------- */
 // Subset - Abstract class - do not instantiate!
 /* ------------------------------------------------------------------- */
 
@@ -42,7 +20,8 @@ App.Subset = Backbone.Model.extend({
   formUrl: null,
 
   initialize: function(){
-    this.formUrl = this.urlRoot + "form/",
+    this.formUrl = this.urlRoot + "form/";
+    this.set({'_cls': this._cls});
     this.fetched = false;
     this.deep = false;
   },
@@ -63,8 +42,48 @@ App.Subset = Backbone.Model.extend({
     return this.deep;
   },
 
+  deepen: function(){
+    this.fetch({
+      success: this.deepenSuccess,
+      error: this.deepenError
+    });
+    return this;
+  },
+
+  deepenSuccess: function(model, response, options){
+    debug.log("Fetched "+model.get("_cls"));
+    var collection = App.typeDictionary[model.get('_cls')]['collection'];
+    collection.add(model);
+    model.fetched = true;
+    model.deep = true;
+    model.reference();
+  },
+
+  deepenError: function(model, response, options){
+    debug.log("Fetch unsucessful " + response);
+  },
+
+  reference: function(){
+    var subsetReferences = [];
+
+    _.each(this.get('subset'), function(subsetitem){
+
+      var modelFactory = App.typeDictionary[subsetitem._cls]['model'];
+      var model = new modelFactory(subsetitem);
+      model.deep = false;
+      model.fetched = true;
+
+      var collection = App.typeDictionary[subsetitem._cls]['collection'];
+      collection.add(model);
+
+      subsetReferences.push(model);
+    })
+
+    this.set({'subset': subsetReferences});
+  },
+
+
   hasForm: function(){
-    //console.log(this.formSerialization);
     if(!this.formSerialization){
       return false;
     } else {
@@ -72,6 +91,7 @@ App.Subset = Backbone.Model.extend({
     }
   },
 
+  // timeouts? What to do if form does not load?
   fetchForm: function(){
     console.log("Fetching Form " + this.formUrl);
     $.ajax({
@@ -84,7 +104,11 @@ App.Subset = Backbone.Model.extend({
       success: function(data){
         this.formSerialization = data;
         this.trigger("hasForm");
+      },
+      error: function(){
+        console.log('Form get error');
       }
+
     })
   },
 
@@ -92,7 +116,7 @@ App.Subset = Backbone.Model.extend({
     var list = this.get('subset');
 
     var options = {
-      'url': this.url() + 'subset/',
+      'url': this.url() + '/subset/',
       'contentType' : "application/json",
       'data': JSON.stringify({'subset' : _.pluck(list, '_id')})
     }
@@ -109,6 +133,7 @@ App.Subset = Backbone.Model.extend({
 
 App.Category = App.Subset.extend({
   urlRoot: "api/v1/category/",
+  _cls: "Subset.Category"
 });
 
 /* ------------------------------------------------------------------- */
@@ -117,7 +142,7 @@ App.Category = App.Subset.extend({
 
 App.Work = App.Subset.extend({
   urlRoot: "api/v1/work/",
-  //_cls: "Subset.Work"
+  _cls: "Subset.Work"
 });
 
 /* ------------------------------------------------------------------- */
@@ -126,25 +151,22 @@ App.Work = App.Subset.extend({
 
 App.Tag = Backbone.Model.extend({
   urlRoot: "api/v1/tag/",
+  _cls: "Subset.Tag"
 });
 
 /* ------------------------------------------------------------------- */
 // Medium - Abstract class - do not instantiate!
 /* ------------------------------------------------------------------- */
 
-App.Medium = Backbone.Model.extend({
+App.Medium = App.Subset.extend({
+  _cls: "Subset.Medium",
+
   initialize: function(){
+    this.formUrl = null;
+    this.set({'_cls': this._cls});
     this.fetched = false;
-  },
-
-  isFetched: function(){
-    return this.fetched;
-  },
-
-  isDeep: function(){
-    return false;
+    this.deep = false;
   }
-
 });
 
 /* ------------------------------------------------------------------- */
@@ -152,7 +174,45 @@ App.Medium = Backbone.Model.extend({
 /* ------------------------------------------------------------------- */
 
 
-App.Photo = App.Medium.extend({})
+App.Photo = App.Medium.extend({
+  urlRoot: "api/v1/photo/",
+  _cls: "Subset.Medium.Photo",
+  formSerialization: {
+    "formFields": {
+      "s3_image": {
+        "required": true,
+        "type": "s3_image",
+        "label": "Photo"
+      }
+    }
+  },
+})
+
+/* ------------------------------------------------------------------- */
+// Body or Portfolio
+/* ------------------------------------------------------------------- */
+
+App.Portfolio = App.Subset.extend({
+  urlRoot: "api/v1/body",
+
+  url: function(){
+    return this.urlRoot;
+  },
+
+  initialize: function(){
+    this.fetched = false;
+    this.deep = false;
+  },
+
+  isFetched: function(){
+    return this.fetched;
+  },
+
+  isDeep: function(){
+    return this.deep;
+  }
+
+});
 
 /* ------------------------------------------------------------------- */
 // Collections
@@ -164,33 +224,30 @@ App.portfolioStorage = {
   _cls: 'Portfolio',
 
   initialize: function(){
-    _.bindAll(this, "fetchSuccess", "fetchError");
+    //_.bindAll(this, "fetchSuccess", "fetchError");
     return this;
   },
 
   lookup: function(){
-    return this.portfolio || this.fetch();
+    var portfolio = this.portfolio = this.get() || this.getEmptyPortfolio();
+    if(!portfolio.isFetched()){
+      return portfolio.deepen();
+    } else {
+      return portfolio;
+    }
   },
 
-  fetch: function(){
-    var portfolio = new App.Portfolio({_cls: this._cls});
-
-    portfolio.fetch({
-      success: this.fetchSuccess,
-      error: this.fetchError
-    });
-
-    return portfolio;
+  add: function(model){
+    // noop
+    debug.log("Added " + model.get('_cls'));
   },
 
-  fetchSuccess: function(model, response, options){
-    //console.log("Fetched portfolio");
-    this.portfolio = model;
-    model.fetched = true;
+  get: function(){
+    return this.portfolio;
   },
 
-  fetchError: function(model, response, options){
-    //console.log("Portfolio fetch unsucessful " + response);
+  getEmptyPortfolio: function(){
+    return new App.Portfolio({_cls: this._cls});
   }
 
 }
@@ -202,62 +259,28 @@ App.portfolioStorage = {
 App.SubsetCollection = Backbone.Collection.extend({
 
   initialize: function(){
-    _.bindAll(this, "fetchSuccess", "fetchError");
-
-    this.on('add', function(model, collection){
-      console.log("Added " + this._cls + " " + model.get("title") + " - " + model.isDeep());
-    }, this);
+    _.bindAll(this, "added");
+    this.on('add', this.added);
   },
 
+  added: function(model, collection){
+    debug.log("Added " + model.get('_cls') + " " + model.get("title").substr(0, 20));
+  },
+
+  // This function returns a model instance and
+  // initiates a deepen call on the model if necessary
   lookup: function(id){
-    return this.get(id) || this.fetchOne(id);
+    var subset = this.get(id) || this.getEmpty(id);
+    if(!subset.isFetched() || !subset.isDeep()){
+      return subset.deepen();
+    } else {
+      return subset;
+    }
   },
 
-  fetchOne: function(id){
-    var subset = new this.model({_id: id, _cls: this._cls});
-
-    subset.fetch({
-      success: this.fetchSuccess,
-      error: this.fetchError
-    });
-
-    return subset;
-  },
-
-  fetchSuccess: function(model, response, options){
-    //console.log("Fetched "+model.get("title"));
-    model.fetched = true;
-    this.storeAndReference(model);
-
-  },
-
-  fetchError: function(model, response, options){
-    //console.log("Fetch unsucessful " + response);
-  },
-
-  storeAndReference: function(model){
-    this.add(model);
-    var subsetReferences = [];
-
-    _.each(model.get('subset'), function(subsetitem){
-
-      var collection = App.typeDictionary[subsetitem._cls]['collection'];
-      var Model = App.typeDictionary[subsetitem._cls]['model'];
-
-      var new_model = new Model(subsetitem);
-      new_model.deep = false;
-      collection.add(new_model);
-      subsetReferences.push(new_model);
-    })
-
-    // This would reference the objects, however,
-    // it creates a conflict in rendering the view because
-    // the change event fires before referencing and
-    // the view expects either referenced or dereferenced
-    // but not both
-    //model.set({'subset': subsetReferences});
+  getEmpty: function(id){
+    return new this.model({_id: id, _cls: this._cls});
   }
-
 })
 
 /* ------------------------------------------------------------------- */
@@ -279,5 +302,9 @@ App.WorkCollection = App.SubsetCollection.extend({
 App.PhotoCollection = App.SubsetCollection.extend({
   model: App.Photo,
   url: "api/v1/photo",
-  _cls: 'Subset.Medium.Photo'
+  _cls: 'Subset.Medium.Photo',
+
+  added: function(model, collection){
+    debug.log("Added " + model.get('_cls'));
+  }
 })

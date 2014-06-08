@@ -32,6 +32,11 @@
 
   <script type="text/template" id="work_summary">
     <div class='work_title'><%= title %></div>
+    <div class='in_set_menu'>
+      <a class='update'>update</a>
+      <a class='save_order'>save order</a>
+      <a class='add_photo'>add photo</a>
+    </div>
   </script>
 
   <!-- Child -->
@@ -71,6 +76,12 @@
     <label for='title'>Title</label><input type='text' id='title' value='<%= title %>' />
   </script>
 
+  <script type="text/template" id="s3_image">
+    <!-- multiple="multiple" -->
+    <div class='files_container'><i class='message'>Drop files here</i><div class='progress_bar'></div><input type="file" name="files[]" id="files"/></div>
+    <div class='result'></div>
+    <div id="s3_preview"><img src="" style="" /></div>
+  </script>
 
 {% endblock %}
 
@@ -92,6 +103,5 @@
   <script src='{{ url_for('admin.static', filename='js/admin_app.js') }}'></script>
   <script src='{{ url_for('admin.static', filename='js/admin_backbone_models.js') }}'></script>
   <script src='{{ url_for('admin.static', filename='js/admin_backbone_views.js') }}'></script>
-  <script src='{{ url_for('admin.static', filename='js/admin_backbone_dictionary.js') }}'></script>
   <script src='{{ url_for('admin.static', filename='js/work.js') }}'></script>
 {% endblock %}

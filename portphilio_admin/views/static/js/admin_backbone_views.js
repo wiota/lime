@@ -21,9 +21,10 @@ App.ChildItemView = Backbone.View.extend({ // Abstract class - do not instantiat
     'click .update':'updateForm'
   },
 
-  initialize: function(){
+  initialize: function(options){
     _.bindAll(this, 'destroySuccess', 'destroyError');
     this.bind('destroy', this.destroySuccess, this);
+    this.referencer = options.referencer;
   },
 
   delete: function(){
@@ -36,7 +37,7 @@ App.ChildItemView = Backbone.View.extend({ // Abstract class - do not instantiat
   },
 
   updateForm: function(){
-    App.actionPanel.loadForm('update', this.model);
+    App.actionPanel.loadForm(this.model, this.referencer);
   },
 
   render: function(){
@@ -51,7 +52,7 @@ App.ChildItemView = Backbone.View.extend({ // Abstract class - do not instantiat
   },
 
   destroyError: function(model, response, options){
-    console.log(response);
+    console.log("Destroy Error " +response);
   }
 
 })
@@ -66,7 +67,7 @@ App.WorkChildItemView = App.ChildItemView.extend({
   template:_.template($('#work_in_set').html()),
 });
 
-App.MediumChildItemView = App.ChildItemView.extend({
+App.PhotoChildItemView = App.ChildItemView.extend({
   className: 'photo_in_set child',
   template:_.template($('#photo_in_set').html())
 });
@@ -80,47 +81,25 @@ App.emptyListItem = Backbone.View.extend({
 // ChildLists
 /* ------------------------------------------------------------------- */
 
-// what to render if listing has no listItems (possibly in listItems view)
+// what to render if listing has no subsetItems (possibly in subsetItems view)
 
 App.SubsetListView = Backbone.View.extend({
   tagName: 'ol',
   className: 'subset_list',
 
   render: function(){
-    listItems = this.model.get('subset');
+    subsetItems = this.model.get('subset'); // should be referenced subset
     this.$el.empty();
 
-    _.each(listItems, function(listItem, index){
+    _.each(subsetItems, function(subsetItem, index){
+      var viewFactory = App.typeDictionary[subsetItem._cls]['listItemView'];
+      var childItemView = new viewFactory({'model':subsetItem, 'referencer': this.model});
 
-      // Could I make this accept both models or objects
-      var _cls = listItem['_cls']; // || listItem.get('_cls');
-      var viewFactory = App.typeDictionary[_cls]['listItemView'];;
-      var modelFactory = App.typeDictionary[_cls]['model'];
-
-      // children should be stored and retrieved in collection
-      // then they should be looked up
-      // is the view the appropriate place to do this? No
-      // This should be done in the Model upon parsing
-      // In addition to isFetched, isDereferenced
-
-      // Here we should make a call to the collection that matches the type
-      // One dictionary!!!!!!!!!!!!!!!!!!!!!!!!!!
-      var model = new modelFactory(listItem);
-
-      //console.log('Child Item '+index+' type: ' + _cls);
-
-      var childItemView = new viewFactory({'model':model});
       this.$el.append(childItemView.render().el);
+      childItemView.listenTo(subsetItem, 'change', childItemView.render);
 
-      childItemView.listenTo(
-      model,
-      'change',
-      childItemView.render
-    );
-
-
-      //this.$el.append(new CategoryChildItemView({model: new Work(child)}).render().el);
     }, this);
+
     return this;
   }
 });
@@ -149,16 +128,22 @@ App.SummaryView = Backbone.View.extend({ // Abstract class - do not instantiate!
   events:{
     'click .update':'updateForm',
     'click .save_order':'saveSubset',
-    'click .add_work':'addForm'
+    'click .add_work':'addWorkForm',
+    'click .add_photo':'addPhotoForm'
   },
 
   updateForm: function(){
-    App.actionPanel.loadForm('update', this.model);
+    App.actionPanel.loadForm(this.model, null);
   },
 
-  addForm: function(){
-    var newWork = new App.Work({'_cls': 'Subset.Work'});
-    App.actionPanel.loadForm('add', newWork);
+  addWorkForm: function(){
+    var newWork = new App.Work();
+    App.actionPanel.loadForm(newWork, this.model);
+  },
+
+  addPhotoForm: function(){
+    var newPhoto = new App.Photo();
+    App.actionPanel.loadForm(newPhoto, this.model);
   },
 
   saveSubset: function(){
@@ -186,33 +171,51 @@ App.WorkSummaryView = App.SummaryView.extend({
 App.ListingView = Backbone.View.extend({ // Akin to FormView
   tagName: 'div',
   _cls: null,
+  summary: null,
+  list: null,
 
   initialize: function(){
     var _cls = this.model.get('_cls');
+    //console.log(this.model.get('_cls'));
+    // SummaryView and ListView subviews
+
+    // I would love to do this:
+    // App.Factories.Views[_cls]['summaryView']
+    // see work.js for implementation
+
     var viewFactory = App.typeDictionary[_cls]['summaryView'];
+    this.summary = new viewFactory({model:this.model}),
+    this.list = new App.SubsetListView({model:this.model})
 
-    this.subViews = [
-      new viewFactory({model:this.model}),
-      new App.SubsetListView({model:this.model})
-    ]
+    // handler - maybe should be in the context of subviews
+    // need 2 new events at the subset level that will fire
+    // when subset is updated and when summary is updated
 
-    this.listenTo(
-      this.model,
-      'change',
-      this.render
-    );
+    this.listenTo(this.model, 'change', this.renderAll);
 
-    if(this.model.isFetched()){
-      this.render();
-    }
+    this.renderAll();
   },
 
-  render: function(){
-    _.each(this.subViews, function(subView){
-      this.$el.append(subView.render().el);
-    }, this)
+  renderAll: function(){
+    if(this.model.isFetched()){
+      this.renderSummary();
+    }
+    if(this.model.isDeep()){
+      this.renderList();
+    }
+    return this;
+  },
+
+  renderSummary: function(){
+    this.$el.append(this.summary.render().el);
+    return this;
+  },
+
+  renderList: function(){
+    this.$el.append(this.list.render().el);
     return this;
   }
+
 })
 
 App.PortfolioListingView = App.ListingView.extend({})
@@ -256,37 +259,38 @@ App.ListingPanel = Backbone.View.extend({
 // Action Forms
 /* ------------------------------------------------------------------- */
 
+App.imageUploadView = Backbone.View.extend({
+
+
+})
+
 App.FormView = Backbone.View.extend({ // Akin to ListingView
   tagName: 'form',
   templates: {
     'text': _.template($('#text').html()),
     'textarea': _.template($('#textarea').html()),
-    'button': _.template($('#button').html())
+    'button': _.template($('#button').html()),
+    's3_image': _.template($('#s3_image').html())
   },
 
   events : {
     'keyup input' :'changed',
     'keyup textarea' :'changed',
     'click .save': 'save',
-    'click .cancel': 'close'
+    'click .cancel': 'close',
+    'change #files': 's3_image'
   },
 
-  initialize: function () {
+  initialize: function (options) {
     _.bindAll(this, 'changed');
+    this.referencer = options.referencer;
 
     if(this.model.hasForm()){
       this.render();
     } else {
       this.model.fetchForm();
-      this.listenTo(
-        this.model,
-        'hasForm',
-        this.render
-      )
+      this.listenTo(this.model, 'hasForm', this.render);
     }
-
-
-
   },
 
   changed: function(evt){
@@ -328,17 +332,72 @@ App.FormView = Backbone.View.extend({ // Akin to ListingView
 
     }, this);
 
+    this.renderActions();
+    return this;
+  },
+
+  renderActions: function(){
     $(this.templates['button']({'label':'Save', 'cls': 'save'})).appendTo(this.$el);
     $(this.templates['button']({'label':'Cancel', 'cls': 'cancel'})).appendTo(this.$el);
-
-
-    return this;
   }
 
 })
 
-App.updateWorkForm = App.FormView.extend({
+App.PhotoUploadForm = App.FormView.extend({
+  s3_upload: null,
 
+  initialize: function(options){
+    _.bindAll(this, 'uploadProgress', 'uploadFinish', 'photoSynced');
+    this.referencer = options.referencer;
+    this.render();
+    this.progress_bar = this.$el.find('.progress_bar');
+  },
+
+  close: function(){
+    // abort image uploads
+    this.remove();
+  },
+
+  renderActions: function(){
+    //$(this.templates['button']({'label':'Cancel', 'cls': 'cancel'})).appendTo(this.$el);
+  },
+
+  s3_image: function(){
+    console.log('Upload function called');
+    this.s3_upload = new S3Upload({
+      file_dom_selector: '#files',
+      s3_sign_put_url: 'upload/sign_s3/',
+      onProgress: this.uploadProgress,
+      onFinishS3Put: this.uploadFinish,
+      onError: this.uploadError
+    });
+  },
+
+  uploadProgress: function(percent, message){
+    this.progress_bar.css({'width':percent + '%'});
+  },
+
+  uploadFinish: function(href){
+    this.progress_bar.css({'width':'0%'});
+
+    var collection = App.typeDictionary['Subset.Medium.Photo']['collection'];
+    var photo = collection.create({"href": href})
+
+    this.listenTo(collection, 'sync', this.photoSynced);
+
+  },
+
+  uploadError: function(status){
+    $('#status').html('Upload error: ' + status);
+  },
+
+  photoSynced: function(photo, response, options){
+    var subset = this.referencer.get('subset');
+    subset.unshift(photo);
+    console.log(subset);
+    this.referencer.trigger('change');
+    this.referencer.saveSubset();
+  }
 
 })
 
@@ -350,18 +409,19 @@ App.ActionPanel = Backbone.View.extend({
   el: $('#action_panel'),
   form: null,
   model: null,
+  referencer: null,
 
   initialize: function(){
     this.$el.html('');
   },
 
-  loadForm: function(formtype, model){
-    console.log(formtype);
+  loadForm: function(model, referencer){
     this.model = model;
+    this.referencer = referencer;
     var _cls = model.get('_cls');
     var className = _cls.toLowerCase().split('.').join(' ') + ' form';
-
-    this.form = new App.FormView({model: this.model, 'className': className});
+    var formFactory = App.typeDictionary[_cls]['formView'] || App.FormView;
+    this.form = new formFactory({model: this.model, 'referencer': this.referencer, 'className': className});
     this.$el.html(this.form.el);
   },
 
