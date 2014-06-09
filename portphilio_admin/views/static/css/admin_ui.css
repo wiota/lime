@@ -22,10 +22,12 @@ a {text-decoration: none; color: #000;}
 /* Listing Panel */
 
 #listing_panel {
-  overflow: auto;
-  margin: 2% 0;
+  margin: 4%% 0;
   width: 50%;
   min-height: 400px;
+  position:absolute;
+  top: 0;
+  left: 0;
   }
 
 /* Action Panel */
@@ -33,10 +35,11 @@ a {text-decoration: none; color: #000;}
 #action_panel {
   background-color: #88cbf2;
   overflow: auto;
-  margin: 2% 0;
+  margin: 4% 0;
   width: 50%;
-  min-height: 400px;
-  float:right;
+  position:fixed;
+  top: 0;
+  right: 0;
   }
 
 /* -------------------------------------------------------------------  */
@@ -151,19 +154,20 @@ ol.subset_list {
 
 /* Overlays */
 
-.child i.info_tag,
+.listItem i.info_tag,
 .summary i.info_tag {display:none;}
-.child:hover i.info_tag,
-.summary:hover i.info_tag {display:none;}
+.listItem:hover i.info_tag,
+.summary:hover i.info_tag {display:block;}
 
 i.info_tag {
   position: absolute;
   top: 0;
-  right: 0;
+  left: 0;
+  margin-left:100%;
   background-color: rgba(0,0,0,.5);
   color: #fff;
   padding: .5%;
-  font-size: 12px;
+  font-size: 14px;
   }
 
 /* -------------------------------------------------------------------  */
@@ -188,7 +192,7 @@ i.info_tag {
 #action_panel .input.save,
 #action_panel .input.cancel {
   float:left;
-  width: 33%;
+  width: 150px;
   padding: 1%;
   margin: 2.5% 0 2.5% 1.5%;
   font-family: 'Helvetica', 'Arial', 'san-serif';

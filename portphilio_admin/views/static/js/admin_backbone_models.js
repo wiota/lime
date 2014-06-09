@@ -24,14 +24,28 @@ App.Subset = Backbone.Model.extend({
     this.set({'_cls': this._cls});
     this.fetched = false;
     this.deep = false;
+    //_.bindAll(this, 'triggerEvents');
+    this.on('change', this.triggerEvents);
   },
 
-  events: {
-    'change':'change'
-  },
+  triggerEvents: function(model, options){
+    var attr = model.changedAttributes()
+    var summary_attr = _.omit(attr, 'subset');
+    var succset = attr['subset'] || false;
 
-  change: function(){
-    console.log("Model " + this.get('title') + "changed");
+    console.log('------ Change in ' + this.get('_cls') + ' ------');
+    console.log(_.keys(attr));
+    console.log('-----------------------------------');
+
+    if(!_.isEmpty(summary_attr)){
+      console.log('Summary Changed');
+      this.trigger('summaryChanged', this, {'attr':summary_attr});
+    }
+    if(succset){
+      console.log('Subset Changed');
+      this.trigger('succsetChanged', this, {'succset':succset});
+    }
+    console.log('-----------------------------------');
   },
 
   isFetched: function(){
@@ -51,22 +65,23 @@ App.Subset = Backbone.Model.extend({
   },
 
   deepenSuccess: function(model, response, options){
-    debug.log("Fetched "+model.get("_cls"));
+    console.log("Success! Fetched "+model.get("_cls"));
     var collection = App.typeDictionary[model.get('_cls')]['collection'];
     collection.add(model);
     model.fetched = true;
-    model.deep = true;
+    // not considered deep until referenced
     model.reference();
   },
 
   deepenError: function(model, response, options){
-    debug.log("Fetch unsucessful " + response);
+    console.log("Fetch unsucessful " + response);
   },
 
   reference: function(){
+    var subset = this.get('subset');
     var subsetReferences = [];
 
-    _.each(this.get('subset'), function(subsetitem){
+    _.each(subset, function(subsetitem){
 
       var modelFactory = App.typeDictionary[subsetitem._cls]['model'];
       var model = new modelFactory(subsetitem);
@@ -77,9 +92,13 @@ App.Subset = Backbone.Model.extend({
       collection.add(model);
 
       subsetReferences.push(model);
+
     })
 
     this.set({'subset': subsetReferences});
+    this.deep = true;
+    console.log('Subset Referenced');
+    this.trigger('referenced');
   },
 
 
@@ -239,7 +258,7 @@ App.portfolioStorage = {
 
   add: function(model){
     // noop
-    debug.log("Added " + model.get('_cls'));
+    console.log("Added " + model.get('_cls'));
   },
 
   get: function(){
@@ -264,13 +283,14 @@ App.SubsetCollection = Backbone.Collection.extend({
   },
 
   added: function(model, collection){
-    debug.log("Added " + model.get('_cls') + " " + model.get("title").substr(0, 20));
+    // console.log("Added " + model.get('_cls') + " " + model.get("title").substr(0, 20));
   },
 
   // This function returns a model instance and
   // initiates a deepen call on the model if necessary
   lookup: function(id){
     var subset = this.get(id) || this.getEmpty(id);
+    //console.log(subset.isFetched() + " " + subset.isDeep());
     if(!subset.isFetched() || !subset.isDeep()){
       return subset.deepen();
     } else {
@@ -305,6 +325,6 @@ App.PhotoCollection = App.SubsetCollection.extend({
   _cls: 'Subset.Medium.Photo',
 
   added: function(model, collection){
-    debug.log("Added " + model.get('_cls'));
+    //console.log("Added " + model.get('_cls'));
   }
 })

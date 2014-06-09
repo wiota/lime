@@ -5,16 +5,6 @@
 // for admin
 /* ------------------------------------------------------------------- */
 
-var debug = {
-  showErrors: true,
-  log: function(msg){
-    if(debug.showErrors){
-      console.log("! "+msg);
-    }
-  }
-}
-
-
 App.Router = Backbone.Router.extend({
 
   routes:{
@@ -95,9 +85,6 @@ $(document).ready(function() {
   }
 
   Backbone.history.start();
-
-
-
 
 
   /* TODO
