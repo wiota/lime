@@ -128,11 +128,10 @@ App.PhotoUploadForm = App.FormView.extend({
   },
 
   photoSynced: function(photo, response, options){
-    var succset = _.clone(this.predecessor.get('subset'));
+    var succset = _.clone(this.predecessor.get('succset'));
 
     succset.unshift(photo);
-    this.predecessor.set({'subset':succset});
-    //this.predecessor.trigger('change', this.predecessor);
+    this.predecessor.set({'succset':succset});
     this.predecessor.saveSubset();
   }
 

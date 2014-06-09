@@ -1,4 +1,4 @@
-body {margin:0; padding: 0; font-family: 'Helvetica', 'Arial', 'san-serif';}
+body {margin:0; padding: 0; font-size: 90%; font-family: 'Helvetica', 'Arial', 'san-serif';}
 
 ul, ol {margin: 0; padding:0;list-style-type: none;}
 
@@ -13,7 +13,7 @@ a {text-decoration: none; color: #000;}
 #admin_nav a {
   display:block;
   float:left;
-  margin: .5% 0 0 .5%;
+  margin: 0 0 0 .75%;
   padding: 5px .5%;
   background-color: #237ab1;
   color: #fff;
@@ -45,14 +45,14 @@ a {text-decoration: none; color: #000;}
 /* -------------------------------------------------------------------  */
 /* Listing Panel */
 
-/* Listing (one for each subset archtype) */
+/* Listing (one for each vertex) */
 
 .listing {}
 .category.listing {}
 .tag.listing {}
 .work.listing {}
 
-/* Summary (one for each subset archtype) */
+/* Summary (one for each vertex) */
 
 .summary {
   position: relative;
@@ -74,20 +74,21 @@ a {text-decoration: none; color: #000;}
 .tag.listing .summary {}
 .work.listing .summary {}
 
-/* Child List (one for each subset archtype) */
+/* Child List (one for each vertex) */
 
-ol.subset_list {
+ol.succset_list {
+  border-top: 1px solid black;
   width: 97%;
   margin: 1.5%;
   }
 
-.category.listing .subset_list
-.tag.listing .subset_list {}
-.work.listing .subset_list {}
+.category.listing .succset_list
+.tag.listing .succset_list {}
+.work.listing .succset_list {}
 
 /* Child in set (one for each archtype that can be in a set) */
 
-.subset_list li {
+.succset_list li {
   position: relative;
   }
 
@@ -154,10 +155,10 @@ ol.subset_list {
 
 /* Overlays */
 
-.listItem i.info_tag,
+.successorItem i.info_tag,
 .summary i.info_tag {display:none;}
-.listItem:hover i.info_tag,
-.summary:hover i.info_tag {display:block;}
+.successorItem:hover i.info_tag,
+.summary:hover i.info_tag {display:none;}
 
 i.info_tag {
   position: absolute;

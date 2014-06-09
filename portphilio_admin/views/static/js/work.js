@@ -55,31 +55,30 @@ $(document).ready(function() {
   App.photoStorage = new App.PhotoCollection();
 
   App.typeDictionary = {
-    'Portfolio': {
+    'Vertex.Body': {
       'model': App.Portfolio,
       'collection': App.portfolioStorage,
       'summaryView': App.PortfolioSummaryView,
-      'listingView': App.ListingView,
-      'listItemView': App.PortfolioChildItemView
+      'listingView': App.ListingView
     },
-    'Subset.Category': {
+    'Vertex.Category': {
       'model': App.Category,
       'collection': App.categoryStorage,
       'summaryView': App.CategorySummaryView,
       'listingView': App.ListingView,
-      'listItemView': App.CategoryChildItemView
+      'successorListItemView': App.CategorySuccessorItemView
     },
-    'Subset.Work': {
+    'Vertex.Work': {
       'model': App.Work,
       'collection': App.workStorage,
       'summaryView': App.WorkSummaryView,
       'listingView': App.ListingView,
-      'listItemView': App.WorkChildItemView
+      'successorListItemView': App.WorkSuccessorItemView
     },
-    'Subset.Medium.Photo': {
+    'Vertex.Medium.Photo': {
       'model': App.Photo,
       'collection': App.photoStorage,
-      'listItemView': App.PhotoChildItemView,
+      'successorListItemView': App.PhotoSuccessorItemView,
       'formView': App.PhotoUploadForm
     }
   }

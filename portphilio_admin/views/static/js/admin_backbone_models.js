@@ -12,10 +12,10 @@ Backbone.Model.prototype.parse = function(response){
 Backbone.Model.prototype.idAttribute = "_id";
 
 /* ------------------------------------------------------------------- */
-// Subset - Abstract class - do not instantiate!
+// Vertex - Abstract class - do not instantiate!
 /* ------------------------------------------------------------------- */
 
-App.Subset = Backbone.Model.extend({
+App.Vertex = Backbone.Model.extend({
   formSerialization: null,
   formUrl: null,
 
@@ -29,8 +29,9 @@ App.Subset = Backbone.Model.extend({
   },
 
   triggerEvents: function(model, options){
+    console.log('change')
     var attr = model.changedAttributes()
-    var summary_attr = _.omit(attr, 'subset');
+    var summary_attr = _.omit(attr, 'succset');
 
     console.log(_.keys(attr));
 
@@ -57,7 +58,7 @@ App.Subset = Backbone.Model.extend({
   },
 
   deepenSuccess: function(model, response, options){
-    // console.log("Fetched "+model.get("_cls"));
+    console.log("Fetched "+model.get("_cls"));
     var collection = App.typeDictionary[model.get('_cls')]['collection'];
     collection.add(model);
     model.fetched = true;
@@ -70,25 +71,25 @@ App.Subset = Backbone.Model.extend({
   },
 
   reference: function(){
-    var subset = this.get('subset');
-    var subsetReferences = [];
+    var succset = this.get('succset');
+    var succsetReferences = [];
 
-    _.each(subset, function(subsetitem){
+    _.each(succset, function(succsetitem){
 
-      var modelFactory = App.typeDictionary[subsetitem._cls]['model'];
-      var model = new modelFactory(subsetitem);
+      var modelFactory = App.typeDictionary[succsetitem._cls]['model'];
+      var model = new modelFactory(succsetitem);
       model.deep = false;
       model.fetched = true;
 
-      var collection = App.typeDictionary[subsetitem._cls]['collection'];
+      var collection = App.typeDictionary[succsetitem._cls]['collection'];
       collection.add(model);
 
-      subsetReferences.push(model);
+      succsetReferences.push(model);
 
     })
+    this.set({'succset': succsetReferences});
 
     this.deep = true;
-    this.set({'subset': subsetReferences});
     this.trigger('referenced');
   },
 
@@ -122,13 +123,13 @@ App.Subset = Backbone.Model.extend({
     })
   },
 
-  saveSubset: function(){
-    var list = this.get('subset');
+  saveVertex: function(){
+    var list = this.get('succset');
 
     var options = {
-      'url': this.url() + '/subset/',
+      'url': this.url() + '/succset/',
       'contentType' : "application/json",
-      'data': JSON.stringify({'subset' : _.pluck(list, 'id')})
+      'data': JSON.stringify({'succset' : _.pluck(list, 'id')})
     }
 
     Backbone.sync('update', this, options)
@@ -141,18 +142,18 @@ App.Subset = Backbone.Model.extend({
 // Category
 /* ------------------------------------------------------------------- */
 
-App.Category = App.Subset.extend({
+App.Category = App.Vertex.extend({
   urlRoot: "api/v1/category/",
-  _cls: "Subset.Category"
+  _cls: "Vertex.Category"
 });
 
 /* ------------------------------------------------------------------- */
 // Work
 /* ------------------------------------------------------------------- */
 
-App.Work = App.Subset.extend({
+App.Work = App.Vertex.extend({
   urlRoot: "api/v1/work/",
-  _cls: "Subset.Work"
+  _cls: "Vertex.Work"
 });
 
 /* ------------------------------------------------------------------- */
@@ -161,15 +162,15 @@ App.Work = App.Subset.extend({
 
 App.Tag = Backbone.Model.extend({
   urlRoot: "api/v1/tag/",
-  _cls: "Subset.Tag"
+  _cls: "Vertex.Tag"
 });
 
 /* ------------------------------------------------------------------- */
 // Medium - Abstract class - do not instantiate!
 /* ------------------------------------------------------------------- */
 
-App.Medium = App.Subset.extend({
-  _cls: "Subset.Medium",
+App.Medium = App.Vertex.extend({
+  _cls: "Vertex.Medium",
 
   initialize: function(){
     this.formUrl = null;
@@ -186,7 +187,7 @@ App.Medium = App.Subset.extend({
 
 App.Photo = App.Medium.extend({
   urlRoot: "api/v1/photo/",
-  _cls: "Subset.Medium.Photo",
+  _cls: "Vertex.Medium.Photo",
   formSerialization: {
     "formFields": {
       "s3_image": {
@@ -202,8 +203,8 @@ App.Photo = App.Medium.extend({
 // Body or Portfolio
 /* ------------------------------------------------------------------- */
 
-App.Portfolio = App.Subset.extend({
-  urlRoot: "api/v1/body",
+App.Portfolio = App.Vertex.extend({
+  urlRoot: "api/v1/body/",
 
   url: function(){
     return this.urlRoot;
@@ -231,7 +232,7 @@ App.Portfolio = App.Subset.extend({
 
 App.portfolioStorage = {
   portfolio: null,
-  _cls: 'Portfolio',
+  _cls: 'Vertex.Body',
 
   initialize: function(){
     //_.bindAll(this, "fetchSuccess", "fetchError");
@@ -263,10 +264,10 @@ App.portfolioStorage = {
 }
 
 /* ------------------------------------------------------------------- */
-// SubsetCollection - Abstract class - do not instantiate!
+// VertexCollection - Abstract class - do not instantiate!
 /* ------------------------------------------------------------------- */
 
-App.SubsetCollection = Backbone.Collection.extend({
+App.VertexCollection = Backbone.Collection.extend({
 
   initialize: function(){
     _.bindAll(this, "added");
@@ -280,17 +281,20 @@ App.SubsetCollection = Backbone.Collection.extend({
   // This function returns a model instance and
   // initiates a deepen call on the model if necessary
   lookup: function(id){
-    var subset = this.get(id) || this.getEmpty(id);
-    //console.log(subset.isFetched() + " " + subset.isDeep());
-    if(!subset.isFetched() || !subset.isDeep()){
-      return subset.deepen();
+    var succset = this.get(id) || this.getEmpty(id);
+    //console.log(succset.isFetched() + " " + succset.isDeep());
+    if(!succset.isFetched() || !succset.isDeep()){
+      return succset.deepen();
     } else {
-      return subset;
+      return succset;
     }
   },
 
   getEmpty: function(id){
-    return new this.model({_id: id, _cls: this._cls});
+    // This should return a blank vertex
+    // The vertex should have enough information
+    // to fill the template
+    return new this.model({'_id': id, '_cls': this._cls, 'title': ''});
   }
 })
 
@@ -298,22 +302,22 @@ App.SubsetCollection = Backbone.Collection.extend({
 // CategoryCollection
 /* ------------------------------------------------------------------- */
 
-App.CategoryCollection = App.SubsetCollection.extend({
+App.CategoryCollection = App.VertexCollection.extend({
   model: App.Category,
   url: "api/v1/category",
-  _cls: 'Subset.Category'
+  _cls: 'Vertex.Category'
 })
 
-App.WorkCollection = App.SubsetCollection.extend({
+App.WorkCollection = App.VertexCollection.extend({
   model: App.Work,
   url: "api/v1/work",
-  _cls: 'Subset.Work'
+  _cls: 'Vertex.Work'
 })
 
-App.PhotoCollection = App.SubsetCollection.extend({
+App.PhotoCollection = App.VertexCollection.extend({
   model: App.Photo,
   url: "api/v1/photo",
-  _cls: 'Subset.Medium.Photo',
+  _cls: 'Vertex.Medium.Photo',
 
   added: function(model, collection){
     //console.log("Added " + model.get('_cls'));

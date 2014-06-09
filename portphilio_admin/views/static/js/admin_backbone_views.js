@@ -1,20 +1,12 @@
 // Portphillio Admin Backbone Views
 
-
 /* ------------------------------------------------------------------- */
-// Listings
-/* ------------------------------------------------------------------- */
-
-
-
-
-/* ------------------------------------------------------------------- */
-// ChildItems
+// Successors
 /* ------------------------------------------------------------------- */
 
-App.ChildItemView = Backbone.View.extend({ // Abstract class - do not instantiate!
+App.SuccessorItemView = Backbone.View.extend({ // Abstract class - do not instantiate!
   tagName: 'li',
-  className: 'listItem',
+  className: 'successorItem',
 
   events:{
     'click .delete':'delete',
@@ -55,18 +47,18 @@ App.ChildItemView = Backbone.View.extend({ // Abstract class - do not instantiat
 
 })
 
-App.CategoryChildItemView = App.ChildItemView.extend({
-  className: 'category_in_set listItem',
+App.CategorySuccessorItemView = App.SuccessorItemView.extend({
+  className: 'category_in_set successorItem',
   template:_.template($('#category_in_set').html())
 });
 
-App.WorkChildItemView = App.ChildItemView.extend({
-  className: 'work_in_set listItem',
+App.WorkSuccessorItemView = App.SuccessorItemView.extend({
+  className: 'work_in_set successorItem',
   template:_.template($('#work_in_set').html())
 });
 
-App.PhotoChildItemView = App.ChildItemView.extend({
-  className: 'photo_in_set listItem',
+App.PhotoSuccessorItemView = App.SuccessorItemView.extend({
+  className: 'photo_in_set successorItem',
   template:_.template($('#photo_in_set').html())
 });
 
@@ -76,37 +68,45 @@ App.emptyListItem = Backbone.View.extend({
 
 
 /* ------------------------------------------------------------------- */
-// ChildLists
+// Successor Set List
 /* ------------------------------------------------------------------- */
 
-// what to render if listing has no subsetItems (possibly in subsetItems view)
+// Render what if vertex has no successors?
 
-App.SubsetListView = Backbone.View.extend({
+App.SuccsetListView = Backbone.View.extend({
   tagName: 'ol',
-  className: 'subset_list',
+  className: 'succset_list',
 
   initialize: function(){
-    this.listenToOnce(this.model, 'referenced', this.listenToModel);
+
+    this.listenTo(this.model, 'change:succset', this.cons);
+    this.listenTo(this.model, 'change:succset', this.render);
+    if(!this.model.isDeep()){
+      this.listenToOnce(this.model, 'referenced', this.render);
+    }
   },
 
-  listenToModel: function(){
-    this.render();
-    this.listenTo(this.model, 'change:subset', this.render)
+  cons: function(){
+    console.log('change:succset');
   },
 
   render: function(){
-    // should be referenced subset, check if deep
-    if(!this.model.isDeep()){return false;}
-    console.log("Rendering SubsetList");
-    subsetItems = this.model.get('subset');
+    // check if deep
+    if(!this.model.isDeep()){
+      console.log('failed, not deep');
+      return false;
+    }
+
+    console.log("Rendering SuccsetList");
+    successors = this.model.get('succset');
     this.$el.empty();
 
-    _.each(subsetItems, function(subsetItem, index){
-      var viewFactory = App.typeDictionary[subsetItem._cls]['listItemView'];
-      var listItemView = new viewFactory({'model':subsetItem, 'predecessor': this.model});
+    _.each(successors, function(successor, index){
+      var viewFactory = App.typeDictionary[successor._cls]['successorListItemView'];
+      var successorListItemView = new viewFactory({'model':successor, 'predecessor': this.model});
 
-      this.$el.append(listItemView.render().el);
-      listItemView.listenTo(subsetItem, 'change', listItemView.render);
+      this.$el.append(successorListItemView.render().el);
+      successorListItemView.listenTo(successor, 'change', successorListItemView.render);
 
     }, this);
 
@@ -114,11 +114,11 @@ App.SubsetListView = Backbone.View.extend({
   }
 });
 
-App.PortfolioSubsetListView = App.SubsetListView.extend({});
+App.PortfolioSubsetListView = App.SuccsetListView.extend({});
 
-App.CategorySubsetListView = App.SubsetListView.extend({});
+App.CategorySubsetListView = App.SuccsetListView.extend({});
 
-App.WorkSubsetListView = App.SubsetListView.extend({});
+App.WorkSubsetListView = App.SuccsetListView.extend({});
 
 
 /* ------------------------------------------------------------------- */
@@ -137,10 +137,17 @@ App.SummaryView = Backbone.View.extend({ // Abstract class - do not instantiate!
   },
 
   initialize: function(){
+    if(!this.model.isFetched()){ // set up sync handler to render after success function is called
+      this.listenToOnce(this.model, 'sync', this.render);
+    }
     this.listenTo(this.model, 'summaryChanged', this.render)
   },
 
   render: function(){
+    if(!this.model.isFetched()){
+      console.log('failed, not fetched');
+      return false;
+    }
     console.log("Rendering Summary");
     this.$el.html(this.template(this.model.toJSON()));
     this.delegateEvents();
@@ -198,7 +205,7 @@ App.ListingView = Backbone.View.extend({ // Akin to FormView
 
     var viewFactory = App.typeDictionary[_cls]['summaryView'];
     this.summary = new viewFactory({model:this.model}),
-    this.list = new App.SubsetListView({model:this.model})
+    this.list = new App.SuccsetListView({model:this.model})
 
     this.appendElements();
 
@@ -206,6 +213,11 @@ App.ListingView = Backbone.View.extend({ // Akin to FormView
     // append subViews and have them listen to
     // the models
 
+  },
+
+  render: function(){
+    this.summary.render();
+    this.list.render();
   },
 
   appendElements: function(){
@@ -242,6 +254,7 @@ App.ListingPanel = Backbone.View.extend({
 
     this.view = new App.ListingView({'model':this.listed_model, 'className': className});
     this.$el.html(this.view.el);
+    this.view.render();
   }
 
 });
