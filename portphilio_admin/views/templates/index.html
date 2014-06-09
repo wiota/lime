@@ -9,12 +9,6 @@
 
 {% block backbone_templates %}
 
-  <!-- Listing -->
-
-  <script type="text/template" id="listing">
-    <!-- no use yet -->
-  </script>
-
   <!-- Summary -->
 
   <script type="text/template" id="default_summary">
@@ -45,7 +39,7 @@
     <i class='info_tag'><%= _cls %> - <%= _id %></i>
   </script>
 
-  <!-- Child -->
+  <!-- SuccsetItem -->
 
   <script type="text/template" id="category_in_set">
     <a href='#category/<%= _id %>'><i class='info_tag'><%= _cls %> - <%= _id %></i><%= title %></a>
@@ -114,5 +108,6 @@
   <script src='{{ url_for('admin.static', filename='js/admin_backbone_collections.js') }}'></script>
   <script src='{{ url_for('admin.static', filename='js/admin_backbone_views.js') }}'></script>
   <script src='{{ url_for('admin.static', filename='js/admin_backbone_form_views.js') }}'></script>
+  <script src='{{ url_for('admin.static', filename='js/admin_backbone_router.js') }}'></script>
   <script src='{{ url_for('admin.static', filename='js/work.js') }}'></script>
 {% endblock %}
