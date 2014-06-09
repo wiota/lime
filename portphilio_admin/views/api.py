@@ -120,6 +120,15 @@ def put_subset(subset_type, id):
     return jsonify(result="success"), 200  # TODO: Should be a 204
 
 
+@mod.route('/body/subset/', methods=['PUT'])
+@login_required
+def put_body_subset():
+    Body.objects(
+        owner=current_user.id).update_one(
+        set__subset=request.json['subset'])
+    return jsonify(result="success"), 200  # TODO: Should be a 204
+
+
 @mod.route('/<subset_type>/<id>', methods=['DELETE'])
 @login_required
 def delete_by_id(subset_type, id):
