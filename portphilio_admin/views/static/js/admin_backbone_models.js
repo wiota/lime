@@ -31,21 +31,13 @@ App.Subset = Backbone.Model.extend({
   triggerEvents: function(model, options){
     var attr = model.changedAttributes()
     var summary_attr = _.omit(attr, 'subset');
-    var succset = attr['subset'] || false;
 
-    console.log('------ Change in ' + this.get('_cls') + ' ------');
     console.log(_.keys(attr));
-    console.log('-----------------------------------');
 
     if(!_.isEmpty(summary_attr)){
-      console.log('Summary Changed');
       this.trigger('summaryChanged', this, {'attr':summary_attr});
     }
-    if(succset){
-      console.log('Subset Changed');
-      this.trigger('succsetChanged', this, {'succset':succset});
-    }
-    console.log('-----------------------------------');
+
   },
 
   isFetched: function(){
@@ -65,7 +57,7 @@ App.Subset = Backbone.Model.extend({
   },
 
   deepenSuccess: function(model, response, options){
-    console.log("Success! Fetched "+model.get("_cls"));
+    // console.log("Fetched "+model.get("_cls"));
     var collection = App.typeDictionary[model.get('_cls')]['collection'];
     collection.add(model);
     model.fetched = true;
@@ -95,9 +87,8 @@ App.Subset = Backbone.Model.extend({
 
     })
 
-    this.set({'subset': subsetReferences});
     this.deep = true;
-    console.log('Subset Referenced');
+    this.set({'subset': subsetReferences});
     this.trigger('referenced');
   },
 

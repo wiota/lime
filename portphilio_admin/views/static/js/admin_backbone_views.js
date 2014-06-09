@@ -28,12 +28,10 @@ App.ChildItemView = Backbone.View.extend({ // Abstract class - do not instantiat
   },
 
   delete: function(){
-
     this.model.destroy({
       success: this.destroySuccess,
       error: this.destroyError
     });
-
   },
 
   updateForm: function(){
@@ -88,13 +86,18 @@ App.SubsetListView = Backbone.View.extend({
   className: 'subset_list',
 
   initialize: function(){
-    this.listenTo(this.model, 'succsetChanged', this.render)
+    this.listenToOnce(this.model, 'referenced', this.listenToModel);
+  },
+
+  listenToModel: function(){
+    this.render();
+    this.listenTo(this.model, 'change:subset', this.render)
   },
 
   render: function(){
     // should be referenced subset, check if deep
     if(!this.model.isDeep()){return false;}
-    console.log("------ Rendering SubsetList -------");
+    console.log("Rendering SubsetList");
     subsetItems = this.model.get('subset');
     this.$el.empty();
 
@@ -138,7 +141,7 @@ App.SummaryView = Backbone.View.extend({ // Abstract class - do not instantiate!
   },
 
   render: function(){
-    console.log("------ Rendering Summary -------");
+    console.log("Rendering Summary");
     this.$el.html(this.template(this.model.toJSON()));
     this.delegateEvents();
     return this;
@@ -199,41 +202,15 @@ App.ListingView = Backbone.View.extend({ // Akin to FormView
 
     this.appendElements();
 
-    // need 2 new events at the subset level that will fire
-    // when subset is updated and when summary is updated
+    // No longer render from this view, instead
+    // append subViews and have them listen to
+    // the models
 
-    this.listenTo(this.model, 'referenced', this.renderList);
-    //this.summary.listenTo(this.model, 'change', this.summary.render);
-    //this.list.listenTo(this.model, 'change', this.list.render);
-
-    this.renderAvailable();
   },
 
   appendElements: function(){
     this.$el.append(this.summary.el);
     this.$el.append(this.list.el);
-  },
-
-  renderAvailable: function(){
-    console.log('Rendering Listing View' + ' fetch:' + this.model.isFetched() + ' deep:' + this.model.isDeep());
-
-    if(this.model.isFetched()){
-      this.renderSummary();
-    }
-    if(this.model.isDeep()){
-      this.renderList();
-    }
-    return this;
-  },
-
-  renderSummary: function(){
-    this.summary.render();
-    return this;
-  },
-
-  renderList: function(){
-    this.list.render();
-    return this;
   }
 
 })
@@ -265,11 +242,6 @@ App.ListingPanel = Backbone.View.extend({
 
     this.view = new App.ListingView({'model':this.listed_model, 'className': className});
     this.$el.html(this.view.el);
-
-  },
-
-  render: function() {
-    this.view.render();
   }
 
 });
