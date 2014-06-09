@@ -48,12 +48,6 @@ App.Router = Backbone.Router.extend({
 $(document).ready(function() {
   App.router = new App.Router();
 
-  // Collection-based storage
-  App.portfolioStorage.initialize();
-  App.categoryStorage = new App.CategoryCollection();
-  App.workStorage = new App.WorkCollection();
-  App.photoStorage = new App.PhotoCollection();
-
   App.typeDictionary = {
     'Vertex.Body': {
       'model': App.Portfolio,

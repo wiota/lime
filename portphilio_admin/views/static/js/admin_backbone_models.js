@@ -1,13 +1,17 @@
 /* ------------------------------------------------------------------- */
-// Models
-// for admin
+// Portphillio Admin Backbone Models
 /* ------------------------------------------------------------------- */
 
+App.Model = {};
+
+/* ------------------------------------------------------------------- */
+// App Model Overrides
+/* ------------------------------------------------------------------- */
 
 Backbone.Model.prototype.parse = function(response){
   if(response.result);
   return response.result;
-}
+};
 
 Backbone.Model.prototype.idAttribute = "_id";
 
@@ -15,7 +19,7 @@ Backbone.Model.prototype.idAttribute = "_id";
 // Vertex - Abstract class - do not instantiate!
 /* ------------------------------------------------------------------- */
 
-App.Vertex = Backbone.Model.extend({
+App.Model['Vertex'] = App.Vertex = Backbone.Model.extend({
   formSerialization: null,
   formUrl: null,
 
@@ -50,6 +54,7 @@ App.Vertex = Backbone.Model.extend({
   },
 
   deepen: function(){
+    console.log('deepen');
     this.fetch({
       success: this.deepenSuccess,
       error: this.deepenError
@@ -59,7 +64,7 @@ App.Vertex = Backbone.Model.extend({
 
   deepenSuccess: function(model, response, options){
     console.log("Fetched "+model.get("_cls"));
-    var collection = App.typeDictionary[model.get('_cls')]['collection'];
+    var collection = App.collection[model.get('_cls')];
     collection.add(model);
     model.fetched = true;
     // not considered deep until referenced
@@ -76,12 +81,11 @@ App.Vertex = Backbone.Model.extend({
 
     _.each(succset, function(succsetitem){
 
-      var modelFactory = App.typeDictionary[succsetitem._cls]['model'];
+      var modelFactory = App.Model[succsetitem._cls];
       var model = new modelFactory(succsetitem);
       model.deep = false;
       model.fetched = true;
-
-      var collection = App.typeDictionary[succsetitem._cls]['collection'];
+      var collection = App.collection[succsetitem._cls];
       collection.add(model);
 
       succsetReferences.push(model);
@@ -142,7 +146,7 @@ App.Vertex = Backbone.Model.extend({
 // Category
 /* ------------------------------------------------------------------- */
 
-App.Category = App.Vertex.extend({
+App.Model['Vertex.Category'] = App.Category = App.Vertex.extend({
   urlRoot: "api/v1/category/",
   _cls: "Vertex.Category"
 });
@@ -151,7 +155,7 @@ App.Category = App.Vertex.extend({
 // Work
 /* ------------------------------------------------------------------- */
 
-App.Work = App.Vertex.extend({
+App.Model['Vertex.Work'] = App.Work = App.Vertex.extend({
   urlRoot: "api/v1/work/",
   _cls: "Vertex.Work"
 });
@@ -160,7 +164,7 @@ App.Work = App.Vertex.extend({
 // Tag
 /* ------------------------------------------------------------------- */
 
-App.Tag = Backbone.Model.extend({
+App.Model['Vertex.Tag'] = App.Tag = Backbone.Model.extend({
   urlRoot: "api/v1/tag/",
   _cls: "Vertex.Tag"
 });
@@ -169,7 +173,7 @@ App.Tag = Backbone.Model.extend({
 // Medium - Abstract class - do not instantiate!
 /* ------------------------------------------------------------------- */
 
-App.Medium = App.Vertex.extend({
+App.Model['Vertex.Medium'] = App.Medium = App.Vertex.extend({
   _cls: "Vertex.Medium",
 
   initialize: function(){
@@ -185,7 +189,7 @@ App.Medium = App.Vertex.extend({
 /* ------------------------------------------------------------------- */
 
 
-App.Photo = App.Medium.extend({
+App.Model['Vertex.Medium.Photo'] = App.Photo = App.Medium.extend({
   urlRoot: "api/v1/photo/",
   _cls: "Vertex.Medium.Photo",
   formSerialization: {
@@ -197,13 +201,13 @@ App.Photo = App.Medium.extend({
       }
     }
   },
-})
+});
 
 /* ------------------------------------------------------------------- */
 // Body or Portfolio
 /* ------------------------------------------------------------------- */
 
-App.Portfolio = App.Vertex.extend({
+App.Model['Vertex.Body'] = App.Portfolio = App.Vertex.extend({
   urlRoot: "api/v1/body/",
 
   url: function(){
@@ -226,48 +230,18 @@ App.Portfolio = App.Vertex.extend({
 });
 
 /* ------------------------------------------------------------------- */
-// Collections
-// for admin
+// Portphillio Admin Backbone Collections
 /* ------------------------------------------------------------------- */
 
-App.portfolioStorage = {
-  portfolio: null,
-  _cls: 'Vertex.Body',
-
-  initialize: function(){
-    //_.bindAll(this, "fetchSuccess", "fetchError");
-    return this;
-  },
-
-  lookup: function(){
-    var portfolio = this.portfolio = this.get() || this.getEmptyPortfolio();
-    if(!portfolio.isFetched()){
-      return portfolio.deepen();
-    } else {
-      return portfolio;
-    }
-  },
-
-  add: function(model){
-    // noop
-    console.log("Added " + model.get('_cls'));
-  },
-
-  get: function(){
-    return this.portfolio;
-  },
-
-  getEmptyPortfolio: function(){
-    return new App.Portfolio({_cls: this._cls});
-  }
-
-}
+App.Collection = {};
 
 /* ------------------------------------------------------------------- */
-// VertexCollection - Abstract class - do not instantiate!
+// Vertex Collection - Abstract class - do not instantiate!
 /* ------------------------------------------------------------------- */
 
-App.VertexCollection = Backbone.Collection.extend({
+App.Collection['Vertex'] = App.VertexCollection = Backbone.Collection.extend({
+  model: App.Vertex,
+  _cls: 'Vertex',
 
   initialize: function(){
     _.bindAll(this, "added");
@@ -296,30 +270,4 @@ App.VertexCollection = Backbone.Collection.extend({
     // to fill the template
     return new this.model({'_id': id, '_cls': this._cls, 'title': ''});
   }
-})
-
-/* ------------------------------------------------------------------- */
-// CategoryCollection
-/* ------------------------------------------------------------------- */
-
-App.CategoryCollection = App.VertexCollection.extend({
-  model: App.Category,
-  url: "api/v1/category",
-  _cls: 'Vertex.Category'
-})
-
-App.WorkCollection = App.VertexCollection.extend({
-  model: App.Work,
-  url: "api/v1/work",
-  _cls: 'Vertex.Work'
-})
-
-App.PhotoCollection = App.VertexCollection.extend({
-  model: App.Photo,
-  url: "api/v1/photo",
-  _cls: 'Vertex.Medium.Photo',
-
-  added: function(model, collection){
-    //console.log("Added " + model.get('_cls'));
-  }
-})
+});

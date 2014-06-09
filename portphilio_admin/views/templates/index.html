@@ -17,6 +17,10 @@
 
   <!-- Summary -->
 
+  <script type="text/template" id="default_summary">
+    <div class='default_title'><i class='info_tag'></i><%= _cls %></div>
+  </script>
+
   <script type="text/template" id="portfolio_summary">
     <div class='portfolio_title'><i class='info_tag'></i>Welcome</div>
   </script>
@@ -107,6 +111,7 @@
 
   <script src='{{ url_for('admin.static', filename='js/admin_app.js') }}'></script>
   <script src='{{ url_for('admin.static', filename='js/admin_backbone_models.js') }}'></script>
+  <script src='{{ url_for('admin.static', filename='js/admin_backbone_collections.js') }}'></script>
   <script src='{{ url_for('admin.static', filename='js/admin_backbone_views.js') }}'></script>
   <script src='{{ url_for('admin.static', filename='js/admin_backbone_form_views.js') }}'></script>
   <script src='{{ url_for('admin.static', filename='js/work.js') }}'></script>

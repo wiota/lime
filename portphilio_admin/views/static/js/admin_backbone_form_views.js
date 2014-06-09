@@ -1,6 +1,8 @@
 /* ------------------------------------------------------------------- */
-// Action Forms
+// Portphillio Admin Backbone Forms
 /* ------------------------------------------------------------------- */
+
+App.Form = {};
 
 App.FormView = Backbone.View.extend({ // Akin to ListingView
   tagName: 'form',
@@ -116,7 +118,9 @@ App.PhotoUploadForm = App.FormView.extend({
   uploadFinish: function(href){
     this.progress_bar.css({'width':'0%'});
 
-    var collection = App.typeDictionary['Subset.Medium.Photo']['collection'];
+    // I should not be hard coding the cls here
+    var _cls = 'Subset.Medium.Photo';
+    var collection = App.Collection[_cls];
     var photo = collection.create({"href": href})
 
     this.listenTo(collection, 'sync', this.photoSynced);

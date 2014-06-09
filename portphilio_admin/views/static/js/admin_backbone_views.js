@@ -1,10 +1,16 @@
+/* ------------------------------------------------------------------- */
 // Portphillio Admin Backbone Views
-
-/* ------------------------------------------------------------------- */
-// Successors
 /* ------------------------------------------------------------------- */
 
-App.SuccessorItemView = Backbone.View.extend({ // Abstract class - do not instantiate!
+App.View = {};
+
+/* ------------------------------------------------------------------- */
+// Successor Item View (SuccsetItemView?)
+/* ------------------------------------------------------------------- */
+
+App.View.SuccessorItemView = {};
+
+App.View.SuccessorItemView['Vertex'] = App.SuccessorItemView = Backbone.View.extend({ // Abstract class - do not instantiate!
   tagName: 'li',
   className: 'successorItem',
 
@@ -45,35 +51,39 @@ App.SuccessorItemView = Backbone.View.extend({ // Abstract class - do not instan
     console.log("Destroy Error " +response);
   }
 
-})
+});
 
-App.CategorySuccessorItemView = App.SuccessorItemView.extend({
+App.View.SuccessorItemView['Vertex.Category'] = App.CategorySuccessorItemView = App.SuccessorItemView.extend({
   className: 'category_in_set successorItem',
   template:_.template($('#category_in_set').html())
 });
 
-App.WorkSuccessorItemView = App.SuccessorItemView.extend({
+App.View.SuccessorItemView['Vertex.Work'] = App.WorkSuccessorItemView = App.SuccessorItemView.extend({
   className: 'work_in_set successorItem',
   template:_.template($('#work_in_set').html())
 });
 
-App.PhotoSuccessorItemView = App.SuccessorItemView.extend({
+App.View.SuccessorItemView['Vertex.Medium.Photo'] = App.PhotoSuccessorItemView = App.SuccessorItemView.extend({
   className: 'photo_in_set successorItem',
   template:_.template($('#photo_in_set').html())
 });
 
-App.emptyListItem = Backbone.View.extend({
-  tagName: 'li'
+App.View.SuccessorItemView['empty'] = App.emptyListItem = Backbone.View.extend({
+  tagName: 'li',
+  initialize: function(){
+    this.$el.html('Empty');
+  }
 });
 
 
 /* ------------------------------------------------------------------- */
 // Successor Set List
 /* ------------------------------------------------------------------- */
-
 // Render what if vertex has no successors?
 
-App.SuccsetListView = Backbone.View.extend({
+App.View.SuccsetListView = {};
+
+App.View.SuccsetListView['Vertex'] = App.SuccsetListView = Backbone.View.extend({
   tagName: 'ol',
   className: 'succset_list',
 
@@ -102,11 +112,11 @@ App.SuccsetListView = Backbone.View.extend({
     this.$el.empty();
 
     _.each(successors, function(successor, index){
-      var viewFactory = App.typeDictionary[successor._cls]['successorListItemView'];
-      var successorListItemView = new viewFactory({'model':successor, 'predecessor': this.model});
+      var viewFactory = App.View.SuccessorItemView[successor._cls];
+      var successorItemView = new viewFactory({'model':successor, 'predecessor': this.model});
 
-      this.$el.append(successorListItemView.render().el);
-      successorListItemView.listenTo(successor, 'change', successorListItemView.render);
+      this.$el.append(successorItemView.render().el);
+      successorItemView.listenTo(successor, 'change', successorItemView.render);
 
     }, this);
 
@@ -114,20 +124,17 @@ App.SuccsetListView = Backbone.View.extend({
   }
 });
 
-App.PortfolioSubsetListView = App.SuccsetListView.extend({});
-
-App.CategorySubsetListView = App.SuccsetListView.extend({});
-
-App.WorkSubsetListView = App.SuccsetListView.extend({});
-
 
 /* ------------------------------------------------------------------- */
 // Summaries
 /* ------------------------------------------------------------------- */
 
-App.SummaryView = Backbone.View.extend({ // Abstract class - do not instantiate!
+App.View.SummaryView = {};
+
+App.View.SummaryView['Vertex'] = App.SummaryView = Backbone.View.extend({
   tagName: 'div',
   className: 'summary',
+  template:_.template($('#default_summary').html()),
 
   events:{
     'click .update':'updateForm',
@@ -174,15 +181,15 @@ App.SummaryView = Backbone.View.extend({ // Abstract class - do not instantiate!
 
 });
 
-App.PortfolioSummaryView = App.SummaryView.extend({
+App.View.SummaryView['Vertex.Body'] = App.PortfolioSummaryView = App.SummaryView.extend({
   template:_.template($('#portfolio_summary').html()),
 });
 
-App.CategorySummaryView = App.SummaryView.extend({
+App.View.SummaryView['Vertex.Category'] = App.CategorySummaryView = App.SummaryView.extend({
   template:_.template($('#category_summary').html()),
 });
 
-App.WorkSummaryView = App.SummaryView.extend({
+App.View.SummaryView['Vertex.Work'] = App.WorkSummaryView = App.SummaryView.extend({
   template:_.template($('#work_summary').html()),
 });
 
@@ -190,7 +197,9 @@ App.WorkSummaryView = App.SummaryView.extend({
 // Listings
 /* ------------------------------------------------------------------- */
 
-App.ListingView = Backbone.View.extend({ // Akin to FormView
+App.View.ListingView = {};
+
+App.View.ListingView['Vertex'] = App.ListingView = Backbone.View.extend({ // Akin to FormView
   tagName: 'div',
   _cls: null,
   summary: null,
@@ -199,20 +208,13 @@ App.ListingView = Backbone.View.extend({ // Akin to FormView
   initialize: function(){
     var _cls = this.model.get('_cls');
 
-    // I would love to do this:
-    // App.Factories.Views[_cls]['summaryView']
-    // see work.js for implementation
-
-    var viewFactory = App.typeDictionary[_cls]['summaryView'];
+    var viewFactory = App.View.SummaryView[_cls];
     this.summary = new viewFactory({model:this.model}),
     this.list = new App.SuccsetListView({model:this.model})
 
     this.appendElements();
-
-    // No longer render from this view, instead
-    // append subViews and have them listen to
-    // the models
-
+    // View does not render on initialize
+    // Must be explicitly rendered by ListingPanel
   },
 
   render: function(){
@@ -225,13 +227,13 @@ App.ListingView = Backbone.View.extend({ // Akin to FormView
     this.$el.append(this.list.el);
   }
 
-})
+});
 
-App.PortfolioListingView = App.ListingView.extend({})
+App.View.ListingView['Vertex.Body'] = App.PortfolioListingView = App.ListingView.extend({});
 
-App.CategoryListingView = App.ListingView.extend({})
+App.View.ListingView['Vertex.Category'] = App.CategoryListingView = App.ListingView.extend({});
 
-App.WorkListingView = App.ListingView.extend({})
+App.View.ListingView['Vertex.Work'] = App.WorkListingView = App.ListingView.extend({});
 
 /* ------------------------------------------------------------------- */
 // Listing Panel
