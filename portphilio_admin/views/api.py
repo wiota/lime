@@ -47,7 +47,8 @@ def put_work(id):
     del data['_id']
     del data['_cls']
     del data['owner']
-    del data['subset']
+    del data['succset']
+    del data['predset']
 
     update_document(
         Work.objects.get(
@@ -83,7 +84,8 @@ def put_category(id):
     del data['_id']
     del data['_cls']
     del data['owner']
-    del data['subset']
+    del data['succset']
+    del data['predset']
 
     update_document(
         Category.objects.get(
@@ -104,35 +106,35 @@ def post_photo():
     return photo.to_bson(expand=False), 200
 
 
-@mod.route('/<subset_type>/<id>')
+@mod.route('/<vertex_type>/<id>')
 @login_required
-def subset_id(subset_type, id):
-    return Subset.objects.get(owner=current_user.id, id=id).to_bson()
+def vertex_id(vertex_type, id):
+    return Vertex.objects.get(owner=current_user.id, id=id).to_bson()
 
 
-@mod.route('/<subset_type>/<id>/subset/', methods=['PUT'])
+@mod.route('/<vertex_type>/<id>/succset/', methods=['PUT'])
 @login_required
-def put_subset(subset_type, id):
-    Subset.objects(
+def put_succset(vertex_type, id):
+    Vertex.objects(
         owner=current_user.id,
         id=id).update_one(
-        set__subset=request.json['subset'])
+        set__succset=request.json['succset'])
     return jsonify(result="success"), 200  # TODO: Should be a 204
 
 
-@mod.route('/body/subset/', methods=['PUT'])
+@mod.route('/body/succset/', methods=['PUT'])
 @login_required
-def put_body_subset():
+def put_body_succset():
     Body.objects(
         owner=current_user.id).update_one(
-        set__subset=request.json['subset'])
+        set__succset=request.json['succset'])
     return jsonify(result="success"), 200  # TODO: Should be a 204
 
 
-@mod.route('/<subset_type>/<id>', methods=['DELETE'])
+@mod.route('/<vertex_type>/<id>', methods=['DELETE'])
 @login_required
-def delete_by_id(subset_type, id):
-    Subset.objects.get(id=id).delete()
+def delete_by_id(vertex_type, id):
+    Vertex.objects.get(id=id).delete()
     return jsonify(result="success"), 200  # TODO: Should be a 204
 
 
