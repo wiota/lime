@@ -85,7 +85,7 @@ var msg = (function(thisObj){
           display.fadeOut(100);
         })
 
-      var clear = $('<div class="clear">clear</div>')
+      var clear = Messager.clear = $('<div class="clear">clear</div>')
         .css({
           'cursor':'pointer',
           'font-size':'10px',
@@ -113,6 +113,7 @@ var msg = (function(thisObj){
             Messager.thread = val;
             display.show();
             Messager.refreshDisplay();
+            Messager.clear.html('clear '+ val.label);
           });
       }, Messager)
     },

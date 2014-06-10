@@ -38,6 +38,9 @@ App.View.SuccessorItemView['Vertex'] = App.SuccessorItemView = Backbone.View.ext
 
   render: function(){
     this.$el.html(this.template(this.model.toJSON()));
+    if(this.model.exisited_before_reference){
+      this.$el.addClass('referenced_more_than_once');
+    }
     this.delegateEvents();
     return this
   },
@@ -100,11 +103,13 @@ App.View.SuccsetListView['Vertex'] = App.SuccsetListView = Backbone.View.extend(
       return false;
     }
 
-    msg.log("Rendering SuccsetList", 'render');
+    msg.log("Rendering Succset", 'render');
+    msg.log(this.model._cls + " " + this.model.get('title'), 'render');
     successors = this.model.get('succset');
     this.$el.empty();
 
     _.each(successors, function(successor, index){
+      msg.log(successor._cls, 'render');
       var viewFactory = App.View.SuccessorItemView[successor._cls];
       var successorItemView = new viewFactory({'model':successor, 'predecessor': this.model});
 
@@ -238,8 +243,8 @@ App.ListingPanel = Backbone.View.extend({
   listed_model: null,
 
   list: function(model){
+    msg.log('- List '+model.id+ ' ' + model.deep + ' ------------------','model')
     msg.log('- List '+model.id+' ------------------','render')
-    msg.log('- List '+model.id+' ------------------','model')
     this.listed_model = model;
     var _cls = this.listed_model.get('_cls');
     var className = _cls.toLowerCase().split('.').join(' ') + ' listing';

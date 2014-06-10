@@ -23,30 +23,26 @@ App.Model['Vertex'] = App.Vertex = Backbone.Model.extend({
   formSerialization: null,
   formUrl: null,
 
-  initialize: function(){
+  initialize: function(options){
+    options = options || {};
+    this.fetched = options.fetched || false;
+    this.deep = options.deep || false;
+
     this.formUrl = this.urlRoot + "form/";
     this.set({'_cls': this._cls});
-    this.fetched = false;
-    this.deep = false;
-    //_.bindAll(this, 'triggerEvents');
+
     this.on('change', this.triggerEvents);
-    this.on('summaryChanged', function(){
-      msg.log('CHANGE Summary: '+this.get('title'), 'model');
-    })
-    this.on('change:succset', function(){
-      msg.log('CHANGE Succset', 'model');
-    })
   },
 
   triggerEvents: function(model, options){
     var attr = model.changedAttributes()
     var summary_attr = _.omit(attr, 'succset');
 
-    msg.log("CHANGE Model ['"+_.keys(attr).join("', '") + "']", 'model');
-
     if(!_.isEmpty(summary_attr)){
       this.trigger('summaryChanged', this, {'attr':summary_attr});
     }
+
+    msg.log("CHANGE Model ['"+_.keys(attr).join("', '") + "']", 'model');
   },
 
   isFetched: function(){
@@ -67,7 +63,7 @@ App.Model['Vertex'] = App.Vertex = Backbone.Model.extend({
   },
 
   deepenSuccess: function(model, response, options){
-    msg.log("Fetch Success " + model.get("_id") + " " + model.get("title"),'lookup');
+    msg.log("FETCH SUCCESS " + model.get("_id") + " " + model.get("title"),'lookup');
     var collection = App.collection[model.get('_cls')];
     collection.add(model);
     model.fetched = true;
@@ -83,15 +79,14 @@ App.Model['Vertex'] = App.Vertex = Backbone.Model.extend({
     var succset = this.get('succset');
     var succsetReferences = [];
 
-    _.each(succset, function(succsetitem){
+    _.each(succset, function(object){
 
-      var modelFactory = App.Model[succsetitem._cls];
-      var model = new modelFactory(succsetitem);
-      model.deep = false;
-      model.fetched = true;
-      var collection = App.collection[succsetitem._cls];
+      var collection = App.collection[object._cls];
+      var modelFactory = App.Model[object._cls];
+
+      var model = collection.get(object['_id']) || new modelFactory(object, {'fetched': true, 'deep': false});
+
       collection.add(model);
-
       succsetReferences.push(model);
 
     })
@@ -99,6 +94,8 @@ App.Model['Vertex'] = App.Vertex = Backbone.Model.extend({
 
     this.deep = true;
     this.trigger('referenced');
+    msg.log("REFERENCED", 'lookup');
+    msg.log("REFERENCED", 'model');
   },
 
 

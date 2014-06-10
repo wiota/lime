@@ -18,7 +18,7 @@ App.Collection['Vertex'] = App.VertexCollection = Backbone.Collection.extend({
   },
 
   added: function(model, collection){
-    // console.log("Added " + model.get('_cls') + " " + model.get("title").substr(0, 20));
+    msg.log("ADD " + model.get('_id') + " " + model.get("title").substr(0, 20) + " to " + collection._cls,'model');
   },
 
   // This function returns a model instance and
@@ -77,7 +77,7 @@ App.Collection['Vertex.Body'] = App.BodyCollection = App.VertexCollection.extend
     msgExtra = "";
     msgExtra += portfolio.isFetched() ? "<b>FETCHED</b> " : "";
     msgExtra += portfolio.isDeep() ? "<b>DEEP</b> " : "";
-    msg.log("Lookup: Body" + msgExtra, 'lookup');
+    msg.log("Lookup: Body " + msgExtra, 'lookup');
 
     if(!portfolio.isFetched()){
       return portfolio.deepen();
