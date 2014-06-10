@@ -88,26 +88,19 @@ App.View.SuccsetListView['Vertex'] = App.SuccsetListView = Backbone.View.extend(
   className: 'succset_list',
 
   initialize: function(){
-
-    this.listenTo(this.model, 'change:succset', this.cons);
     this.listenTo(this.model, 'change:succset', this.render);
     if(!this.model.isDeep()){
       this.listenToOnce(this.model, 'referenced', this.render);
     }
   },
 
-  cons: function(){
-    console.log('change:succset');
-  },
-
   render: function(){
     // check if deep
     if(!this.model.isDeep()){
-      console.log('failed, not deep');
       return false;
     }
 
-    console.log("Rendering SuccsetList");
+    msg.log("Rendering SuccsetList", 'render');
     successors = this.model.get('succset');
     this.$el.empty();
 
@@ -138,7 +131,7 @@ App.View.SummaryView['Vertex'] = App.SummaryView = Backbone.View.extend({
 
   events:{
     'click .update':'updateForm',
-    'click .save_order':'saveSubset',
+    'click .save_order':'saveVertex',
     'click .add_work':'addWorkForm',
     'click .add_photo':'addPhotoForm'
   },
@@ -152,10 +145,9 @@ App.View.SummaryView['Vertex'] = App.SummaryView = Backbone.View.extend({
 
   render: function(){
     if(!this.model.isFetched()){
-      console.log('failed, not fetched');
       return false;
     }
-    console.log("Rendering Summary");
+    msg.log("Rendering Summary", 'render');
     this.$el.html(this.template(this.model.toJSON()));
     this.delegateEvents();
     return this;
@@ -175,8 +167,8 @@ App.View.SummaryView['Vertex'] = App.SummaryView = Backbone.View.extend({
     App.actionPanel.loadForm(newPhoto, this.model);
   },
 
-  saveSubset: function(){
-    this.model.saveSubset();
+  saveVertex: function(){
+    this.model.saveVertex();
   }
 
 });
@@ -246,6 +238,8 @@ App.ListingPanel = Backbone.View.extend({
   listed_model: null,
 
   list: function(model){
+    msg.log('- List '+model.id+' ------------------','render')
+    msg.log('- List '+model.id+' ------------------','model')
     this.listed_model = model;
     var _cls = this.listed_model.get('_cls');
     var className = _cls.toLowerCase().split('.').join(' ') + ' listing';

@@ -4,21 +4,25 @@ var msg = (function(thisObj){
     threads: {
       'lookup':{
         'on': true,
+        'console': false,
         'label': 'Lookup',
         'messages' : []
       },
       'render':{
         'on': true,
+        'console': false,
         'label': 'Render',
         'messages' : []
       },
       'model':{
         'on': true,
+        'console': false,
         'label': 'Model',
         'messages' : []
       },
       'default':{
         'on': true,
+        'console': false,
         'label': 'Default',
         'messages' : []
       }
@@ -43,7 +47,7 @@ var msg = (function(thisObj){
         .addClass('msg_display')
         .css({
           'position':'fixed',
-          'top':'80%',
+          'top':'60%',
           'left':'0',
           'bottom':'0',
           'right': '0',
@@ -54,16 +58,15 @@ var msg = (function(thisObj){
 
       var displayList = Messager.displayList = $('<div></div>')
         .css({
-          'padding':'1.5%'
+          'padding':'1.5% 1.5% 3%'
         })
         .appendTo(display);
 
       var close = $('<div class="close">X</div>')
         .css({
           'position':'fixed',
-          'top':'80%',
+          'top':'60%',
           'right': '0',
-          'color':'#fff',
           'font-size':'50px',
           'padding':'3%',
           'margin':'1.5%'
@@ -110,6 +113,9 @@ var msg = (function(thisObj){
         if(Messager.thread === thread){
           Messager.addToDisplay(line);
         }
+        if(thread.console){
+          console.log(msg);
+        }
       }
     },
 
@@ -119,7 +125,6 @@ var msg = (function(thisObj){
           $(this).find('.stack').slideToggle();
         })
         .appendTo(Messager.displayList);
-        console.log(Messager.displayList.height());
         Messager.display.scrollTop(Messager.display.height())
     },
 

@@ -24,12 +24,16 @@ App.Collection['Vertex'] = App.VertexCollection = Backbone.Collection.extend({
   // This function returns a model instance and
   // initiates a deepen call on the model if necessary
   lookup: function(id){
-    var succset = this.get(id) || this.getEmpty(id);
-    //console.log(succset.isFetched() + " " + succset.isDeep());
-    if(!succset.isFetched() || !succset.isDeep()){
-      return succset.deepen();
+    var vertex = this.get(id) || this.getEmpty(id);
+    msgExtra = "";
+    msgExtra += vertex.isFetched() ? "<b>FETCHED</b> " : "";
+    msgExtra += vertex.isDeep() ? "<b>DEEP</b>" : "";
+    msg.log("Lookup: " + id + " " + vertex.get('title') + " " + msgExtra, 'lookup');
+
+    if(!vertex.isFetched() || !vertex.isDeep()){
+      return vertex.deepen();
     } else {
-      return succset;
+      return vertex;
     }
   },
 
@@ -68,22 +72,24 @@ App.Collection['Vertex.Body'] = App.BodyCollection = App.VertexCollection.extend
   _cls: 'Vertex.Body',
   portfolio: null,
 
-  initialize: function(){
-    return this;
-  },
-
   lookup: function(){
-    var portfolio = this.portfolio = this.get() || this.getEmpty();
+    var portfolio = this.get() || this.getEmpty();
+    msgExtra = "";
+    msgExtra += portfolio.isFetched() ? "<b>FETCHED</b> " : "";
+    msgExtra += portfolio.isDeep() ? "<b>DEEP</b> " : "";
+    msg.log("Lookup: Body" + msgExtra, 'lookup');
+
     if(!portfolio.isFetched()){
       return portfolio.deepen();
     } else {
       return portfolio;
     }
+
   },
 
   add: function(model){
-    // noop
-    console.log("Added " + model.get('_cls'));
+    this.portfolio = model;
+    msg.log("Added Body",'model');
   },
 
   get: function(){

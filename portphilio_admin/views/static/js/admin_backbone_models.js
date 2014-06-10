@@ -30,19 +30,23 @@ App.Model['Vertex'] = App.Vertex = Backbone.Model.extend({
     this.deep = false;
     //_.bindAll(this, 'triggerEvents');
     this.on('change', this.triggerEvents);
+    this.on('summaryChanged', function(){
+      msg.log('CHANGE Summary: '+this.get('title'), 'model');
+    })
+    this.on('change:succset', function(){
+      msg.log('CHANGE Succset', 'model');
+    })
   },
 
   triggerEvents: function(model, options){
-    console.log('change')
     var attr = model.changedAttributes()
     var summary_attr = _.omit(attr, 'succset');
 
-    console.log(_.keys(attr));
+    msg.log("CHANGE Model ['"+_.keys(attr).join("', '") + "']", 'model');
 
     if(!_.isEmpty(summary_attr)){
       this.trigger('summaryChanged', this, {'attr':summary_attr});
     }
-
   },
 
   isFetched: function(){
@@ -54,7 +58,7 @@ App.Model['Vertex'] = App.Vertex = Backbone.Model.extend({
   },
 
   deepen: function(){
-    msg.log(this.get("_cls") + " " + this.get("_id") + " lookup", 'lookup');
+    msg.log("GET "+ this.url(), 'lookup');
     this.fetch({
       success: this.deepenSuccess,
       error: this.deepenError
@@ -63,7 +67,7 @@ App.Model['Vertex'] = App.Vertex = Backbone.Model.extend({
   },
 
   deepenSuccess: function(model, response, options){
-    console.log("Fetched "+model.get("_cls"));
+    msg.log("Fetch Success " + model.get("_id") + " " + model.get("title"),'lookup');
     var collection = App.collection[model.get('_cls')];
     collection.add(model);
     model.fetched = true;
@@ -209,22 +213,10 @@ App.Model['Vertex.Medium.Photo'] = App.Photo = App.Medium.extend({
 
 App.Model['Vertex.Body'] = App.Portfolio = App.Vertex.extend({
   urlRoot: "api/v1/body/",
+  _cls: "Vertex.Body",
 
   url: function(){
     return this.urlRoot;
-  },
-
-  initialize: function(){
-    this.fetched = false;
-    this.deep = false;
-  },
-
-  isFetched: function(){
-    return this.fetched;
-  },
-
-  isDeep: function(){
-    return this.deep;
   }
 
 });

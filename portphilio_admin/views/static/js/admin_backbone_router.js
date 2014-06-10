@@ -21,7 +21,6 @@ App.Router = Backbone.Router.extend({
 
   // Body of work
   getPortfolio: function() {
-    msg.log("Lookup body ", 'lookup')
     var portfolio = App.portfolioStorage.lookup();
     App.listingPanel.list(portfolio);
   },
@@ -29,7 +28,6 @@ App.Router = Backbone.Router.extend({
   // Category
 
   getCategory: function(id) {
-    msg.log("Lookup category " + id, 'lookup')
     var category = App.categoryStorage.lookup(id);
     App.listingPanel.list(category);
   },
@@ -37,7 +35,6 @@ App.Router = Backbone.Router.extend({
   // Work
 
   getWork: function(id){
-    msg.log("Lookup work " + id, 'lookup')
     var work = App.workStorage.lookup(id);
     App.listingPanel.list(work);
   }

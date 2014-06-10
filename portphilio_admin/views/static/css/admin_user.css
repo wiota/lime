@@ -25,21 +25,26 @@
 
 /* msg class */
 .msg_display {
-  border-top: 2px solid rgba(200,200,200,0.9);
   font-family: 'courier', 'monospaced';
   font-size: 12px;
   line-height: 20px;
   overflow: auto;
-  background-color:rgba(230,230,230,0.9);
+  background-color:rgba(50,50,50,1);
+  color: #fff;
+  }
+
+.msg_display a {
+  color: #fff;
   }
 
 .msg_display .close {
-  background-color:rgba(200,200,200,0.9);
+  background-color:rgba(0,0,0,0.4);
+  color: #fff;
   }
 
 .msg_display .stack {
   display:none;
-  background-color: #fff;
+  background-color:rgba(80,80,80,1);
   padding: 1.5%;
-  color: #990;
+  color: #ffa;
   }
