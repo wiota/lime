@@ -70,10 +70,8 @@ var msg = (function(thisObj){
           'width':'10%',
           'text-align':'center'
         })
-        .appendTo(display)
-        .on('click', function(){
-          display.fadeOut(100);
-        })
+        .appendTo(display);
+
 
       var close = $('<div class="close">X</div>')
         .css({
