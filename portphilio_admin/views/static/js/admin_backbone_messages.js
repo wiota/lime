@@ -62,23 +62,48 @@ var msg = (function(thisObj){
         })
         .appendTo(display);
 
-      var close = $('<div class="close">X</div>')
+      var displayMenu = $('<div></div>')
         .css({
           'position':'fixed',
-          'top':'60%',
+          'top': '60%',
           'right': '0',
-          'font-size':'50px',
-          'padding':'3%',
-          'margin':'1.5%'
+          'width':'10%',
+          'text-align':'center'
         })
         .appendTo(display)
         .on('click', function(){
           display.fadeOut(100);
         })
 
+      var close = $('<div class="close">X</div>')
+        .css({
+          'cursor':'pointer',
+          'font-size':'50px',
+          'padding':'30%',
+          'margin':'20% 0'
+        })
+        .appendTo(displayMenu)
+        .on('click', function(){
+          display.fadeOut(100);
+        })
+
+      var clear = $('<div class="clear">clear</div>')
+        .css({
+          'cursor':'pointer',
+          'font-size':'10px',
+          'padding':'5%',
+          'margin':'20% 0'
+        })
+        .appendTo(displayMenu)
+        .on('click', function(){
+          Messager.thread.messages = []
+          Messager.refreshDisplay();
+        })
+
       _.each(Messager.threads, function(val, key){
         $('<a>'+val.label+'</a>')
           .css({
+            'cursor':'pointer',
             'background-color':'#ccc',
             'display':'block',
             'float':'right',
@@ -89,7 +114,7 @@ var msg = (function(thisObj){
           .on('click', function(){
             Messager.thread = val;
             display.show();
-            Messager.refreshDisplay(key);
+            Messager.refreshDisplay();
           });
       }, Messager)
     },
