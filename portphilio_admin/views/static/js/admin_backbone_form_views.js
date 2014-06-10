@@ -4,7 +4,7 @@
 
 App.Form = {};
 
-App.FormView = Backbone.View.extend({ // Akin to ListingView
+App.Form['Vertex'] = App.FormView = Backbone.View.extend({ // Akin to ListingView
   tagName: 'form',
   templates: {
     'text': _.template($('#text').html()),
@@ -81,7 +81,7 @@ App.FormView = Backbone.View.extend({ // Akin to ListingView
 
 })
 
-App.PhotoUploadForm = App.FormView.extend({
+App.Form['Vertex.Medium.Photo'] = App.PhotoUploadForm = App.FormView.extend({
   s3_upload: null,
 
   initialize: function(options){
@@ -161,7 +161,7 @@ App.ActionPanel = Backbone.View.extend({
     this.predecessor = predecessor;
     var _cls = model.get('_cls');
     var className = _cls.toLowerCase().split('.').join(' ') + ' form';
-    var formFactory = App.typeDictionary[_cls]['formView'] || App.FormView;
+    var formFactory = App.Form[_cls] || App.Form['Vertex'];
 
     this.form = new formFactory({model: this.model, 'predecessor': this.predecessor, 'className': className});
     this.$el.html(this.form.el);
