@@ -22,3 +22,24 @@
   background-color: #78f7d8;
   color: #fff;
   }
+
+/* msg class */
+.msg_display {
+  border-top: 2px solid rgba(200,200,200,0.9);
+  font-family: 'courier', 'monospaced';
+  font-size: 12px;
+  line-height: 20px;
+  overflow: auto;
+  background-color:rgba(230,230,230,0.9);
+  }
+
+.msg_display .close {
+  background-color:rgba(200,200,200,0.9);
+  }
+
+.msg_display .stack {
+  display:none;
+  background-color: #fff;
+  padding: 1.5%;
+  color: #990;
+  }

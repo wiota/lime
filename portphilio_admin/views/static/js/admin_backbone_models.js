@@ -54,7 +54,7 @@ App.Model['Vertex'] = App.Vertex = Backbone.Model.extend({
   },
 
   deepen: function(){
-    console.log('deepen');
+    msg.log(this.get("_cls") + " " + this.get("_id") + " lookup", 'lookup');
     this.fetch({
       success: this.deepenSuccess,
       error: this.deepenError
@@ -108,7 +108,7 @@ App.Model['Vertex'] = App.Vertex = Backbone.Model.extend({
 
   // timeouts? What to do if form does not load?
   fetchForm: function(){
-    console.log("Fetching Form " + this.formUrl);
+    msg.log("Fetching Form " + this.formUrl);
     $.ajax({
       type: 'GET',
       url: this.formUrl,
