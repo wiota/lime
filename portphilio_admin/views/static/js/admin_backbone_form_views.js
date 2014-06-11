@@ -4,26 +4,49 @@
 
 App.Form = {};
 
-App.Form['Vertex'] = App.FormView = Backbone.View.extend({ // Akin to ListingView
-  tagName: 'form',
-  templates: {
-    'text': _.template($('#text').html()),
-    'textarea': _.template($('#textarea').html()),
-    'button': _.template($('#button').html()),
-    's3_image': _.template($('#s3_image').html())
-  },
+App.Form.events = {};
 
-  events : {
-    'keyup input' :'changed',
-    'keyup textarea' :'changed',
-    'click .save': 'save',
-    'click .cancel': 'close',
-    'change #files': 's3_image'
-  },
+App.Form.events['changes'] = {
+  'keyup input' :'changed',
+  'keyup textarea' :'changed'
+};
+
+App.Form.events['actions'] = {
+  'click .save': 'save',
+  'click .cancel': 'close'
+};
+
+App.Form.events['photo'] = {
+  'change #files': 'handle_files'
+};
+
+App.Form.templates = {};
+
+App.Form.templates['serialized'] = {
+  'text': _.template($('#text').html()),
+  'textarea': _.template($('#textarea').html()),
+  'button': _.template($('#button').html())
+};
+
+App.Form.templates['photo'] = {
+  's3_image': _.template($('#s3_image').html())
+};
+
+
+App.Form['serialized'] = Backbone.View.extend({ // Akin to ListingView
+  tagName: 'form',
+  templates: _.extend({},
+    App.Form.templates['serialized']
+  ),
+
+  events: _.extend({},
+    App.Form.events['changes'],
+    App.Form.events['actions']
+  ),
 
   initialize: function (options) {
-    _.bindAll(this, 'changed');
-    this.predecessor = options.predecessor;
+    options = options || {};
+    this.predecessor = options.predecessor || null;
 
     if(this.model.hasForm()){
       this.render();
@@ -31,6 +54,7 @@ App.Form['Vertex'] = App.FormView = Backbone.View.extend({ // Akin to ListingVie
       this.model.fetchForm();
       this.listenTo(this.model, 'hasForm', this.render);
     }
+    _.bindAll(this, 'changed');
   },
 
   changed: function(evt){
@@ -53,10 +77,6 @@ App.Form['Vertex'] = App.FormView = Backbone.View.extend({ // Akin to ListingVie
 
   render: function(){
     _.each(this.model.formSerialization.formFields, function(field, key){
-
-      // Set value from model
-      // Is this a good solution to populating fields
-      // Can it be used to prevent template errors?
       value = this.model.get(key) || '';
 
       // Select template based on field.type
@@ -66,8 +86,6 @@ App.Form['Vertex'] = App.FormView = Backbone.View.extend({ // Akin to ListingVie
       // Pass key, field, and value to form input template function and append result
       var formInput = $(templateFunction({'id':key, 'label':field.label, 'value': value}));
       formInput.appendTo(this.$el);
-
-
     }, this);
 
     this.renderActions();
@@ -81,15 +99,32 @@ App.Form['Vertex'] = App.FormView = Backbone.View.extend({ // Akin to ListingVie
 
 })
 
-App.Form['Vertex.Medium.Photo'] = App.PhotoUploadForm = App.FormView.extend({
+App.Form['Vertex'] = App.Form['serialized'].extend({
+
+});
+
+App.Form['Vertex.Medium.Photo'] = App.Form['serialized'].extend({
   s3_upload: null,
 
   initialize: function(options){
-    _.bindAll(this, 'uploadProgress', 'uploadFinish', 'photoSynced');
-    this.predecessor = options.predecessor;
+    options = options || {};
+    this.predecessor = options.predecessor || null;
+
     this.render();
     this.progress_bar = this.$el.find('.progress_bar');
+    _.bindAll(this, 'uploadProgress', 'uploadFinish', 'photoSynced');
   },
+
+  events: _.extend({},
+    App.Form.events['changes'],
+    App.Form.events['actions'],
+    App.Form.events['photo']
+  ),
+
+  templates: _.extend({},
+    App.Form.templates['serialized'],
+    App.Form.templates['photo']
+  ),
 
   close: function(){
     // abort image uploads
@@ -97,10 +132,10 @@ App.Form['Vertex.Medium.Photo'] = App.PhotoUploadForm = App.FormView.extend({
   },
 
   renderActions: function(){
-    //$(this.templates['button']({'label':'Cancel', 'cls': 'cancel'})).appendTo(this.$el);
+    $(this.templates['button']({'label':'Cancel', 'cls': 'cancel'})).appendTo(this.$el);
   },
 
-  s3_image: function(){
+  handle_files: function(){
     console.log('Upload function called');
     this.s3_upload = new S3Upload({
       file_dom_selector: '#files',
@@ -119,8 +154,8 @@ App.Form['Vertex.Medium.Photo'] = App.PhotoUploadForm = App.FormView.extend({
     this.progress_bar.css({'width':'0%'});
 
     // I should not be hard coding the cls here
-    var _cls = 'Subset.Medium.Photo';
-    var collection = App.Collection[_cls];
+    var _cls = 'Vertex.Medium.Photo';
+    var collection = App.collection[_cls];
     var photo = collection.create({"href": href})
 
     this.listenTo(collection, 'sync', this.photoSynced);
@@ -136,7 +171,7 @@ App.Form['Vertex.Medium.Photo'] = App.PhotoUploadForm = App.FormView.extend({
 
     succset.unshift(photo);
     this.predecessor.set({'succset':succset});
-    this.predecessor.saveSubset();
+    this.predecessor.saveSuccset();
   }
 
 })
