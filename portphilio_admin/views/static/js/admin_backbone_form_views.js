@@ -4,6 +4,10 @@
 
 App.Form = {};
 
+/* ------------------------------------------------------------------- */
+// Events
+/* ------------------------------------------------------------------- */
+
 App.Form.events = {};
 
 App.Form.events['changes'] = {
@@ -13,12 +17,16 @@ App.Form.events['changes'] = {
 
 App.Form.events['actions'] = {
   'click .save': 'save',
-  'click .cancel': 'close'
+  'click .cancel': 'cancel'
 };
 
 App.Form.events['photo'] = {
   'change #files': 'handle_files'
 };
+
+/* ------------------------------------------------------------------- */
+// Templates
+/* ------------------------------------------------------------------- */
 
 App.Form.templates = {};
 
@@ -32,11 +40,13 @@ App.Form.templates['photo'] = {
   's3_image': _.template($('#s3_image').html())
 };
 
+/* ------------------------------------------------------------------- */
+// Serialized Form - Abstract class - do not instantiate!
+/* ------------------------------------------------------------------- */
 
 App.Form['serialized'] = Backbone.View.extend({ // Akin to ListingView
   tagName: 'form',
   serialization: null, // Form serialization should be in a model
-  formUrl: null,
   templates: _.extend({},
     App.Form.templates['serialized']
   ),
@@ -47,48 +57,18 @@ App.Form['serialized'] = Backbone.View.extend({ // Akin to ListingView
   ),
 
   initialize: function (options) {
+    this.collection = App.collection[this.model._cls];
+
     options = options || {};
     this.predecessor = options.predecessor || null;
-    this.serialization = options.serialization || null;
-    this.formUrl = options.formUrl || this.model.urlRoot + "form/";
 
-    if(!this.hasForm()){
-      this.fetchForm();
-      this.listenTo(this, 'hasForm', this.render);
+    if(!this.collection.hasForm()){
+      this.collection.lookupForm();
+      this.listenTo(this.collection, 'hasForm', this.render);
     }
 
     _.bindAll(this, 'changed');
   },
-
-  hasForm: function(){
-    if(!this.serialization){
-      return false;
-    } else {
-      return true;
-    }
-  },
-
-  // timeouts? What to do if form does not load?
-  fetchForm: function(){
-    msg.log("Fetching Form " + this.formUrl);
-    $.ajax({
-      type: 'GET',
-      url: this.formUrl,
-      // type of data we are expecting in return:
-      dataType: 'json',
-      timeout: 1000,
-      context: this,
-      success: function(data){
-        this.serialization = data;
-        this.trigger("hasForm");
-      },
-      error: function(){
-        console.log('Form get error');
-      }
-
-    })
-  },
-
 
   changed: function(evt){
     var changed = evt.currentTarget;
@@ -104,15 +84,21 @@ App.Form['serialized'] = Backbone.View.extend({ // Akin to ListingView
     return false;
   },
 
+  cancel: function(){
+    this.model.fetch();
+    this.close();
+  },
+
   close: function(){
+    this.stopListening(); // Memory Leak solution?
     this.remove();
   },
 
   render: function(){
-    if(!this.hasForm()){
+    if(!this.collection.hasForm()){
       return false;
     }
-    _.each(this.serialization.formFields, function(field, key){
+    _.each(this.collection.formSerialization.formFields, function(field, key){
       value = this.model.get(key) || '';
 
       // Select template based on field.type
@@ -135,9 +121,17 @@ App.Form['serialized'] = Backbone.View.extend({ // Akin to ListingView
 
 })
 
+/* ------------------------------------------------------------------- */
+// Vertex - Default
+/* ------------------------------------------------------------------- */
+
 App.Form['Vertex'] = App.Form['serialized'].extend({
 
 });
+
+/* ------------------------------------------------------------------- */
+// Photo
+/* ------------------------------------------------------------------- */
 
 App.Form['Vertex.Medium.Photo'] = App.Form['serialized'].extend({
   s3_upload: null,

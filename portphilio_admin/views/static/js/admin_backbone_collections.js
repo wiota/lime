@@ -11,10 +11,13 @@ App.Collection = {};
 App.Collection['Vertex'] = App.VertexCollection = Backbone.Collection.extend({
   model: App.Vertex,
   _cls: 'Vertex',
+  formUrl: null,
+  formSerialization: null,
 
   initialize: function(){
-    _.bindAll(this, "added");
+    _.bindAll(this, 'added');
     this.on('add', this.added);
+    this.formUrl = this.url + "form/";
   },
 
   added: function(model, collection){
@@ -38,33 +41,60 @@ App.Collection['Vertex'] = App.VertexCollection = Backbone.Collection.extend({
   },
 
   getEmpty: function(id){
-    // This should return a blank vertex
-    // The vertex should have enough information
-    // to fill the template
+    // Title is blank to temporarily solve template problems
     return new this.model({'_id': id, '_cls': this._cls, 'title': ''});
+  },
+
+  hasForm: function(){
+    if(!this.formSerialization){
+      return false;
+    } else {
+      return true;
+    }
+  },
+
+  // timeouts? What to do if form does not load?
+  fetchForm: function(){
+    msg.log("Fetching Form " + this.formUrl);
+    $.ajax({
+      type: 'GET',
+      url: this.formUrl,
+      // type of data we are expecting in return:
+      dataType: 'json',
+      timeout: 1000,
+      context: this,
+      success: function(data){
+        this.formSerialization = data;
+        this.trigger("hasForm");
+      },
+      error: function(){
+        console.log('Form get error');
+      }
+
+    })
+  },
+
+  lookupForm: function(){
+    this.fetchForm();
   }
 });
 
 App.Collection['Vertex.Category'] = App.CategoryCollection = App.VertexCollection.extend({
   model: App.Category,
-  url: "api/v1/category",
+  url: "api/v1/category/",
   _cls: 'Vertex.Category'
 });
 
 App.Collection['Vertex.Work'] = App.WorkCollection = App.VertexCollection.extend({
   model: App.Work,
-  url: "api/v1/work",
+  url: "api/v1/work/",
   _cls: 'Vertex.Work'
 });
 
 App.Collection['Vertex.Photo'] = App.PhotoCollection = App.VertexCollection.extend({
   model: App.Photo,
-  url: "api/v1/photo",
+  url: "api/v1/photo/",
   _cls: 'Vertex.Medium.Photo',
-
-  added: function(model, collection){
-    //console.log("Added " + model.get('_cls'));
-  }
 });
 
 App.Collection['Vertex.Body'] = App.BodyCollection = App.VertexCollection.extend({ // Unique - only contains one body - may be changed to start vertex
@@ -84,7 +114,6 @@ App.Collection['Vertex.Body'] = App.BodyCollection = App.VertexCollection.extend
     } else {
       return portfolio;
     }
-
   },
 
   add: function(model){
