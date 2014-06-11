@@ -15,14 +15,17 @@ App.View.SuccessorItemView['Vertex'] = App.SuccessorItemView = Backbone.View.ext
   className: 'successorItem',
 
   events:{
-    'click .delete':'delete',
+    'click .delete':'flash',
     'click .update':'updateForm'
   },
 
   initialize: function(options){
+    // destroy should really only update the succset
     _.bindAll(this, 'destroySuccess', 'destroyError');
     this.bind('destroy', this.destroySuccess, this);
     this.predecessor = options.predecessor;
+
+    this.listenTo(this.model, 'sync', this.flash)
   },
 
   delete: function(){
@@ -45,6 +48,14 @@ App.View.SuccessorItemView['Vertex'] = App.SuccessorItemView = Backbone.View.ext
     return this
   },
 
+  // This function seems to reveal that there are leftover
+  // views with event handlers laying around. See issue #20
+  flash: function(){
+    console.log('flash ' + this.model.get('title'));
+    this.$el.css({'opacity': '0.3'});
+    this.$el.animate({'opacity': '1'});
+  },
+
   destroySuccess: function(){
     console.log('Delete Success!');
     this.remove();
@@ -53,6 +64,7 @@ App.View.SuccessorItemView['Vertex'] = App.SuccessorItemView = Backbone.View.ext
   destroyError: function(model, response, options){
     console.log("Destroy Error " +response);
   }
+
 
 });
 
