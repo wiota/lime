@@ -128,7 +128,7 @@ App.Model['Vertex'] = App.Vertex = Backbone.Model.extend({
     })
   },
 
-  saveVertex: function(){
+  saveSuccset: function(){
     var list = this.get('succset');
 
     var options = {
