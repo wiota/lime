@@ -61,7 +61,7 @@ App.Form['serialized'] = Backbone.View.extend({ // Akin to ListingView
   },
 
   hasForm: function(){
-    console.log('checking form' + this.serialization);
+    console.log('checking form ' + this.serialization);
     if(!this.serialization){
       return false;
     } else {
@@ -142,7 +142,7 @@ App.Form['Vertex'] = App.Form['serialized'].extend({
 
 App.Form['Vertex.Medium.Photo'] = App.Form['serialized'].extend({
   s3_upload: null,
-  formSerialization: {
+  serialization: {
     "formFields": {
       "s3_image": {
         "required": true,
