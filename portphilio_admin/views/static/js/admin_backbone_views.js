@@ -259,4 +259,3 @@ App.ListingPanel = Backbone.View.extend({
   }
 
 });
-
