@@ -20,15 +20,12 @@ Backbone.Model.prototype.idAttribute = "_id";
 /* ------------------------------------------------------------------- */
 
 App.Model['Vertex'] = App.Vertex = Backbone.Model.extend({
-  formSerialization: null,
-  formUrl: null,
 
   initialize: function(options){
     options = options || {};
     this.fetched = options.fetched || false;
     this.deep = options.deep || false;
 
-    this.formUrl = this.urlRoot + "form/";
     this.set({'_cls': this._cls});
 
     this.on('change', this.triggerEvents);
@@ -98,36 +95,6 @@ App.Model['Vertex'] = App.Vertex = Backbone.Model.extend({
     msg.log("REFERENCED", 'model');
   },
 
-
-  hasForm: function(){
-    if(!this.formSerialization){
-      return false;
-    } else {
-      return true;
-    }
-  },
-
-  // timeouts? What to do if form does not load?
-  fetchForm: function(){
-    msg.log("Fetching Form " + this.formUrl);
-    $.ajax({
-      type: 'GET',
-      url: this.formUrl,
-      // type of data we are expecting in return:
-      dataType: 'json',
-      timeout: 1000,
-      context: this,
-      success: function(data){
-        this.formSerialization = data;
-        this.trigger("hasForm");
-      },
-      error: function(){
-        console.log('Form get error');
-      }
-
-    })
-  },
-
   saveSuccset: function(){
     var list = this.get('succset');
 
@@ -192,16 +159,7 @@ App.Model['Vertex.Medium'] = App.Medium = App.Vertex.extend({
 
 App.Model['Vertex.Medium.Photo'] = App.Photo = App.Medium.extend({
   urlRoot: "api/v1/photo/",
-  _cls: "Vertex.Medium.Photo",
-  formSerialization: {
-    "formFields": {
-      "s3_image": {
-        "required": true,
-        "type": "s3_image",
-        "label": "Photo"
-      }
-    }
-  },
+  _cls: "Vertex.Medium.Photo"
 });
 
 /* ------------------------------------------------------------------- */

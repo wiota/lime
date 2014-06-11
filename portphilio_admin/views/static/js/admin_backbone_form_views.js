@@ -35,6 +35,8 @@ App.Form.templates['photo'] = {
 
 App.Form['serialized'] = Backbone.View.extend({ // Akin to ListingView
   tagName: 'form',
+  serialization: null, // Form serialization should be in a model
+  formUrl: null,
   templates: _.extend({},
     App.Form.templates['serialized']
   ),
@@ -47,15 +49,47 @@ App.Form['serialized'] = Backbone.View.extend({ // Akin to ListingView
   initialize: function (options) {
     options = options || {};
     this.predecessor = options.predecessor || null;
+    this.serialization = options.serialization || null;
+    this.formUrl = options.formUrl || this.model.urlRoot + "form/";
 
-    if(this.model.hasForm()){
-      this.render();
-    } else {
-      this.model.fetchForm();
-      this.listenTo(this.model, 'hasForm', this.render);
+    if(!this.hasForm()){
+      this.fetchForm();
+      this.listenTo(this, 'hasForm', this.render);
     }
+
     _.bindAll(this, 'changed');
   },
+
+  hasForm: function(){
+    console.log('checking form' + this.serialization);
+    if(!this.serialization){
+      return false;
+    } else {
+      return true;
+    }
+  },
+
+  // timeouts? What to do if form does not load?
+  fetchForm: function(){
+    msg.log("Fetching Form " + this.formUrl);
+    $.ajax({
+      type: 'GET',
+      url: this.formUrl,
+      // type of data we are expecting in return:
+      dataType: 'json',
+      timeout: 1000,
+      context: this,
+      success: function(data){
+        this.serialization = data;
+        this.trigger("hasForm");
+      },
+      error: function(){
+        console.log('Form get error');
+      }
+
+    })
+  },
+
 
   changed: function(evt){
     var changed = evt.currentTarget;
@@ -76,7 +110,10 @@ App.Form['serialized'] = Backbone.View.extend({ // Akin to ListingView
   },
 
   render: function(){
-    _.each(this.model.formSerialization.formFields, function(field, key){
+    if(!this.hasForm()){
+      return false;
+    }
+    _.each(this.serialization.formFields, function(field, key){
       value = this.model.get(key) || '';
 
       // Select template based on field.type
@@ -105,12 +142,20 @@ App.Form['Vertex'] = App.Form['serialized'].extend({
 
 App.Form['Vertex.Medium.Photo'] = App.Form['serialized'].extend({
   s3_upload: null,
+  formSerialization: {
+    "formFields": {
+      "s3_image": {
+        "required": true,
+        "type": "s3_image",
+        "label": "Photo"
+      }
+    }
+  },
 
   initialize: function(options){
     options = options || {};
     this.predecessor = options.predecessor || null;
 
-    this.render();
     this.progress_bar = this.$el.find('.progress_bar');
     _.bindAll(this, 'uploadProgress', 'uploadFinish', 'photoSynced');
   },
@@ -198,11 +243,12 @@ App.ActionPanel = Backbone.View.extend({
     var className = _cls.toLowerCase().split('.').join(' ') + ' form';
     var formFactory = App.Form[_cls] || App.Form['Vertex'];
 
+    if(this.form){
+      this.form.remove();
+    }
+
     this.form = new formFactory({model: this.model, 'predecessor': this.predecessor, 'className': className});
     this.$el.html(this.form.el);
-  },
-
-  render: function() {
     this.form.render();
   }
 
