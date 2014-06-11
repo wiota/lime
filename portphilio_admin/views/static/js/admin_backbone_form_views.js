@@ -61,7 +61,6 @@ App.Form['serialized'] = Backbone.View.extend({ // Akin to ListingView
   },
 
   hasForm: function(){
-    console.log('checking form ' + this.serialization);
     if(!this.serialization){
       return false;
     } else {
