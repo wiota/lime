@@ -91,7 +91,7 @@ App.Form['serialized'] = Backbone.View.extend({ // Akin to ListingView
   },
 
   cancel: function(){
-    this.model.fetch();
+    this.model.outOfSync();
     this.close();
   },
 

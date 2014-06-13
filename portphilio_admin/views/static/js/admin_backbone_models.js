@@ -9,7 +9,7 @@ App.Model = {};
 /* ------------------------------------------------------------------- */
 
 Backbone.Model.prototype.parse = function(response){
-  if(response.result);
+  if(response.result)
   return response.result;
 };
 
@@ -36,7 +36,7 @@ App.Model['Vertex'] = App.Vertex = Backbone.Model.extend({
     var summary_attr = _.omit(attr, 'succset');
 
     if(!_.isEmpty(summary_attr)){
-      this.trigger('summaryChanged', this, {'attr':summary_attr});
+      this.trigger('summaryChanged', {'attr':summary_attr});
     }
 
     msg.log("CHANGE Model ['"+_.keys(attr).join("', '") + "']", 'model');
@@ -48,6 +48,14 @@ App.Model['Vertex'] = App.Vertex = Backbone.Model.extend({
 
   isDeep: function(){
     return this.deep;
+  },
+
+  parse: function(response){
+    if(response.result){
+      response.result.succset = this.reference(response.result.succset);
+      return response.result;
+    }
+
   },
 
   deepen: function(){
@@ -62,37 +70,42 @@ App.Model['Vertex'] = App.Vertex = Backbone.Model.extend({
   deepenSuccess: function(model, response, options){
     msg.log("FETCH SUCCESS " + model.get("_id") + " " + model.get("title"),'lookup');
     var collection = App.collection[model.get('_cls')];
+
     collection.add(model);
+
     model.fetched = true;
-    // not considered deep until referenced
-    model.reference();
+    model.deep = true;
+
+    // referencing done already in parse function
+    // model.set(model.reference(model.get('succset')));
   },
 
   deepenError: function(model, response, options){
     console.log("Fetch unsucessful " + response);
   },
 
-  reference: function(){
-    var succset = this.get('succset');
+  reference: function(succset){
     var succsetReferences = [];
-
     _.each(succset, function(object){
-
       var collection = App.collection[object._cls];
       var modelFactory = App.Model[object._cls];
-
       var model = collection.get(object['_id']) || new modelFactory(object, {'fetched': true, 'deep': false});
 
       collection.add(model);
       succsetReferences.push(model);
+    });
+    return succsetReferences;
+  },
 
-    })
-    this.set({'succset': succsetReferences});
+  outOfSync: function(){
+    this.fetched = false;
+    this.trigger('outofsync');
+    this.once('sync', this.resynced);
+    this.deepen();
+  },
 
-    this.deep = true;
-    this.trigger('referenced');
-    msg.log("REFERENCED", 'lookup');
-    msg.log("REFERENCED", 'model');
+  resynced: function(){
+    this.trigger('resynced');
   },
 
   saveSuccset: function(){

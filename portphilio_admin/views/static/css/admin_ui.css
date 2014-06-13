@@ -171,6 +171,10 @@ i.info_tag {
   font-size: 14px;
   }
 
+.outofsync {
+  text-decoration: line-through;
+}
+
 /* -------------------------------------------------------------------  */
 /* Action Panel */
 

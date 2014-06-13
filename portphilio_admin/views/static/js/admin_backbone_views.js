@@ -24,12 +24,13 @@ App.View.SuccessorItemView['Vertex'] = App.SuccessorItemView = Backbone.View.ext
     _.bindAll(this, 'destroySuccess', 'destroyError');
     this.bind('destroy', this.destroySuccess, this);
     this.predecessor = options.predecessor;
-    console.log(this.model)
-    this.listenTo(this.model, 'sync', this.flash);
+    this.listenTo(this.model, 'outofsync', this.flashOut);
+    this.listenTo(this.model, 'resynced', this.flash);
   },
 
   delete: function(){
     // update the succset of predecessor
+    // problem - does not update the succset at all
     this.model.destroy({
       success: this.destroySuccess,
       error: this.destroyError
@@ -42,11 +43,12 @@ App.View.SuccessorItemView['Vertex'] = App.SuccessorItemView = Backbone.View.ext
 
   render: function(){
     this.$el.html(this.template(this.model.toJSON()));
-    if(this.model.exisited_before_reference){
-      this.$el.addClass('referenced_more_than_once');
-    }
     this.delegateEvents();
     return this
+  },
+
+  flashOut: function(){
+    this.$el.addClass('outofsync');
   },
 
   // This function seems to reveal that there are leftover
@@ -54,6 +56,7 @@ App.View.SuccessorItemView['Vertex'] = App.SuccessorItemView = Backbone.View.ext
   flash: function(){
     console.log('flash ' + this.model.get('title'));
     this.$el.css({'opacity': '0.3'});
+    this.$el.removeClass('outofsync');
     this.$el.animate({'opacity': '1'});
   },
 
@@ -106,7 +109,7 @@ App.View.SuccsetListView['Vertex'] = App.SuccsetListView = Backbone.View.extend(
   initialize: function(){
     this.listenTo(this.model, 'change:succset', this.render);
     if(!this.model.isDeep()){
-      this.listenToOnce(this.model, 'referenced', this.render);
+      this.listenToOnce(this.model, 'sync', this.render);
     }
   },
 
@@ -149,20 +152,29 @@ App.View.SummaryView['Vertex'] = App.SummaryView = Backbone.View.extend({
 
   events:{
     'click .update':'updateForm',
-    'click .save_order':'saveVertex',
+    'click .save_order':'saveSuccset',
     'click .add_work':'addWorkForm',
     'click .add_photo':'addPhotoForm'
   },
 
   initialize: function(){
-    if(!this.model.isFetched()){ // set up sync handler to render after success function is called
-      this.listenToOnce(this.model, 'sync', this.render);
-    }
+    // set up sync handler to render anytime model is synced
+    // Seems sloppy to set up a sync handler and a summary changed
+    // handler. This is done here because summaryChanged is fired before
+    // fetchSuccess callback. Deep and Fetched are set there, and when
+    // sync is called, it rerenders after those variables are set
+    // possible option, put it in the parse function, however this
+    // creates difficulties because the model is not created yet
+    // Another option would be to override the fetch function.
+    this.listenTo(this.model, 'sync', this.render);
     this.listenTo(this.model, 'summaryChanged', this.render)
+    this.listenTo(this.model, 'outofsync', this.flashOut);
+    this.listenTo(this.model, 'resynced', this.flash);
   },
 
   render: function(){
     if(!this.model.isFetched()){
+      msg.log("Rendering Summary Failed", 'render');
       return false;
     }
     msg.log("Rendering Summary", 'render');
@@ -171,9 +183,16 @@ App.View.SummaryView['Vertex'] = App.SummaryView = Backbone.View.extend({
     return this;
   },
 
+  flashOut: function(){
+    this.$el.addClass('outofsync');
+  },
+
+  // This function seems to reveal that there are leftover
+  // views with event handlers laying around. See issue #20
   flash: function(){
     console.log('flash ' + this.model.get('title'));
     this.$el.css({'opacity': '0.3'});
+    this.$el.removeClass('outofsync');
     this.$el.animate({'opacity': '1'});
   },
 
@@ -191,8 +210,8 @@ App.View.SummaryView['Vertex'] = App.SummaryView = Backbone.View.extend({
     App.actionPanel.loadForm(newPhoto, this.model);
   },
 
-  saveVertex: function(){
-    this.model.saveVertex();
+  saveSuccset: function(){
+    this.model.saveSuccset();
   }
 
 });
