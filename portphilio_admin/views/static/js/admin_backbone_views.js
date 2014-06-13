@@ -29,6 +29,7 @@ App.View.SuccessorItemView['Vertex'] = App.SuccessorItemView = Backbone.View.ext
   },
 
   delete: function(){
+    // update the succset of predecessor
     this.model.destroy({
       success: this.destroySuccess,
       error: this.destroyError
@@ -58,7 +59,7 @@ App.View.SuccessorItemView['Vertex'] = App.SuccessorItemView = Backbone.View.ext
 
   destroySuccess: function(){
     console.log('Delete Success!');
-    this.remove();
+    this.$el.fadeOut();
   },
 
   destroyError: function(model, response, options){

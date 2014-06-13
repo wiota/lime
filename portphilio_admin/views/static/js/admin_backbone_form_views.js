@@ -79,7 +79,14 @@ App.Form['serialized'] = Backbone.View.extend({ // Akin to ListingView
   },
 
   save: function(){
-    this.model.save();
+    if(this.model.isNew()){
+      this.collection.createAndAddTo(this.model, this.predecessor);
+    } else {
+      this.model.save();
+    }
+
+    // Prevent default action of form
+    // Do some research into this
     return false;
   },
 
@@ -140,7 +147,7 @@ App.Form['Vertex.Medium.Photo'] = App.Form['serialized'].extend({
     this.predecessor = options.predecessor || null;
 
     this.progress_bar = this.$el.find('.progress_bar');
-    _.bindAll(this, 'uploadProgress', 'uploadFinish', 'photoSynced');
+    _.bindAll(this, 'uploadProgress', 's3Success');
   },
 
   events: _.extend({},
@@ -169,8 +176,8 @@ App.Form['Vertex.Medium.Photo'] = App.Form['serialized'].extend({
       file_dom_selector: '#files',
       s3_sign_put_url: 'upload/sign_s3/',
       onProgress: this.uploadProgress,
-      onFinishS3Put: this.uploadFinish,
-      onError: this.uploadError
+      onFinishS3Put: this.s3Success,
+      onError: this.s3Error
     });
   },
 
@@ -178,30 +185,14 @@ App.Form['Vertex.Medium.Photo'] = App.Form['serialized'].extend({
     this.progress_bar.css({'width':percent + '%'});
   },
 
-  uploadFinish: function(href){
+  s3Success: function(href){
     this.progress_bar.css({'width':'0%'});
-
-    // I should not be hard coding the cls here
-    var _cls = 'Vertex.Medium.Photo';
-    var collection = App.collection[_cls];
-    var photo = collection.create({"href": href})
-
-    this.listenTo(collection, 'sync', this.photoSynced);
-
+    this.collection.createAndAddTo({"href": href}, this.predecessor);
   },
 
-  uploadError: function(status){
+  s3Error: function(status){
     $('#status').html('Upload error: ' + status);
-  },
-
-  photoSynced: function(photo, response, options){
-    var succset = _.clone(this.predecessor.get('succset'));
-
-    succset.unshift(photo);
-    this.predecessor.set({'succset':succset});
-    this.predecessor.saveSuccset();
   }
-
 })
 
 /* ------------------------------------------------------------------- */
@@ -233,7 +224,6 @@ App.ActionPanel = Backbone.View.extend({
 
     this.form = new formFactory({model: this.model, collection: this.collection, 'predecessor': this.predecessor, 'className': className});
     this.$el.html(this.form.el);
-    this.form.collection =
     this.form.render();
   }
 
