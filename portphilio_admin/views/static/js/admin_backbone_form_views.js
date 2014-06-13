@@ -57,7 +57,6 @@ App.Form['serialized'] = Backbone.View.extend({ // Akin to ListingView
   ),
 
   initialize: function (options) {
-    this.collection = App.collection[this.model._cls];
 
     options = options || {};
     this.predecessor = options.predecessor || null;
@@ -135,15 +134,6 @@ App.Form['Vertex'] = App.Form['serialized'].extend({
 
 App.Form['Vertex.Medium.Photo'] = App.Form['serialized'].extend({
   s3_upload: null,
-  serialization: {
-    "formFields": {
-      "s3_image": {
-        "required": true,
-        "type": "s3_image",
-        "label": "Photo"
-      }
-    }
-  },
 
   initialize: function(options){
     options = options || {};
@@ -235,13 +225,15 @@ App.ActionPanel = Backbone.View.extend({
     var _cls = model.get('_cls');
     var className = _cls.toLowerCase().split('.').join(' ') + ' form';
     var formFactory = App.Form[_cls] || App.Form['Vertex'];
+    this.collection = App.collection[this.model._cls];
 
     if(this.form){
       this.form.remove();
     }
 
-    this.form = new formFactory({model: this.model, 'predecessor': this.predecessor, 'className': className});
+    this.form = new formFactory({model: this.model, collection: this.collection, 'predecessor': this.predecessor, 'className': className});
     this.$el.html(this.form.el);
+    this.form.collection =
     this.form.render();
   }
 

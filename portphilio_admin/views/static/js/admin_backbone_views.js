@@ -15,7 +15,7 @@ App.View.SuccessorItemView['Vertex'] = App.SuccessorItemView = Backbone.View.ext
   className: 'successorItem',
 
   events:{
-    'click .delete':'flash',
+    'click .delete':'delete',
     'click .update':'updateForm'
   },
 
@@ -24,8 +24,8 @@ App.View.SuccessorItemView['Vertex'] = App.SuccessorItemView = Backbone.View.ext
     _.bindAll(this, 'destroySuccess', 'destroyError');
     this.bind('destroy', this.destroySuccess, this);
     this.predecessor = options.predecessor;
-
-    this.listenTo(this.model, 'sync', this.flash)
+    console.log(this.model)
+    this.listenTo(this.model, 'sync', this.flash);
   },
 
   delete: function(){
@@ -168,6 +168,12 @@ App.View.SummaryView['Vertex'] = App.SummaryView = Backbone.View.extend({
     this.$el.html(this.template(this.model.toJSON()));
     this.delegateEvents();
     return this;
+  },
+
+  flash: function(){
+    console.log('flash ' + this.model.get('title'));
+    this.$el.css({'opacity': '0.3'});
+    this.$el.animate({'opacity': '1'});
   },
 
   updateForm: function(){
