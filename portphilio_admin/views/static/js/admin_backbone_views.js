@@ -5,6 +5,23 @@
 App.View = {};
 
 /* ------------------------------------------------------------------- */
+// App Model Overrides
+/* ------------------------------------------------------------------- */
+
+Backbone.View.prototype.flashOut = function(){
+    this.$el.addClass('outofsync');
+  },
+
+  // This function seems to reveal that there are leftover
+  // views with event handlers laying around. See issue #20
+  Backbone.View.prototype.flash = function(){
+    msg.log('flash ' + this.model.get('_id'));
+    this.$el.css({'opacity': '0'});
+    this.$el.removeClass('outofsync');
+    this.$el.animate({'opacity': '1'},2000);
+  },
+
+/* ------------------------------------------------------------------- */
 // Successor Item View (SuccsetItemView?)
 /* ------------------------------------------------------------------- */
 
@@ -31,10 +48,13 @@ App.View.SuccessorItemView['Vertex'] = App.SuccessorItemView = Backbone.View.ext
   delete: function(){
     // update the succset of predecessor
     // problem - does not update the succset at all
+    this.predecessor.removeFromSuccset(this.model);
+    /*
     this.model.destroy({
       success: this.destroySuccess,
       error: this.destroyError
     });
+    */
   },
 
   updateForm: function(){
@@ -45,19 +65,6 @@ App.View.SuccessorItemView['Vertex'] = App.SuccessorItemView = Backbone.View.ext
     this.$el.html(this.template(this.model.toJSON()));
     this.delegateEvents();
     return this
-  },
-
-  flashOut: function(){
-    this.$el.addClass('outofsync');
-  },
-
-  // This function seems to reveal that there are leftover
-  // views with event handlers laying around. See issue #20
-  flash: function(){
-    console.log('flash ' + this.model.get('title'));
-    this.$el.css({'opacity': '0.3'});
-    this.$el.removeClass('outofsync');
-    this.$el.animate({'opacity': '1'});
   },
 
   destroySuccess: function(){
@@ -181,19 +188,6 @@ App.View.SummaryView['Vertex'] = App.SummaryView = Backbone.View.extend({
     this.$el.html(this.template(this.model.toJSON()));
     this.delegateEvents();
     return this;
-  },
-
-  flashOut: function(){
-    this.$el.addClass('outofsync');
-  },
-
-  // This function seems to reveal that there are leftover
-  // views with event handlers laying around. See issue #20
-  flash: function(){
-    console.log('flash ' + this.model.get('title'));
-    this.$el.css({'opacity': '0.3'});
-    this.$el.removeClass('outofsync');
-    this.$el.animate({'opacity': '1'});
   },
 
   updateForm: function(){

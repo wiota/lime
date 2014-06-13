@@ -98,6 +98,8 @@ App.Model['Vertex'] = App.Vertex = Backbone.Model.extend({
   },
 
   outOfSync: function(){
+    msg.log(this._cls)
+    // Calling photo function
     this.fetched = false;
     this.trigger('outofsync');
     this.once('sync', this.resynced);
@@ -106,6 +108,26 @@ App.Model['Vertex'] = App.Vertex = Backbone.Model.extend({
 
   resynced: function(){
     this.trigger('resynced');
+  },
+
+  /* ------------------------------------------------------------------- */
+  // Succset Functions
+  /* ------------------------------------------------------------------- */
+
+  addToSuccset: function(model){
+    var succset = _.clone(this.get('succset'));
+    succset.unshift(photo);
+    this.set({'succset':succset});
+    this.saveSuccset();
+  },
+
+  removeFromSuccset: function(model, index){
+    var succset = _.clone(this.get('succset'));
+    console.log(model.get('_id'));
+    console.log(succset);
+
+    this.set({'succset':_.without(succset, model)});
+    this.saveSuccset();
   },
 
   saveSuccset: function(){
