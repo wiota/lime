@@ -104,13 +104,14 @@ App.Collection['Vertex.Photo'] = App.PhotoCollection = App.VertexCollection.exte
   url: "api/v1/photo/",
   _cls: 'Vertex.Medium.Photo',
   formSerialization: {
-    "formFields": {
-      "s3_image": {
+    "result": [
+      {
+        "name" : "s3_image",
         "required": true,
         "type": "s3_image",
         "label": "Photo"
       }
-    }
+    ]
   },
 });
 

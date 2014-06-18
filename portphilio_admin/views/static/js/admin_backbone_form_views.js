@@ -104,15 +104,15 @@ App.Form['serialized'] = Backbone.View.extend({ // Akin to ListingView
     if(!this.collection.hasForm()){
       return false;
     }
-    _.each(this.collection.formSerialization.formFields, function(field, key){
-      value = this.model.get(key) || '';
+    this.collection.formSerialization.result.forEach(function(field){
+      value = this.model.get(field.name) || '';
 
       // Select template based on field.type
       // Causes a problem if the field type does not have a template
       var templateFunction = this.templates[field.type];
 
       // Pass key, field, and value to form input template function and append result
-      var formInput = $(templateFunction({'id':key, 'label':field.label, 'value': value}));
+      var formInput = $(templateFunction({'id':field.name, 'label':field.label, 'value': value}));
       formInput.appendTo(this.$el);
     }, this);
 
