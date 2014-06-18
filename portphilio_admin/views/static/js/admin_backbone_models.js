@@ -13,6 +13,13 @@ Backbone.Model.prototype.parse = function(response){
   return response.result;
 };
 
+Backbone.Model.prototype.origUrl = Backbone.Model.prototype.url
+
+Backbone.Model.prototype.url = function() {
+    var origUrl = Backbone.Model.prototype.origUrl.call(this);
+    return origUrl + (origUrl.charAt(origUrl.length - 1) == '/' ? '' : '/');
+}
+
 Backbone.Model.prototype.idAttribute = "_id";
 
 /* ------------------------------------------------------------------- */
@@ -134,7 +141,7 @@ App.Model['Vertex'] = App.Vertex = Backbone.Model.extend({
     var list = this.get('succset');
 
     var options = {
-      'url': this.url() + '/succset/',
+      'url': this.url() + 'succset/',
       'contentType' : "application/json",
       'data': JSON.stringify({'succset' : _.pluck(list, 'id')})
     }
