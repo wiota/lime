@@ -146,7 +146,6 @@ App.Form['Vertex.Medium.Photo'] = App.Form['serialized'].extend({
     options = options || {};
     this.predecessor = options.predecessor || null;
 
-    this.progress_bar = this.$el.find('.progress_bar');
     _.bindAll(this, 'uploadProgress', 's3Success');
   },
 
@@ -171,6 +170,7 @@ App.Form['Vertex.Medium.Photo'] = App.Form['serialized'].extend({
   },
 
   handle_files: function(){
+    this.progress_bar = this.$el.find('.progress_bar');
     console.log('Upload function called');
     this.s3_upload = new S3Upload({
       file_dom_selector: '#files',
