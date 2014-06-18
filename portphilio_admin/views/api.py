@@ -37,7 +37,7 @@ def post_work():
     return work.to_bson(), 200
 
 
-@mod.route('/work/<id>', methods=['PUT'])
+@mod.route('/work/<id>/', methods=['PUT'])
 @login_required
 def put_work(id):
     data = request.json
@@ -74,7 +74,7 @@ def post_category():
     return category.to_bson(), 200
 
 
-@mod.route('/category/<id>', methods=['PUT'])
+@mod.route('/category/<id>/', methods=['PUT'])
 @login_required
 def put_category(id):
     data = request.json
@@ -106,7 +106,7 @@ def post_photo():
     return photo.to_bson(expand=False), 200
 
 
-@mod.route('/<vertex_type>/<id>')
+@mod.route('/<vertex_type>/<id>/')
 @login_required
 def vertex_id(vertex_type, id):
     return Vertex.objects.get(owner=current_user.id, id=id).to_bson()
@@ -131,7 +131,7 @@ def put_body_succset():
     return jsonify(result="success"), 200  # TODO: Should be a 204
 
 
-@mod.route('/<vertex_type>/<id>', methods=['DELETE'])
+@mod.route('/<vertex_type>/<id>/', methods=['DELETE'])
 @login_required
 def delete_by_id(vertex_type, id):
     Vertex.objects.get(id=id).delete()
