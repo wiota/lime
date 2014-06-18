@@ -116,7 +116,7 @@ App.Model['Vertex'] = App.Vertex = Backbone.Model.extend({
 
   addToSuccset: function(model){
     var succset = _.clone(this.get('succset'));
-    succset.unshift(photo);
+    succset.unshift(model);
     this.set({'succset':succset});
     this.saveSuccset();
   },

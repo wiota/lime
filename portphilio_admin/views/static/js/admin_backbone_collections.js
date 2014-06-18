@@ -81,7 +81,7 @@ App.Collection['Vertex'] = App.VertexCollection = Backbone.Collection.extend({
   createAndAddTo: function(data, predecessor){
     this.create(data);
     // What if the server fails? What happens to this handler?
-    this.once('sync', this.addTo, function(model, response, options){
+    this.once('sync', function(model, response, options){
       predecessor.addToSuccset(model)
     });
   }
