@@ -4,6 +4,8 @@
   {{ super() }}
 
   <script src='{{ url_for('admin.static', filename='js/backbone.js') }}'></script>
+  <script src='{{ url_for('admin.static', filename='js/jquery-ui.custom.min.js') }}'></script>
+  <script type="text/javascript" src='{{ url_for('admin.static', filename='js/s3upload.js') }}'></script>
 
 {% endblock %}
 
@@ -42,10 +44,12 @@
   <!-- SuccsetItem -->
 
   <script type="text/template" id="category_in_set">
+    <a class='handle'></a>
     <a href='#category/<%= _id %>'><i class='info_tag'><%= _cls %> - <%= _id %></i><%= title %></a>
   </script>
 
   <script type="text/template" id="work_in_set">
+    <a class='handle'></a>
     <a href='#work/<%= _id %>'><i class='info_tag'><%= _cls %> - <%= _id %></i><%= title %></a>
     <div class='in_set_menu'>
       <a class='update'>update</a>
@@ -54,6 +58,7 @@
   </script>
 
   <script type="text/template" id="photo_in_set">
+    <a class='handle'></a>
     <a href='<%= href %>'><i class='info_tag'><%= _cls %> - <%= _id %></i><img src="<%= href %>" alt="" /></a>
     <div class='in_set_menu'>
       <a class='delete'>delete</a>
