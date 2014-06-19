@@ -8,7 +8,7 @@ App.View = {};
 // App Model Overrides
 /* ------------------------------------------------------------------- */
 
-Backbone.View.prototype.flashOut = function(){
+  Backbone.View.prototype.flashOut = function(){
     this.$el.addClass('outofsync');
   },
 
@@ -37,24 +37,22 @@ App.View.SuccessorItemView['Vertex'] = App.SuccessorItemView = Backbone.View.ext
   },
 
   initialize: function(options){
-    // destroy should really only update the succset
-    _.bindAll(this, 'destroySuccess', 'destroyError');
-    this.bind('destroy', this.destroySuccess, this);
     this.predecessor = options.predecessor;
     this.listenTo(this.model, 'outofsync', this.flashOut);
     this.listenTo(this.model, 'resynced', this.flash);
   },
 
+  close: function(){
+    this.trigger('close');
+    this.stopListening();
+    this.unbind();
+    this.remove();
+
+
+  },
+
   delete: function(){
-    // update the succset of predecessor
-    // problem - does not update the succset at all
     this.predecessor.removeFromSuccset(this.model);
-    /*
-    this.model.destroy({
-      success: this.destroySuccess,
-      error: this.destroyError
-    });
-    */
   },
 
   updateForm: function(){
@@ -65,15 +63,6 @@ App.View.SuccessorItemView['Vertex'] = App.SuccessorItemView = Backbone.View.ext
     this.$el.html(this.template(this.model.toJSON()));
     this.delegateEvents();
     return this
-  },
-
-  destroySuccess: function(){
-    console.log('Delete Success!');
-    this.$el.fadeOut();
-  },
-
-  destroyError: function(model, response, options){
-    console.log("Destroy Error " +response);
   }
 
 
@@ -118,6 +107,23 @@ App.View.SuccsetListView['Vertex'] = App.SuccsetListView = Backbone.View.extend(
     if(!this.model.isDeep()){
       this.listenToOnce(this.model, 'sync', this.render);
     }
+    // sortable
+    var s = this.$el.sortable({
+      axis:'y',
+      cursor: 'move',
+      distance: 5,
+      opacity: 0.5,
+      change: function(event, ui){
+
+      }
+    });
+  },
+
+  close: function(){
+    this.trigger('close');
+    this.stopListening();
+    this.unbind();
+    this.remove();
   },
 
   render: function(){
@@ -137,8 +143,8 @@ App.View.SuccsetListView['Vertex'] = App.SuccsetListView = Backbone.View.extend(
       var successorItemView = new viewFactory({'model':successor, 'predecessor': this.model});
 
       this.$el.append(successorItemView.render().el);
+      successorItemView.listenTo(this, 'close', successorItemView.close);
       successorItemView.listenTo(successor, 'change', successorItemView.render);
-
     }, this);
 
     return this;
@@ -177,6 +183,13 @@ App.View.SummaryView['Vertex'] = App.SummaryView = Backbone.View.extend({
     this.listenTo(this.model, 'summaryChanged', this.render)
     this.listenTo(this.model, 'outofsync', this.flashOut);
     this.listenTo(this.model, 'resynced', this.flash);
+  },
+
+  close: function(){
+    this.trigger('close');
+    this.stopListening();
+    this.unbind();
+    this.remove();
   },
 
   render: function(){
@@ -246,6 +259,13 @@ App.View.ListingView['Vertex'] = App.ListingView = Backbone.View.extend({ // Aki
     // Must be explicitly rendered by ListingPanel
   },
 
+  close: function(){
+    this.stopListening();
+    this.trigger('close');
+    this.unbind;
+    this.remove();
+  },
+
   render: function(){
     this.summary.render();
     this.list.render();
@@ -254,7 +274,9 @@ App.View.ListingView['Vertex'] = App.ListingView = Backbone.View.extend({ // Aki
   appendElements: function(){
     this.$el.append(this.summary.el);
     this.$el.append(this.list.el);
-  }
+    this.summary.listenTo(this, 'close', this.summary.close);
+    this.list.listenTo(this, 'close', this.list.close);
+  },
 
 });
 
@@ -282,7 +304,7 @@ App.ListingPanel = Backbone.View.extend({
     var className = _cls.toLowerCase().split('.').join(' ') + ' listing';
 
     if(this.view){
-      this.view.remove();
+      this.view.close();
     }
 
     this.view = new App.ListingView({'model':this.listed_model, 'className': className});

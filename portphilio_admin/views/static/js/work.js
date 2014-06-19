@@ -1,6 +1,6 @@
 $(document).ready(function() {
 
-  msg.init();
+  //msg.init();
 
   App.router = new App.Router();
   Backbone.history.start();
