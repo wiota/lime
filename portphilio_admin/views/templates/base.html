@@ -32,7 +32,7 @@
         </div>
       {% else %}
         <div class='admin_user'>
-          <b>{{ current_user.username }} </b>
+          <b>{{ current_user.email}} </b>
           <div class='admin_user_nav'>
             <a href=" {{ url_for('auth.logout') }} ">Logout</a>
           </div>

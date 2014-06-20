@@ -5,6 +5,7 @@ from urlparse import urlparse
 from bson.objectid import ObjectId
 from flask.ext.mongoengine import MongoEngine
 from flask.ext.login import LoginManager
+from portphilio_lib.tools import AnonymousUser
 
 # Create a starter app
 app = Flask(__name__)
@@ -15,7 +16,7 @@ app.debug = os.environ.get('FLASK_DEBUG') == 'True'
 app.jinja_env.trim_blocks = True
 
 # For CSRF usage
-app.config['SECRET_KEY'] = os.environ.get('CSRF_SECRET_KEY')
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 
 # Get the URL for the database from the environment
 MONGO_URL = os.environ.get('MONGOHQ_URL')
@@ -58,6 +59,7 @@ app.register_blueprint(auth)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "auth.login"
+login_manager.anonymous_user = AnonymousUser
 
 from portphilio_lib.models import User
 
