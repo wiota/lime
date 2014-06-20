@@ -40,6 +40,7 @@ App.View.SuccessorItemView['Vertex'] = App.SuccessorItemView = Backbone.View.ext
     this.predecessor = options.predecessor;
     this.listenTo(this.model, 'outofsync', this.flashOut);
     this.listenTo(this.model, 'resynced', this.flash);
+    this.$el.attr('id', "_id_"+this.model.id);
   },
 
   close: function(){
@@ -69,17 +70,17 @@ App.View.SuccessorItemView['Vertex'] = App.SuccessorItemView = Backbone.View.ext
 });
 
 App.View.SuccessorItemView['Vertex.Category'] = App.CategorySuccessorItemView = App.SuccessorItemView.extend({
-  className: 'category_in_set successorItem',
+  className: 'category successorItem',
   template:_.template($('#category_in_set').html())
 });
 
 App.View.SuccessorItemView['Vertex.Work'] = App.WorkSuccessorItemView = App.SuccessorItemView.extend({
-  className: 'work_in_set successorItem',
+  className: 'work successorItem',
   template:_.template($('#work_in_set').html())
 });
 
 App.View.SuccessorItemView['Vertex.Medium.Photo'] = App.PhotoSuccessorItemView = App.SuccessorItemView.extend({
-  className: 'photo_in_set successorItem',
+  className: 'photo successorItem',
   template:_.template($('#photo_in_set').html())
 });
 
@@ -101,22 +102,44 @@ App.View.SuccsetListView = {};
 App.View.SuccsetListView['Vertex'] = App.SuccsetListView = Backbone.View.extend({
   tagName: 'ol',
   className: 'succset_list',
+  sortFunction: null,
 
   initialize: function(){
     this.listenTo(this.model, 'change:succset', this.render);
     if(!this.model.isDeep()){
       this.listenToOnce(this.model, 'sync', this.render);
     }
-    // sortable
-    var s = this.$el.sortable({
+
+    _.bindAll(this, 'update');
+    this.sortInit();
+  },
+
+  sortInit: function(){
+    this.sortFunction = this.$el.sortable({
       axis:'y',
       cursor: 'move',
-      distance: 5,
-      opacity: 0.5,
-      change: function(event, ui){
-
+      opacity: 0.8,
+      distance: 0,
+      handle: '.drag_handle',
+      update: this.update,
+      forcePlaceholderSize: true,
+      helper: 'original',
+      start: function(e, ui){
+        var s = ui.helper.height()+2;
+        var e = ui.helper.height()+5;
+        ui.placeholder.height(s);
+        ui.placeholder.animate({'height':e+'px'}, 50, 'linear');
       }
     });
+  },
+
+  update: function(event, ui){
+    var ids = [];
+    var lis = this.$el.children();
+    lis.each(function(){
+      ids.push($(this)[0].id.slice(4));
+    })
+    this.model.setSuccset(ids);
   },
 
   close: function(){

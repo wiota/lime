@@ -1,6 +1,6 @@
 var msg = (function(thisObj){
   var Messager = {
-    on: false,
+    on: true,
     thread: null,
     threads: {
       'lookup':{

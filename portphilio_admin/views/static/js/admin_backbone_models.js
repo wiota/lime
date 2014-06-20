@@ -147,8 +147,19 @@ App.Model['Vertex'] = App.Vertex = Backbone.Model.extend({
     }
 
     Backbone.sync('update', this, options)
-  }
+  },
 
+  setSuccset: function(idList){
+    var succset = this.get('succset');
+    var update = [];
+    _.each(idList, function(id, index, list){
+      var obj = _.findWhere(succset, {'id': id});
+      update.push(obj);
+    });
+    //console.log(_.pluck(update, 'id'));
+    this.set({'succset': update});
+    this.saveSuccset();
+  },
 
 });
 
