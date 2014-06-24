@@ -5,7 +5,7 @@
 
   <script src='{{ url_for('admin.static', filename='js/backbone.js') }}'></script>
   <script src='{{ url_for('admin.static', filename='js/jquery-ui.custom.min.js') }}'></script>
-  <script type="text/javascript" src='{{ url_for('admin.static', filename='js/s3upload.js') }}'></script>
+  </script>
 
 {% endblock %}
 
@@ -89,10 +89,16 @@
   </script>
 
   <script type="text/template" id="s3_image">
-    <!-- multiple="multiple" -->
-    <div class='files_container'><i class='message'>Drop files here</i><div class='progress_bar'></div><input type="file" name="files[]" id="files"/></div>
+    <div class='files_container'>
+      <i class='message'>Drop files here</i>
+      <input type="file" multiple="multiple" name="files[]" id="files"/>
+    </div>
     <div class='result'></div>
     <div id="s3_preview"><img src="" style="" /></div>
+  </script>
+
+  <script type="text/template" id="progress_bar">
+    <div style='width: <%= width %>%' class='progress_bar_fill'><%= label %></div>
   </script>
 
 {% endblock %}
@@ -113,6 +119,7 @@
 {% block js_footer %}
 
   <script src='{{ url_for('admin.static', filename='js/admin_app.js') }}'></script>
+  <script type="text/javascript" src='{{ url_for('admin.static', filename='js/s3upload.js') }}'></script>
   <script src='{{ url_for('admin.static', filename='js/admin_backbone_messages.js') }}'></script>
   <script src='{{ url_for('admin.static', filename='js/admin_backbone_models.js') }}'></script>
   <script src='{{ url_for('admin.static', filename='js/admin_backbone_collections.js') }}'></script>

@@ -283,10 +283,17 @@ i.info_tag {
 }
 
 #action_panel .progress_bar {
+  width: 100%;
+  height: 30px;
+  font-size: 14px;
+  background-color: rgba(0,0,0,0.3);
+  position:relative;
+  }
+
+#action_panel .progress_bar_fill {
   position:absolute;
   top:0;
   left:0;
-  font-size: 70px;
   color: #237ab1;
   background-color: rgba(255,255,255,0.7);
   height: 100%;

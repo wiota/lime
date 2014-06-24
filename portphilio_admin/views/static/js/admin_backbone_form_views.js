@@ -20,10 +20,6 @@ App.Form.events['actions'] = {
   'click .cancel': 'cancel'
 };
 
-App.Form.events['photo'] = {
-  'change #files': 'handle_files'
-};
-
 /* ------------------------------------------------------------------- */
 // Templates
 /* ------------------------------------------------------------------- */
@@ -39,6 +35,43 @@ App.Form.templates['serialized'] = {
 App.Form.templates['photo'] = {
   's3_image': _.template($('#s3_image').html())
 };
+
+/* ------------------------------------------------------------------- */
+// Upload Bar
+/* ------------------------------------------------------------------- */
+
+App.Form.progressBar = Backbone.View.extend({
+  percent: 0,
+  label: null,
+  tagName: 'div',
+  className: 'progress_bar',
+  template: _.template($('#progress_bar').html()),
+
+  initialize: function(label){
+    this.label = label;
+    this.percent = 0;
+    _.bindAll(this, 'update', 'close');
+    this.render();
+  },
+
+  render: function(){
+    this.$el.html(this.template({'label':this.label, 'width': this.percent}));
+    this.$bar = this.$el.find('.progress_bar_fill');
+    return this;
+  },
+
+  update: function(percent){
+    this.$bar.width(percent + "%");
+  },
+
+  close: function(){
+    console.log('remove');
+    this.unbind();
+    this.remove();
+  }
+
+
+})
 
 /* ------------------------------------------------------------------- */
 // Serialized Form - Abstract class - do not instantiate!
@@ -141,18 +174,21 @@ App.Form['Vertex'] = App.Form['serialized'].extend({
 
 App.Form['Vertex.Medium.Photo'] = App.Form['serialized'].extend({
   s3_upload: null,
+  uploadsInProgress: null,
+  files: null,
 
   initialize: function(options){
     options = options || {};
     this.predecessor = options.predecessor || null;
-
-    _.bindAll(this, 'uploadProgress', 's3Success');
+    this.uploadsInProgress = [];
+    _.bindAll(this, 'uploadSuccess');
   },
 
-  events: _.extend({},
+  events: _.extend({
+      'change #files': 'handleFiles'
+    },
     App.Form.events['changes'],
-    App.Form.events['actions'],
-    App.Form.events['photo']
+    App.Form.events['actions']
   ),
 
   templates: _.extend({},
@@ -162,35 +198,45 @@ App.Form['Vertex.Medium.Photo'] = App.Form['serialized'].extend({
 
   close: function(){
     // abort image uploads
-    this.remove();
+
+    // this.remove();
   },
 
   renderActions: function(){
     $(this.templates['button']({'label':'Cancel', 'cls': 'cancel'})).appendTo(this.$el);
   },
 
-  handle_files: function(){
-    this.progress_bar = this.$el.find('.progress_bar');
-    console.log('Upload function called');
-    this.s3_upload = new S3Upload({
-      file_dom_selector: '#files',
-      s3_sign_put_url: 'upload/sign_s3/',
-      onProgress: this.uploadProgress,
-      onFinishS3Put: this.s3Success,
-      onError: this.s3Error
-    });
+  handleFiles: function(){
+    // must happen after form is rendered
+    this.$files_input = $('#files');
+    this.$files_container = $('.files_container');
+
+    var files = this.$files_input[0].files;
+    _.each(files, function(file){
+      this.uploadsInProgress.push(this.initUpload(file));
+    }, this);
   },
 
-  uploadProgress: function(percent, message){
-    this.progress_bar.css({'width':percent + '%'});
+  initUpload: function(file){
+    var up = {};
+    _.extend(up, Backbone.Events);
+
+    up.progress = new App.Form.progressBar(file.name);
+    this.$files_container.append(up.progress.render().el);
+
+    // S3 uploader
+    up.uploader = new App.Uploader(file);
+    up.listenTo(up.uploader, 'progress', up.progress.update);
+    up.listenTo(up.uploader, 'complete', up.progress.close);
+    up.listenTo(up.uploader, 'complete', this.uploadSuccess); // passes href through event
   },
 
-  s3Success: function(href){
-    this.progress_bar.css({'width':'0%'});
+  uploadSuccess: function(href){
+    console.log(href);
     this.collection.createAndAddTo({"href": href}, this.predecessor);
   },
 
-  s3Error: function(status){
+  uploadError: function(status){
     $('#status').html('Upload error: ' + status);
   }
 })
