@@ -91,8 +91,10 @@ def confirm(payload=None):
         user = User.objects.get(id=user_id)
         user.activate()
         login_user(user)
-        flash("Your email has been verified.")
-        return render_template("confirm.html", form=form)
+        if not user.confirmed:
+            flash("Your email has been verified.")
+            return render_template("confirm.html", form=form)
+        return redirect(url_for("admin.index"))
     if form.validate_on_submit():
         user = User.objects.get(id=current_user.id)
         user.username=form.username.data
