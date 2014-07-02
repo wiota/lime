@@ -50,7 +50,7 @@ App.Form.progressBar = Backbone.View.extend({
   initialize: function(label){
     this.label = label;
     this.percent = 0;
-    _.bindAll(this, 'update', 'close');
+    _.bindAll(this, 'update', 'close', 'error');
     this.render();
   },
 
@@ -68,6 +68,12 @@ App.Form.progressBar = Backbone.View.extend({
     console.log('remove');
     this.unbind();
     this.remove();
+  },
+
+  error: function(){
+    console.log('error');
+    this.$el.css({'background-color':'#f00'})
+    //this.$el.fadeOut(2000, this.close);
   }
 
 
@@ -225,10 +231,13 @@ App.Form['Vertex.Medium.Photo'] = App.Form['serialized'].extend({
     this.$files_container.append(up.progress.render().el);
 
     // S3 uploader
-    up.uploader = new App.Uploader(file);
+    up.uploader = new App.Uploader();
     up.listenTo(up.uploader, 'progress', up.progress.update);
     up.listenTo(up.uploader, 'complete', up.progress.close);
     up.listenTo(up.uploader, 'complete', this.uploadSuccess); // passes href through event
+    up.listenTo(up.uploader, 'uploadError', up.progress.error);
+    up.listenTo(up.uploader, 'uploadError', this.uploadError);
+    up.uploader.uploadFile(file);
   },
 
   uploadSuccess: function(href){
@@ -237,7 +246,7 @@ App.Form['Vertex.Medium.Photo'] = App.Form['serialized'].extend({
   },
 
   uploadError: function(status){
-    $('#status').html('Upload error: ' + status);
+    console.log('Error');
   }
 })
 

@@ -15,23 +15,23 @@ App.Uploader.prototype.onProgress = function(percent, status, public_url, file) 
 };
 
 App.Uploader.prototype.onError = function(status, file) {
-  return console.log('base.onError()', status, file);
+  this.trigger('uploadError');
+  console.log('base.onError()', status, file);
 };
 
-App.Uploader.prototype.initialize = function(file, options){
+App.Uploader.prototype.initialize = function(options){
   // initialized with only one file
   if (options == null) {
     options = {};
   }
   _.extend(this, options);
   _.extend(this, Backbone.Events);
-  this.file = file;
   this.percent = 0;
-  this.trigger('progress', this.percent);
-  this.uploadFile();
 };
 
-App.Uploader.prototype.uploadFile = function() {
+App.Uploader.prototype.uploadFile = function(file) {
+  this.file = file;
+  this.trigger('progress', 0);
   var error, this_s3upload;
   error = this.validate(this.file);
   if (error) {
