@@ -156,6 +156,7 @@ App.Form['serialized'] = Backbone.View.extend({ // Akin to ListingView
     }, this);
 
     this.renderActions();
+    this.$el.children('input').first().focus();
     return this;
   },
 
