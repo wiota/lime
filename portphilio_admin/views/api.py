@@ -118,7 +118,8 @@ def put_succset(vertex_type, id):
     Vertex.objects(
         owner=current_user.id,
         id=id).update_one(
-        set__succset=request.json['succset'])
+        set__succset=request.json['succset'],
+        set__cover=request.json['succset'][0])
     return jsonify(result="success"), 200  # TODO: Should be a 204
 
 
