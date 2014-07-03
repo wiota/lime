@@ -18,7 +18,12 @@
   </script>
 
   <script type="text/template" id="portfolio_summary">
-    <div class='portfolio_title'><i class='info_tag'></i>! &#161; ! &#161; ! &#161; ! &#161; ! &#161; ! &#161; ! &#161; ! &#161; ! &#161; ! &#161; ! &#161; !</div>
+    <div class='portfolio_title'>! &#161; ! &#161; ! &#161; ! &#161; ! &#161; ! &#161; ! &#161; ! &#161; ! &#161; ! &#161; ! &#161; !</div>
+    <div class='in_set_menu'>
+      <a class='add_work'>add work</a>
+      <a class='add_category'>add category</a>
+    </div>
+    <i class='info_tag'></i>
   </script>
 
   <script type="text/template" id="category_summary">
@@ -26,6 +31,7 @@
     <div class='in_set_menu'>
       <a class='update'>update</a>
       <a class='add_work'>add work</a>
+      <a class='add_category'>add category</a>
     </div>
     <i class='info_tag'><%= _cls %> - <%= _id %></i>
   </script>
@@ -46,6 +52,10 @@
     <a class='in_set_link' href='#category/<%= _id %>'></a>
     <i class='info_tag'><%= _cls %> - <%= _id %></i>
     <b class='title'><%= title %></b>
+    <div class='in_set_menu'>
+      <a class='update'>update</a>
+      <a class='delete'>delete</a>
+    </div>
   </script>
 
   <script type="text/template" id="work_in_set">
