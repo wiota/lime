@@ -189,6 +189,7 @@ App.View.SummaryView['Vertex'] = App.SummaryView = Backbone.View.extend({
   events:{
     'click .update':'updateForm',
     'click .save_order':'saveSuccset',
+    'click .add_category':'addCategoryForm',
     'click .add_work':'addWorkForm',
     'click .add_photo':'addPhotoForm'
   },
@@ -228,6 +229,11 @@ App.View.SummaryView['Vertex'] = App.SummaryView = Backbone.View.extend({
 
   updateForm: function(){
     App.actionPanel.loadForm(this.model, null);
+  },
+
+  addCategoryForm: function(){
+    var newCategory = new App.Category();
+    App.actionPanel.loadForm(newCategory, this.model);
   },
 
   addWorkForm: function(){
