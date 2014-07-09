@@ -71,7 +71,7 @@ App.Form.progressBar = Backbone.View.extend({
   },
 
   error: function(){
-    console.log('error');
+    console.log('progress bar error');
     this.$el.css({'background-color':'#f00'})
     //this.$el.fadeOut(2000, this.close);
   }
@@ -130,7 +130,9 @@ App.Form['serialized'] = Backbone.View.extend({ // Akin to ListingView
   },
 
   cancel: function(){
-    this.model.outOfSync();
+    if(!this.model.isNew()){
+      this.model.outOfSync();
+    }
     this.close();
   },
 
@@ -204,9 +206,17 @@ App.Form['Vertex.Medium.Photo'] = App.Form['serialized'].extend({
   ),
 
   close: function(){
-    // abort image uploads
+    this.abort();
+    this.stopListening();
+    this.remove();
+  },
 
-    // this.remove();
+  abort: function(){
+    console.log('abort');
+    _.each(this.uploadsInProgress, function(upload, index){
+      upload.progress.close();
+      console.log(upload.file.name);
+    })
   },
 
   renderActions: function(){
@@ -215,8 +225,8 @@ App.Form['Vertex.Medium.Photo'] = App.Form['serialized'].extend({
 
   handleFiles: function(){
     // must happen after form is rendered
-    this.$files_input = $('#files');
-    this.$files_container = $('.files_container');
+    this.$files_input = this.$el.find('#files');
+    this.$files_container = this.$el.find('.files_container');
 
     var files = this.$files_input[0].files;
     _.each(files, function(file){
@@ -226,6 +236,7 @@ App.Form['Vertex.Medium.Photo'] = App.Form['serialized'].extend({
 
   initUpload: function(file){
     var up = {};
+    up.file = file;
     _.extend(up, Backbone.Events);
 
     up.progress = new App.Form.progressBar(file.name);
@@ -238,7 +249,8 @@ App.Form['Vertex.Medium.Photo'] = App.Form['serialized'].extend({
     up.listenTo(up.uploader, 'complete', this.uploadSuccess); // passes href through event
     up.listenTo(up.uploader, 'uploadError', up.progress.error);
     up.listenTo(up.uploader, 'uploadError', this.uploadError);
-    up.uploader.uploadFile(file);
+    up.uploader.uploadFile(up.file);
+    return up;
   },
 
   uploadSuccess: function(href){
@@ -258,7 +270,7 @@ App.Form['Vertex.Medium.Photo'] = App.Form['serialized'].extend({
 
 App.ActionPanel = Backbone.View.extend({
   el: $('#action_panel'),
-  form: null,
+  forms: [],
   model: null,
   predecessor: null,
 
@@ -267,20 +279,15 @@ App.ActionPanel = Backbone.View.extend({
   },
 
   loadForm: function(model, predecessor){
-    this.model = model;
-    this.predecessor = predecessor;
     var _cls = model.get('_cls');
     var className = _cls.toLowerCase().split('.').join(' ') + ' form';
+    // Which form?
     var formFactory = App.Form[_cls] || App.Form['Vertex'];
-    this.collection = App.collection[this.model._cls];
+    var collection = App.collection[model._cls];
 
-    if(this.form){
-      this.form.remove();
-    }
-
-    this.form = new formFactory({model: this.model, collection: this.collection, 'predecessor': this.predecessor, 'className': className});
-    this.$el.html(this.form.el);
-    this.form.render();
+    var form = new formFactory({model: model, collection: collection, 'predecessor': predecessor, 'className': className});
+    this.$el.append(form.el);
+    form.render();
   }
 
 });
