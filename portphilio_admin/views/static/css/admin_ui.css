@@ -315,7 +315,7 @@ i.info_tag {
   max-width: 100%;
 }
 
-#action_panel #files {
+#action_panel .vertex.photo.form .files {
   position: absolute;
   top:0;
   left:0;

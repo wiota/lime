@@ -37,21 +37,24 @@ App.Form.templates['photo'] = {
 };
 
 /* ------------------------------------------------------------------- */
-// Upload Bar
+// Upload Bar - Individual Upload Views
 /* ------------------------------------------------------------------- */
 
-App.Form.progressBar = Backbone.View.extend({
+App.Form.uploadView = Backbone.View.extend({
   percent: 0,
   label: null,
   tagName: 'div',
   className: 'progress_bar',
   template: _.template($('#progress_bar').html()),
 
-  initialize: function(label){
-    this.label = label;
+  initialize: function(file, formView){
+    this.formView = formView;
+    this.file = file;
+    this.label = file.name;
     this.percent = 0;
-    _.bindAll(this, 'update', 'close', 'error');
+    _.bindAll(this, 'update', 'success', 'close', 'cancel', 'error');
     this.render();
+    this.startUpload();
   },
 
   render: function(){
@@ -64,18 +67,38 @@ App.Form.progressBar = Backbone.View.extend({
     this.$bar.width(percent + "%");
   },
 
+  cancel: function(){
+    this.uploader.abort();
+    this.close();
+  },
+
   close: function(){
-    console.log('remove');
     this.unbind();
     this.remove();
   },
 
+  // view actions
+
+  startUpload: function(){
+    // S3 uploader
+    this.uploader = new App.Uploader();
+    this.listenTo(this.uploader, 'progress', this.update);
+    this.listenTo(this.uploader, 'complete', this.success); // passes href through event
+    this.listenTo(this.uploader, 'uploadError', this.error);
+    this.uploader.uploadFile(this.file);
+  },
+
+  success: function(href){
+    this.formView.removeUpload(this);
+    this.formView.collection.createAndAddTo({"href": href}, this.formView.predecessor);
+    this.close();
+  },
+
   error: function(){
-    console.log('progress bar error');
+    console.log('Upload error called');
     this.$el.css({'background-color':'#f00'})
     //this.$el.fadeOut(2000, this.close);
-  }
-
+  },
 
 })
 
@@ -185,16 +208,16 @@ App.Form['Vertex.Medium.Photo'] = App.Form['serialized'].extend({
   s3_upload: null,
   uploadsInProgress: null,
   files: null,
+  className: 's3_image',
 
   initialize: function(options){
     options = options || {};
     this.predecessor = options.predecessor || null;
     this.uploadsInProgress = [];
-    _.bindAll(this, 'uploadSuccess');
   },
 
   events: _.extend({
-      'change #files': 'handleFiles'
+      'change .files': 'handleFiles'
     },
     App.Form.events['changes'],
     App.Form.events['actions']
@@ -206,61 +229,51 @@ App.Form['Vertex.Medium.Photo'] = App.Form['serialized'].extend({
   ),
 
   close: function(){
-    this.abort();
-    this.stopListening();
-    this.remove();
-  },
-
-  abort: function(){
-    console.log('abort');
-    _.each(this.uploadsInProgress, function(upload, index){
-      upload.progress.close();
-      console.log(upload.file.name);
-    })
+    this.cancelAllUploads();
+    //this.stopListening();
+    //this.remove();
   },
 
   renderActions: function(){
     $(this.templates['button']({'label':'Cancel', 'cls': 'cancel'})).appendTo(this.$el);
   },
 
+  // View actions
+
   handleFiles: function(){
     // must happen after form is rendered
-    this.$files_input = this.$el.find('#files');
+    this.$files_input = this.$el.find('.files');
     this.$files_container = this.$el.find('.files_container');
 
     var files = this.$files_input[0].files;
     _.each(files, function(file){
-      this.uploadsInProgress.push(this.initUpload(file));
+      this.initUpload(file);
     }, this);
   },
 
   initUpload: function(file){
-    var up = {};
-    up.file = file;
-    _.extend(up, Backbone.Events);
-
-    up.progress = new App.Form.progressBar(file.name);
-    this.$files_container.append(up.progress.render().el);
-
-    // S3 uploader
-    up.uploader = new App.Uploader();
-    up.listenTo(up.uploader, 'progress', up.progress.update);
-    up.listenTo(up.uploader, 'complete', up.progress.close);
-    up.listenTo(up.uploader, 'complete', this.uploadSuccess); // passes href through event
-    up.listenTo(up.uploader, 'uploadError', up.progress.error);
-    up.listenTo(up.uploader, 'uploadError', this.uploadError);
-    up.uploader.uploadFile(up.file);
-    return up;
+    var upload = new App.Form.uploadView(file, this);
+    this.$files_container.append(upload.render().el);
+    this.uploadsInProgress.push(upload);
   },
 
-  uploadSuccess: function(href){
-    console.log(href);
-    this.collection.createAndAddTo({"href": href}, this.predecessor);
+  cancelAllUploads: function(){
+    console.log('cancelling All Uploads');
+    console.log('number of currentUploads: ' + this.uploadsInProgress.length)
+    _.each(this.uploadsInProgress, function(upload, index){
+      console.log(upload.file.name);
+      upload.cancel();
+    });
+    this.uploadsInProgress = [];
   },
 
-  uploadError: function(status){
-    console.log('Error');
+  removeUpload: function(upload){
+    index = this.uploadsInProgress.indexOf(upload);
+    if ((index = this.uploadsInProgress.indexOf(upload)) > -1) {
+      this.uploadsInProgress.splice(index, 1);
+    }
   }
+
 })
 
 /* ------------------------------------------------------------------- */

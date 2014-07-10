@@ -47,9 +47,18 @@ App.Uploader.prototype.uploadFile = function(file) {
 
 };
 
+App.Uploader.prototype.abort = function() {
+  if(this.signXhr){
+    this.signXhr.abort();
+  }
+  if(this.uploadXhr){
+    this.uploadXhr.abort();
+  }
+};
+
+// taken from s3 uploader
 App.Uploader.prototype.createCORSRequest = function(method, url) {
-  var xhr;
-  xhr = new XMLHttpRequest();
+  var xhr = this.uploadXhr = new XMLHttpRequest();
   if (xhr.withCredentials != null) {
     xhr.open(method, url, true);
   } else if (typeof XDomainRequest !== "undefined") {
@@ -62,9 +71,9 @@ App.Uploader.prototype.createCORSRequest = function(method, url) {
 };
 
 App.Uploader.prototype.executeOnSignedUrl = function(file, callback, opts) {
-  var name, this_s3upload, type, xhr;
+  var name, this_s3upload, type;
   this_s3upload = this;
-  xhr = new XMLHttpRequest();
+  var xhr = this.signXhr = new XMLHttpRequest();
   type = opts && opts.type || file.type;
   name = opts && opts.name || file.name;
   xhr.open('GET', this.s3_sign_put_url + '?s3_object_type=' + type + '&s3_object_name=' + encodeURIComponent(name), true);
@@ -74,7 +83,7 @@ App.Uploader.prototype.executeOnSignedUrl = function(file, callback, opts) {
       try {
         result = JSON.parse(this.responseText);
       } catch (error) {
-        this_s3upload.onError('Signing server returned some ugly/empty JSON: "' + this.responseText + '"');
+        this_s3upload.onError('Signing error: "' + this.responseText + '"');
         return false;
       }
       return callback(result.signed_request, result.url);
