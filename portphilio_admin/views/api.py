@@ -40,21 +40,9 @@ def post_work():
 @mod.route('/work/<id>/', methods=['PUT'])
 @login_required
 def put_work(id):
-    data = request.json
-    id = data['_id']
-
-    # TODO: This is temporary...
-    del data['_id']
-    del data['_cls']
-    del data['owner']
-    del data['succset']
-    del data['predset']
-
-    update_document(
-        Work.objects.get(
-            owner=current_user.id,
-            id=id),
-        data).save()
+    doc = Work.objects.get(owner=current_user.id, id=request.json['_id'])
+    data = {k: request.json[k] for k in doc.get_save_fields()}
+    update_document(doc, data).save()
     return jsonify(result="success"), 200  # TODO: Should be a 204
 
 
@@ -77,21 +65,9 @@ def post_category():
 @mod.route('/category/<id>/', methods=['PUT'])
 @login_required
 def put_category(id):
-    data = request.json
-    id = data['_id']
-
-    # TODO: This is temporary...
-    del data['_id']
-    del data['_cls']
-    del data['owner']
-    del data['succset']
-    del data['predset']
-
-    update_document(
-        Category.objects.get(
-            owner=current_user.id,
-            id=id),
-        data).save()
+    doc = Category.objects.get(owner=current_user.id, id=request.json['_id'])
+    data = {k: request.json[k] for k in doc.get_save_fields()}
+    update_document(doc, data).save()
     return jsonify(result="success"), 200  # TODO: Should be a 204
 
 
