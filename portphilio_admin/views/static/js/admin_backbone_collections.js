@@ -83,7 +83,9 @@ App.Collection['Vertex'] = App.VertexCollection = Backbone.Collection.extend({
     model.once('sync', function(model, response, options){
       predecessor.addToSuccset(model)
     });
+    return model;
   }
+
 });
 
 App.Collection['Vertex.Category'] = App.CategoryCollection = App.VertexCollection.extend({
@@ -101,17 +103,7 @@ App.Collection['Vertex.Work'] = App.WorkCollection = App.VertexCollection.extend
 App.Collection['Vertex.Photo'] = App.PhotoCollection = App.VertexCollection.extend({
   model: App.Photo,
   url: "api/v1/photo/",
-  _cls: 'Vertex.Medium.Photo',
-  formSerialization: {
-    "result": [
-      {
-        "name" : "s3_image",
-        "required": true,
-        "type": "s3_image",
-        "label": "Photo"
-      }
-    ]
-  },
+  _cls: 'Vertex.Medium.Photo'
 });
 
 App.Collection['Vertex.Body'] = App.BodyCollection = App.VertexCollection.extend({ // Unique - only contains one body - may be changed to start vertex

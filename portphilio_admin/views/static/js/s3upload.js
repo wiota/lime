@@ -1,6 +1,10 @@
+/* ------------------------------------------------------------------- */
+// CORS S3 Uploader
+/* ------------------------------------------------------------------- */
+
 App.Uploader = function(){
   this.initialize.apply(this, arguments);
-}
+};
 
 App.Uploader.prototype.s3_sign_put_url = 'upload/sign_s3/';
 

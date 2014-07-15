@@ -94,33 +94,40 @@
     <input class='input <%= cls %>' type='button' value='<%= label %>' />
   </script>
 
-  <script type="text/template" id="update_form">
+  <script type="text/template" id="update_form2">
     <label for='title'>Title</label><input type='text' id='title' value='<%= title %>' />
   </script>
 
-  <script type="text/template" id="s3_image">
+  <script type="text/template" id="file_upload">
+
     <div class='files_container'>
       <i class='message'>Drop files here</i>
       <input type="file" multiple="multiple" name="files[]" class="files"/>
-
     </div>
-    <div class='result'></div>
-    <div id="s3_preview"><img src="" style="" /></div>
   </script>
 
-  <script type="text/template" id="multi_image">
+  <script type="text/template" id="html5_file_upload">
+    <!--<label for='files'><%= label %></label>-->
     <input type="file" multiple="multiple" name="files[]" class="files"/>
     <div class='files_container'>
-      <i class='message'>Drop files here</i>
 
-
+      <i class='message'><%= label %></i>
     </div>
-    <div class='result'></div>
-    <div id="s3_preview"><img src="" style="" /></div>
   </script>
 
-  <script type="text/template" id="progress_bar">
-    <div style='width: <%= width %>%' class='progress_bar_fill'><%= label %></div>
+  <script type="text/template" id="batch">
+    <div class='in_batch_menu'>
+      <i class='batch_count'><%= batch_count %></i>
+      <!--<i class='message'>Predecessor<%= predecessor %></i>-->
+      <!--<i class='message'>Nesting<%= nesting %></i>-->
+    </div>
+    <div class='batch_items'></div>
+  </script>
+
+  <script type="text/template" id="batch_item">
+    <div style='width: <%= width %>%' class='progress_bar_fill'></div>
+    <a class='cancel'>X</a>
+    <i class='label'><%= label %></i>
   </script>
 
 {% endblock %}

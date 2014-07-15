@@ -57,7 +57,7 @@ App.View.SuccessorItemView['Vertex'] = App.SuccessorItemView = Backbone.View.ext
   },
 
   updateForm: function(){
-    App.actionPanel.loadForm(this.model, this.predecessor);
+    App.actionPanel.loadAttributeForm(this.model, this.predecessor);
   },
 
   render: function(){
@@ -228,22 +228,21 @@ App.View.SummaryView['Vertex'] = App.SummaryView = Backbone.View.extend({
   },
 
   updateForm: function(){
-    App.actionPanel.loadForm(this.model, null);
+    App.actionPanel.loadAttributeForm(this.model, null);
   },
 
   addCategoryForm: function(){
     var newCategory = new App.Category();
-    App.actionPanel.loadForm(newCategory, this.model);
+    App.actionPanel.loadAttributeForm(newCategory, this.model);
   },
 
   addWorkForm: function(){
     var newWork = new App.Work();
-    App.actionPanel.loadForm(newWork, this.model);
+    App.actionPanel.loadAttributeForm(newWork, this.model);
   },
 
   addPhotoForm: function(){
-    var newPhoto = new App.Photo();
-    App.actionPanel.loadForm(newPhoto, this.model);
+    console.log("No longer functional");
   },
 
   saveSuccset: function(){
@@ -253,15 +252,15 @@ App.View.SummaryView['Vertex'] = App.SummaryView = Backbone.View.extend({
 });
 
 App.View.SummaryView['Vertex.Body'] = App.PortfolioSummaryView = App.SummaryView.extend({
-  template:_.template($('#portfolio_summary').html()),
+  template:_.template($('#portfolio_summary').html())
 });
 
 App.View.SummaryView['Vertex.Category'] = App.CategorySummaryView = App.SummaryView.extend({
-  template:_.template($('#category_summary').html()),
+  template:_.template($('#category_summary').html())
 });
 
 App.View.SummaryView['Vertex.Work'] = App.WorkSummaryView = App.SummaryView.extend({
-  template:_.template($('#work_summary').html()),
+  template:_.template($('#work_summary').html())
 });
 
 /* ------------------------------------------------------------------- */
@@ -286,6 +285,7 @@ App.View.ListingView['Vertex'] = App.ListingView = Backbone.View.extend({ // Aki
     this.appendElements();
     // View does not render on initialize
     // Must be explicitly rendered by ListingPanel
+
   },
 
   close: function(){
@@ -332,6 +332,7 @@ App.ListingPanel = Backbone.View.extend({
     var _cls = this.listed_model.get('_cls');
     var className = _cls.toLowerCase().split('.').join(' ') + ' listing';
 
+    // View
     if(this.view){
       this.view.close();
     }
@@ -339,6 +340,9 @@ App.ListingPanel = Backbone.View.extend({
     this.view = new App.ListingView({'model':this.listed_model, 'className': className});
     this.$el.html(this.view.el);
     this.view.render();
-  }
+
+  },
+
+
 
 });

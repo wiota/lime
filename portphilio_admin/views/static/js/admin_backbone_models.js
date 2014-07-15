@@ -131,22 +131,29 @@ App.Model['Vertex'] = App.Vertex = Backbone.Model.extend({
   removeFromSuccset: function(model, index){
     var succset = _.clone(this.get('succset'));
     console.log(model.get('_id'));
-    console.log(succset);
-
     this.set({'succset':_.without(succset, model)});
     this.saveSuccset();
   },
 
   saveSuccset: function(){
     var list = this.get('succset');
-
+    var model = this;
     var options = {
       'url': this.url() + 'succset/',
       'contentType' : "application/json",
-      'data': JSON.stringify({'succset' : _.pluck(list, 'id')})
+      'data': JSON.stringify({'succset' : _.pluck(list, 'id')}),
+      'success': function(resp){
+        model.trigger('sync', model, resp);
+        console.log('sync succset save on ' + model.get('_id'))
+      },
+      'error': function(resp){
+        model.trigger('error', model, resp);
+        console.log('sync succset error on ' + model.get('_id'))
+      }
     }
 
-    Backbone.sync('update', this, options)
+    Backbone.sync('update', this, options);
+
   },
 
   setSuccset: function(idList){
