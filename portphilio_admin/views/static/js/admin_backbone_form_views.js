@@ -572,9 +572,7 @@ App.ActionPanel = Backbone.View.extend({
 
   loadBatchForms: function(predecessor){
     var _cls = predecessor.get('_cls');
-    console.log(_cls);
 
-    console.log("need to load batch forms based on "+ _cls);
     // This form loading needs to be improved and expanded on
     // including the ability to add all items to a single pred
 
