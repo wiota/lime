@@ -52,6 +52,10 @@ upload.db = db_pm
 upload.config = app.config
 app.register_blueprint(upload.mod)
 
+from portphilio_admin.views import account
+account.config = app.config
+app.register_blueprint(account.mod)
+
 from portphilio_admin.views.auth import auth
 auth.config = app.config
 app.register_blueprint(auth)

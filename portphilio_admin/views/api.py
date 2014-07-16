@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from flask import current_app as app
-from portphilio_lib.tools import bsonify, to_dict, update_document, slugify
+from portphilio_lib.tools import bsonify, to_dict, update_document, slugify, set_cover
 from portphilio_lib.models import *
 from flask.ext.login import login_required
 from flask.ext.login import current_user
@@ -94,8 +94,8 @@ def put_succset(vertex_type, id):
     Vertex.objects(
         owner=current_user.id,
         id=id).update_one(
-        set__succset=request.json['succset'],
-        set__cover=request.json['succset'][0])
+        set__succset=request.json['succset'])
+    set_cover(id)
     return jsonify(result="success"), 200  # TODO: Should be a 204
 
 
