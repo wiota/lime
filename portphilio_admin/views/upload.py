@@ -10,7 +10,7 @@ import urllib
 from hashlib import sha1
 from flask.ext.login import login_required
 from flask.ext.login import current_user
-from portphilio_lib.models import *
+from lime_lib.models import *
 
 mod = Blueprint(
     'upload',

@@ -2,8 +2,8 @@ from flask import Blueprint, request, send_file, abort, send_from_directory
 from flask import current_app as app
 from flask import render_template
 from flask.ext.login import login_required
-from portphilio_lib.build_db import build_db, clear_db
-from portphilio_lib.tools import retrieve_image
+from lime_lib.build_db import build_db, clear_db
+from lime_lib.tools import retrieve_image
 from flask.ext.login import login_required
 from flask.ext.login import current_user
 

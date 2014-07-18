@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from flask import current_app as app
-from portphilio_lib.tools import bsonify, to_dict, update_document, slugify, set_cover
-from portphilio_lib.models import *
+from lime_lib.tools import bsonify, to_dict, update_document, slugify, set_cover
+from lime_lib.models import *
 from flask.ext.login import login_required
 from flask.ext.login import current_user
 
