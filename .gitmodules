@@ -1,4 +1,4 @@
 [submodule "portphilio_lib"]
 	path = portphilio_lib
-	url = git@github.com:di/portphilio_lib.git
+	url = https://di:96bf586dcf6f24ab13d6c3590f4fe316ed04a@github.com/di/portphilio_lib.git
 	ignore = dirty
