@@ -296,8 +296,12 @@ App.Form.batchView = Backbone.View.extend({
     // add vertices
     _.each(vertices, function(model){
       unidentified_vertices++;
-      var vertex = batchItemView.noteVertexCreation(App.clsToClass(model.get('_cls')));
+      var _cls = model.get('_cls')
+      var vertex = batchItemView.noteVertexCreation(App.clsToClass(_cls));
+      var collection = App.collection[_cls];
+      collection.add(model);
       model.save();
+
       // sync
       this.listenToOnce(model, 'sync', function(){
         batchItemView.noteVertexSync(vertex);
