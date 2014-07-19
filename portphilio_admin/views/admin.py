@@ -1,24 +1,70 @@
 from flask import Blueprint, request, send_file, abort, send_from_directory
+from flask import render_template, flash, url_for, redirect
 from flask import current_app as app
-from flask import render_template
 from flask.ext.login import login_required
+from flask.ext.wtf import Form
+from wtforms import TextField
+from itsdangerous import URLSafeSerializer, BadSignature
+from wtforms.validators import Required, Email
 from lime_lib.build_db import build_db, clear_db
-from lime_lib.tools import retrieve_image
 from flask.ext.login import login_required
 from flask.ext.login import current_user
+from lime_lib.tools import admin_required
+from lime_lib.models import User
+import requests
 
 import os
 
-mod = Blueprint('admin', __name__, static_folder='static', template_folder='templates', static_url_path='/static/admin')
+mod = Blueprint('admin', __name__, static_folder='static', template_folder='templates/admin', static_url_path='/static/admin', url_prefix='/admin')
 
-@mod.route('/')
-@login_required
+
+@mod.route("/")
+@admin_required
 def index():
-    return render_template('index.html')
+    return render_template('admin.html')
 
-@mod.route('/image/<image_name>')
-def image(image_name):
-   return retrieve_image(image_name, current_user.username)
+@mod.route("/users/")
+@login_required
+@admin_required
+def users():
+    return render_template('users.html', users=User.objects())
+
+@mod.route("/invite/", methods=["GET", "POST"])
+@login_required
+@admin_required
+def invite():
+    ref = request.args.get('ref', None)
+    form = InviteForm()
+    if request.method == 'GET':
+        return render_template("invite.html", form=form, ref=ref)
+    if form.validate_on_submit():
+        user = User(email=form.email.data)
+
+        s = URLSafeSerializer(app.config['SECRET_KEY'])
+        payload = s.dumps(str(user.id))
+        link = url_for("root.confirm", payload=payload, _external=True)
+        app.logger.debug(link)
+
+        user.save()
+
+        # TODO: Move this somewhere nicer
+        url = "https://api.sendgrid.com/api/mail.send.json"
+        payload = {
+            "api_user" : os.environ['SENDGRID_USERNAME'],
+            "api_key" : os.environ['SENDGRID_PASSWORD'],
+            "to" : user.email,
+            "from" : "goaheadandreply@wiota.co",
+            "fromname" : "Wiota Co.",
+            "subject" : "Confirm your new Lime account!",
+            "html" : render_template("confirm_email.html", link=link)
+        }
+        r = requests.post(url, data=payload)
+
+        flash("Successfully sent invitation.")
+        return redirect(url_for("admin.invite"))
+    return render_template("invite.html", form=form, ref=ref)
+
+
 
 # This is a temporary endpoint, only for the testuser!
 @mod.route('/build_db/')
@@ -35,3 +81,19 @@ def rebuild():
 def clear():
     clear_db(current_user.username)
     return "Success"
+
+
+class InviteForm(Form):
+    email = TextField('Email address', [Required(), Email()])
+
+    def __init__(self, *args, **kwargs):
+        Form.__init__(self, *args, **kwargs)
+        self.user = None
+
+    def validate(self):
+        if User.objects(email=self.email.data).first() is not None:
+            flash("This email address already has an account")
+            return False
+        return True
+
+

@@ -1,7 +1,7 @@
 from flask import Blueprint, request, redirect, render_template, url_for, flash
 
 from lime_lib.models import *
-from lime_lib.tools import admin_required
+from lime_lib.tools import retrieve_image
 from flask.ext.login import LoginManager
 from flask.ext.login import login_required, login_user, logout_user, current_user
 from flask.ext.wtf import Form
@@ -12,12 +12,19 @@ from itsdangerous import URLSafeSerializer, BadSignature
 
 from flask import current_app as app
 import os
-import requests
 
-auth = Blueprint('auth', __name__, template_folder='templates')
+mod = Blueprint('root', __name__, template_folder='templates')
 
+@mod.route('/')
+@login_required
+def index():
+    return render_template('index.html')
 
-@auth.route("/login/", methods=["GET", "POST"])
+@mod.route('/image/<image_name>')
+def image(image_name):
+   return retrieve_image(image_name, current_user.username)
+
+@mod.route("/login/", methods=["GET", "POST"])
 def login():
     ref = request.args.get('next', None)
     form = LoginForm()
@@ -34,52 +41,19 @@ def login():
     return render_template("login.html", form=form, ref=ref)
 
 
-@auth.route("/logout/")
+@mod.route("/logout/")
 def logout():
     logout_user()
     flash("You have been logged out.")
     return redirect("/login/")
 
 
-@auth.route("/invite/", methods=["GET", "POST"])
-@login_required
-@admin_required
-def invite():
-    ref = request.args.get('ref', None)
-    form = InviteForm()
-    if request.method == 'GET':
-        return render_template("invite.html", form=form, ref=ref)
-    if form.validate_on_submit():
-        user = User(email=form.email.data)
-
-        s = URLSafeSerializer(app.config['SECRET_KEY'])
-        payload = s.dumps(str(user.id))
-        link = url_for('auth.confirm', payload=payload, _external=True)
-        app.logger.debug(link)
-
-        user.save()
-
-        # TODO: Move this somewhere nicer
-        url = "https://api.sendgrid.com/api/mail.send.json"
-        payload = {
-            "api_user" : os.environ['SENDGRID_USERNAME'],
-            "api_key" : os.environ['SENDGRID_PASSWORD'],
-            "to" : user.email,
-            "from" : "goaheadandreply@portphilio.com",
-            "fromname" : "Portphilio",
-            "subject" : "Welcome to Portphilio!",
-            "html" : render_template("confirm_email.html", link=link)
-        }
-        r = requests.post(url, data=payload)
-
-        flash("Successfully sent invitation.")
-        return redirect(url_for("auth.invite"))
-    return render_template("invite.html", form=form, ref=ref)
-
-
-@auth.route('/confirm/', methods=['GET', 'POST'])
-@auth.route('/confirm/<payload>', methods=['GET', 'POST'])
+@mod.route('/confirm/', methods=['GET', 'POST'])
+@mod.route('/confirm/<payload>', methods=['GET', 'POST'])
 def confirm(payload=None):
+    ''' This is where user creation lives, for now...
+    '''
+    # TODO: Get this out of here!
     form = ConfirmForm()
     if request.method == 'GET':
         s = URLSafeSerializer(app.config['SECRET_KEY'])
@@ -89,16 +63,18 @@ def confirm(payload=None):
             abort(404)
 
         user = User.objects.get(id=user_id)
-        user.activate()
         login_user(user)
         if not user.confirmed:
+            user.activate()
             flash("Your email has been verified.")
             return render_template("confirm.html", form=form)
-        return redirect(url_for("admin.index"))
+        else:
+            return redirect(url_for("admin.index"))
     if form.validate_on_submit():
         user = User.objects.get(id=current_user.id)
         user.username=form.username.data
         user.password=generate_password_hash(form.password.data)
+        user.build()
         user.save()
         return redirect(url_for("admin.index"))
     return render_template("confirm.html", form=form)
@@ -124,20 +100,6 @@ class LoginForm(Form):
             return False
 
         self.user = user
-        return True
-
-
-class InviteForm(Form):
-    email = TextField('Email address', [Required(), Email()])
-
-    def __init__(self, *args, **kwargs):
-        Form.__init__(self, *args, **kwargs)
-        self.user = None
-
-    def validate(self):
-        if User.objects(email=self.email.data).first() is not None:
-            flash("This email address already has an account")
-            return False
         return True
 
 
@@ -184,7 +146,7 @@ class RegisterForm(Form):
         return True
 
 
-@auth.route('/register/', methods=['GET', 'POST'])
+@mod.route('/register/', methods=['GET', 'POST'])
 def register():
     """
     Registration Form

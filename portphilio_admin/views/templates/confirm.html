@@ -2,7 +2,7 @@
 {% block content %}
   <h2>Confirm</h2>
   {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
-  <form action="{{ url_for('auth.confirm') }}" method=post>
+  <form action="{{ url_for('root.confirm') }}" method=post>
     <dl>
       <dt>{{ form.username.label }}</dt>
       <dd>{{ form.username }}</dd>

@@ -2,7 +2,7 @@
 {% block content %}
   <h2>Invite</h2>
   {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
-  <form action="{{ url_for('auth.invite') }}" method=post>
+  <form action="{{ url_for('admin.invite') }}" method=post>
     <dl>
       <dt>{{ form.email.label }}</dt>
       <dd>{{ form.email }}</dd>

@@ -1,4 +1,5 @@
 import os
+from flask_sslify import SSLify
 from flask import Flask, request, render_template
 from pymongo import Connection
 from urlparse import urlparse
@@ -9,6 +10,9 @@ from lime_lib.tools import AnonymousUser
 
 # Create a starter app
 app = Flask(__name__)
+
+# Force SSL/HTTPS
+sslify = SSLify(app, permanent=True)
 
 # Turn on debugging if it's set
 app.debug = os.environ.get('FLASK_DEBUG') == 'True'
@@ -56,13 +60,13 @@ from portphilio_admin.views import account
 account.config = app.config
 app.register_blueprint(account.mod)
 
-from portphilio_admin.views.auth import auth
-auth.config = app.config
-app.register_blueprint(auth)
+from portphilio_admin.views import root
+root.config = app.config
+app.register_blueprint(root.mod)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
-login_manager.login_view = "auth.login"
+login_manager.login_view = "root.login"
 login_manager.anonymous_user = AnonymousUser
 
 from lime_lib.models import User
