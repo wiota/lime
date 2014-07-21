@@ -20,6 +20,7 @@ passlib==1.6.2
 pymongo==2.7
 pytz==2013b
 requests==2.3.0
+stripe==1.18.0
 translitcodec==0.3
 wsgiref==0.1.2
 zope.interface==4.1.1

@@ -2,6 +2,7 @@ from flask import Blueprint, request, redirect, render_template, url_for, flash
 
 from lime_lib.models import *
 from lime_lib.tools import retrieve_image
+from lime_lib.s3 import s3_config
 from flask.ext.login import LoginManager
 from flask.ext.login import login_required, login_user, logout_user, current_user
 from flask.ext.wtf import Form
@@ -11,6 +12,7 @@ from werkzeug import check_password_hash, generate_password_hash
 from itsdangerous import URLSafeSerializer, BadSignature
 
 from flask import current_app as app
+import boto
 import os
 
 mod = Blueprint('root', __name__, template_folder='templates')
@@ -74,14 +76,32 @@ def confirm(payload=None):
         user = User.objects.get(id=current_user.id)
         user.username=form.username.data
         user.password=generate_password_hash(form.password.data)
-        user.build()
+
+        # Create the body
+        #TODO: Body doesn't need a slug or title
+        body = Body(owner=user.id, slug="", title="")
+        body.save()
+
+        # Create the S3 stuff
+        conn = boto.connect_s3()
+        bucket_name ='portphilio_%s' % user.username
+        bucket = conn.create_bucket(bucket_name)
+        s3_conf = s3_config()
+        bucket.set_policy(s3_conf.get_policy(user.username))
+        bucket.set_cors_xml(s3_conf.get_cors())
+
+        # Create the host
+        # TODO: Where does the hostname get set?
+        host = Host(hostname="foo.com", bucketname=bucket_name, owner=user.id)
+        host.save()
+
         user.save()
-        return redirect(url_for("admin.index"))
+        return redirect(url_for("root.index"))
     return render_template("confirm.html", form=form)
 
 
 class LoginForm(Form):
-    username = TextField('Username', [Required()])
+    username = TextField('Username or Email', [Required()])
     password = PasswordField('Password', [Required()])
 
     def __init__(self, *args, **kwargs):
