@@ -28,17 +28,17 @@
     <div class="admin_user_menu">
       {% if current_user.is_anonymous() %}
         <div class='admin_user'>
-          <a href="{{ url_for('root.login') }}">log in</a>
+          <a href="{{ url_for('root.login') }}">Login</a>
         </div>
       {% else %}
         <div class='admin_user'>
-          <b>{{ current_user.email}} </b>
           <div class='admin_user_nav'>
             <ul>
               <li><a href=" {{ url_for('account.account') }} ">Account</a></li>
               <li><a href=" {{ url_for('root.logout') }} ">Logout</a></li>
             </ul>
           </div>
+          <b class='identification'>{{ current_user.email}} </b>
         </div>
       {% endif %}
     </div>

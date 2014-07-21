@@ -8,8 +8,18 @@
   width: 17.098300562504%;
   }
 
+.admin_user_menu .identification {
+  display:block;
+  padding: 5% 0;
+  }
+
 .admin_user .admin_user_nav {display:none;}
 .admin_user:hover .admin_user_nav {display:block;}
+.admin_user .admin_user_nav li {
+  display:block;
+  padding: 5% 0;
+
+  }
 
 .admin_flashes {
   z-index: 1001;
@@ -30,6 +40,11 @@
 .login {
   width: 40%;
   padding: 2%;
+  border-style:none;
+  }
+
+.login fieldset {
+  border-style: none;
   }
 
 .login label {
@@ -39,7 +54,7 @@
   margin: 1.5% 1.5% 0%;
   }
 
-.login .input {
+.login .input_element input {
   width: 95%;
   padding: 1%;
   margin: 0% 1.5% 1.5%;
@@ -59,6 +74,7 @@
   font-weight: bold;
   color: #fff;
   background-color: #82db8a;
+  border-style:none;
 }
 
 /* msg class */
