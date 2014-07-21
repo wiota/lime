@@ -1,3 +1,3 @@
-[submodule "lime_lib"]
-	path = lime_lib
-	url = https://github.com/wiota/lime_lib.git
+[submodule "toolbox"]
+	path = toolbox
+	url = https://98fe09f356b5cde2ccdda573889f6ccafc6c41dc:x-oauth-basic@github.com/di/toolbox

@@ -6,11 +6,11 @@ from flask.ext.wtf import Form
 from wtforms import TextField
 from itsdangerous import URLSafeSerializer, BadSignature
 from wtforms.validators import Required, Email
-from lime_lib.build_db import build_db, clear_db
+from toolbox.build_db import build_db, clear_db
 from flask.ext.login import login_required
 from flask.ext.login import current_user
-from lime_lib.tools import admin_required
-from lime_lib.models import User
+from toolbox.tools import admin_required
+from toolbox.models import User, Host, Vertex
 import requests
 
 import os
@@ -27,7 +27,24 @@ def index():
 @login_required
 @admin_required
 def users():
-    return render_template('users.html', users=User.objects())
+    return render_template('users.html', admins=User.objects(admin=True), users=User.objects(admin=False))
+
+@mod.route("/users/delete/<id>/")
+@login_required
+@admin_required
+def delete_user(id):
+    return render_template('delete_user_confirm.html', user=User.objects.get(id=id))
+
+@mod.route("/users/delete/<id>/confirm/")
+@login_required
+@admin_required
+def definitely_delete_user(id):
+    owner = User.objects.get(id=id)
+    Host.objects(owner=owner).delete()
+    Vertex.objects(owner=owner).delete()
+    owner.delete()
+    flash("User '%s' successfully deleted" % (owner.username))
+    return redirect(url_for("admin.index"))
 
 @mod.route("/invite/", methods=["GET", "POST"])
 @login_required

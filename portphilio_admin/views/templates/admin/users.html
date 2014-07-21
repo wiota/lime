@@ -4,9 +4,21 @@
   {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
   {% for user in users %}
   <ul>
-    <li>{{user.id}}</li>
+    <li>{{user.email}}</li>
     <ul>
         <li>{{user.username}}</li>
+        <li>{{user.id}}</li>
+        <li><a href="./delete/{{user.id}}/">Delete user</a></li>
+    </ul>
+  </ul>
+  {% endfor %}
+  <h2>Admins:</h2>
+  {% for admin in admins %}
+  <ul>
+    <li>{{admin.email}}</li>
+    <ul>
+        <li>{{admin.username}}</li>
+        <li>{{admin.id}}</li>
     </ul>
   </ul>
   {% endfor %}

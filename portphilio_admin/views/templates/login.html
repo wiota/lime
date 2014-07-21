@@ -1,18 +1,10 @@
 {% extends "base.html" %}
+{% from "_forms.html" import render %}
 {% block content %}
 <div class='login'>
   {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
   <form action="{{ url_for('root.login') }}" method=post>
-    {% if ref %}
-        <input type="hidden" name=next value={{ ref }}>
-    {% endif %}
-
-      <label for='username'>Username</label>
-      <input class='input' type=text name=username>
-      <label for='password'>Password</label>
-      <input class='input' type=password name=password>
-      <input class='input submit' type=submit value=Login>
-
+    {{ render(form) }}
   </form>
 </div>
 {% endblock %}

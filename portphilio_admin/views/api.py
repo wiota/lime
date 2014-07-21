@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from flask import current_app as app
-from lime_lib.tools import bsonify, to_dict, update_document, slugify
-from lime_lib.models import *
+from toolbox.tools import bsonify, to_dict, update_document, slugify
+from toolbox.models import *
 from flask.ext.login import login_required
 from flask.ext.login import current_user
 
