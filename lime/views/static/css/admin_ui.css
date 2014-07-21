@@ -20,29 +20,37 @@ a {text-decoration: none; color: #000;}
 /* Path Panel */
 
 #path_panel {
+  z-index: 3;
   width: 19.098300562504%;
   position:absolute;
   top: 0;
   left: 0;
   bottom: 0;
-  background: #333 url('https://s3.amazonaws.com/wiota/lime/work_up_back.png');
+  background: #f6f7f7 url('https://s3.amazonaws.com/wiota/lime/4grid_light.png');
+  -webkit-box-shadow: 0px 0px 3px 0px rgba(42, 44, 57, 0.80);
+  -moz-box-shadow:    0px 0px 3px 0px rgba(42, 44, 57, 0.80);
+  box-shadow:         0px 0px 3px 0px rgba(42, 44, 57, 0.80);
 }
 
 /* Listing Panel */
 
 #listing_panel {
+  z-index: 1;
   margin: 0 0;
-  /* width: 61.803398875%; */
+  /* width: 61.803398875%; */width: 80.901699437496%;
   width: 50%;
-  min-height: 400px;
+
   position:absolute;
   top: 0;
-  left: 19.098300562504%;;
+  left: 19.098300562504%;
+  bottom: 0;
   }
 
 /* Action Panel */
 
 #action_panel {
+  display:block;
+  z-index: 2;
   background-color: #fff;
   overflow: auto;
   margin: 0;
@@ -50,6 +58,26 @@ a {text-decoration: none; color: #000;}
   position:fixed;
   top: 0;
   right: 0;
+  bottom: 0;
+  }
+
+/* -------------------------------------------------------------------  */
+/* Path Panel */
+
+.path .vertex {
+  display:block;
+  width: 50%;
+  margin: 25% 25%;
+  text-align: center;
+  }
+
+.path .icon {
+  width: 100%;
+  }
+
+.path .label {
+  font-weight: normal;
+  font-size: 11px;
   }
 
 /* -------------------------------------------------------------------  */
@@ -68,15 +96,18 @@ a {text-decoration: none; color: #000;}
   z-index: 100;
   position: relative;
   background-color: #f0f0f0;
-  width: 93%;
+  width: 96%;
   padding: 4% 2%;
-  margin: 0 1.5%;
-  font-size: 110%;
+  margin: 0;
+  }
+
+.summary .title {
+  font-size: 140%;
   }
 
 .body.listing .summary {
-  background-color: #237ab1;
-  color: #fff;
+  background-color: #eee;
+  color: #000;
   }
 
 .category.listing .summary {
@@ -90,18 +121,23 @@ a {text-decoration: none; color: #000;}
   background-color: #ddd;
 }
 
+.summary .add_work,
+.summary .add_category,
+.summary .add_work {
+
+  }
+
+
+
 /* Child List (one for each vertex) */
 
 ol.succset_list {
   z-index: 110;
   position: relative;
-  width: 97%;
-  margin: 0 1.5%;
+  width: 100%;
+  margin: 0;
   padding: 2% 0 1.5%;
-  background-color: #f0f0f0;
-  -webkit-box-shadow: 0px 0px 3px 0px rgba(42, 44, 57, 0.80);
-  -moz-box-shadow:    0px 0px 3px 0px rgba(42, 44, 57, 0.80);
-  box-shadow:         0px 0px 3px 0px rgba(42, 44, 57, 0.80);
+  background-color: #fff;
   }
 
 .category.listing .succset_list
@@ -212,7 +248,23 @@ ol.succset_list {
   color: #930;
   }
 
+.in_set_menu a.icon {
+  width: 20%;
+  float:right;
+  display:block;
+  text-align: center;
+}
 
+.in_set_menu a.icon .label {
+  font-size: 12px;
+  font-weight: normal;
+}
+
+.in_set_menu a.icon img.icon {
+  display:block;
+  width: 50%;
+  margin: 0 25%;
+}
 
 /* Overlays */
 
@@ -241,7 +293,7 @@ i.info_tag {
 
 
 #action_panel form {
-  margin: 0 0 .2%;
+  margin: 0 0 .2% 1%;
   overflow: auto;
   border-bottom: 1px dotted #82db8a;
   }
