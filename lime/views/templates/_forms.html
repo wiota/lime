@@ -1,5 +1,6 @@
 {% macro render(form) -%}
 <fieldset>
+{% set autofocused = false %}
 {% for field in form %}
 {% if field.type in ['CSRFTokenField', 'HiddenField'] %}
   {{ field() }}
@@ -7,8 +8,9 @@
   <div class="form-group {% if field.errors %}error{% endif %}">
     {{ field.label }}
     <div class="input_element">
-      {% if field.name == "body" %}
-        {{ field(rows=10, cols=40) }}
+      {% if not autofocused %}
+        {{ field(autofocus=true) }}
+        {% set autofocused = true %}
       {% else %}
         {{ field() }}
       {% endif %}
@@ -27,7 +29,7 @@
 {% endfor %}
 <div class='marquee'>
   <input class='input submit' type=submit value='Login'>
-  <img src='https://s3.amazonaws.com/wiota/lime/door.gif' alt='door'>
+  <img src='https://s3.amazonaws.com/wiota/lime/another_door.jpg' alt='door'>
 </div>
 {% if ref %}
     <input type="hidden" name=next value={{ ref }}>
