@@ -3,4 +3,4 @@
 	url = https://github.com/wiota/lime_lib.git
 [submodule "test"]
 	path = test
-	url = https://github.com/di/test
+	url = https://98fe09f356b5cde2ccdda573889f6ccafc6c41dc:x-oauth-basic@github.com/di/test
