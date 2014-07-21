@@ -1,27 +1,65 @@
 .admin_user_menu {
+  z-index: 1000;
   position:fixed;
-  top:0;
-  right:.75%;
+  bottom:0;
+  left: 0%;
   background: #82db8a;
-  padding: 5px;
-  min-width: 100px;
+  padding: 1%;
+  width: 17.098300562504%;
   }
 
 .admin_user .admin_user_nav {display:none;}
 .admin_user:hover .admin_user_nav {display:block;}
 
 .admin_flashes {
+  z-index: 1001;
   position:fixed;
   top: 0;
   left: 0;
   bottom: 0;
   right: 0;
-  font-size: 140px;
+  font-size: 110px;
   font-weight: normal;
-  padding: 10%;
+  padding: 5%;
   background-color: #78f7d8;
   color: #fff;
   }
+
+/* Login */
+
+.login {
+  width: 40%;
+  padding: 2%;
+  }
+
+.login label {
+  font-size: 11px;
+  display:block;
+  padding: 1%;
+  margin: 1.5% 1.5% 0%;
+  }
+
+.login .input {
+  width: 95%;
+  padding: 1%;
+  margin: 0% 1.5% 1.5%;
+  font-size: 14px;
+  border-style:none;
+  background-color: #f0f0f0;
+  }
+
+.login .input.submit {
+  cursor: pointer;
+  float:left;
+  width: 150px;
+  padding: 1%;
+  margin: 2.5% 0 2.5% 1.5%;
+  font-family: 'Helvetica', 'Arial', 'san-serif';
+  font-size: 18px;
+  font-weight: bold;
+  color: #fff;
+  background-color: #82db8a;
+}
 
 /* msg class */
 .msg_display {

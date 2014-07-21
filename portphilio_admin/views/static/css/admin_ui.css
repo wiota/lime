@@ -1,6 +1,4 @@
-body {margin:0; padding: 0; font-size: 90%; font-family: 'Helvetica', 'Arial', 'san-serif';
-      background: #333 url('https://s3.amazonaws.com/portphilio/work_up_back.png');
-      }
+body {margin:0; padding: 0; font-size: 90%; font-family: 'Helvetica', 'Arial', 'san-serif';}
 
 ul, ol {margin: 0; padding:0;list-style-type: none;}
 
@@ -9,11 +7,6 @@ a {text-decoration: none; color: #000;}
 /* Portfolio Blue: #237ab1 */
 /* ServerSend Greed: #82db8a */
 /* shadow color  42,44,57 */
-
-#admin_nav {
-  overflow: auto;
-  margin: 0;
-  }
 
 #admin_nav a {
   display:block;
@@ -24,15 +17,27 @@ a {text-decoration: none; color: #000;}
   color: #fff;
   }
 
+/* Path Panel */
+
+#path_panel {
+  width: 19.098300562504%;
+  position:absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  background: #333 url('https://s3.amazonaws.com/portphilio/work_up_back.png');
+}
+
 /* Listing Panel */
 
 #listing_panel {
-  margin: 4% 0;
+  margin: 0 0;
+  /* width: 61.803398875%; */
   width: 50%;
   min-height: 400px;
   position:absolute;
   top: 0;
-  left: 0;
+  left: 19.098300562504%;;
   }
 
 /* Action Panel */
@@ -40,8 +45,8 @@ a {text-decoration: none; color: #000;}
 #action_panel {
   background-color: #fff;
   overflow: auto;
-  margin: 4% 0;
-  width: 50%;
+  margin: 0;
+  width: 30.901699437496%;
   position:fixed;
   top: 0;
   right: 0;
