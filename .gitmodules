@@ -1,3 +1,6 @@
 [submodule "lime_lib"]
 	path = lime_lib
 	url = https://github.com/wiota/lime_lib.git
+[submodule "test"]
+	path = test
+	url = https://github.com/di/test
