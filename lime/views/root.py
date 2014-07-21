@@ -84,7 +84,7 @@ def confirm(payload=None):
 
         # Create the S3 stuff
         conn = boto.connect_s3()
-        bucket_name ='portphilio_%s' % user.username
+        bucket_name ='%s_%s' % (os.environ["S3_BUCKET"], user.username)
         bucket = conn.create_bucket(bucket_name)
         s3_conf = s3_config()
         bucket.set_policy(s3_conf.get_policy(user.username))
