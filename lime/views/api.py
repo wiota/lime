@@ -95,7 +95,6 @@ def put_succset(vertex_type, id):
         owner=current_user.id,
         id=id).update_one(
         set__succset=request.json['succset'])
-    set_cover(id)
     return jsonify(result="success"), 200  # TODO: Should be a 204
 
 
