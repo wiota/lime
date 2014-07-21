@@ -37,7 +37,6 @@ def login():
         user = User.objects.get(id=form.user.id)
         login_user(user)
         flash("Logged in successfully.")
-        print request.args.get("next")
         return redirect(request.values.get("next") or url_for("admin.index"))
     flash("Invalid credentials, please try again")
     return render_template("login.html", form=form, ref=ref)
