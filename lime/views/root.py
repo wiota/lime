@@ -17,17 +17,10 @@ import os
 
 mod = Blueprint('root', __name__, template_folder='templates')
 
-@mod.route('/')
-@login_required
+@mod.route('/', methods=["GET", "POST"])
 def index():
-    return render_template('index.html')
-
-@mod.route('/image/<image_name>')
-def image(image_name):
-   return retrieve_image(image_name, current_user.username)
-
-@mod.route("/login/", methods=["GET", "POST"])
-def login():
+    if current_user.is_authenticated():
+        return render_template('index.html')
     ref = request.args.get('next', None)
     form = LoginForm()
     if request.method == 'GET':
@@ -42,11 +35,16 @@ def login():
     return render_template("login.html", form=form, ref=ref)
 
 
+@mod.route('/image/<image_name>')
+def image(image_name):
+   return retrieve_image(image_name, current_user.username)
+
+
 @mod.route("/logout/")
 def logout():
     logout_user()
     flash("You have been logged out.")
-    return redirect("/login/")
+    return redirect(url_for("root.index"))
 
 
 @mod.route('/confirm/', methods=['GET', 'POST'])
@@ -70,7 +68,7 @@ def confirm(payload=None):
             flash("Your email has been verified.")
             return render_template("confirm.html", form=form)
         else:
-            return redirect(url_for("admin.index"))
+            return redirect(url_for("root.index"))
     if form.validate_on_submit():
         user = User.objects.get(id=current_user.id)
         user.username=form.username.data

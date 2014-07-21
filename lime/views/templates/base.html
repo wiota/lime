@@ -28,7 +28,7 @@
     <div class="admin_user_menu">
       {% if current_user.is_anonymous() %}
         <div class='admin_user'>
-          <a href="{{ url_for('root.login') }}">Login</a>
+          <a href="{{ url_for('root.index') }}">Login</a>
         </div>
       {% else %}
         <div class='admin_user'>
