@@ -41,26 +41,26 @@ db_name = urlparse(MONGO_URL).path[1:]
 # Create a new DB
 db_pm = connection[db_name]
 
-from portphilio_admin.views import api
+from lime.views import api
 api.db = db_pm
 api.config = app.config
 app.register_blueprint(api.mod)
 
-from portphilio_admin.views import admin
+from lime.views import admin
 admin.db = db_pm
 admin.config = app.config
 app.register_blueprint(admin.mod)
 
-from portphilio_admin.views import upload
+from lime.views import upload
 upload.db = db_pm
 upload.config = app.config
 app.register_blueprint(upload.mod)
 
-from portphilio_admin.views import account
+from lime.views import account
 account.config = app.config
 app.register_blueprint(account.mod)
 
-from portphilio_admin.views import root
+from lime.views import root
 root.config = app.config
 app.register_blueprint(root.mod)
 
