@@ -110,13 +110,11 @@ class LoginForm(Form):
 
     def validate(self):
         try:
-            user = User.objects.get(username=self.username.data)
+            user = User.objects.get(Q(username=self.username.data) | Q(email=self.username.data))
         except Exception:
-            #app.logger.error("Unknown username")
             return False
 
         if not check_password_hash(user.password, self.password.data):
-            #app.logger.error("Unknown password")
             return False
 
         self.user = user
