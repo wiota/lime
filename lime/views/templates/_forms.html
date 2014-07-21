@@ -25,7 +25,10 @@
   </div>
 {% endif %}
 {% endfor %}
-<input class='input submit' type=submit value=Login>
+<div class='marquee'>
+  <input class='input submit' type=submit value='Enter Here'>
+  <img src='https://s3.amazonaws.com/wiota/lime/marquee.gif' alt='marquee'>
+</div>
 {% if ref %}
     <input type="hidden" name=next value={{ ref }}>
 {% endif %}

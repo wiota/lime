@@ -48,7 +48,7 @@
   }
 
 .login label {
-  font-size: 11px;
+  font-size: 13px;
   display:block;
   padding: 1%;
   margin: 1.5% 1.5% 0%;
@@ -63,17 +63,32 @@
   background-color: #f0f0f0;
   }
 
+.login .marquee {
+  margin: 2.5% 0 2.5% 1.5%;
+  width: 60%;
+  background-color: #82db8a;
+  position:relative;
+  }
+
+.login .marquee img {
+  width:100%;
+  display: block;
+  }
+
 .login .input.submit {
   cursor: pointer;
   float:left;
-  width: 150px;
-  padding: 1%;
-  margin: 2.5% 0 2.5% 1.5%;
+  width: 100%;
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
   font-family: 'Helvetica', 'Arial', 'san-serif';
   font-size: 18px;
   font-weight: bold;
   color: #fff;
-  background-color: #82db8a;
+  background-color: transparent;
   border-style:none;
 }
 
