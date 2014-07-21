@@ -65,7 +65,7 @@
 
 .login .marquee {
   margin: 2.5% 0 2.5% 1.5%;
-  width: 60%;
+  width: 40%;
   background-color: #82db8a;
   position:relative;
   }
@@ -85,9 +85,9 @@
   right:0;
   bottom:0;
   font-family: 'Helvetica', 'Arial', 'san-serif';
-  font-size: 18px;
+  font-size: 30px;
   font-weight: bold;
-  color: #fff;
+  color: transparent;
   background-color: transparent;
   border-style:none;
 }
