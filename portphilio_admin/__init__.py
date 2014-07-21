@@ -6,7 +6,7 @@ from urlparse import urlparse
 from bson.objectid import ObjectId
 from flask.ext.mongoengine import MongoEngine
 from flask.ext.login import LoginManager
-from lime_lib.tools import AnonymousUser
+from toolbox.tools import AnonymousUser
 
 # Create a starter app
 app = Flask(__name__)
@@ -69,7 +69,7 @@ login_manager.init_app(app)
 login_manager.login_view = "root.login"
 login_manager.anonymous_user = AnonymousUser
 
-from lime_lib.models import User
+from toolbox.models import User
 
 
 @login_manager.user_loader

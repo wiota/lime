@@ -1,8 +1,8 @@
 from flask import Blueprint, request, redirect, render_template, url_for, flash
 
-from lime_lib.models import *
-from lime_lib.tools import retrieve_image
-from lime_lib.s3 import s3_config
+from toolbox.models import *
+from toolbox.tools import retrieve_image
+from toolbox.s3 import s3_config
 from flask.ext.login import LoginManager
 from flask.ext.login import login_required, login_user, logout_user, current_user
 from flask.ext.wtf import Form

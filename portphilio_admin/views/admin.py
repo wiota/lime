@@ -6,11 +6,11 @@ from flask.ext.wtf import Form
 from wtforms import TextField
 from itsdangerous import URLSafeSerializer, BadSignature
 from wtforms.validators import Required, Email
-from lime_lib.build_db import build_db, clear_db
+from toolbox.build_db import build_db, clear_db
 from flask.ext.login import login_required
 from flask.ext.login import current_user
-from lime_lib.tools import admin_required
-from lime_lib.models import User, Host, Vertex
+from toolbox.tools import admin_required
+from toolbox.models import User, Host, Vertex
 import requests
 
 import os
