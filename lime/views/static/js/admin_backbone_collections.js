@@ -79,10 +79,13 @@ App.Collection['Vertex'] = App.VertexCollection = Backbone.Collection.extend({
   },
 
   createAndAddTo: function(data, predecessor){
-    var model = this.create(data, {'wait':true});
+    var model = this.create(data);
     model.once('sync', function(model, response, options){
       predecessor.addToSuccset(model)
     });
+    model.once('error', function(){
+      this.off('sync');
+    })
     return model;
   }
 
