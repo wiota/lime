@@ -37,7 +37,6 @@ def index():
         login_user(user)
         flash("Logged in successfully.")
         return redirect(request.values.get("next") or url_for("admin.index"))
-    flash("Invalid credentials, please try again")
     return render_template("login.html", form=form, ref=ref)
 
 
@@ -181,9 +180,15 @@ class LoginForm(Form):
             user = User.objects.get(
                 Q(username=self.username.data) | Q(email=self.username.data))
         except Exception:
+            flash("Username or email does not exist, please try again.")
+            return False
+
+        if not user.confirmed:
+            flash("Account not yet confirmed. Check your email. ")
             return False
 
         if not check_password_hash(user.password, self.password.data):
+            flash("Invalid password, please try again.")
             return False
 
         self.user = user
