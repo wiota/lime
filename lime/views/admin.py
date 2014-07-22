@@ -60,7 +60,6 @@ def invite():
         s = URLSafeSerializer(app.config['SECRET_KEY'])
         payload = s.dumps(str(user.id))
         link = url_for("root.confirm", payload=payload, _external=True)
-        app.logger.debug(link)
 
         user.save()
 
