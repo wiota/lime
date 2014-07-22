@@ -1,12 +1,13 @@
 import os
 from flask_sslify import SSLify
 from flask import Flask, request, render_template
-from pymongo import Connection
 from urlparse import urlparse
 from bson.objectid import ObjectId
 from flask.ext.mongoengine import MongoEngine
 from flask.ext.login import LoginManager
 from toolbox.tools import AnonymousUser
+from lime.views import api, admin, upload, account, root
+from toolbox.models import User
 
 # Create a starter app
 app = Flask(__name__)
@@ -33,34 +34,18 @@ app.config["MONGODB_SETTINGS"] = {
 # MongoEngine DB
 db = MongoEngine(app)
 
-# Pymongo DB
-# Create a new DB connection
-connection = Connection(MONGO_URL)
-# Parse the DB name from the URL
-db_name = urlparse(MONGO_URL).path[1:]
-# Create a new DB
-db_pm = connection[db_name]
-
-from lime.views import api
-api.db = db_pm
 api.config = app.config
 app.register_blueprint(api.mod)
 
-from lime.views import admin
-admin.db = db_pm
 admin.config = app.config
 app.register_blueprint(admin.mod)
 
-from lime.views import upload
-upload.db = db_pm
 upload.config = app.config
 app.register_blueprint(upload.mod)
 
-from lime.views import account
 account.config = app.config
 app.register_blueprint(account.mod)
 
-from lime.views import root
 root.config = app.config
 app.register_blueprint(root.mod)
 
@@ -69,7 +54,6 @@ login_manager.init_app(app)
 login_manager.login_view = "root.login"
 login_manager.anonymous_user = AnonymousUser
 
-from toolbox.models import User
 
 
 @login_manager.user_loader
