@@ -11,6 +11,7 @@ from flask.ext.login import login_required
 from flask.ext.login import current_user
 from toolbox.tools import admin_required
 from toolbox.models import User, Host, Vertex
+from flask.ext.login import login_user
 import requests
 
 import os
@@ -28,6 +29,13 @@ def index():
 @admin_required
 def users():
     return render_template('users.html', admins=User.objects(admin=True), users=User.objects(admin=False))
+
+@mod.route("/users/login/<id>/")
+@login_required
+@admin_required
+def login_as_user(id):
+    login_user(User.objects.get(id=id))
+    return redirect(url_for("root.index"))
 
 @mod.route("/users/delete/<id>/")
 @login_required
