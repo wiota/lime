@@ -4,6 +4,7 @@ from toolbox.models import *
 from toolbox.tools import retrieve_image
 from toolbox.s3 import s3_config
 from toolbox.email import *
+from toolbox.nocache import nocache
 from flask.ext.login import LoginManager
 from flask.ext.login import login_required, login_user, logout_user, current_user
 from flask.ext.wtf import Form
@@ -22,6 +23,7 @@ mod = Blueprint('root', __name__, template_folder='templates')
 
 
 @mod.route('/', methods=["GET", "POST"])
+@nocache
 def index():
     if current_user.is_authenticated():
         return render_template('index.html')
@@ -45,6 +47,7 @@ def image(image_name):
 
 
 @mod.route("/logout/")
+@nocache
 def logout():
     logout_user()
     flash("You have been logged out.")
@@ -52,6 +55,7 @@ def logout():
 
 
 @mod.route("/forgot-password/", methods=['GET', 'POST'])
+@nocache
 def forgot_password():
     form = ForgotPasswordForm()
     if request.method == 'GET':
@@ -73,6 +77,7 @@ def forgot_password():
 
 @mod.route("/reset-password/", methods=['GET', 'POST'])
 @mod.route("/reset-password/<payload>", methods=['GET', 'POST'])
+@nocache
 def reset_password(payload=None):
     form = ResetPasswordForm()
     if request.method == 'GET':
@@ -96,6 +101,7 @@ def reset_password(payload=None):
 
 @mod.route('/confirm/', methods=['GET', 'POST'])
 @mod.route('/confirm/<payload>', methods=['GET', 'POST'])
+@nocache
 def confirm(payload=None):
     ''' This is where user creation lives, for now...
     '''
@@ -218,51 +224,3 @@ class ConfirmForm(Form):
             flash("Username is already taken")
             return False
         return True
-
-
-class RegisterForm(Form):
-    username = TextField('Username', [Required()])
-    email = TextField('Email address', [Required(), Email()])
-    password = PasswordField('Password', [Required()])
-    confirm = PasswordField('Repeat Password', [
-        Required(),
-        EqualTo('password', message='Passwords must match')
-    ])
-    admin = BooleanField('Check if admin', [Required()])
-
-    def __init__(self, *args, **kwargs):
-        Form.__init__(self, *args, **kwargs)
-        self.user = None
-
-    def validate(self):
-        if User.objects(username=self.username.data).first() is not None:
-            flash("Username is already taken")
-            return False
-        if User.objects(email=self.email.data).first() is not None:
-            flash("This email address already has an account")
-            return False
-        return True
-
-
-@mod.route('/register/', methods=['GET', 'POST'])
-def register():
-    """
-    Registration Form
-    """
-    form = RegisterForm()
-    if form.validate_on_submit():
-        # create an user instance not yet stored in the database
-        user = User(username=form.username.data, email=form.email.data,
-                    password=generate_password_hash(form.password.data),
-                    admin=form.admin.data)
-        # Insert the record in our database and commit it
-        user.save()
-
-        # Log the user in, as he now has an id
-        login_user(user)
-
-        # flash will display a message to the user
-        flash('Thanks for registering')
-        # redirect user to the 'home' method of the user module.
-        return redirect(url_for('admin.index'))
-    return render_template("register.html", form=form)

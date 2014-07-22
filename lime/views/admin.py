@@ -9,6 +9,7 @@ from wtforms.validators import Required, Email
 from toolbox.build_db import build_db, clear_db
 from flask.ext.login import login_required
 from flask.ext.login import current_user
+from toolbox.nocache import nocache
 from toolbox.tools import admin_required
 from toolbox.models import User, Host, Vertex
 from toolbox.email import *
@@ -30,6 +31,7 @@ mod = Blueprint(
 
 @mod.route("/")
 @admin_required
+@nocache
 def index():
     return render_template('admin.html')
 
@@ -37,6 +39,7 @@ def index():
 @mod.route("/users/")
 @login_required
 @admin_required
+@nocache
 def users():
     return render_template(
         'users.html', admins=User.objects(admin=True), users=User.objects(admin=False))
@@ -45,6 +48,7 @@ def users():
 @mod.route("/users/login/<id>/")
 @login_required
 @admin_required
+@nocache
 def login_as_user(id):
     login_user(User.objects.get(id=id))
     return redirect(url_for("root.index"))
@@ -53,6 +57,7 @@ def login_as_user(id):
 @mod.route("/users/delete/<id>/")
 @login_required
 @admin_required
+@nocache
 def delete_user(id):
     return render_template(
         'delete_user_confirm.html', user=User.objects.get(id=id))
@@ -61,6 +66,7 @@ def delete_user(id):
 @mod.route("/users/delete/<id>/confirm/")
 @login_required
 @admin_required
+@nocache
 def definitely_delete_user(id):
     user = User.objects.get(id=id)
 
@@ -90,6 +96,7 @@ def definitely_delete_user(id):
 @mod.route("/invite/", methods=["GET", "POST"])
 @login_required
 @admin_required
+@nocache
 def invite():
     ref = request.args.get('ref', None)
     form = InviteForm()
