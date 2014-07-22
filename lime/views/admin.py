@@ -13,6 +13,8 @@ from toolbox.tools import admin_required
 from toolbox.models import User, Host, Vertex
 from flask.ext.login import login_user
 import requests
+import boto
+import stripe
 
 import os
 
@@ -47,11 +49,28 @@ def delete_user(id):
 @login_required
 @admin_required
 def definitely_delete_user(id):
-    owner = User.objects.get(id=id)
-    Host.objects(owner=owner).delete()
-    Vertex.objects(owner=owner).delete()
-    owner.delete()
-    flash("User '%s' successfully deleted" % (owner.username))
+    user = User.objects.get(id=id)
+
+    # Delete the S3 Bucket
+    conn = boto.connect_s3()
+    bucket_name = '%s_%s' % (os.environ["S3_BUCKET"], user.username)
+    try:
+        b = boto.s3.bucket.Bucket(conn, bucket_name)
+        for x in b.list():
+            b.delete_key(x.key)
+        conn.delete_bucket(bucket_name)
+    except:
+        pass
+
+    # Delete the Stripe customer
+    stripe.api_key = app.config['STRIPE_API_KEY']
+    customer = stripe.Customer.retrieve(user.stripe_id)
+    customer.delete()
+
+    Host.objects(owner=user).delete()
+    Vertex.objects(owner=user).delete()
+    user.delete()
+    flash("User '%s' successfully deleted" % (user.username))
     return redirect(url_for("admin.index"))
 
 @mod.route("/invite/", methods=["GET", "POST"])

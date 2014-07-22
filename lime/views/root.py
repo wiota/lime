@@ -15,6 +15,7 @@ from flask import current_app as app
 import requests
 import boto
 import os
+import stripe
 
 mod = Blueprint('root', __name__, template_folder='templates')
 
@@ -121,6 +122,11 @@ def confirm(payload=None):
         user.username=form.username.data
         user.password=generate_password_hash(form.password.data)
 
+        # Create a stripe customer
+        stripe.api_key = app.config['STRIPE_API_KEY']
+        customer = stripe.Customer.create(email=user.email)
+        user.stripe_id = customer.id
+
         # Create the body
         #TODO: Body doesn't need a slug or title
         body = Body(owner=user.id, slug="", title="")
@@ -135,8 +141,7 @@ def confirm(payload=None):
         bucket.set_cors_xml(s3_conf.get_cors())
 
         # Create the host
-        # TODO: Where does the hostname get set?
-        host = Host(hostname="foo.com", bucketname=bucket_name, owner=user.id)
+        host = Host(bucketname=bucket_name, owner=user.id)
         host.save()
 
         user.save()

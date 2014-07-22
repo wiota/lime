@@ -23,6 +23,9 @@ app.jinja_env.trim_blocks = True
 # For CSRF usage
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 
+# Stripe API key
+app.config['STRIPE_API_KEY'] = os.environ.get('STRIPE_API_KEY')
+
 # Get the URL for the database from the environment
 MONGO_URL = os.environ.get('MONGOHQ_URL')
 
@@ -55,7 +58,9 @@ login_manager.login_view = "root.login"
 login_manager.anonymous_user = AnonymousUser
 
 
-
 @login_manager.user_loader
 def load_user(userid):
-    return User.objects.get(id=userid)
+    try:
+        return User.objects.get(id=userid)
+    except:
+        return AnonymousUser()
