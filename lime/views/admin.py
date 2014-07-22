@@ -11,6 +11,7 @@ from flask.ext.login import login_required
 from flask.ext.login import current_user
 from toolbox.tools import admin_required
 from toolbox.models import User, Host, Vertex
+from toolbox.email import *
 from flask.ext.login import login_user
 import requests
 import boto
@@ -18,7 +19,13 @@ import stripe
 
 import os
 
-mod = Blueprint('admin', __name__, static_folder='static', template_folder='templates/admin', static_url_path='/static/admin', url_prefix='/admin')
+mod = Blueprint(
+    'admin',
+    __name__,
+    static_folder='static',
+    template_folder='templates/admin',
+    static_url_path='/static/admin',
+    url_prefix='/admin')
 
 
 @mod.route("/")
@@ -26,11 +33,14 @@ mod = Blueprint('admin', __name__, static_folder='static', template_folder='temp
 def index():
     return render_template('admin.html')
 
+
 @mod.route("/users/")
 @login_required
 @admin_required
 def users():
-    return render_template('users.html', admins=User.objects(admin=True), users=User.objects(admin=False))
+    return render_template(
+        'users.html', admins=User.objects(admin=True), users=User.objects(admin=False))
+
 
 @mod.route("/users/login/<id>/")
 @login_required
@@ -39,11 +49,14 @@ def login_as_user(id):
     login_user(User.objects.get(id=id))
     return redirect(url_for("root.index"))
 
+
 @mod.route("/users/delete/<id>/")
 @login_required
 @admin_required
 def delete_user(id):
-    return render_template('delete_user_confirm.html', user=User.objects.get(id=id))
+    return render_template(
+        'delete_user_confirm.html', user=User.objects.get(id=id))
+
 
 @mod.route("/users/delete/<id>/confirm/")
 @login_required
@@ -73,6 +86,7 @@ def definitely_delete_user(id):
     flash("User '%s' successfully deleted" % (user.username))
     return redirect(url_for("admin.index"))
 
+
 @mod.route("/invite/", methods=["GET", "POST"])
 @login_required
 @admin_required
@@ -90,38 +104,30 @@ def invite():
 
         user.save()
 
-        # TODO: Move this somewhere nicer
-        url = "https://api.sendgrid.com/api/mail.send.json"
-        payload = {
-            "api_user" : os.environ['SENDGRID_USERNAME'],
-            "api_key" : os.environ['SENDGRID_PASSWORD'],
-            "to" : user.email,
-            "from" : "goaheadandreply@wiota.co",
-            "fromname" : "Wiota Co.",
-            "subject" : "Confirm your new Lime account!",
-            "html" : render_template("confirm_email.html", link=link)
-        }
-        r = requests.post(url, data=payload)
+        subject = "Confirm your new Lime account!"
+        html = render_template("confirm_email.html", link=link)
+
+        send_email(user.email, subject, html)
 
         flash("Successfully sent invitation.")
         return redirect(url_for("admin.invite"))
     return render_template("invite.html", form=form, ref=ref)
 
 
-
-# This is a temporary endpoint, only for the testuser!
 @mod.route('/build_db/')
 @login_required
 def rebuild():
+    ''' This is a temporary endpoint, only for the testuser! '''
     if current_user.username == "testuser":
         build_db(current_user.username)
         return "Success."
     return "Not allowed."
 
-# This is a temporary endpoint
+
 @mod.route('/clear_db/')
 @login_required
 def clear():
+    ''' This is a temporary endpoint '''
     clear_db(current_user.username)
     return "Success"
 
@@ -138,5 +144,3 @@ class InviteForm(Form):
             flash("This email address already has an account")
             return False
         return True
-
-

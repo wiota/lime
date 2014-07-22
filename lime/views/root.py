@@ -3,6 +3,7 @@ from flask import Blueprint, request, redirect, render_template, url_for, flash
 from toolbox.models import *
 from toolbox.tools import retrieve_image
 from toolbox.s3 import s3_config
+from toolbox.email import *
 from flask.ext.login import LoginManager
 from flask.ext.login import login_required, login_user, logout_user, current_user
 from flask.ext.wtf import Form
@@ -18,6 +19,7 @@ import os
 import stripe
 
 mod = Blueprint('root', __name__, template_folder='templates')
+
 
 @mod.route('/', methods=["GET", "POST"])
 def index():
@@ -39,7 +41,7 @@ def index():
 
 @mod.route('/image/<image_name>')
 def image(image_name):
-   return retrieve_image(image_name, current_user.username)
+    return retrieve_image(image_name, current_user.username)
 
 
 @mod.route("/logout/")
@@ -47,6 +49,7 @@ def logout():
     logout_user()
     flash("You have been logged out.")
     return redirect(url_for("root.index"))
+
 
 @mod.route("/forgot-password/", methods=['GET', 'POST'])
 def forgot_password():
@@ -60,17 +63,13 @@ def forgot_password():
         payload = s.dumps(str(user.id))
         link = url_for("root.reset_password", payload=payload, _external=True)
 
-        url = "https://api.mailgun.net/v2/wiota.co/messages"
-        auth = ('api', app.config['MAILGUN_API_KEY'])
-        payload = {
-            "to" : user.email,
-            "from" : "Wiota Co. <goaheadandreply@wiota.co>",
-            "subject" : "Forgotten password reset",
-            "html" : render_template("forgot_password_email.html", link=link)
-        }
-        r = requests.post(url, auth=auth, data=payload)
+        subject = "Forgotten password reset"
+        html = render_template("forgot_password_email.html", link=link)
+
+        send_email(user.email, subject, html)
         flash("Reset sent. Check your email.")
     return render_template("forgot_password.html", form=form)
+
 
 @mod.route("/reset-password/", methods=['GET', 'POST'])
 @mod.route("/reset-password/<payload>", methods=['GET', 'POST'])
@@ -88,7 +87,7 @@ def reset_password(payload=None):
         return render_template("reset_password.html", form=form)
     if form.validate_on_submit():
         user = User.objects.get(id=current_user.id)
-        user.password=generate_password_hash(form.password.data)
+        user.password = generate_password_hash(form.password.data)
         user.save()
         return redirect(url_for("root.index"))
     flash("Passwords must match.")
@@ -119,8 +118,8 @@ def confirm(payload=None):
             return redirect(url_for("root.index"))
     if form.validate_on_submit():
         user = User.objects.get(id=current_user.id)
-        user.username=form.username.data
-        user.password=generate_password_hash(form.password.data)
+        user.username = form.username.data
+        user.password = generate_password_hash(form.password.data)
 
         # Create a stripe customer
         stripe.api_key = app.config['STRIPE_API_KEY']
@@ -128,13 +127,13 @@ def confirm(payload=None):
         user.stripe_id = customer.id
 
         # Create the body
-        #TODO: Body doesn't need a slug or title
+        # TODO: Body doesn't need a slug or title
         body = Body(owner=user.id, slug="", title="")
         body.save()
 
         # Create the S3 stuff
         conn = boto.connect_s3()
-        bucket_name ='%s_%s' % (os.environ["S3_BUCKET"], user.username)
+        bucket_name = '%s_%s' % (os.environ["S3_BUCKET"], user.username)
         bucket = conn.create_bucket(bucket_name)
         s3_conf = s3_config()
         bucket.set_policy(s3_conf.get_policy(user.username))
@@ -147,6 +146,7 @@ def confirm(payload=None):
         user.save()
         return redirect(url_for("root.index"))
     return render_template("confirm.html", form=form)
+
 
 class ForgotPasswordForm(Form):
     email = TextField('Email address', [Required(), Email()])
@@ -172,7 +172,8 @@ class LoginForm(Form):
 
     def validate(self):
         try:
-            user = User.objects.get(Q(username=self.username.data) | Q(email=self.username.data))
+            user = User.objects.get(
+                Q(username=self.username.data) | Q(email=self.username.data))
         except Exception:
             return False
 
