@@ -6,7 +6,7 @@ from bson.objectid import ObjectId
 from flask.ext.mongoengine import MongoEngine
 from flask.ext.login import LoginManager
 from toolbox.tools import AnonymousUser
-from lime.views import api, admin, upload, account, root
+from lime.views import api, admin, upload, account, root, stripe_hook
 from toolbox.models import User
 
 # Create a starter app
@@ -48,6 +48,9 @@ app.register_blueprint(upload.mod)
 
 account.config = app.config
 app.register_blueprint(account.mod)
+
+stripe_hook.config = app.config
+app.register_blueprint(stripe_hook.mod)
 
 root.config = app.config
 app.register_blueprint(root.mod)
