@@ -4,12 +4,16 @@ from flask import render_template
 from flask.ext.login import login_required
 from flask.ext.login import current_user
 from toolbox.models import User, Host
+import stripe
 
 mod = Blueprint('account', __name__, static_folder='static', template_folder='templates/account', static_url_path='/static/account', url_prefix='/account')
+
 
 @mod.route('/')
 @login_required
 def account():
+    stripe.api_key = app.config['STRIPE_API_KEY']
     user = User.objects.get(id=current_user.id)
     host = Host.objects.get(owner=user)
-    return render_template("account.html", user=user, host=host)
+    cust = stripe.Customer.retrieve(user.stripe_id)
+    return render_template("account.html", user=user, host=host, cust=cust)
