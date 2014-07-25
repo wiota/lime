@@ -4,23 +4,13 @@
   {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
   {% for user in users %}
   <ul>
-    <li>{{user.email}}</li>
-    <ul>
-        <li>{{user.username}}</li>
-        <li>{{user.id}}</li>
-        <li><a href="./{{user.id}}/delete/">Delete user</a></li>
-        <li><a href="./{{user.id}}/login/">Login as user</a></li>
-    </ul>
+    <li><a href="./{{ user.id }}"><b>{{user.email}}</b> ({{user.username}})</a></li>
   </ul>
   {% endfor %}
   <h2>Admins:</h2>
   {% for admin in admins %}
   <ul>
-    <li>{{admin.email}}</li>
-    <ul>
-        <li>{{admin.username}}</li>
-        <li>{{admin.id}}</li>
-    </ul>
+    <li><b>{{admin.email}}</b> ({{admin.username}})</li>
   </ul>
   {% endfor %}
 {% endblock %}

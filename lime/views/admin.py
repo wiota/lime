@@ -45,12 +45,26 @@ def user():
         'user.html', admins=User.objects(admin=True), users=User.objects(admin=False))
 
 
+@mod.route("/user/<id>")
+@login_required
+@admin_required
+@nocache
+def individual_user(id):
+    stripe.api_key = app.config['STRIPE_SECRET_KEY']
+    user = User.objects.get(id=id)
+    host = Host.objects.get(owner=user)
+    cust = stripe.Customer.retrieve(user.stripe_id)
+    plans = stripe.Plan.all()
+    return render_template(
+        'individual_user.html', user=user, host=host, cust=cust, plans=plans)
+
+
 @mod.route("/user/<id>/login/")
 @login_required
 @admin_required
 @nocache
 def login_as_user(id):
-    login_user(User.objects.get(id=id))
+    login_user(User.objects.get(id=id, admin=False))
     return redirect(url_for("root.index"))
 
 
