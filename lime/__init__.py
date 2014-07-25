@@ -23,8 +23,9 @@ app.jinja_env.trim_blocks = True
 # For CSRF usage
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 
-# Stripe API key
-app.config['STRIPE_API_KEY'] = os.environ.get('STRIPE_API_KEY')
+# Stripe API keys
+app.config['STRIPE_SECRET_KEY'] = os.environ.get('STRIPE_SECRET_KEY')
+app.config['STRIPE_PUBLIC_KEY'] = os.environ.get('STRIPE_PUBLIC_KEY')
 
 # Get the URL for the database from the environment
 MONGO_URL = os.environ.get('MONGOHQ_URL')

@@ -127,7 +127,7 @@ def confirm(payload=None):
         user.password = generate_password_hash(form.password.data)
 
         # Create a stripe customer
-        stripe.api_key = app.config['STRIPE_API_KEY']
+        stripe.api_key = app.config['STRIPE_SECRET_KEY']
         customer = stripe.Customer.create(email=user.email)
         user.stripe_id = customer.id
 

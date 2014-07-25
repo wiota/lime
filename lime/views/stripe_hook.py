@@ -14,10 +14,10 @@ mod = Blueprint('stripe', __name__, static_folder='static', template_folder='tem
 @mod.route('/', methods=['POST'])
 def stripe_hook():
     print request.json
-    stripe.api_key = app.config['STRIPE_API_KEY']
+    stripe.api_key = app.config['STRIPE_SECRET_KEY']
     e = stripe.Event.retrieve(request.json["id"])
-    user = User.objects.get(stripe_id=e["data"]["object"]["customer"])
     if e["type"] == "invoice.created" :
+        user = User.objects.get(stripe_id=e["data"]["object"]["customer"])
         invoice = stripe.Invoice.retrieve(e["data"]["object"]["id"])
         if not invoice.paid :
             # This is a manual invoice, close it so it can be paid later
