@@ -36,16 +36,16 @@ def index():
     return render_template('admin.html')
 
 
-@mod.route("/users/")
+@mod.route("/user/")
 @login_required
 @admin_required
 @nocache
-def users():
+def user():
     return render_template(
-        'users.html', admins=User.objects(admin=True), users=User.objects(admin=False))
+        'user.html', admins=User.objects(admin=True), users=User.objects(admin=False))
 
 
-@mod.route("/users/login/<id>/")
+@mod.route("/user/<id>/login/")
 @login_required
 @admin_required
 @nocache
@@ -54,7 +54,7 @@ def login_as_user(id):
     return redirect(url_for("root.index"))
 
 
-@mod.route("/users/delete/<id>/")
+@mod.route("/user/<id>/delete/")
 @login_required
 @admin_required
 @nocache
@@ -63,7 +63,7 @@ def delete_user(id):
         'delete_user_confirm.html', user=User.objects.get(id=id))
 
 
-@mod.route("/users/delete/<id>/confirm/")
+@mod.route("/user/<id>/delete/confirm/")
 @login_required
 @admin_required
 @nocache
