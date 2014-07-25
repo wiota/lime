@@ -8,18 +8,31 @@ App.View = {};
 // App Model Overrides
 /* ------------------------------------------------------------------- */
 
-  Backbone.View.prototype.flashOut = function(){
-    this.$el.addClass('outofsync');
-  },
+Backbone.View.prototype.flashOut = function(){
+  this.$el.addClass('outofsync');
+},
 
-  // This function seems to reveal that there are leftover
-  // views with event handlers laying around. See issue #20
-  Backbone.View.prototype.flash = function(){
-    msg.log('flash ' + this.model.get('_id'));
-    this.$el.css({'opacity': '0'});
-    this.$el.removeClass('outofsync');
-    this.$el.animate({'opacity': '1'},2000);
-  },
+// This function seems to reveal that there are leftover
+// views with event handlers laying around. See issue #20
+Backbone.View.prototype.flash = function(){
+  msg.log('flash ' + this.model.get('_id'));
+  this.$el.css({'opacity': '0'});
+  this.$el.removeClass('outofsync');
+  this.$el.animate({'opacity': '1'},2000);
+},
+
+Backbone.View.prototype.close = function(){
+  //console.log(this.className + ' close');
+  if(this.children){
+    _.each(this.children, function(childView){
+      childView.close();
+    })
+  }
+  this.children = [];
+  this.stopListening();
+  this.unbind();
+  this.remove();
+}
 
 /* ------------------------------------------------------------------- */
 // Successor Item View (SuccsetItemView?)
@@ -43,21 +56,12 @@ App.View.SuccessorItemView['Vertex'] = App.SuccessorItemView = Backbone.View.ext
     this.$el.attr('id', "_id_"+this.model.id);
   },
 
-  close: function(){
-    this.trigger('close');
-    this.stopListening();
-    this.unbind();
-    this.remove();
-
-
-  },
-
   delete: function(){
     this.predecessor.removeFromSuccset(this.model);
   },
 
   updateForm: function(){
-    App.actionPanel.loadAttributeForm(this.model, this.predecessor);
+    App.actionPanel.loadVertexForm(this.model, this.predecessor);
   },
 
   render: function(){
@@ -65,7 +69,6 @@ App.View.SuccessorItemView['Vertex'] = App.SuccessorItemView = Backbone.View.ext
     this.delegateEvents();
     return this
   }
-
 
 });
 
@@ -110,6 +113,8 @@ App.View.SuccsetListView['Vertex'] = App.SuccsetListView = Backbone.View.extend(
       this.listenToOnce(this.model, 'sync', this.render);
     }
 
+    this.children = [];
+
     _.bindAll(this, 'update');
     this.sortInit();
   },
@@ -142,13 +147,6 @@ App.View.SuccsetListView['Vertex'] = App.SuccsetListView = Backbone.View.extend(
     this.model.setSuccset(ids);
   },
 
-  close: function(){
-    this.trigger('close');
-    this.stopListening();
-    this.unbind();
-    this.remove();
-  },
-
   render: function(){
     // check if deep
     if(!this.model.isDeep()){
@@ -166,8 +164,8 @@ App.View.SuccsetListView['Vertex'] = App.SuccsetListView = Backbone.View.extend(
       var successorItemView = new viewFactory({'model':successor, 'predecessor': this.model});
 
       this.$el.append(successorItemView.render().el);
-      successorItemView.listenTo(this, 'close', successorItemView.close);
       successorItemView.listenTo(successor, 'change', successorItemView.render);
+      this.children.push(successorItemView);
     }, this);
 
     return this;
@@ -195,6 +193,8 @@ App.View.SummaryView['Vertex'] = App.SummaryView = Backbone.View.extend({
   },
 
   initialize: function(){
+    this._cls = this.model.get('_cls');
+
     // set up sync handler to render anytime model is synced
     // Seems sloppy to set up a sync handler and a summary changed
     // handler. This is done here because summaryChanged is fired before
@@ -203,17 +203,11 @@ App.View.SummaryView['Vertex'] = App.SummaryView = Backbone.View.extend({
     // possible option, put it in the parse function, however this
     // creates difficulties because the model is not created yet
     // Another option would be to override the fetch function.
+
     this.listenTo(this.model, 'sync', this.render);
     this.listenTo(this.model, 'summaryChanged', this.render)
     this.listenTo(this.model, 'outofsync', this.flashOut);
     this.listenTo(this.model, 'resynced', this.flash);
-  },
-
-  close: function(){
-    this.trigger('close');
-    this.stopListening();
-    this.unbind();
-    this.remove();
   },
 
   render: function(){
@@ -228,17 +222,17 @@ App.View.SummaryView['Vertex'] = App.SummaryView = Backbone.View.extend({
   },
 
   updateForm: function(){
-    App.actionPanel.loadAttributeForm(this.model, null);
+    App.actionPanel.loadVertexForm(this.model, null);
   },
 
   addCategoryForm: function(){
     var newCategory = new App.Category();
-    App.actionPanel.loadAttributeForm(newCategory, this.model);
+    App.actionPanel.loadVertexForm(newCategory, this.model);
   },
 
   addWorkForm: function(){
     var newWork = new App.Work();
-    App.actionPanel.loadAttributeForm(newWork, this.model);
+    App.actionPanel.loadVertexForm(newWork, this.model);
   },
 
   addPhotoForm: function(){
@@ -282,17 +276,12 @@ App.View.ListingView['Vertex'] = App.ListingView = Backbone.View.extend({ // Aki
     this.summary = new viewFactory({model:this.model}),
     this.list = new App.SuccsetListView({model:this.model})
 
+    this.children = [this.summary, this.list];
+
     this.appendElements();
     // View does not render on initialize
     // Must be explicitly rendered by ListingPanel
 
-  },
-
-  close: function(){
-    this.stopListening();
-    this.trigger('close');
-    this.unbind;
-    this.remove();
   },
 
   render: function(){
@@ -303,8 +292,6 @@ App.View.ListingView['Vertex'] = App.ListingView = Backbone.View.extend({ // Aki
   appendElements: function(){
     this.$el.append(this.summary.el);
     this.$el.append(this.list.el);
-    this.summary.listenTo(this, 'close', this.summary.close);
-    this.list.listenTo(this, 'close', this.list.close);
   },
 
 });

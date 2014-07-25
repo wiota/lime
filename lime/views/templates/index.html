@@ -20,14 +20,8 @@
   <script type="text/template" id="portfolio_summary">
     <div class='portfolio_title title'>Portfolio</div>
     <div class='in_set_menu'>
-      <a class='add_work icon'>
-        <img class='icon' src='https://s3.amazonaws.com/wiota/lime/work.svg'>
-        <b class='label'>add work</b>
-      </a>
-      <a class='add_category icon'>
-      <img class='icon' src='https://s3.amazonaws.com/wiota/lime/category.svg'>
-        <b class='label'>add category</b>
-      </a>
+      <a class='add_work'>add work</a>
+      <a class='add_category'>add category</a>
     </div>
     <i class='info_tag'></i>
   </script>
@@ -86,7 +80,7 @@
   </script>
 
 
-  <!-- Form tempates -->
+  <!-- Form templates -->
 
   <script type="text/template" id="text">
     <label for='<%= id %>'><%= label %></label><input class='input' type='text' id='<%= id %>' value='<%= value %>' />
@@ -98,6 +92,10 @@
 
   <script type="text/template" id="button">
     <input class='input <%= cls %>' type='button' value='<%= label %>' />
+  </script>
+
+  <script type="text/template" id="a_button">
+    <a class='input <%= cls %>'><%= label %></a>
   </script>
 
   <script type="text/template" id="update_form2">
@@ -136,6 +134,17 @@
     <i class='label'><%= label %></i>
   </script>
 
+  <!-- Action templates -->
+  <script type="text/template" id="new_work">
+    <a class='new_work'>new work</a>
+  </script>
+
+  <script type="text/template" id="new_category">
+    <a class='new_category'>new category</a>
+  </script>
+
+
+
 {% endblock %}
 
 {% block content %}
@@ -165,6 +174,7 @@
   <script src='{{ url_for('admin.static', filename='js/admin_backbone_collections.js') }}'></script>
   <script src='{{ url_for('admin.static', filename='js/admin_backbone_views.js') }}'></script>
   <script src='{{ url_for('admin.static', filename='js/admin_backbone_form_views.js') }}'></script>
+  <script src='{{ url_for('admin.static', filename='js/admin_backbone_upload_views.js') }}'></script>
   <script src='{{ url_for('admin.static', filename='js/admin_backbone_router.js') }}'></script>
 
   <script src='{{ url_for('admin.static', filename='js/work.js') }}'></script>

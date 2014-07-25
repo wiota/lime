@@ -32,18 +32,26 @@ App.Model['Vertex'] = App.Vertex = Backbone.Model.extend({
     options = options || {};
     this.fetched = options.fetched || false;
     this.deep = options.deep || false;
+    this.modified = options.modified || false;
 
-    this.set({'_cls': this._cls});
+    this.on('sync', function(){this.modified = false;})
 
+    if(this.isNew()){
+      this.set({'_cls': this._cls, 'title': 'untitled'})
+      this.modified = false;
+    }
     this.on('change', this.triggerEvents);
   },
 
   triggerEvents: function(model, options){
+    this.modified = true;
     var attr = model.changedAttributes()
     var summary_attr = _.omit(attr, 'succset');
 
     if(!_.isEmpty(summary_attr)){
-      this.trigger('summaryChanged', {'attr':summary_attr});
+
+      // put changed attributes into array
+      // this.trigger('summaryChanged', {'attr':summary_attr});
     }
 
     msg.log("CHANGE Model ['"+_.keys(attr).join("', '") + "']", 'model');
@@ -55,6 +63,10 @@ App.Model['Vertex'] = App.Vertex = Backbone.Model.extend({
 
   isDeep: function(){
     return this.deep;
+  },
+
+  isModified: function(){
+    return this.modified;
   },
 
   parse: function(response){
@@ -82,9 +94,7 @@ App.Model['Vertex'] = App.Vertex = Backbone.Model.extend({
 
     model.fetched = true;
     model.deep = true;
-
-    // referencing done already in parse function
-    // model.set(model.reference(model.get('succset')));
+    model.modified = false;
   },
 
   deepenError: function(model, response, options){
@@ -130,7 +140,7 @@ App.Model['Vertex'] = App.Vertex = Backbone.Model.extend({
 
   removeFromSuccset: function(model, index){
     var succset = _.clone(this.get('succset'));
-    console.log(model.get('_id'));
+    //console.log(model.get('_id'));
     this.set({'succset':_.without(succset, model)});
     this.saveSuccset();
   },

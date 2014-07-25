@@ -54,7 +54,7 @@ App.Collection['Vertex'] = App.VertexCollection = Backbone.Collection.extend({
   },
 
   // timeouts? What to do if form does not load?
-  fetchForm: function(){
+  fetchForm: _.throttle(function(){
     msg.log("Fetching Form " + this.formUrl);
     $.ajax({
       type: 'GET',
@@ -69,15 +69,17 @@ App.Collection['Vertex'] = App.VertexCollection = Backbone.Collection.extend({
       },
       error: function(){
         console.log('Form get error');
+        this.fetchForm();
       }
 
     })
-  },
+  }, 1000),
 
   lookupForm: function(){
     this.fetchForm();
   },
 
+  // should be replaced by edge/vertex list
   createAndAddTo: function(data, predecessor){
     var model = this.create(data);
     model.once('sync', function(model, response, options){

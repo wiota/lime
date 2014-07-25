@@ -22,7 +22,8 @@ a {text-decoration: none; color: #000;}
 #path_panel {
   z-index: 3;
   width: 19.098300562504%;
-  position:absolute;
+  position:fixed;
+  overflow: auto;
   top: 0;
   left: 0;
   bottom: 0;
@@ -38,9 +39,10 @@ a {text-decoration: none; color: #000;}
   z-index: 1;
   margin: 0 0;
   /* width: 61.803398875%; */width: 80.901699437496%;
-  width: 50%;
-
-  position:absolute;
+  width: 48%;
+  padding: 0 2% 0 0;
+  position:fixed;
+  overflow: auto;
   top: 0;
   left: 19.098300562504%;
   bottom: 0;
@@ -54,11 +56,13 @@ a {text-decoration: none; color: #000;}
   background-color: #fff;
   overflow: auto;
   margin: 0;
-  width: 30.901699437496%;
+  padding: 0 0 0 2%;
+  width: 28.901699437496%;
   position:fixed;
   top: 0;
   right: 0;
   bottom: 0;
+
   }
 
 /* -------------------------------------------------------------------  */
@@ -230,6 +234,7 @@ ol.succset_list {
   font-weight: normal;
   font-size: 90%;
   background-color: rgba(255,255,255,1);
+  font-family: "Monaco","Lucida Console","Courier New", "monospace";
   }
 
 .delete {
@@ -293,41 +298,51 @@ i.info_tag {
 
 
 #action_panel form {
-  margin: 0 0 .2% 1%;
+  margin: 0 0 .2% 0;
   overflow: auto;
-  border-bottom: 1px dotted #82db8a;
   }
+
+#action_panel fieldset {
+  margin: 0;
+  padding: 0;
+  border-style: none;
+}
 
 #action_panel label {
   font-size: 11px;
   display:block;
   padding: 1%;
-  margin: 1.5% 1.5% 0%;
+  margin: 1.5% 1.5% 0% 0;
   }
 
 #action_panel .input {
   width: 95%;
   padding: 1%;
-  margin: 0% 1.5% 1.5%;
+  margin: 0% 1.5% 1.5% 0;
   font-size: 14px;
   border-style:none;
   background-color: #f0f0f0;
   }
 
 #action_panel .input.save,
-#action_panel .input.cancel {
+#action_panel .input.cancel,
+#action_panel .input.close {
   cursor: pointer;
   float:left;
   width: 150px;
   padding: 1%;
-  margin: 2.5% 0 2.5% 1.5%;
+  margin: 2.5% 1.5% 2.5% 0%;
   font-family: 'Helvetica', 'Arial', 'san-serif';
+  font-family: "Monaco","Lucida Console","Courier New", "monospace";
   font-size: 18px;
   font-weight: bold;
+  text-align: center;
+  display: inline-block;
 }
 
 #action_panel .input.save:hover,
-#action_panel .input.cancel:hover {
+#action_panel .input.cancel:hover,
+#action_panel .input.close:hover {
   opacity: 0.7;
   }
 
@@ -336,10 +351,27 @@ i.info_tag {
   outline:none;
   color: #fff;
   background-color: #82db8a;
+  transition: all .5s ease-in-out;
+  -webkit-transition: all .2s ease-in-out;
+  -moz-transition: all .2s ease-in-out;
+  -o-transition: all .2s ease-in-out;
 }
 
-#action_panel .input.cancel {
+#action_panel .input.save.unpersisted {display:none;visibility: hidden;}
+#action_panel .input.save.unsaved {background-color: #82db8a;}
+#action_panel .input.save.saving {background-color: #00db14;cursor: wait;}
+#action_panel .input.save.saved {background-color: #a3afaf;cursor: auto;}
+#action_panel .input.save.error {background-color: #f00;}
+
+#action_panel .input.save.saving:hover,
+#action_panel .input.save.saved:hover {
+  opacity: 1;
+}
+
+#action_panel .input.cancel,
+#action_panel .input.close {
   border-style:none;
+  outline:none;
   color: #333;
   background-color: #eee;
 }
@@ -349,7 +381,7 @@ i.info_tag {
 #action_panel .file_upload {
   width: 95%;
   padding: 1% 1% 30%;
-  margin: 1.5% 1.5% 1.5%;
+  margin: 0%;
   position:relative;
 }
 
@@ -363,9 +395,6 @@ i.info_tag {
   border: 1px dashed #999;
   margin: 0 0 1.5%;
   padding: 1%;
-  -webkit-box-shadow: inset 0px 0px 3px 0px rgba(42, 44, 57, 0.5);
-  -moz-box-shadow: inset 0px 0px 3px 0px rgba(42, 44, 57, 0.5);
-  box-shadow: inset 0px 0px 3px 0px rgba(42, 44, 57, 0.5);
 }
 
 #action_panel .vertex.photo.form .files {
@@ -393,20 +422,18 @@ i.info_tag {
 }
 
 #action_panel .many_photos .files_container {
-  background: #ccc;
+  background: #A3AFAF;
+  color: #fff;
 }
 
 #action_panel .files_container .message {
-  font-size: 40px;
+  font-size: 20px;
   font-style: normal;
   color: #000;
   position:relative;
 }
 
 #action_panel .over .files_container .message {
-  font-size: 40px;
-  font-style: normal;
-  color: #000;
   top: 1px;
   left: 1px;
 }
@@ -416,7 +443,7 @@ i.info_tag {
   bottom: 0;
   left: 0;
   padding: 3%;
-  visibility: 'hidden';
+  display: none;
   font-size: 14px;
   font-family: Helvetica, Arial, 'san-serif';
 }

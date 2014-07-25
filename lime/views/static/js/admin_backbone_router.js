@@ -23,8 +23,8 @@ App.Router = Backbone.Router.extend({
   getPortfolio: function() {
     var portfolio = App.portfolioStorage.lookup();
     App.listingPanel.list(portfolio);
-    App.actionPanel.closeForms();
-    App.actionPanel.loadBatchForms(portfolio);
+    //App.actionPanel.closeForms();
+    //App.actionPanel.loadBatchForms(portfolio);
   },
 
   // Category
@@ -32,8 +32,8 @@ App.Router = Backbone.Router.extend({
   getCategory: function(id) {
     var category = App.categoryStorage.lookup(id);
     App.listingPanel.list(category);
-    App.actionPanel.closeForms();
-    App.actionPanel.loadBatchForms(category);
+    //App.actionPanel.closeForms();
+    //App.actionPanel.loadBatchForms(category);
   },
 
   // Work
@@ -41,8 +41,8 @@ App.Router = Backbone.Router.extend({
   getWork: function(id){
     var work = App.workStorage.lookup(id);
     App.listingPanel.list(work);
-    App.actionPanel.closeForms();
-    App.actionPanel.loadBatchForms(work);
+    //App.actionPanel.closeForms();
+    //App.actionPanel.loadBatchForms(work);
   }
 
  
