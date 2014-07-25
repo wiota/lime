@@ -36,7 +36,7 @@ A new invoice has been created with the following charges:<br/>
   <tr>
     <td></td>
     <td class="label">Total:</td>
-    <td class="total">${{ e["data"]["object"]["total"]/100 }}</td>
+    <td class="total">${{ "%.2f"|format(e["data"]["object"]["total"]/100) }}</td>
   </tr></tfoot>
 </table>
 <br/>

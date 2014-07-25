@@ -1,3 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+
+{% if cust.cards.total_count < 1 %}
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+        <script type="text/javascript" src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.8.1/jquery.validate.min.js"></script>
+        <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
+        <script type="text/javascript">
+          Stripe.setPublishableKey('{{ pubkey }}');
+            $(document).ready(function() {
+                function addInputNames() {
+                    $(".card-number").attr("name", "card-number")
+                    $(".card-cvc").attr("name", "card-cvc")
+                    $(".card-expiry-year").attr("name", "card-expiry-year")
+                }
+
+                function removeInputNames() {
+                    $(".card-number").removeAttr("name")
+                    $(".card-cvc").removeAttr("name")
+                    $(".card-expiry-year").removeAttr("name")
+                }
+
+                function submit(form) {
+                    removeInputNames(); // THIS IS IMPORTANT!
+
+                    // given a valid form, submit the payment details to stripe
+                    $(form['submit-button']).attr("disabled", "disabled")
+
+                    Stripe.createToken({
+                        number: $('.card-number').val(),
+                        cvc: $('.card-cvc').val(),
+                        exp_month: $('.card-expiry-month').val(),
+                        exp_year: $('.card-expiry-year').val()
+                    }, function(status, response) {
+                        if (response.error) {
+                            // re-enable the submit button
+                            $(form['submit-button']).removeAttr("disabled")
+
+                            // show the error
+                            $(".payment-errors").html(response.error.message);
+
+                            // we add these names back in so we can revalidate properly
+                            addInputNames();
+                        } else {
+                            // token contains id, last4, and card type
+                            var token = response['id'];
+
+                            // insert the stripe token
+                            var input = $("<input name='stripeToken' value='" + token + "' style='display:none;' />");
+                            form.appendChild(input[0]);
+
+                            // and submit
+                            form.submit();
+                        }
+                    });
+
+                    return false;
+                }
+
+                // add custom rules for credit card validating
+                jQuery.validator.addMethod("cardNumber", Stripe.validateCardNumber, "Please enter a valid card number");
+                jQuery.validator.addMethod("cardCVC", Stripe.validateCVC, "Please enter a valid security code");
+                jQuery.validator.addMethod("cardExpiry", function() {
+                    return Stripe.validateExpiry($(".card-expiry-month").val(), 
+                                                 $(".card-expiry-year").val())
+                }, "Please enter a valid expiration");
+
+                $("#stripe-form").validate({
+                    submitHandler: submit,
+                    rules: {
+                        "card-cvc" : {
+                            cardCVC: true,
+                            required: true
+                        },
+                        "card-number" : {
+                            cardNumber: true,
+                            required: true
+                        },
+                        "card-expiry-year" : "cardExpiry"
+                    }
+                });
+                addInputNames();
+            });
+        </script>
+{% endif %}
+    </head>
+    <body>
 Username: {{ user.username }}<br/>
 Email address: {{ user.email }}<br/>
 Stripe ID: {{ user.stripe_id }}<br/>
@@ -7,6 +96,66 @@ Template name: {{ host.template }}<br/>
 Title: {{ host.title }}<br/>
 Subtitle: {{ host.subtitle }}<br/>
 <br/>
-Plans: {{ cust.subscriptions }}<br/>
-Cards: {{ cust.cards.total_count }}<br/>
-Balance: {{ cust.account_balance }}<br/>
+
+<h2>Plans</h2>
+{% if cust.subscriptions.total_count < 1 %}
+    You don't currently have any hosting plans.<br/>
+{% else %}
+    <ul>
+    {% for sub in cust.subscriptions.data %}
+        <li>{{ sub.plan.name }} ({{ "$%.2f"|format(sub.plan.amount/100) }} per {{ sub.plan.interval }})</li>
+    {% endfor %}
+    </ul>
+{% endif %}
+
+<h2>Cards</h2>
+{% if cust.cards.total_count < 1 %}
+        <h2>Add a new card</h2>
+        <form action="./card/new/" method="post" id="stripe-form" style="display: none;">
+            <div class="form-row">
+                <label>Card Number</label>
+                <input type="text" maxlength="20" autocomplete="off" class="card-number stripe-sensitive required" />
+            </div>
+            <div class="form-row">
+                <label>CVC</label>
+                <input type="text" maxlength="4" autocomplete="off" class="card-cvc stripe-sensitive required" />
+            </div>
+            <div class="form-row">
+                <label>Expiration</label>
+                <div class="expiry-wrapper">
+                    <select class="card-expiry-month stripe-sensitive required">
+                    </select>
+                    <script type="text/javascript">
+                        var select = $(".card-expiry-month"),
+                            month = new Date().getMonth() + 1;
+                        for (var i = 1; i <= 12; i++) {
+                            select.append($("<option value='"+i+"' "+(month === i ? "selected" : "")+">"+i+"</option>"))
+                        }
+                    </script>
+                    <span> / </span>
+                    <select class="card-expiry-year stripe-sensitive required"></select>
+                    <script type="text/javascript">
+                        var select = $(".card-expiry-year"),
+                            year = new Date().getFullYear();
+
+                        for (var i = 0; i < 12; i++) {
+                            select.append($("<option value='"+(i + year)+"' "+(i === 0 ? "selected" : "")+">"+(i + year)+"</option>"))
+                        }
+                    </script>
+                </div>
+            </div>
+
+            <button type="submit" name="submit-button">Submit</button>
+            <span class="payment-errors"></span>
+        </form>
+        <script>if (window.Stripe) $("#stripe-form").show()</script>
+        <noscript><p>JavaScript is required for the registration form.</p></noscript>
+{% else %}
+    <ul>
+    {% for card in cust.cards.all()["data"] %}
+        <li>{{ card.brand }} ending in {{ card.last4}} expiring on {{ card.exp_month }}/{{ card.exp_year }} - <a href="./card/delete/{{ card.id }}">Delete this card</a></li>
+    {% endfor %}
+    </ul>
+{% endif %}
+    </body>
+</html>
