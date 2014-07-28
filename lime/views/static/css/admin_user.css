@@ -40,6 +40,7 @@
 .login {
   width: 40%;
   padding: 2%;
+  margin: 0 auto;
   border-style:none;
   }
 
@@ -48,48 +49,69 @@
   }
 
 .login label {
-  font-size: 13px;
+  font-size: 14px;
   display:block;
   padding: 1%;
   margin: 1.5% 1.5% 0%;
   }
 
 .login .input_element input {
-  width: 95%;
-  padding: 1%;
+  width: 92%;
+  padding: 2% 4% 2% 4%;
   margin: 0% 1.5% 1.5%;
-  font-size: 14px;
+  font-size: 22px;
   border-style:none;
   background-color: #f0f0f0;
-  }
+  border-top: 2px solid #f0f0f0;
+  border-bottom: 4px solid #f0f0f0;
+  transition: border-color 1s ease;
+}
 
-.login .marquee {
-  margin: 2.5% 0 2.5% 1.5%;
-  width: 40%;
-  background-color: #82db8a;
-  position:relative;
-  }
+.login .input_element input:focus, .login .input_element input:hover {
+  outline: 0;
+  border-bottom: 4px solid #d0d0d0;
+  transition: border-color 1s ease;
+}
 
-.login .marquee img {
-  width:100%;
-  display: block;
-  }
+div#forgot_password {
+  text-align: right;
+  margin: 0% 1.5% 1.5%;
+}
+
+div#forgot_password a {
+  color: #237ab1;
+}
 
 .login .input.submit {
-  cursor: pointer;
-  float:left;
+  position: relative;
+  vertical-align: top;
   width: 100%;
-  position:absolute;
-  top:0;
-  left:0;
-  right:0;
-  bottom:0;
-  font-family: 'Helvetica', 'Arial', 'san-serif';
-  font-size: 30px;
-  font-weight: bold;
-  color: transparent;
-  background-color: transparent;
-  border-style:none;
+  height: 60px;
+  padding: 0;
+  font-size: 22px;
+  color: white;
+  text-align: center;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+  background: #82db8a;
+  border: 0;
+  cursor: pointer;
+  margin: 5% 1.5% 1.5%;
+  border-top: 2px solid #82db8a;
+  border-bottom: 4px solid #82db8a;
+  transition: border-color 1s ease;
+}
+
+.login .input.submit:focus, .login .input.submit:hover {
+  outline: 0;
+  border-bottom: 4px solid #28be68;
+  transition: border-color 1s ease;
+}
+
+.login .input.submit:active {
+  top: 1px;
+  outline: none;
+  -webkit-box-shadow: none;
+  box-shadow: none;
 }
 
 /* msg class */
@@ -145,7 +167,7 @@ div.admin_ui ul {
   padding-left: 30px;
 }
 
-div.admin_ui a {
+.login a {
   color: #237ab1;
 }
 
@@ -160,4 +182,29 @@ div.backlink {
 
 .danger {
   color:#f96625 !important;
+}
+
+.lime {
+  padding-left: 20px;
+}
+
+.lime h2 {
+  color: #0b2231;
+  font: 700 100px/1.4 "cardo";
+  font-style: normal;
+  margin: 0% 1.5% 1.5%;
+  text-indent: 0px;
+  z-index: 100;
+  border-bottom: 4px solid #000;
+}
+
+.lime span {
+  font: 400 30px/1.4 "cardo";
+  font-style: italic;
+}
+
+.madeby {
+  font-size: 12px;
+  text-align: center;
+  padding-top:20%;
 }

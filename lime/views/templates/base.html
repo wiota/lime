@@ -17,20 +17,14 @@
 
     {% endblock %}
 
-    {% block backbone_templates %}
-
-    {% endblock %}
+    {% block backbone_templates %}{% endblock %}
 
   </head>
 
   <body>
     {%- block user -%}
-    <div class="admin_user_menu">
-      {% if current_user.is_anonymous() %}
-        <div class='admin_user'>
-          <a href="{{ url_for('root.index') }}">Login</a>
-        </div>
-      {% else %}
+    {% if not current_user.is_anonymous() %}
+      <div class="admin_user_menu">
         <div class='admin_user'>
           <div class='admin_user_nav'>
             <ul>
@@ -40,16 +34,16 @@
           </div>
           <b class='identification'>{{ current_user.email}} </b>
         </div>
-      {% endif %}
-    </div>
+      </div>
+    {% endif %}
     {%- endblock -%}
 
 
-      {% for message in get_flashed_messages() %}
-      <div class='admin_flashes'>
-          <div class='flash'>{{ message }}</div>
-      </div>
-      {% endfor %}
+    {% for message in get_flashed_messages() %}
+    <div class='admin_flashes'>
+      <div class='flash'>{{ message }}</div>
+    </div>
+    {% endfor %}
 
 
     <div class="content">

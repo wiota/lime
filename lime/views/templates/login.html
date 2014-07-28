@@ -2,10 +2,17 @@
 {% from "_forms.html" import render %}
 {% block content %}
 <div class='login'>
+  <div class='lime'>
+    <h2>lime</h2>
+    <span>&ldquo;Lime binds your work together.&rdquo;</span><br>
+  </div>
   {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
   <form action="{{ url_for('root.index') }}" method=post>
     {{ render(form) }}
   </form>
-  <a href="{{ url_for("root.forgot_password") }}">Forgot your password?</a>
+  <div id="forgot_password">
+    <a href="{{ url_for("root.forgot_password") }}">Forgot your password?</a>
+  </div>
+  <div class="madeby">Made in Philly with love by <a href="http://www.wiota.co">Wiota Co.</a></div>
 </div>
 {% endblock %}
