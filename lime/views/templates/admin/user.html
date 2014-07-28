@@ -4,7 +4,16 @@
   {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
   {% for user in users %}
   <ul>
-    <li><a href="./{{ user.id }}/"><b>{{user.email}}</b> ({{user.username}})</a></li>
+    <li>
+      <a href="./{{ user.id }}/"><b>{{user.email}}</b></a>
+      {% if not user.confirmed %}
+        <span class="danger">(Unconfirmed)</span>
+      {% elif not user.registered %}
+        <span class="danger">(Unregistered)</span>
+      {% else %}
+        ({{user.username}})
+      {% endif %}
+    </li>
   </ul>
   {% endfor %}
   <h2>Admins:</h2>

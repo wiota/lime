@@ -48,12 +48,13 @@ def user():
 def individual_user(id):
     stripe.api_key = app.config['STRIPE_SECRET_KEY']
     user = User.objects.get(id=id)
-    host = Host.objects.get(owner=user)
-    cust = stripe.Customer.retrieve(user.stripe_id)
-    plans = stripe.Plan.all()
-    return render_template(
-        'individual_user.html', user=user, host=host, cust=cust, plans=plans)
-
+    if user.registered :
+        host = Host.objects.get(owner=user)
+        cust = stripe.Customer.retrieve(user.stripe_id)
+        plans = stripe.Plan.all()
+        return render_template(
+            'individual_user.html', user=user, host=host, cust=cust, plans=plans)
+    return render_template('individual_user.html', user=user)
 
 @mod.route("/user/<id>/login/")
 @login_required

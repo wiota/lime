@@ -1,6 +1,11 @@
 {% extends "admin.html" %}
 {% block admin_content %}
 <h2>User: {{user.email}}</h2>
+{% if not user.confirmed %}
+  <span class="danger">(User not yet confirmed.)</span>
+{% elif not user.registered %}
+  <span class="danger">(User not yet registered.)</span>
+{% endif %}
     <h3>Information</h3>
     <ul>
         <li>Email: {{user.email}}</li>
@@ -9,7 +14,7 @@
         <li>Stripe ID: {{user.stripe_id}}</li>
         <li>Confirmed: {{user.confirmed}}</li>
     </ul>
-
+{% if user.registered %}
     <h3>Host</h3>
     <ul>
         <li>Hostname: {{host.hostname}}</li>
@@ -47,7 +52,7 @@
     {% endfor %}
     </ul>
 {% endif %}
-
+{% endif %}
 
 
 <h2>Actions</h2>

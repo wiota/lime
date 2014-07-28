@@ -148,6 +148,7 @@ def confirm(payload=None):
         host = Host(bucketname=bucket_name, owner=user.id)
         host.save()
 
+        user.registered = True
         user.save()
         return redirect(url_for("root.index"))
     return render_template("confirm.html", form=form)
