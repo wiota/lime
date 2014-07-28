@@ -125,8 +125,12 @@
 
 /* Styling for the Admin UI (not the Lime UI) */
 div.admin_content {
-  padding-left:300px;
-  padding-right:300px;
+  width: 48%;
+  padding: 0 2% 0 0;
+  position:fixed;
+  overflow: auto;
+  top: 0;
+  left: 19.098300562504%;
   padding-top:20px;
   padding-bottom:40px;
   font-size:20px;
@@ -146,10 +150,10 @@ div.admin_ui a {
 
 div.backlink {
   position:fixed;
+  width: 15.098300562504%;
   left: 0%;
   top: 0;
-  padding-top: 40px;
-  padding-left: 40px;
+  padding: 2% 2%;
   font-size:20px;
 }
 
