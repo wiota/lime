@@ -9,7 +9,6 @@ from wtforms.validators import Required, Email
 from toolbox.build_db import build_db, clear_db
 from flask.ext.login import login_required
 from flask.ext.login import current_user
-from toolbox.nocache import nocache
 from toolbox.tools import admin_required
 from toolbox.models import User, Host, Vertex
 from toolbox.email import *
@@ -31,7 +30,6 @@ mod = Blueprint(
 
 @mod.route("/")
 @admin_required
-@nocache
 def index():
     return render_template('admin.html')
 
@@ -39,16 +37,14 @@ def index():
 @mod.route("/user/")
 @login_required
 @admin_required
-@nocache
 def user():
     return render_template(
         'user.html', admins=User.objects(admin=True), users=User.objects(admin=False))
 
 
-@mod.route("/user/<id>")
+@mod.route("/user/<id>/")
 @login_required
 @admin_required
-@nocache
 def individual_user(id):
     stripe.api_key = app.config['STRIPE_SECRET_KEY']
     user = User.objects.get(id=id)
@@ -62,7 +58,6 @@ def individual_user(id):
 @mod.route("/user/<id>/login/")
 @login_required
 @admin_required
-@nocache
 def login_as_user(id):
     login_user(User.objects.get(id=id, admin=False))
     return redirect(url_for("root.index"))
@@ -71,7 +66,6 @@ def login_as_user(id):
 @mod.route("/user/<id>/delete/")
 @login_required
 @admin_required
-@nocache
 def delete_user(id):
     return render_template(
         'delete_user_confirm.html', user=User.objects.get(id=id))
@@ -80,7 +74,6 @@ def delete_user(id):
 @mod.route("/user/<id>/delete/confirm/")
 @login_required
 @admin_required
-@nocache
 def definitely_delete_user(id):
     user = User.objects.get(id=id)
 
@@ -107,10 +100,33 @@ def definitely_delete_user(id):
     return redirect(url_for("admin.index"))
 
 
+@mod.route("/user/<user_id>/plan/<plan_id>/add/")
+@login_required
+@admin_required
+def add_plan(user_id, plan_id):
+    stripe.api_key = app.config['STRIPE_SECRET_KEY']
+    user = User.objects.get(id=user_id)
+    cust = stripe.Customer.retrieve(user.stripe_id)
+    cust.subscriptions.create(plan=plan_id)
+
+    return redirect(url_for("admin.individual_user", id=user_id))
+
+
+@mod.route("/user/<user_id>/plan/<sub_id>/remove/")
+@login_required
+@admin_required
+def remove_plan(user_id, sub_id):
+    stripe.api_key = app.config['STRIPE_SECRET_KEY']
+    user = User.objects.get(id=user_id)
+    cust = stripe.Customer.retrieve(user.stripe_id)
+    cust.subscriptions.retrieve(sub_id).delete()
+
+    return redirect(url_for("admin.individual_user", id=user_id))
+
+
 @mod.route("/invite/", methods=["GET", "POST"])
 @login_required
 @admin_required
-@nocache
 def invite():
     ref = request.args.get('ref', None)
     form = InviteForm()
