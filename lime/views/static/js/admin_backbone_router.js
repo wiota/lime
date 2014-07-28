@@ -42,7 +42,7 @@ App.Router = Backbone.Router.extend({
     var work = App.workStorage.lookup(id);
     App.listingPanel.list(work);
     //App.actionPanel.closeForms();
-    //App.actionPanel.loadBatchForms(work);
+    App.actionPanel.loadBatchForms(work);
   }
 
  

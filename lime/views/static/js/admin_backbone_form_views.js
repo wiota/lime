@@ -247,6 +247,7 @@ App.FormView['Vertex'] = Backbone.View.extend({
     this.options = options || {};
     this.predecessor = options.predecessor || null;
     this.allowPhotos = options.allowPhotos || true;
+    this.newPhotoNesting = options.newPhotoNesting || [];
 
     this.children = [];
     this.childOptions = _.pick(this.options, this.passableOptions);
@@ -303,9 +304,11 @@ App.FormView['Vertex'] = Backbone.View.extend({
   // Events
 
   filesChanged: function(files){
-    // initiate upload
-    // set up listener to wait for complete
-    // pass files to batch function
+    App.actionPanel.addBatch(files, this.model, this.newPhotoNesting);
+    if(this.model.isNew()){
+      console.log(this.model.get('title') + ' Saving before Batch');
+      this.collection.createAndAddTo(this.model, this.predecessor);
+    }
   },
 
   attributesChanged: function(changeObject){
@@ -346,6 +349,54 @@ App.FormView['Vertex'] = Backbone.View.extend({
 
 
 /* ------------------------------------------------------------------- */
+// Batch - no attributes
+/* ------------------------------------------------------------------- */
+
+App.FormView.Batch = Backbone.View.extend({
+
+  passableOptions: ['predecessor', 'collection'],
+  tagName: 'form',
+
+  initialize: function(options){
+    this.options = options || {};
+    this.predecessor = options.predecessor || null;
+    this.allowPhotos = options.allowPhotos || true;
+
+    this.children = [];
+    this.childOptions = _.pick(this.options, this.passableOptions);
+
+    this.appendFileUpload();
+
+    _.bindAll(this, 'close')
+  },
+
+  appendFileUpload: function(){
+    this.fileUpload = new App.FormView.FileUploadView(this.childOptions),
+    this.$el.append(this.fileUpload.el);
+    this.listenTo(this.fileUpload, 'change', this.filesChanged);
+    this.children.push(this.fileUpload);
+  },
+
+  render: function(){
+    this.listenToOnce(this.attributeFields, 'rendered', this.fileUpload.render);
+    this.listenToOnce(this.attributeFields, 'rendered', this.saveView.render)
+    this.attributeFields.render();
+    return this;
+  },
+
+  // Events
+
+  filesChanged: function(files){
+    // initiate upload
+    // set up listener to wait for complete
+    // pass files to batch function
+  }
+
+
+});
+
+
+/* ------------------------------------------------------------------- */
 // Action Panel
 // This panel should be the startpoint for all forms
 /* ------------------------------------------------------------------- */
@@ -379,10 +430,17 @@ App.ActionPanel = Backbone.View.extend({
     var _cls = model.get('_cls');
     var className = App.clsToClass(_cls) + ' form';
 
+    if(_cls == 'Vertex.Work'){
+      var newPhotoNesting = [];
+    } else if (_cls == 'Vertex.Category'){
+      var newPhotoNesting = ['Vertex.Work'];
+    }
+
     var form = new App.FormView['Vertex']({
+      'predecessor': predecessor,
       'model': model,
       'collection': App.collection[_cls],
-      'predecessor': predecessor,
+      'newPhotoNesting': newPhotoNesting,
       'className': className
     });
 

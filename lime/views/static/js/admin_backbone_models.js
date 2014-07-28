@@ -37,7 +37,7 @@ App.Model['Vertex'] = App.Vertex = Backbone.Model.extend({
     this.on('sync', function(){this.modified = false;})
 
     if(this.isNew()){
-      this.set({'_cls': this._cls, 'title': 'untitled'})
+      this.set({'_cls': this._cls, 'title': this.get('title') || 'untitled'})
       this.modified = false;
     }
     this.on('change', this.triggerEvents);

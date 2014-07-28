@@ -215,10 +215,8 @@ App.Upload.batchView = Backbone.View.extend({
 
   batchItemsComplete: function(){
     if(this.batchItems.length > 0){
-      console.log('test false');
       return false;
     } else {
-      console.log('test true');
       return true;
     }
   },
@@ -243,6 +241,7 @@ App.Upload.batchView = Backbone.View.extend({
       } else {
         var title = batchItemView.label;
       }
+      console.log(title);
       predModel = new App.Model[nesting]({'title':title});
       vertices.push(succModel);
       edges.push([predModel, succModel]);
@@ -276,9 +275,7 @@ App.Upload.batchView = Backbone.View.extend({
   persistBatchedVertices: function(vertices, edges, batchItemView){
     var unidentified_vertices = 0;
     var complete = function(){
-      console.log('vertices complete test')
       if(unidentified_vertices <= 0){
-        console.log('tested true');
         return true;
       }
       return false;
