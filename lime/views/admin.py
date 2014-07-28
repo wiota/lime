@@ -89,9 +89,12 @@ def definitely_delete_user(id):
         pass
 
     # Delete the Stripe customer
-    stripe.api_key = app.config['STRIPE_SECRET_KEY']
-    customer = stripe.Customer.retrieve(user.stripe_id)
-    customer.delete()
+    try:
+        stripe.api_key = app.config['STRIPE_SECRET_KEY']
+        customer = stripe.Customer.retrieve(user.stripe_id)
+        customer.delete()
+    except:
+        pass
 
     Host.objects(owner=user).delete()
     Vertex.objects(owner=user).delete()
