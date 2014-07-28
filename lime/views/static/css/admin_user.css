@@ -125,11 +125,12 @@
 
 /* Styling for the Admin UI (not the Lime UI) */
 div.admin_content {
-  width: 48%;
   padding: 0 2% 0 0;
   position:fixed;
   overflow: auto;
   top: 0;
+  bottom: 0;
+  right: 0;
   left: 19.098300562504%;
   padding-top:20px;
   padding-bottom:40px;
