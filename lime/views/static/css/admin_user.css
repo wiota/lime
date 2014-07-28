@@ -67,7 +67,7 @@
   transition: border-color 1s ease;
 }
 
-.login .input_element input:focus, .login .input_element input:hover {
+.login .input_element input:focus {
   outline: 0;
   border-bottom: 4px solid #d0d0d0;
   transition: border-color 1s ease;
