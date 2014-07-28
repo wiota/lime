@@ -143,6 +143,16 @@ def invite():
         payload = s.dumps(str(user.id))
         link = url_for("root.confirm", payload=payload, _external=True)
 
+        # Create a stripe customer
+        stripe.api_key = app.config['STRIPE_SECRET_KEY']
+        customer = stripe.Customer.create(email=user.email)
+        user.stripe_id = customer.id
+
+        # Create the body
+        # TODO: Body doesn't need a slug or title
+        body = Body(owner=user.id, slug="", title="")
+        body.save()
+
         user.save()
 
         subject = "Confirm your new Lime account!"

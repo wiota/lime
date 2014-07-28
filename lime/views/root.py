@@ -126,16 +126,6 @@ def confirm(payload=None):
         user.username = form.username.data
         user.password = generate_password_hash(form.password.data)
 
-        # Create a stripe customer
-        stripe.api_key = app.config['STRIPE_SECRET_KEY']
-        customer = stripe.Customer.create(email=user.email)
-        user.stripe_id = customer.id
-
-        # Create the body
-        # TODO: Body doesn't need a slug or title
-        body = Body(owner=user.id, slug="", title="")
-        body.save()
-
         # Create the S3 stuff
         conn = boto.connect_s3()
         bucket_name = '%s_%s' % (os.environ["S3_BUCKET"], user.username)
