@@ -1,6 +1,6 @@
-{% extends "base.html" %}
-{% block content %}
-  <h2>Invite</h2>
+{% extends "admin.html" %}
+{% block admin_content %}
+  <h2>Invite new user</h2>
   {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
   <form action="{{ url_for('admin.invite') }}" method=post>
     <dl>
@@ -9,4 +9,8 @@
       <dd><input type=submit value=Submit>
     </dl>
   </form>
+{% endblock %}
+
+{% block admin_backlink %}
+  <a href="/admin/">&lArr; Back to main page</a>
 {% endblock %}

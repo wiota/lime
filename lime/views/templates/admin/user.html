@@ -1,5 +1,5 @@
-{% extends "base.html" %}
-{% block content %}
+{% extends "admin.html" %}
+{% block admin_content %}
   <h2>Current Users:</h2>
   {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
   {% for user in users %}
@@ -13,4 +13,8 @@
     <li><b>{{admin.email}}</b> ({{admin.username}})</li>
   </ul>
   {% endfor %}
+{% endblock %}
+
+{% block admin_backlink %}
+  <a href="/admin/">&lArr; Back to main page</a>
 {% endblock %}

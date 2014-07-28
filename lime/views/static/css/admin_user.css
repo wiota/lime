@@ -122,3 +122,37 @@
   padding: 1.5%;
   color: #ffa;
   }
+
+/* Styling for the Admin UI (not the Lime UI) */
+div.admin_content {
+  padding-left:300px;
+  padding-right:300px;
+  padding-top:20px;
+  padding-bottom:40px;
+  font-size:20px;
+}
+
+div.admin_ui li {
+  list-style-type: square;
+}
+
+div.admin_ui ul {
+  padding-left: 20px;
+}
+
+div.admin_ui a {
+  color: #237ab1;
+}
+
+div.backlink {
+  position:fixed;
+  left: 0%;
+  top: 0;
+  padding-top: 40px;
+  padding-left: 40px;
+  font-size:20px;
+}
+
+a.danger {
+  color:#f96625 !important;
+}

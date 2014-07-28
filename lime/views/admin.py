@@ -31,7 +31,7 @@ mod = Blueprint(
 @mod.route("/")
 @admin_required
 def index():
-    return render_template('admin.html')
+    return render_template('admin_index.html')
 
 
 @mod.route("/user/")

@@ -1,9 +1,6 @@
-{% extends "base.html" %}
-{% block content %}
-<a href="/admin/user/">&lt;- Back to user list</a>
-<div style="padding-left:300px; padding-top:20px; padding-bottom:40px;">
+{% extends "admin.html" %}
+{% block admin_content %}
 <h2>User: {{user.email}}</h2>
-  {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
     <h3>Information</h3>
     <ul>
         <li>Email: {{user.email}}</li>
@@ -29,7 +26,7 @@
 {% else %}
     <ul>
     {% for sub in cust.subscriptions.data %}
-        <li>{{ sub.plan.name }} ({{ "$%.2f"|format(sub.plan.amount/100) }} per {{ sub.plan.interval }}) - <a href="./plan/{{sub.id}}/remove/">Remove</a></li>
+        <li>{{ sub.plan.name }} ({{ "$%.2f"|format(sub.plan.amount/100) }} per {{ sub.plan.interval }}) - <a class="danger" href="./plan/{{sub.id}}/remove/">Remove</a></li>
     {% endfor %}
     </ul>
 {% endif %}
@@ -55,9 +52,12 @@
 
 <h2>Actions</h2>
     <ul>
-        <li><a href="./{{user.id}}/delete/">Delete user</a></li>
-        <li><a href="./{{user.id}}/login/">Login as user</a></li>
+        <li><a href="./delete/">Delete user</a></li>
+        <li><a href="./login/">Login as user</a></li>
     </ul>
   </ul>
-</div>
+{% endblock %}
+
+{% block admin_backlink %}
+  <a href="/admin/user/">&lArr; Back to user list</a>
 {% endblock %}

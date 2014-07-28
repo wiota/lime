@@ -1,0 +1,7 @@
+{% extends "admin.html" %}
+{% block admin_content %}
+  <ul>
+    <li><a href="{{ url_for("admin.invite") }}">Invite a new user (/admin/invite)</a></li>
+    <li><a href="{{ url_for("admin.user") }}">List all users (/admin/user)</a></li>
+  </ul>
+{% endblock %}

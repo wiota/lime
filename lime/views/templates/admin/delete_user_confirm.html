@@ -1,8 +1,12 @@
-{% extends "base.html" %}
-{% block content %}
+{% extends "admin.html" %}
+{% block admin_content %}
   <h2>Hold on there, friendo:</h2>
   You sure this is what you want do to? Delete lil' ol' <b>{{ user.username }}</b>? What'd <b>{{ user.username }}</b> ever do to you, huh? They're just sitting there quietly, taking up just a lil bit of space in the database. Maybe getting an email once or twice to their address, <b>{{ user.email }}</b>. They never did nothing to no one. And you just want to wipe them off the face of the map? With one click of a button? Who do you think you are? God? You think you can play God? Deciding who lives or dies?
 
-  <a href="./confirm/"><h1>YES, DO IT ALREADY, I AM A GOD!</h1></a>
-  <a href="{{ url_for("admin.index") }}">Yeah, you're right, this is a bad idea.</a>
+  <a href="./confirm/" class="danger"><h1>YES, DO IT ALREADY, I AM A GOD!</h1></a>
+  <a href="/admin/user/{{user.id}}/">Yeah, you're right, this is a bad idea.</a>
+{% endblock %}
+
+{% block admin_backlink %}
+  <a href="/admin/user/{{user.id}}/">&lArr; Back to user page</a>
 {% endblock %}
