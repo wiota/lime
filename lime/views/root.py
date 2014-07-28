@@ -1,4 +1,4 @@
-from flask import Blueprint, request, redirect, render_template, url_for, flash
+from flask import Blueprint, request, redirect, render_template, url_for, flash, session
 
 from toolbox.models import *
 from toolbox.tools import retrieve_image
@@ -117,11 +117,12 @@ def confirm(payload=None):
         if not user.registered:
             user.activate()
             flash("Your email has been verified.")
+            session["user_id"] = user_id
             return render_template("confirm.html", form=form)
         else:
             return redirect(url_for("root.index"))
     if form.validate_on_submit():
-        user = User.objects.get(id=current_user.id)
+        user = User.objects.get(id=session["user_id"])
         user.username = form.username.data
         user.password = generate_password_hash(form.password.data)
 
