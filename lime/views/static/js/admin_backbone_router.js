@@ -14,6 +14,7 @@ App.Router = Backbone.Router.extend({
 
   initialize: function(){
     // Panel for Listings
+    App.requestPanel = new App.RequestPanel();
     App.listingPanel = new App.ListingPanel();
     App.actionPanel = new App.ActionPanel();
 

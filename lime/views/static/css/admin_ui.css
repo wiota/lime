@@ -451,7 +451,10 @@ i.info_tag {
 /* Batch */
 
 #action_panel .batch {
-  position: relative;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
   width: 95%;
   padding: 1% 1% 1%;
   margin: 1.5% 1.5% 1.5%;
