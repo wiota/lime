@@ -115,7 +115,7 @@ def confirm(payload=None):
 
         user = User.objects.get(id=user_id)
         login_user(user)
-        if not user.confirmed:
+        if not user.registered:
             user.activate()
             flash("Your email has been verified.")
             return render_template("confirm.html", form=form)
