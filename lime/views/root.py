@@ -114,7 +114,6 @@ def confirm(payload=None):
             abort(404)
 
         user = User.objects.get(id=user_id)
-        login_user(user)
         if not user.registered:
             user.activate()
             flash("Your email has been verified.")
@@ -140,6 +139,7 @@ def confirm(payload=None):
 
         user.registered = True
         user.save()
+        login_user(user)
         return redirect(url_for("root.index"))
     return render_template("confirm.html", form=form)
 
