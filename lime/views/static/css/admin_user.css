@@ -38,7 +38,7 @@
 /* Login */
 
 .login {
-  width: 40%;
+  width: 30%;
   padding: 2%;
   margin: 0 auto;
   border-style:none;
@@ -46,6 +46,8 @@
 
 .login fieldset {
   border-style: none;
+  margin: 0;
+  padding: 0;
   }
 
 .login label {
@@ -56,7 +58,7 @@
   }
 
 .login .input_element input {
-  width: 92%;
+  width: 89%;
   padding: 2% 4% 2% 4%;
   margin: 0% 1.5% 1.5%;
   font-size: 22px;
@@ -76,6 +78,7 @@
 div#forgot_password {
   text-align: right;
   margin: 0% 1.5% 1.5%;
+  padding-top:2%;
 }
 
 div#forgot_password a {
@@ -83,27 +86,28 @@ div#forgot_password a {
 }
 
 .login .input.submit {
+  font-family: "Monaco","Lucida Console","Courier New", "monospace";
   position: relative;
   vertical-align: top;
-  width: 100%;
+  width: 97%;
   height: 60px;
   padding: 0;
   font-size: 22px;
   color: white;
   text-align: center;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
-  background: #82db8a;
+  text-shadow: 0 1px 2px rgba(221, 119, 0, 0.5);
+  background: #ffa53f;
   border: 0;
   cursor: pointer;
   margin: 5% 1.5% 1.5%;
-  border-top: 2px solid #82db8a;
-  border-bottom: 4px solid #82db8a;
+  border-top: 2px solid #ffa53f;
+  border-bottom: 4px solid #ffa53f;
   transition: border-color 1s ease;
 }
 
 .login .input.submit:focus, .login .input.submit:hover {
   outline: 0;
-  border-bottom: 4px solid #28be68;
+  border-bottom: 4px solid #dd7700;
   transition: border-color 1s ease;
 }
 
@@ -167,10 +171,6 @@ div.admin_ui ul {
   padding-left: 30px;
 }
 
-.login a {
-  color: #237ab1;
-}
-
 div.backlink {
   position:fixed;
   width: 15.098300562504%;
@@ -185,26 +185,36 @@ div.backlink {
 }
 
 .lime {
-  padding-left: 20px;
+  margin: 0% 1.5% 1.5%;
+  padding-bottom: 2%;
 }
 
 .lime h2 {
   color: #0b2231;
-  font: 700 100px/1.4 "cardo";
+  font: 700 100px/1 "cardo";
   font-style: normal;
-  margin: 0% 1.5% 1.5%;
   text-indent: 0px;
+  margin-bottom: 1.5%;
   z-index: 100;
   border-bottom: 4px solid #000;
 }
 
 .lime span {
-  font: 400 30px/1.4 "cardo";
+  font: 400 20px/1.4 "cardo";
   font-style: italic;
+  padding-left: 1.5%;
 }
 
 .madeby {
   font-size: 12px;
   text-align: center;
-  padding-top:20%;
+  position:fixed;
+  bottom:0;
+  width:100%;
+  padding-bottom: 5%;
 }
+
+.login a, .madeby a {
+  color: #237ab1;
+}
+
