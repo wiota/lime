@@ -73,36 +73,38 @@ def delete_user(id):
         'delete_user_confirm.html', user=User.objects.get(id=id))
 
 
-@mod.route("/user/<id>/delete/confirm/")
+@mod.route("/user/<id>/delete/confirm/", methods=["POST"])
 @login_required
 @admin_required
 def definitely_delete_user(id):
     user = User.objects.get(id=id)
+    if user.username == request.form["username"]:
+        # Delete the S3 Bucket
+        conn = boto.connect_s3()
+        bucket_name = '%s_%s' % (os.environ["S3_BUCKET"], user.username)
+        try:
+            b = boto.s3.bucket.Bucket(conn, bucket_name)
+            for x in b.list():
+                b.delete_key(x.key)
+            conn.delete_bucket(bucket_name)
+        except:
+            pass
 
-    # Delete the S3 Bucket
-    conn = boto.connect_s3()
-    bucket_name = '%s_%s' % (os.environ["S3_BUCKET"], user.username)
-    try:
-        b = boto.s3.bucket.Bucket(conn, bucket_name)
-        for x in b.list():
-            b.delete_key(x.key)
-        conn.delete_bucket(bucket_name)
-    except:
-        pass
+        # Delete the Stripe customer
+        try:
+            stripe.api_key = app.config['STRIPE_SECRET_KEY']
+            customer = stripe.Customer.retrieve(user.stripe_id)
+            customer.delete()
+        except:
+            pass
 
-    # Delete the Stripe customer
-    try:
-        stripe.api_key = app.config['STRIPE_SECRET_KEY']
-        customer = stripe.Customer.retrieve(user.stripe_id)
-        customer.delete()
-    except:
-        pass
-
-    Host.objects(owner=user).delete()
-    Vertex.objects(owner=user).delete()
-    user.delete()
-    flash("User '%s' successfully deleted" % (user.username))
-    return redirect(url_for("admin.index"))
+        Host.objects(owner=user).delete()
+        Vertex.objects(owner=user).delete()
+        user.delete()
+        flash("User '%s' successfully deleted" % (user.username))
+        return redirect(url_for("admin.index"))
+    flash("Username is incorrect!")
+    return redirect(url_for("admin.delete_user", id=id))
 
 
 @mod.route("/user/<user_id>/plan/<plan_id>/add/")
