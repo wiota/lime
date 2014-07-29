@@ -8,7 +8,7 @@ from toolbox.nocache import nocache
 from flask.ext.login import LoginManager
 from flask.ext.login import login_required, login_user, logout_user, current_user
 from flask.ext.wtf import Form
-from wtforms import TextField, PasswordField, BooleanField
+from wtforms import TextField, PasswordField, BooleanField, SubmitField
 from wtforms.validators import Required, Email, EqualTo
 from werkzeug import check_password_hash, generate_password_hash
 from itsdangerous import URLSafeSerializer, BadSignature
@@ -162,6 +162,7 @@ class ForgotPasswordForm(Form):
 class LoginForm(Form):
     username = TextField('Username or Email', [Required()])
     password = PasswordField('Password', [Required()])
+    submit = SubmitField('Login')
 
     def __init__(self, *args, **kwargs):
         Form.__init__(self, *args, **kwargs)
@@ -211,6 +212,7 @@ class ConfirmForm(Form):
         Required(),
         EqualTo('password', message='Passwords must match')
     ])
+    submit = SubmitField('Register')
 
     def __init__(self, *args, **kwargs):
         Form.__init__(self, *args, **kwargs)

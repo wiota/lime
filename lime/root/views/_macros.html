@@ -6,7 +6,9 @@
   {{ field() }}
 {% else %}
   <div class="form-group {% if field.errors %}error{% endif %}">
-    {{ field.label }}
+    {% if not field.type == "SubmitField" %}
+      {{ field.label }}
+    {% endif %}
     <div class="input_element">
       {% if not autofocused %}
         {{ field(autofocus=true) }}
@@ -27,7 +29,6 @@
   </div>
 {% endif %}
 {% endfor %}
-  <input class='input submit' type=submit value='Login'>
 {% if ref %}
     <input type="hidden" name=next value={{ ref }}>
 {% endif %}

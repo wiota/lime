@@ -107,7 +107,7 @@
   transition: border-color 1s ease;
 }
 
-.fancyform .input.submit {
+.fancyform input#submit {
   font-family: "Monaco","Lucida Console","Courier New", "monospace";
   position: relative;
   vertical-align: top;
