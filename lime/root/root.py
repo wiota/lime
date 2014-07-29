@@ -19,7 +19,7 @@ import boto
 import os
 import stripe
 
-mod = Blueprint('root', __name__, template_folder='templates')
+mod = Blueprint('root', __name__, template_folder='views')
 
 
 @mod.route('/', methods=["GET", "POST"])
