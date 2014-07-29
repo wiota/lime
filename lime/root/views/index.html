@@ -3,8 +3,8 @@
 
   {{ super() }}
 
-  <script src='{{ url_for('admin.static', filename='js/backbone.js') }}'></script>
-  <script src='{{ url_for('admin.static', filename='js/jquery-ui.custom.min.js') }}'></script>
+  <script src='{{ url_for('static', filename='js/backbone.js') }}'></script>
+  <script src='{{ url_for('static', filename='js/jquery-ui.custom.min.js') }}'></script>
   </script>
 
 {% endblock %}
@@ -168,16 +168,16 @@
 
 {% block js_footer %}
 
-  <script src='{{ url_for('admin.static', filename='js/admin_app.js') }}'></script>
-  <script type="text/javascript" src='{{ url_for('admin.static', filename='js/s3upload.js') }}'></script>
-  <script src='{{ url_for('admin.static', filename='js/admin_backbone_messages.js') }}'></script>
-  <script src='{{ url_for('admin.static', filename='js/admin_backbone_models.js') }}'></script>
-  <script src='{{ url_for('admin.static', filename='js/admin_backbone_collections.js') }}'></script>
-  <script src='{{ url_for('admin.static', filename='js/admin_backbone_views.js') }}'></script>
-  <script src='{{ url_for('admin.static', filename='js/admin_backbone_form_views.js') }}'></script>
-  <script src='{{ url_for('admin.static', filename='js/admin_backbone_upload_views.js') }}'></script>
-  <script src='{{ url_for('admin.static', filename='js/admin_backbone_router.js') }}'></script>
-  <script src='{{ url_for('admin.static', filename='js/admin_backbone_request_manager.js') }}'></script>
+  <script src='{{ url_for('static', filename='js/admin_app.js') }}'></script>
+  <script type="text/javascript" src='{{ url_for('static', filename='js/s3upload.js') }}'></script>
+  <script src='{{ url_for('static', filename='js/admin_backbone_messages.js') }}'></script>
+  <script src='{{ url_for('static', filename='js/admin_backbone_models.js') }}'></script>
+  <script src='{{ url_for('static', filename='js/admin_backbone_collections.js') }}'></script>
+  <script src='{{ url_for('static', filename='js/admin_backbone_views.js') }}'></script>
+  <script src='{{ url_for('static', filename='js/admin_backbone_form_views.js') }}'></script>
+  <script src='{{ url_for('static', filename='js/admin_backbone_upload_views.js') }}'></script>
+  <script src='{{ url_for('static', filename='js/admin_backbone_router.js') }}'></script>
+  <script src='{{ url_for('static', filename='js/admin_backbone_request_manager.js') }}'></script>
 
-  <script src='{{ url_for('admin.static', filename='js/work.js') }}'></script>
+  <script src='{{ url_for('static', filename='js/work.js') }}'></script>
 {% endblock %}

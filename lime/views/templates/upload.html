@@ -24,8 +24,8 @@
 
 {% block js_footer %}
 <script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.js"></script>
-<script type="text/javascript" src='{{ url_for('upload.static', filename='js/lodash.min.js') }}'></script>
-<script type="text/javascript" src='{{ url_for('admin.static', filename='js/s3upload.js') }}'></script>
+<script type="text/javascript" src='{{ url_for('static', filename='js/lodash.min.js') }}'></script>
+<script type="text/javascript" src='{{ url_for('static', filename='js/s3upload.js') }}'></script>
 
 <script type="text/javascript">
 function s3_upload(){
