@@ -127,13 +127,13 @@
   transition: border-color 1s ease;
 }
 
-.fancyform .input.submit:focus, .fancyform .input.submit:hover {
+.fancyform input#submit:focus, .fancyform input#submit:hover {
   outline: 0;
   border-bottom: 4px solid #dd7700;
   transition: border-color 1s ease;
 }
 
-.fancyform .input.submit:active {
+.fancyform input#submit:active {
   top: 1px;
   outline: none;
   -webkit-box-shadow: none;
