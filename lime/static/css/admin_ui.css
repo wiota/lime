@@ -62,8 +62,21 @@ a {text-decoration: none; color: #000;}
   top: 0;
   right: 0;
   bottom: 0;
-
   }
+
+#request_panel {
+  display:block;
+  z-index: 5;
+  background-color: transparent;
+  overflow: auto;
+  margin: 0;
+  padding: 0 0 0 2%;
+  position:fixed;
+  top: 80%;
+  right: 0;
+  left: 19.098300562504%;
+  bottom: 0;
+}
 
 /* -------------------------------------------------------------------  */
 /* Path Panel */

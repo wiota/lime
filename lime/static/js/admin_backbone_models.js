@@ -139,8 +139,6 @@ App.Model['Vertex'] = App.Vertex = Backbone.Model.extend({
   },
 
   removeFromSuccset: function(model, index){
-    var succset = _.clone(this.get('succset'));
-    //console.log(model.get('_id'));
     this.set({'succset':_.without(succset, model)});
     this.saveSuccset();
   },
@@ -166,6 +164,7 @@ App.Model['Vertex'] = App.Vertex = Backbone.Model.extend({
 
   },
 
+  // for reordering
   setSuccset: function(idList){
     var succset = this.get('succset');
     var update = [];

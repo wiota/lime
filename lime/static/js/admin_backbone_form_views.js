@@ -261,7 +261,8 @@ App.FormView['Vertex'] = Backbone.View.extend({
     this.listenTo(this.model, 'sync', this.saveView.statusSaved);
     this.listenTo(this.model, 'error', this.saveView.statusError);
 
-    _.bindAll(this, 'close')
+    _.bindAll(this, 'close');
+
   },
 
   appendFileUpload: function(){
@@ -298,17 +299,29 @@ App.FormView['Vertex'] = Backbone.View.extend({
     if(this.model.isModified()){
       this.save();
     }
-    this.$el.animate({'height': 0, 'opacity':.3}, 300, 'linear', this.close);
+    this.close();
+    // if animated, need to call stop listening on serialized attribute forms
+    //this.$el.animate({'height': 0, 'opacity':.3}, 300, 'linear', this.close);
   },
 
   // Events
 
   filesChanged: function(files){
+
+    var request = App.requestPanel.batchPhotoUploadRequest(
+      files,
+      this.newPhotoNesting,
+      this.model,
+      this.predecessor
+    );
+
+    /*
     App.actionPanel.addBatch(files, this.model, this.newPhotoNesting);
     if(this.model.isNew()){
       console.log(this.model.get('title') + ' Saving before Batch');
       this.collection.createAndAddTo(this.model, this.predecessor);
     }
+    */
   },
 
   attributesChanged: function(changeObject){
@@ -342,54 +355,6 @@ App.FormView['Vertex'] = Backbone.View.extend({
       this.model.outOfSync();
     }
     this.close();
-  }
-
-
-});
-
-
-/* ------------------------------------------------------------------- */
-// Batch - no attributes
-/* ------------------------------------------------------------------- */
-
-App.FormView.Batch = Backbone.View.extend({
-
-  passableOptions: ['predecessor', 'collection'],
-  tagName: 'form',
-
-  initialize: function(options){
-    this.options = options || {};
-    this.predecessor = options.predecessor || null;
-    this.allowPhotos = options.allowPhotos || true;
-
-    this.children = [];
-    this.childOptions = _.pick(this.options, this.passableOptions);
-
-    this.appendFileUpload();
-
-    _.bindAll(this, 'close')
-  },
-
-  appendFileUpload: function(){
-    this.fileUpload = new App.FormView.FileUploadView(this.childOptions),
-    this.$el.append(this.fileUpload.el);
-    this.listenTo(this.fileUpload, 'change', this.filesChanged);
-    this.children.push(this.fileUpload);
-  },
-
-  render: function(){
-    this.listenToOnce(this.attributeFields, 'rendered', this.fileUpload.render);
-    this.listenToOnce(this.attributeFields, 'rendered', this.saveView.render)
-    this.attributeFields.render();
-    return this;
-  },
-
-  // Events
-
-  filesChanged: function(files){
-    // initiate upload
-    // set up listener to wait for complete
-    // pass files to batch function
   }
 
 
@@ -444,11 +409,15 @@ App.ActionPanel = Backbone.View.extend({
       'className': className
     });
 
+    this.$el.css({'right': '-100%'});
+
     this.$el.append(form.el);
     form.render();
     this.forms.push(form);
+    this.$el.animate({'right': '0'}, 200);
   },
 
+  /*
   batchToManyCategory: function(predecessor){
     var form = new App.FormView['Vertex.Medium.Photo']({
       'collection': App.collection['Vertex.Medium.Photo'],
@@ -507,6 +476,7 @@ App.ActionPanel = Backbone.View.extend({
       this.batchToManyPhoto(predecessor);
     }
   },
+  */
 
   closeForms: function(){
     _.each(this.forms, function(form, index){
@@ -515,7 +485,9 @@ App.ActionPanel = Backbone.View.extend({
     this.forms = [];
   },
 
+  /*
   addBatch: function(files, predecessor, nesting){
+    // hopefully get rid of this function
     var _cls = nesting[0] || 'Vertex.Medium.Photo';
     var className = App.clsToClass(_cls) + ' batch';
     var batch = new App.Upload.batchView({'className': className, 'files':files, 'predecessor':predecessor, 'nesting':nesting});
@@ -523,5 +495,6 @@ App.ActionPanel = Backbone.View.extend({
     batch.upload();
     this.batches.push(batch);
   }
+  */
 
 });

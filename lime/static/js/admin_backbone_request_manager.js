@@ -2,79 +2,103 @@
 // Portphillio Admin Request Manager
 /* ------------------------------------------------------------------- */
 
-App.RequestManager = {};
+// id tag
+// on success, remove them
+// on error, rerun once and then flag the manager to halt requests
 
-App.RequestPanel = Backbone.View.extend({
-  el: $('#request_panel'),
+// should I keep track of the batch requests?
+// or just the individual requests?
 
-  initialize: function(){
+App.Request = Backbone.View.extend({
+  initialize: function(options){
+    this.options = options
+    this.rid = options.rid;
+  },
+
+  registerSubrequests: function(subrequests){
+    this.subrequests = subrequests;
+    _.each(this.subrequests, this.registerSubrequest, this);
 
   },
 
-  // don't want to have batchItemView here
-  // trigger events and register handlers instead
-  batchRequest: function(vertices, edges, batchItemView){
-    this.persistBatchedVertices(vertices, edges, batchItemView);
+  registerSubrequest: function(subrequest){
+    subrequest.parentRequest = this;
+    this.listenTo(subrequest, 'complete', this.removeSubrequest);
   },
 
-  persistBatchedVertices: function(vertices, edges, batchItemView){
-    var unidentified_vertices = 0;
-    var complete = function(){
-      if(unidentified_vertices <= 0){
-        return true;
-      }
-      return false;
+  removeSubrequest: function(subrequest){
+    this.subrequests = _.without(this.subrequests, subrequest)
+    if(this.subrequests.length <= 0){
+      this.trigger('complete', this);
+      this.trigger('parentcomplete', this);
     }
+  }
+
+});
+
+App.GraphRequest = Backbone.View.extend({
+  initialize: function(options){
+    this.options = options || {};
+    this.vertices = this.options.vertices;
+    this.edges = this.options.edges || [];
+  },
+
+  start: function(){
+    this.vertexRequest();
+  },
+
+  vertexRequest: function(){
+    var unidentified_vertices = 0;
 
     // add vertices
-    _.each(vertices, function(model){
+    _.each(this.vertices, function(model){
+
+      // in case any verticies are not new.
+      if(!model.isNew()){
+        return false;
+      }
       unidentified_vertices++;
       var _cls = model.get('_cls')
-      //var vertex = batchItemView.noteVertexCreation(App.clsToClass(_cls));
+
+      // client side
       var collection = App.collection[_cls];
       collection.add(model);
+
+      // persistence
       model.save();
 
       // sync
       this.listenToOnce(model, 'sync', function(){
-        //batchItemView.noteVertexSync(vertex);
         unidentified_vertices--;
-        if(complete()){
-          this.addBatchEdges(vertices, edges, batchItemView);
+        if(unidentified_vertices <= 0){
+          this.trigger('verticescomplete')
+          this.edgeRequest();
         }
       }, this);
+
       // error
       this.listenToOnce(model, 'error', function(){
-        batchItemView.error();
-        console.log('vertex save error' + model.get('title'));
+        this.trigger('error');
       }, this);
     }, this)
-    // this.addBatchEdges(vertices, edges, batchItemView);
-
   },
 
-  addBatchEdges: function(vertices, edges, batchItemView){
-    // batchItem visual update
-    batchItemView.$el.addClass('edges');
+  edgeRequest: function(vertices, edges, batchItemView){
     var missing_edges = 0;
-    var edgesComplete = function(callback){
-      if(missing_edges <= 0){
-        return true;
-      }
-      return false;
-    }
 
     // add edges
-    _.each(edges, function(set){
+    _.each(this.edges, function(set){
       missing_edges++;
       var model = set[0];
       model.addToSuccset(set[1]);
+
       console.log('added '+ model.get('_cls') + ' to ' + set[1].get('_cls'));
       // sync
       this.listenToOnce(model, 'sync', function(){
         missing_edges--;
-        if(edgesComplete()){
-          batchItemView.collapse();
+        if(missing_edges <= 0){
+          this.trigger('edgescomplete')
+          //batchItemView.collapse();
         }
       }, this);
       // error
@@ -85,13 +109,95 @@ App.RequestPanel = Backbone.View.extend({
     }, this);
   },
 
+});
 
-  simpleRequest: function(){
+App.RequestPanel = Backbone.View.extend({
+  el: $('#request_panel'),
+  requestsMade: 0,
+  requests: [],
+
+  initialize: function(){},
+
+  batchPhotoUploadRequest: function(files, newPhotoNesting, model, predecessor){
+
+    // initiate a new request
+    var request = this.initRequest();
+
+    // initiate new subrequests
+    var subrequests = _.map(files, function(file){
+      return this.photoUploadRequest(file, newPhotoNesting, model);
+    }, this);
+
+    // set variables
+    request.requestType = 'batch';
+
+    // register subrequests
+    request.registerSubrequests(subrequests);
+
+
+    // if model is new, add to predecessor
+
+    // upload
+    // request.batchView = new App.Upload.batchProgressView({'className': 'batch'});
+    // App.actionPanel.$el.prepend(request.batchView.render().el);
+
+    return request;
 
   },
 
-  display: function(message){
-    this.$el.html(message);
+  photoUploadRequest: function(file, nesting, model){
+    var request = this.initRequest();
+
+    // set variables
+    request.requestType = 'nestedphoto';
+    request.file = file;
+    request.nesting = nesting;
+    request.model = model;
+
+    var time = (Math.random() * 2000) + 1000;
+    setTimeout(function(){
+      request.trigger('complete', request);
+    }, time)
+
+    return request;
+
+  },
+
+  getId: function(){
+    return this.requestsMade++;
+  },
+
+  initRequest: function(){
+    // create new request
+    var rid = this.getId();
+    var request = new App.Request({'rid':rid});
+
+    // keep track of it
+    this.requests.push(request);
+    this.listenTo(request, 'complete', this.removeRequest);
+
+    // log
+    console.log('request '+ rid + ' created');
+
+    // return to calling function for further decoration
+    return request;
+  },
+
+  removeRequest: function(request){
+    // log
+    console.log('request '+ request.rid + ' removed');
+
+    // remove from master list
+    this.requests = _.without(this.requests, request);
+
+    // remove request (backbone view)
+    request.remove();
+  },
+
+  initGraphRequest: function(vertices, edges){
+    var batchRequest = new App.GraphRequest({'vertices': vertices, 'edges': edges});
+    batchRequest.start();
+    return batchRequest;
   }
 
 })
