@@ -1,11 +1,8 @@
 {% extends "base.html" %}
-{% from "_macros.html" import render, madeby %}
+{% from "_macros.html" import render, madeby, limetitle %}
 {% block content %}
 <div class='fancyform'>
-  <div class='lime'>
-    <h2>lime</h2>
-    <span>Lime binds your work together.</span><br>
-  </div>
+  {{ limetitle() }}
   {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
   <form action="{{ url_for('root.index') }}" method=post>
     {{ render(form) }}

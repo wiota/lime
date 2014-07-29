@@ -23,7 +23,7 @@
 
   <body>
     {%- block user -%}
-    {% if not current_user.is_anonymous() %}
+    {% if current_user.registered %}
       <div class="admin_user_menu">
         <div class='admin_user'>
           <div class='admin_user_nav'>

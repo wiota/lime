@@ -206,7 +206,7 @@ class ResetPasswordForm(Form):
 
 
 class ConfirmForm(Form):
-    username = TextField('Username', [Required()])
+    username = TextField('Choose a username', [Required()])
     password = PasswordField('Password', [Required()])
     confirm = PasswordField('Repeat Password', [
         Required(),
