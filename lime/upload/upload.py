@@ -1,47 +1,13 @@
 from flask import Blueprint
-from flask import Flask, render_template, request, redirect, Response, url_for
+from flask import Flask, request, Response
 from flask import current_app as app
-import time
-import os
-import json
-import base64
-import hmac
-import urllib
 from hashlib import sha1
 from flask.ext.login import login_required
 from flask.ext.login import current_user
 from toolbox.models import *
+import time, os, json, base64, hmac, urllib
 
-mod = Blueprint(
-    'upload',
-    __name__,
-    url_prefix='/upload',
-    static_folder='static',
-    template_folder='templates',
-    static_url_path='/static/upload')
-
-
-@mod.route('/')
-@login_required
-def index():
-    return render_template('upload.html')
-
-
-# Listen for POST requests to yourdomain.com/submit_form/
-@mod.route("/submit_form/", methods=["POST"])
-@login_required
-def submit_form():
-    # Collect the data posted from the HTML form in account.html:
-    data1 = request.form["data1"]
-    data2 = request.form["data2"]
-    image_url = request.form["image_url"]
-
-    # Provide some procedure for storing the new details
-    # update_account(data1, data2, image_url)
-
-    # Redirect to the user's profile page, if appropriate
-    return render_template(
-        'success.html', image_url=image_url, data=[data1, data2])
+mod = Blueprint( 'upload', __name__, url_prefix='/upload')
 
 
 # Listen for GET requests to yourdomain.com/sign_s3/
