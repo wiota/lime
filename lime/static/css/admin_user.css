@@ -69,27 +69,27 @@
 
 /* Login */
 
-.login {
+.fancyform {
   width: 30%;
   padding: 2%;
   margin: 0 auto;
   border-style:none;
   }
 
-.login fieldset {
+.fancyform fieldset {
   border-style: none;
   margin: 0;
   padding: 0;
   }
 
-.login label {
+.fancyform label {
   font-size: 14px;
   display:block;
   padding: 1%;
   margin: 1.5% 1.5% 0%;
   }
 
-.login .input_element input {
+.fancyform .input_element input {
   width: 89%;
   padding: 2% 4% 2% 4%;
   margin: 0% 1.5% 1.5%;
@@ -101,23 +101,13 @@
   transition: border-color 1s ease;
 }
 
-.login .input_element input:focus {
+.fancyform .input_element input:focus {
   outline: 0;
   border-bottom: 4px solid #d0d0d0;
   transition: border-color 1s ease;
 }
 
-div#forgot_password {
-  text-align: right;
-  margin: 0% 1.5% 1.5%;
-  padding-top:2%;
-}
-
-div#forgot_password a {
-  color: #237ab1;
-}
-
-.login .input.submit {
+.fancyform .input.submit {
   font-family: "Monaco","Lucida Console","Courier New", "monospace";
   position: relative;
   vertical-align: top;
@@ -137,13 +127,13 @@ div#forgot_password a {
   transition: border-color 1s ease;
 }
 
-.login .input.submit:focus, .login .input.submit:hover {
+.fancyform .input.submit:focus, .fancyform .input.submit:hover {
   outline: 0;
   border-bottom: 4px solid #dd7700;
   transition: border-color 1s ease;
 }
 
-.login .input.submit:active {
+.fancyform .input.submit:active {
   top: 1px;
   outline: none;
   -webkit-box-shadow: none;
@@ -257,7 +247,19 @@ input.danger {
   padding-bottom: 5%;
 }
 
-.login a, .madeby a, .admin_ui a{
+.fancyform a, .madeby a, .admin_ui a{
   color: #237ab1;
 }
+
+div#forgot_password {
+  text-align: right;
+  margin: 0% 1.5% 1.5%;
+  padding-top:2%;
+}
+
+div#forgot_password a {
+  color: #237ab1;
+}
+
+
 
