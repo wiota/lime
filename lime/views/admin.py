@@ -16,6 +16,7 @@ from flask.ext.login import login_user
 import requests
 import boto
 import stripe
+import md5
 
 import os
 
@@ -137,7 +138,8 @@ def invite():
     if request.method == 'GET':
         return render_template("invite.html", form=form, ref=ref)
     if form.validate_on_submit():
-        user = User(email=form.email.data)
+        email_hash = md5.new(form.email.data.strip().lower()).hexdigest()
+        user = User(email=form.email.data, email_hash=email_hash)
 
         s = URLSafeSerializer(app.config['SECRET_KEY'])
         payload = s.dumps(str(user.id))

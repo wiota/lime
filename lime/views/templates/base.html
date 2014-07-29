@@ -32,7 +32,13 @@
               <li><a href=" {{ url_for('root.logout') }} ">Logout</a></li>
             </ul>
           </div>
-          <b class='identification'>{{ current_user.email}} </b>
+
+          <div class='identification'>
+          {% if current_user.email_hash %}
+            <div class="circle" style="background: url(http://www.gravatar.com/avatar/{{current_user.email_hash}}?s=30?d=mm)"/></div>
+          {% endif %}
+            <div id="name">{{ current_user.email}}</div>
+          </div>
         </div>
       </div>
     {% endif %}

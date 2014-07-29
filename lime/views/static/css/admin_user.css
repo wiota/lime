@@ -9,9 +9,42 @@
   }
 
 .admin_user_menu .identification {
-  display:block;
-  padding: 5% 0;
+  padding: 0;
+  /* Internet Explorer 10 */
+  display:-ms-flexbox;
+  -ms-flex-pack:center;
+  -ms-flex-align:center;
+
+  /* Firefox */
+  display:-moz-box;
+  -moz-box-pack:center;
+  -moz-box-align:center;
+
+  /* Safari, Opera, and Chrome */
+  display:-webkit-box;
+  -webkit-box-pack:center;
+  -webkit-box-align:center;
+
+  /* W3C */
+  display:box;
+  box-pack:center;
+  box-align:center;
   }
+
+
+.admin_user_menu .identification #name {
+  padding-left: 5px;
+  font-weight:bold;
+}
+
+.circle {
+  margin-left:-60px;
+  width:30px;
+  height:30px;
+  border-radius: 15px;
+  -webkit-border-radius: 15px;
+  -moz-border-radius: 15px;
+}
 
 .admin_user .admin_user_nav {display:none;}
 .admin_user:hover .admin_user_nav {display:block;}
@@ -151,7 +184,7 @@ div#forgot_password a {
 
 /* Styling for the Admin UI (not the Lime UI) */
 div.admin_content {
-  padding: 0 2% 0 0;
+  padding: 0 2% 0 2%;
   position:fixed;
   overflow: auto;
   top: 0;
@@ -214,7 +247,7 @@ div.backlink {
   padding-bottom: 5%;
 }
 
-.login a, .madeby a {
+.login a, .madeby a, .admin_ui a{
   color: #237ab1;
 }
 
