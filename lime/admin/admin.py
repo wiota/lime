@@ -24,7 +24,7 @@ mod = Blueprint(
     'admin',
     __name__,
     static_folder='static',
-    template_folder='templates/admin',
+    template_folder='views',
     static_url_path='/static/admin',
     url_prefix='/admin')
 
