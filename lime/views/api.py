@@ -130,3 +130,21 @@ def category_form():
 @login_required
 def medium_form():
     return Medium().to_form()
+
+@mod.route('/edge/', methods=["POST"])
+@login_required
+def edge():
+    data = request.json
+    print data
+    for edge in data["edges"]:
+        source_id = edge["_source"]
+        sink_id = edge["_sink"]
+
+        source = Vertex.objects.get(id=source_id, owner=current_user.id)
+        source.update(add_to_set__succset=sink_id)
+
+        sink = Vertex.objects.get(id=sink_id, owner=current_user.id)
+        sink.update(add_to_set__predset=source_id)
+
+    return jsonify(result="success"), 200  # TODO: Should be a 204
+
