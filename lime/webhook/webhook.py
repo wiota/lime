@@ -8,10 +8,10 @@ from toolbox.models import User, Host
 from toolbox.email import *
 import stripe
 
-mod = Blueprint('stripe', __name__, static_folder='static', template_folder='templates/stripe', static_url_path='/static/stripe', url_prefix='/stripe')
+mod = Blueprint('webhook', __name__, template_folder='views', url_prefix='/webhook')
 
 
-@mod.route('/', methods=['POST'])
+@mod.route('/stripe/', methods=['POST'])
 def stripe_hook():
     print request.json
     stripe.api_key = app.config['STRIPE_SECRET_KEY']
