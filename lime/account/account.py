@@ -6,7 +6,7 @@ from flask.ext.login import current_user
 from toolbox.models import User, Host
 import stripe
 
-mod = Blueprint('account', __name__, static_folder='static', template_folder='templates/account', static_url_path='/static/account', url_prefix='/account')
+mod = Blueprint('account', __name__, static_folder='static', template_folder='views', static_url_path='/static/account', url_prefix='/account')
 
 
 @mod.route('/')

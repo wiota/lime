@@ -6,7 +6,8 @@ from bson.objectid import ObjectId
 from flask.ext.mongoengine import MongoEngine
 from flask.ext.login import LoginManager
 from toolbox.tools import AnonymousUser
-from lime.views import api, admin, upload, account, root, stripe_hook
+from lime.views import api, admin, upload, root, stripe_hook
+from lime.account import account
 from toolbox.models import User
 
 # Create a starter app
