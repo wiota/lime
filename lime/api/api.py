@@ -75,8 +75,6 @@ def put_category(id):
 @login_required
 def post_photo():
     data = request.json
-    data['slug'] = ''   # TODO: temporary...
-    data['title'] = ''  # TODO: temporary...
     data['owner'] = current_user.id
     photo = Photo(**data).save()
     return photo.to_bson(expand=False), 200

@@ -151,8 +151,7 @@ def invite():
         user.stripe_id = customer.id
 
         # Create the body
-        # TODO: Body doesn't need a slug or title
-        body = Body(owner=user.id, slug="", title="")
+        body = Body(owner=user.id)
         body.save()
 
         user.save()
