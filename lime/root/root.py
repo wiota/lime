@@ -61,6 +61,9 @@ def forgot_password():
         return render_template("forgot_password.html", form=form)
     if form.validate_on_submit():
         user = User.objects.get(email=form.email.data)
+        if not user.registered:
+            flash("Please register first.")
+            return redirect(url_for("root.index"))
 
         s = URLSafeSerializer(app.config['SECRET_KEY'])
         payload = s.dumps(str(user.id))
@@ -147,6 +150,7 @@ def confirm(payload=None):
 
 class ForgotPasswordForm(Form):
     email = TextField('Email address', [Required(), Email()])
+    submit = SubmitField('Reset password')
 
     def __init__(self, *args, **kwargs):
         Form.__init__(self, *args, **kwargs)
@@ -194,6 +198,7 @@ class ResetPasswordForm(Form):
         Required(),
         EqualTo('password', message='Passwords must match')
     ])
+    submit = SubmitField('Reset password')
 
     def __init__(self, *args, **kwargs):
         Form.__init__(self, *args, **kwargs)

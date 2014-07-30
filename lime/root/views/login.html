@@ -1,15 +1,9 @@
-{% extends "base.html" %}
-{% from "_macros.html" import render, madeby, limetitle %}
-{% block content %}
-<div class='fancyform'>
-  {{ limetitle() }}
-  {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
+{% extends "fancyform.html" %}
+{% block form %}
   <form action="{{ url_for('root.index') }}" method=post>
     {{ render(form) }}
   </form>
   <div id="forgot_password">
     <a href="{{ url_for("root.forgot_password") }}">Forgot your password?</a>
   </div>
-</div>
-{{ madeby() }}
 {% endblock %}

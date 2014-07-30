@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% from "_macros.html" import render, madeby, limetitle %}
+{% block content %}
+<div class='fancyform'>
+  {{ limetitle() }}
+  {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
+    {% block form %}{% endblock %}
+</div>
+{{ madeby() }}
+{% endblock %}
