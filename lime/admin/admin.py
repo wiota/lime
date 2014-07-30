@@ -2,10 +2,7 @@ from flask import Blueprint, request, send_file, abort, send_from_directory
 from flask import render_template, flash, url_for, redirect
 from flask import current_app as app
 from flask.ext.login import login_required
-from flask.ext.wtf import Form
-from wtforms import TextField
 from itsdangerous import URLSafeSerializer, BadSignature
-from wtforms.validators import Required, Email
 from toolbox.build_db import build_db, clear_db
 from flask.ext.login import login_required
 from flask.ext.login import current_user
@@ -13,11 +10,11 @@ from toolbox.tools import admin_required
 from toolbox.models import User, Host, Vertex, Body
 from toolbox.email import *
 from flask.ext.login import login_user
+from .forms import *
 import requests
 import boto
 import stripe
 import md5
-
 import os
 
 mod = Blueprint(
@@ -184,17 +181,3 @@ def clear():
     ''' This is a temporary endpoint '''
     clear_db(current_user.username)
     return "Success"
-
-
-class InviteForm(Form):
-    email = TextField('Email address', [Required(), Email()])
-
-    def __init__(self, *args, **kwargs):
-        Form.__init__(self, *args, **kwargs)
-        self.user = None
-
-    def validate(self):
-        if User.objects(email=self.email.data).first() is not None:
-            flash("This email address already has an account")
-            return False
-        return True
