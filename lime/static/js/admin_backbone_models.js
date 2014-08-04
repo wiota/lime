@@ -240,15 +240,34 @@ App.Model['Vertex.Medium.Photo'] = App.Model['Vertex.Medium'].extend({
 });
 
 /* ------------------------------------------------------------------- */
-// Body or Portfolio
+// Body
 /* ------------------------------------------------------------------- */
 
 App.Model['Vertex.Apex.Body'] = App.Model['Vertex'].extend({
-  urlRoot: "api/v1/body/",
+  urlRoot: "api/v1/apex/body/",
   _cls: "Vertex.Apex.Body",
 
   url: function(){
     return this.urlRoot;
   }
 
+});
+
+/* ------------------------------------------------------------------- */
+// Happening
+/* ------------------------------------------------------------------- */
+
+App.Model['Vertex.Apex.Happening'] = App.Model['Vertex'].extend({
+  urlRoot: "api/v1/apex/happening",
+  _cls: "Vertex.Apex.Happening",
+
+  url: function(){
+    return this.urlRoot;
+  }
+
+});
+
+App.Model['Vertex.Happening'] = App.Model['Vertex'].extend({
+  urlRoot: "api/v1/happening",
+  _cls: "Vertex.Happening"
 });

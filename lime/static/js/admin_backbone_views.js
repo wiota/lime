@@ -262,6 +262,10 @@ App.View.SummaryView['Vertex.Work'] = App.WorkSummaryView = App.SummaryView.exte
   template:_.template($('#work_summary').html())
 });
 
+App.View.SummaryView['Vertex.Happening'] = App.WorkSummaryView = App.SummaryView.extend({
+  template:_.template($('#happening_summary').html())
+});
+
 /* ------------------------------------------------------------------- */
 // Listings
 /* ------------------------------------------------------------------- */

@@ -111,6 +111,12 @@ App.Collection['Vertex.Medium.Photo'] = App.Collection['Vertex'].extend({
   _cls: 'Vertex.Medium.Photo'
 });
 
+App.Collection['Vertex.Happening'] = App.Collection['Vertex'].extend({
+  model: App.Model['Vertex.Happening'],
+  url: "api/v1/happening/",
+  _cls: 'Vertex.Happening'
+});
+
 App.Collection['Vertex.Apex.Body'] = App.Collection['Vertex'].extend({ // Unique - only contains one body - may be changed to start vertex
   model: App.Model['Vertex.Apex.Body'],
   _cls: 'Vertex.Apex.Body',
@@ -146,7 +152,8 @@ App.Collection['Vertex.Apex.Body'] = App.Collection['Vertex'].extend({ // Unique
 
 App.collection = {};
 
-App.collection['Vertex.Apex.Body'] = App.bodyStorage = new App.Collection['Vertex.Apex.Body']();
-App.collection['Vertex.Category'] = App.categoryStorage = new App.Collection['Vertex.Category']();
-App.collection['Vertex.Work'] = App.workStorage = new App.Collection['Vertex.Work']();
-App.collection['Vertex.Medium.Photo'] = App.photoStorage = new App.Collection['Vertex.Medium.Photo']();
+App.collection['Vertex.Apex.Body'] = new App.Collection['Vertex.Apex.Body']();
+App.collection['Vertex.Category'] = new App.Collection['Vertex.Category']();
+App.collection['Vertex.Work'] = new App.Collection['Vertex.Work']();
+App.collection['Vertex.Medium.Photo'] = new App.Collection['Vertex.Medium.Photo']();
+App.collection['Vertex.Happening'] = new App.Collection['Vertex.Happening']();

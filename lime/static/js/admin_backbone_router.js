@@ -6,9 +6,11 @@ App.Router = Backbone.Router.extend({
 
   routes:{
 
-  "":"getPortfolio",
+  "":"getBody",
   "category/:id":"getCategory",
-  "work/:id":"getWork"
+  "work/:id":"getWork",
+  "happenings/":"getHappeningsApex",
+  "happening/:id":"getHappening"
 
   },
 
@@ -21,17 +23,17 @@ App.Router = Backbone.Router.extend({
   },
 
   // Body of work
-  getPortfolio: function() {
-    var portfolio = App.portfolioStorage.lookup();
-    App.listingPanel.list(portfolio);
+  getBody: function() {
+    var body = App.collection['Vertex.Apex.Body'].lookup();
+    App.listingPanel.list(body);
     App.actionPanel.closeForms();
-    //App.actionPanel.loadBatchForms(portfolio);
+    //App.actionPanel.loadBatchForms(body);
   },
 
   // Category
 
   getCategory: function(id) {
-    var category = App.categoryStorage.lookup(id);
+    var category = App.collection['Vertex.Category'].lookup(id);
     App.listingPanel.list(category);
     App.actionPanel.closeForms();
     //App.actionPanel.loadBatchForms(category);
@@ -40,10 +42,21 @@ App.Router = Backbone.Router.extend({
   // Work
 
   getWork: function(id){
-    var work = App.workStorage.lookup(id);
+    var work = App.collection['Vertex.Work'].lookup(id);
     App.listingPanel.list(work);
     App.actionPanel.closeForms();
     //App.actionPanel.loadBatchForms(work);
+  },
+
+  // Happenings Apex
+
+  getHappeningsApex: function(){
+    null;
+  },
+
+  getHappening: function(id){
+    var happening = App.collection['Vertex.Happening'].lookup(id);
+    App.listingPanel.list(happening);
   }
 
  
