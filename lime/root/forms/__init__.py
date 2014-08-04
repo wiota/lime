@@ -4,6 +4,7 @@ from wtforms import TextField, PasswordField, BooleanField, SubmitField
 from wtforms.validators import Required, Email, EqualTo
 from werkzeug import check_password_hash, generate_password_hash
 from toolbox.models import User
+from mongoengine.queryset import Q
 
 
 class ForgotPasswordForm(Form):
@@ -34,7 +35,7 @@ class LoginForm(Form):
         try:
             user = User.objects.get(
                 Q(username=self.username.data) | Q(email=self.username.data))
-        except Exception:
+        except User.DoesNotExist:
             flash("Username or email does not exist, please try again.")
             return False
 
