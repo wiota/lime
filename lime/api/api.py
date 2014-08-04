@@ -9,16 +9,22 @@ from flask.ext.login import current_user
 mod = Blueprint('api', __name__, url_prefix='/api/v1')
 
 
+@mod.route('/apex/body/')
+@login_required
+def body():
+    return Body.objects.get(owner=current_user.id).to_bson()
+
+
+@mod.route('/apex/happenings/')
+@login_required
+def happenings():
+    return Happenings.objects.get(owner=current_user.id).to_bson()
+
+
 @mod.route('/user/')
 @login_required
 def user():
     return User.objects.get(id=current_user.id).to_bson()
-
-
-@mod.route('/body/')
-@login_required
-def body():
-    return Body.objects.get(owner=current_user.id).to_bson()
 
 
 @mod.route('/work/', methods=['GET'])
@@ -62,15 +68,15 @@ def post_category():
     return category.to_bson(), 200
 
 
-@mod.route('/event/', methods=['POST'])
+@mod.route('/happening/', methods=['POST'])
 @login_required
-def post_event():
+def post_happening():
     data = request.json
     print data
     data['slug'] = slugify(data['title'])
     data['owner'] = current_user.id
-    event = Event(**data).save()
-    return event.to_bson(), 200
+    happening = Happening(**data).save()
+    return happening.to_bson(), 200
 
 
 @mod.route('/category/<id>/', methods=['PUT'])
@@ -107,7 +113,7 @@ def put_succset(vertex_type, id):
     return jsonify(result="success"), 200  # TODO: Should be a 204
 
 
-@mod.route('/body/succset/', methods=['PUT'])
+@mod.route('/apex/body/succset/', methods=['PUT'])
 @login_required
 def put_body_succset():
     Body.objects(
@@ -141,10 +147,10 @@ def medium_form():
     return Medium().to_form()
 
 
-@mod.route('/event/form/')
+@mod.route('/happening/form/')
 @login_required
-def event_form():
-    return Event().to_form()
+def happening_form():
+    return Happening().to_form()
 
 
 @mod.route('/edge/', methods=["POST"])

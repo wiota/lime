@@ -7,7 +7,7 @@ from toolbox.build_db import build_db, clear_db
 from flask.ext.login import login_required
 from flask.ext.login import current_user
 from toolbox.tools import admin_required
-from toolbox.models import User, Host, Vertex, Body
+from toolbox.models import User, Host, Vertex, Body, Happenings
 from toolbox.email import *
 from flask.ext.login import login_user
 from .forms import *
@@ -53,6 +53,7 @@ def individual_user(id):
         return render_template(
             'individual_user.html', user=user, host=host, cust=cust, plans=plans)
     return render_template('individual_user.html', user=user)
+
 
 @mod.route("/user/<id>/login/")
 @login_required
@@ -149,9 +150,13 @@ def invite():
         customer = stripe.Customer.create(email=user.email)
         user.stripe_id = customer.id
 
-        # Create the body
+        # Create the Body apex
         body = Body(owner=user.id)
         body.save()
+
+        # Create the Happening apex
+        happenings = Happenings(owner=user.id)
+        happenings.save()
 
         user.save()
 
