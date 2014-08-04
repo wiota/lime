@@ -4,6 +4,14 @@ ul, ol {margin: 0; padding:0;list-style-type: none;}
 
 a {text-decoration: none; color: #000;}
 
+:focus {
+  outline: 3px solid #cbdada;
+  -webkit-box-shadow: 0px 0px 2px 0px rgba(42, 44, 57, 0.80);
+  -moz-box-shadow:    0px 0px 2px 0px rgba(42, 44, 57, 0.80);
+  box-shadow:         0px 0px 2px 0px rgba(42, 44, 57, 0.80);
+
+};
+
 /*
 Body:
   terra cotta: #dd7700
@@ -12,6 +20,9 @@ Body:
 Request:
   meltdown: #00db14,
   jade: #82db8a
+Form
+  aluminum: #ebf4f4;
+  lead: #cbdada;
 shadow color  42,44,57
 
 */
@@ -33,7 +44,7 @@ shadow color  42,44,57
   z-index: 3;
   width: 19.098300562504%;
   position:fixed;
-  overflow: auto;
+  overflow: visible;
   top: 0;
   left: 0;
   bottom: 0;
@@ -52,7 +63,7 @@ shadow color  42,44,57
   width: 48%;
   padding: 0 2% 0 0;
   position:fixed;
-  overflow: auto;
+  overflow: visible;
   top: 0;
   left: 19.098300562504%;
   bottom: 0;
@@ -64,7 +75,7 @@ shadow color  42,44,57
   display:block;
   z-index: 2;
   background-color: #fff;
-  overflow: auto;
+  overflow: visible;
   margin: 0;
   padding: 0 0 0 2%;
   width: 28.901699437496%;
@@ -78,7 +89,7 @@ shadow color  42,44,57
   display:block;
   z-index: 5;
   background-color: transparent;
-  overflow: auto;
+  overflow: visible;
   margin: 0;
   padding: 0 0 0 2%;
   position:fixed;
@@ -182,6 +193,7 @@ ol.succset_list {
   position: relative;
   padding: 1% 1% 1% 4%;
   margin: 0 0 1.5% 0;
+  height: 1em;
   }
 
 .succset_list li a.in_set_link {
@@ -304,7 +316,7 @@ i.info_tag {
 
 #action_panel form {
   margin: 0 0 .2% 0;
-  overflow: auto;
+  overflow: visible;
   }
 
 #action_panel fieldset {
@@ -316,70 +328,81 @@ i.info_tag {
 #action_panel label {
   font-size: 11px;
   display:block;
-  padding: 1%;
+  padding: 2%;
   margin: 1.5% 1.5% 0% 0;
   }
 
 #action_panel .input {
-  width: 95%;
-  padding: 1%;
+  width: 93%;
+  padding: 2%;
   margin: 0% 1.5% 1.5% 0;
   font-size: 14px;
   border-style:none;
-  background-color: #f0f0f0;
+  background-color: #ebf4f4;
   }
+
+#action_panel .save_status {
+  margin: 5% 0;
+  perspective: 500px;
+  -webkit-perspective: 500px;
+  -moz-perspective: 500px;
+  -o-perspective: 500px;
+}
 
 #action_panel .input.save,
 #action_panel .input.cancel,
 #action_panel .input.close {
+  border-style:none;
   cursor: pointer;
   float:left;
   width: 150px;
   padding: 1%;
-  margin: 2.5% 1.5% 2.5% 0%;
+  margin: 1.5% 1.5% 1.5% 0%;
+  z-index: 500;
   font-family: 'Helvetica', 'Arial', 'san-serif';
   font-family: "Monaco","Lucida Console","Courier New", "monospace";
   font-size: 18px;
   font-weight: bold;
   text-align: center;
-  display: inline-block;
+  transition: background-color, transform .5s ease-in-out;
+  -webkit-transition: background-color, transform .5s ease-in-out;
+  -moz-transition: background-color, transform .5s ease-in-out;
+  -o-transition: background-color, transform .5s ease-in-out;
+
 }
 
-#action_panel .input.save:hover,
-#action_panel .input.cancel:hover,
-#action_panel .input.close:hover {
-  opacity: 0.7;
-  }
-
 #action_panel .input.save {
-  border-style:none;
-  outline:none;
   color: #fff;
   background-color: #82db8a;
-  transition: all .5s ease-in-out;
-  -webkit-transition: all .2s ease-in-out;
-  -moz-transition: all .2s ease-in-out;
-  -o-transition: all .2s ease-in-out;
+}
+
+#action_panel .input.save.unsaved:hover {
+  background-color: #00db14;
 }
 
 #action_panel .input.save.unpersisted {display:none;visibility: hidden;}
 #action_panel .input.save.unsaved {background-color: #82db8a;}
 #action_panel .input.save.saving {background-color: #00db14;cursor: wait;}
-#action_panel .input.save.saved {background-color: #a3afaf;cursor: auto;}
-#action_panel .input.save.error {background-color: #f00;}
-
-#action_panel .input.save.saving:hover,
-#action_panel .input.save.saved:hover {
-  opacity: 1;
-}
+#action_panel .input.save.saved {color: #b4c1c1; outline: 1px dotted #b4c1c1; background-color: #fff;cursor: auto;
+  transform:rotateY(180deg);
+  -webkit-transform:rotateY(180deg);
+  -moz-transform:rotateY(180deg);
+  -o-transform:rotateY(180deg);
+  }
 
 #action_panel .input.cancel,
 #action_panel .input.close {
-  border-style:none;
-  outline:none;
   color: #333;
-  background-color: #eee;
+  background-color: #ebf4f4;
 }
+
+#action_panel .input.cancel:hover,
+#action_panel .input.close:hover {
+  background-color: #b4c1c1;
+  }
+
+#action_panel .input.save.error {background-color: #f00;}
+
 
 /* File Upload */
 
@@ -521,46 +544,6 @@ i.info_tag {
   }
 
 /* Batch Creating Edges */
-#action_panel .batch_item.uploaded.edges {
-  }
-
-/* Batch Wrapping */
-#action_panel .batch_item .vertex_note {
-  display:block;
-  float: right;
-  width: 3%;
-  padding: 0 0 3%;
-  margin: 0 2%;
-  border: 1px dotted black;
-  }
-
-#action_panel .batch_item .vertex_note.photo {
-  border: 3px #444 dotted;
-  }
-
-#action_panel .batch_item .vertex_note.work {
-  border: 3px #237ab1 dotted;
-  -webkit-border-radius: 50%;
-  -moz-border-radius: 50%;
-  border-radius: 50%;
-  }
-
-#action_panel .batch_item .vertex_note.category {
-  border: 3px #ff6 solid;
-  -webkit-border-radius: 50%;
-  -moz-border-radius: 50%;
-  border-radius: 50%;
-  }
-
-#action_panel .batch_item .vertex_note.synced {
-  border-width: 4px;
-  }
-
-#action_panel .batch_item.error .vertex_note,
-#action_panel .batch_item.uploaded.edges .vertex_note {
-  display:none;
-  }
-
 
 #action_panel .batch_item .label {
   padding: .5% 1%;
