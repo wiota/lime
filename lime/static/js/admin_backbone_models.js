@@ -49,9 +49,8 @@ App.Model['Vertex'] = App.Vertex = Backbone.Model.extend({
     var summary_attr = _.omit(attr, 'succset');
 
     if(!_.isEmpty(summary_attr)){
-
       // put changed attributes into array
-      // this.trigger('summaryChanged', {'attr':summary_attr});
+      this.trigger('summaryChanged', {'attr':summary_attr});
     }
 
     msg.log("CHANGE Model ['"+_.keys(attr).join("', '") + "']", 'model');
@@ -140,6 +139,7 @@ App.Model['Vertex'] = App.Vertex = Backbone.Model.extend({
   },
 
   removeFromSuccset: function(model, options){
+    var succset = this.get('succset');
     this.set({'succset':_.without(succset, model)});
     // should be replace with edge request
     this.saveSuccset(options);
