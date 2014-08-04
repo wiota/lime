@@ -72,7 +72,7 @@ App.View.SuccessorItemView['Vertex'] = App.SuccessorItemView = Backbone.View.ext
 
 });
 
-App.View.SuccessorItemView['Vertex.Body'] = App.CategorySuccessorItemView = App.SuccessorItemView.extend({
+App.View.SuccessorItemView['Vertex.Apex.Body'] = App.CategorySuccessorItemView = App.SuccessorItemView.extend({
   className: 'body successorItem',
   template:_.template($('#body_in_set').html())
 });
@@ -231,12 +231,12 @@ App.View.SummaryView['Vertex'] = App.SummaryView = Backbone.View.extend({
   },
 
   addCategoryForm: function(){
-    var newCategory = new App.Category();
+    var newCategory = new App.Model['Vertex.Category']();
     App.actionPanel.loadVertexForm(newCategory, this.model);
   },
 
   addWorkForm: function(){
-    var newWork = new App.Work();
+    var newWork = new App.Model['Vertex.Work']();
     App.actionPanel.loadVertexForm(newWork, this.model);
   },
 
@@ -250,7 +250,7 @@ App.View.SummaryView['Vertex'] = App.SummaryView = Backbone.View.extend({
 
 });
 
-App.View.SummaryView['Vertex.Body'] = App.PortfolioSummaryView = App.SummaryView.extend({
+App.View.SummaryView['Vertex.Apex.Body'] = App.PortfolioSummaryView = App.SummaryView.extend({
   template:_.template($('#portfolio_summary').html())
 });
 
@@ -301,7 +301,7 @@ App.View.ListingView['Vertex'] = App.ListingView = Backbone.View.extend({ // Aki
 
 });
 
-App.View.ListingView['Vertex.Body'] = App.PortfolioListingView = App.ListingView.extend({});
+App.View.ListingView['Vertex.Apex.Body'] = App.PortfolioListingView = App.ListingView.extend({});
 
 App.View.ListingView['Vertex.Category'] = App.CategoryListingView = App.ListingView.extend({});
 

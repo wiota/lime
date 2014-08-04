@@ -8,8 +8,8 @@ App.Collection = {};
 // Vertex Collection - Abstract class - do not instantiate!
 /* ------------------------------------------------------------------- */
 
-App.Collection['Vertex'] = App.VertexCollection = Backbone.Collection.extend({
-  model: App.Vertex,
+App.Collection['Vertex'] = Backbone.Collection.extend({
+  model: App['Vertex'],
   _cls: 'Vertex',
   formUrl: null,
   formSerialization: null,
@@ -93,50 +93,50 @@ App.Collection['Vertex'] = App.VertexCollection = Backbone.Collection.extend({
 
 });
 
-App.Collection['Vertex.Category'] = App.CategoryCollection = App.VertexCollection.extend({
-  model: App.Category,
+App.Collection['Vertex.Category'] = App.Collection['Vertex'].extend({
+  model: App.Model['Vertex.Category'],
   url: "api/v1/category/",
   _cls: 'Vertex.Category'
 });
 
-App.Collection['Vertex.Work'] = App.WorkCollection = App.VertexCollection.extend({
-  model: App.Work,
+App.Collection['Vertex.Work'] = App.Collection['Vertex'].extend({
+  model: App.Model['Vertex.Work'],
   url: "api/v1/work/",
   _cls: 'Vertex.Work'
 });
 
-App.Collection['Vertex.Photo'] = App.PhotoCollection = App.VertexCollection.extend({
-  model: App.Photo,
+App.Collection['Vertex.Medium.Photo'] = App.Collection['Vertex'].extend({
+  model: App.Model['Vertex.Medium.Photo'],
   url: "api/v1/photo/",
   _cls: 'Vertex.Medium.Photo'
 });
 
-App.Collection['Vertex.Body'] = App.BodyCollection = App.VertexCollection.extend({ // Unique - only contains one body - may be changed to start vertex
-  model: App.Portfolio,
-  _cls: 'Vertex.Body',
-  portfolio: null,
+App.Collection['Vertex.Apex.Body'] = App.Collection['Vertex'].extend({ // Unique - only contains one body - may be changed to start vertex
+  model: App.Model['Vertex.Apex.Body'],
+  _cls: 'Vertex.Apex.Body',
+  body: null,
 
   lookup: function(){
-    var portfolio = this.get() || this.getEmpty();
+    var body = this.get() || this.getEmpty();
     msgExtra = "";
-    msgExtra += portfolio.isFetched() ? "<b>FETCHED</b> " : "";
-    msgExtra += portfolio.isDeep() ? "<b>DEEP</b> " : "";
+    msgExtra += body.isFetched() ? "<b>FETCHED</b> " : "";
+    msgExtra += body.isDeep() ? "<b>DEEP</b> " : "";
     msg.log("Lookup: Body " + msgExtra, 'lookup');
 
-    if(!portfolio.isFetched()){
-      return portfolio.deepen();
+    if(!body.isFetched()){
+      return body.deepen();
     } else {
-      return portfolio;
+      return body;
     }
   },
 
   add: function(model){
-    this.portfolio = model;
+    this.body = model;
     msg.log("Added Body",'model');
   },
 
   get: function(){
-    return this.portfolio;
+    return this.body;
   }
 });
 
@@ -146,7 +146,7 @@ App.Collection['Vertex.Body'] = App.BodyCollection = App.VertexCollection.extend
 
 App.collection = {};
 
-App.collection['Vertex.Body'] = App.portfolioStorage = new App.BodyCollection();
-App.collection['Vertex.Category'] = App.categoryStorage = new App.CategoryCollection();
-App.collection['Vertex.Work'] = App.workStorage = new App.WorkCollection();
-App.collection['Vertex.Medium.Photo'] = App.photoStorage = new App.PhotoCollection();
+App.collection['Vertex.Apex.Body'] = App.bodyStorage = new App.Collection['Vertex.Apex.Body']();
+App.collection['Vertex.Category'] = App.categoryStorage = new App.Collection['Vertex.Category']();
+App.collection['Vertex.Work'] = App.workStorage = new App.Collection['Vertex.Work']();
+App.collection['Vertex.Medium.Photo'] = App.photoStorage = new App.Collection['Vertex.Medium.Photo']();

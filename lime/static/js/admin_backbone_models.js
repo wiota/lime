@@ -26,7 +26,7 @@ Backbone.Model.prototype.idAttribute = "_id";
 // Vertex - Abstract class - do not instantiate!
 /* ------------------------------------------------------------------- */
 
-App.Model['Vertex'] = App.Vertex = Backbone.Model.extend({
+App.Model['Vertex']= Backbone.Model.extend({
 
   initialize: function(options){
     options = options || {};
@@ -191,7 +191,7 @@ App.Model['Vertex'] = App.Vertex = Backbone.Model.extend({
 // Category
 /* ------------------------------------------------------------------- */
 
-App.Model['Vertex.Category'] = App.Category = App.Vertex.extend({
+App.Model['Vertex.Category'] = App.Model['Vertex'].extend({
   urlRoot: "api/v1/category/",
   _cls: "Vertex.Category"
 });
@@ -200,7 +200,7 @@ App.Model['Vertex.Category'] = App.Category = App.Vertex.extend({
 // Work
 /* ------------------------------------------------------------------- */
 
-App.Model['Vertex.Work'] = App.Work = App.Vertex.extend({
+App.Model['Vertex.Work'] = App.Model['Vertex'].extend({
   urlRoot: "api/v1/work/",
   _cls: "Vertex.Work"
 });
@@ -209,7 +209,7 @@ App.Model['Vertex.Work'] = App.Work = App.Vertex.extend({
 // Tag
 /* ------------------------------------------------------------------- */
 
-App.Model['Vertex.Tag'] = App.Tag = Backbone.Model.extend({
+App.Model['Vertex.Tag'] = Backbone.Model.extend({
   urlRoot: "api/v1/tag/",
   _cls: "Vertex.Tag"
 });
@@ -218,7 +218,7 @@ App.Model['Vertex.Tag'] = App.Tag = Backbone.Model.extend({
 // Medium - Abstract class - do not instantiate!
 /* ------------------------------------------------------------------- */
 
-App.Model['Vertex.Medium'] = App.Medium = App.Vertex.extend({
+App.Model['Vertex.Medium'] = App.Model['Vertex'].extend({
   _cls: "Vertex.Medium",
 
   initialize: function(){
@@ -234,7 +234,7 @@ App.Model['Vertex.Medium'] = App.Medium = App.Vertex.extend({
 /* ------------------------------------------------------------------- */
 
 
-App.Model['Vertex.Medium.Photo'] = App.Photo = App.Medium.extend({
+App.Model['Vertex.Medium.Photo'] = App.Model['Vertex.Medium'].extend({
   urlRoot: "api/v1/photo/",
   _cls: "Vertex.Medium.Photo"
 });
@@ -243,9 +243,9 @@ App.Model['Vertex.Medium.Photo'] = App.Photo = App.Medium.extend({
 // Body or Portfolio
 /* ------------------------------------------------------------------- */
 
-App.Model['Vertex.Body'] = App.Portfolio = App.Vertex.extend({
+App.Model['Vertex.Apex.Body'] = App.Model['Vertex'].extend({
   urlRoot: "api/v1/body/",
-  _cls: "Vertex.Body",
+  _cls: "Vertex.Apex.Body",
 
   url: function(){
     return this.urlRoot;
