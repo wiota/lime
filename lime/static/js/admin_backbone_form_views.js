@@ -64,14 +64,14 @@ App.FormView.SerialFieldsView = Backbone.View.extend({
 
     this.focusStart();
     this.delegateEvents();
-    this.$el.children('input').on('blur', function(){console.log('blur')})
+    //this.$el.children('input').on('blur', function(){console.log('blur')})
     this.isRendered = true;
     this.trigger('rendered');
     return this;
   },
 
   focusStart: function(){
-    this.$el.children('input').first().focus();
+    this.$el.children('input').first().focus().select();
   },
 
   focusEnd: function(){
@@ -179,7 +179,7 @@ App.FormView.SaveView = Backbone.View.extend({
   tagName: 'div',
   className: 'save_status',
 
-  template: _.template($('#a_button').html()),
+  template: _.template($('#button').html()),
 
   initialize: function(options){
     this.listenTo(this.model, 'saved', this.saved);
@@ -193,21 +193,24 @@ App.FormView.SaveView = Backbone.View.extend({
 
   statusUnsaved: function(){
     this.$savebutton.attr('class', 'input save unsaved');
-    this.$savebutton.html('Save Now');
+    this.$savebutton.val('Save Now');
+    this.$savebutton.attr('disabled', false);
     this.$savebutton.off();
     this.$savebutton.on('click', this.triggerSave);
   },
 
   statusSaving: function(){
     this.$savebutton.attr('class', 'input save saving');
-    this.$savebutton.html('<span class="root">Sav</span><span class="conjugate">ing</span>');
+    this.$savebutton.val('Saving');
+    this.$savebutton.attr('disabled', true);
     this.$savebutton.off();
 
   },
 
   statusSaved: function(){
     this.$savebutton.attr('class', 'input save saved');
-    this.$savebutton.html('<span class="root">Sav</span><span class="conjugate">ed</span>');
+    this.$savebutton.val('Saved');
+    this.$savebutton.attr('disabled', true);
     this.$savebutton.children('.conjugate').css({position:'relative', top: '20px'});
     this.$savebutton.children('.conjugate').animate({position:'relative', top: '0px'});
     this.$savebutton.off();
@@ -259,7 +262,8 @@ App.FormView['Vertex'] = Backbone.View.extend({
   tagName: 'form',
 
   events: {
-    'submit' :'enterSubmit',
+    'submit' :'submit',
+    'keypress input' :'keyCheck',
   },
 
   initialize: function(options){
@@ -355,14 +359,15 @@ App.FormView['Vertex'] = Backbone.View.extend({
     this.savePeriodically();
   },
 
-  enterSubmit: function(evt){
+  submit: function(evt){
     this.collapse();
-    console.log('Enter Submit');
+    console.log('Submit');
     return false;
   },
 
-  enterPressed: function(evt){
+  keyCheck: function(evt){
     if(evt.which == 13){
+      this.collapse();
       console.log('Enter pressed');
       return false;
     }
@@ -386,7 +391,7 @@ App.FormView['Vertex'] = Backbone.View.extend({
 
   savePeriodically: _.debounce(function(){
     this.save();
-  }, 5000),
+  }, 1000),
 
   cancel: function(){
     if(!this.model.isNew() && this.model.isModified()){
