@@ -108,7 +108,7 @@ App.Model['Vertex'] = App.Vertex = Backbone.Model.extend({
       var modelFactory = App.Model[object._cls];
       var model = collection.get(object['_id']) || new modelFactory(object, {'fetched': true, 'deep': false});
 
-      collection.add(model);
+      collection.add(model); // if model already exists in collection, this request is ignored
       succsetReferences.push(model);
     });
     return succsetReferences;
@@ -131,37 +131,45 @@ App.Model['Vertex'] = App.Vertex = Backbone.Model.extend({
   // Succset Functions
   /* ------------------------------------------------------------------- */
 
-  addToSuccset: function(model){
+  addToSuccset: function(model, options){
     var succset = _.clone(this.get('succset'));
     succset.unshift(model);
     this.set({'succset':succset});
-    this.saveSuccset();
+    // should be replace with edge request
+    this.saveSuccset(options);
   },
 
-  removeFromSuccset: function(model, index){
+  removeFromSuccset: function(model, options){
     this.set({'succset':_.without(succset, model)});
-    this.saveSuccset();
+    // should be replace with edge request
+    this.saveSuccset(options);
   },
 
-  saveSuccset: function(){
+  saveSuccset: function(options){
     var list = this.get('succset');
     var model = this;
-    var options = {
-      'url': this.url() + 'succset/',
-      'contentType' : "application/json",
-      'data': JSON.stringify({'succset' : _.pluck(list, 'id')}),
-      'success': function(resp){
-        model.trigger('sync', model, resp);
-        console.log('sync succset save on ' + model.get('_id'))
-      },
-      'error': function(resp){
-        model.trigger('error', model, resp);
-        console.log('sync succset error on ' + model.get('_id'))
-      }
+
+    options = options || {};
+
+    var success = options.success;
+    var error = options.error;
+
+    options.success = function(resp){
+      if(success) success(model, resp, options);
+      model.trigger('sync', model, resp);
+      console.log('sync succset save on ' + model.get('_id'))
     }
 
-    Backbone.sync('update', this, options);
+    options.error = function(resp){
+      if(error) error(model, resp, options);
+      model.trigger('error', model, resp);
+    }
 
+    options.url = this.url() + 'succset/';
+    options.contentType = "application/json";
+    options.data = JSON.stringify({'succset': _.pluck(list, 'id')});
+
+    Backbone.sync('update', this, options);
   },
 
   // for reordering

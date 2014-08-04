@@ -35,11 +35,16 @@ App.FormView.SerialFieldsView = Backbone.View.extend({
     'file_upload': _.template($('#html5_file_upload').html())
   },
 
+  events: {
+    'blur input':'focusEnd',
+    'blur textarea':'focusEnd'
+  },
+
   initialize: function(){
     this.isRendered = false;
     if(!this.collection.hasForm()){
       this.collection.lookupForm();
-      this.listenTo(this.collection, 'hasForm', this.render);
+      this.listenToOnce(this.collection, 'hasForm', this.render);
     }
   },
 
@@ -57,11 +62,21 @@ App.FormView.SerialFieldsView = Backbone.View.extend({
       formInput.appendTo(this.$el);
     }, this);
 
-    this.$el.children('input').first().focus();
-
+    this.focusStart();
+    this.delegateEvents();
+    this.$el.children('input').on('blur', function(){console.log('blur')})
     this.isRendered = true;
     this.trigger('rendered');
     return this;
+  },
+
+  focusStart: function(){
+    this.$el.children('input').first().focus();
+  },
+
+  focusEnd: function(){
+    console.log('focusEnd');
+    //this.focusStart();
   },
 
   events: {
@@ -243,6 +258,10 @@ App.FormView['Vertex'] = Backbone.View.extend({
   passableOptions: ['model', 'predecessor', 'collection'],
   tagName: 'form',
 
+  events: {
+    'submit' :'enterSubmit',
+  },
+
   initialize: function(options){
     this.options = options || {};
     this.predecessor = options.predecessor || null;
@@ -261,7 +280,7 @@ App.FormView['Vertex'] = Backbone.View.extend({
     this.listenTo(this.model, 'sync', this.saveView.statusSaved);
     this.listenTo(this.model, 'error', this.saveView.statusError);
 
-    _.bindAll(this, 'close');
+    _.bindAll(this, 'close', 'collapse');
 
   },
 
@@ -307,13 +326,19 @@ App.FormView['Vertex'] = Backbone.View.extend({
   // Events
 
   filesChanged: function(files){
+    // this syntax instead?
+    // App.requestPanel.trigger()
 
-    var request = App.requestPanel.batchPhotoUploadRequest(
+    var request = App.requestPanel.makeRequest('batchPhotoUploadRequest', [
       files,
       this.newPhotoNesting,
       this.model,
       this.predecessor
-    );
+    ]);
+
+    this.listenTo(request, 'complete', function(){
+      console.log('filesChanged complete');
+    })
 
     /*
     App.actionPanel.addBatch(files, this.model, this.newPhotoNesting);
@@ -328,6 +353,19 @@ App.FormView['Vertex'] = Backbone.View.extend({
     this.saveView.statusUnsaved();
     this.model.set(changeObject);
     this.savePeriodically();
+  },
+
+  enterSubmit: function(evt){
+    this.collapse();
+    console.log('Enter Submit');
+    return false;
+  },
+
+  enterPressed: function(evt){
+    if(evt.which == 13){
+      console.log('Enter pressed');
+      return false;
+    }
   },
 
   save: function(){

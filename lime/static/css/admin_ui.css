@@ -4,9 +4,19 @@ ul, ol {margin: 0; padding:0;list-style-type: none;}
 
 a {text-decoration: none; color: #000;}
 
-/* Portfolio Blue: #237ab1 */
-/* ServerSend Greed: #82db8a */
-/* shadow color  42,44,57 */
+/*
+Body:
+  terra cotta: #dd7700
+  apricot: #ff8800
+  orange cream: #ffa53f
+Request:
+  meltdown: #00db14,
+  jade: #82db8a
+shadow color  42,44,57
+
+*/
+
+
 
 #admin_nav a {
   display:block;
@@ -94,7 +104,8 @@ a {text-decoration: none; color: #000;}
 
 .path .label {
   font-weight: normal;
-  font-size: 11px;
+  font-family: "Monaco","Lucida Console","Courier New", "monospace";
+  font-size: 16px;
   }
 
 /* -------------------------------------------------------------------  */
@@ -113,18 +124,22 @@ a {text-decoration: none; color: #000;}
   z-index: 100;
   position: relative;
   background-color: #f0f0f0;
-  width: 96%;
-  padding: 4% 2%;
+  width: 95%;
+  padding: 4% 1% 4% 4%;
   margin: 0;
   }
 
-.summary .title {
-  font-size: 140%;
-  }
+  .summary .title {
+    font-size: 140%;
+    }
 
 .body.listing .summary {
-  background-color: #eee;
-  color: #000;
+  background-color: #ff8800;
+  color: #fff;
+  }
+
+  .body.listing .summary .title {
+    font-size: 180%;
   }
 
 .category.listing .summary {
@@ -165,7 +180,7 @@ ol.succset_list {
 
 .succset_list li {
   position: relative;
-  padding: 1%;
+  padding: 1% 1% 1% 4%;
   margin: 0 0 1.5% 0;
   }
 
@@ -184,27 +199,10 @@ ol.succset_list {
 }
 
 .succset_list li:hover b.title {
-  display:block;
-  margin-left: 5%;
   }
 
-.succset_list li a.drag_handle {
-  display:none;
-  z-index: 200;
-  width: 3%;
-  padding: 1%;
-  text-align: center;
-  position:absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  color: #fff;
-  background-color: rgba(42, 44, 57, 0.5);
-  cursor: move;
-}
-
-.succset_list li:hover a.drag_handle {
-  display:block;
+.succset_list li.body {
+  background-color: #ff8800;
   }
 
 .succset_list li.category {
@@ -236,12 +234,12 @@ ol.succset_list {
   position:absolute;
   top:0;
   right: 0;
-
+  text-align: right;
 }
 
 .in_set_menu a {
   display:inline-block;
-  padding: 4px 6px;
+  padding: 1% 3px;
   cursor: pointer;
   text-decoration: underline;
   font-weight: normal;
@@ -249,6 +247,17 @@ ol.succset_list {
   background-color: rgba(255,255,255,1);
   font-family: "Monaco","Lucida Console","Courier New", "monospace";
   }
+
+.succset_list li .in_set_menu a.drag_handle {
+  z-index: 200;
+  padding: 0% 5px 2%;
+  text-align: center;
+  text-decoration: none;
+  color: #fff;
+  background-color: rgba(42,44,57,0.7);
+  cursor: move;
+  cursor: ns-resize;
+}
 
 .delete {
   color: #f00;
@@ -266,23 +275,6 @@ ol.succset_list {
   color: #930;
   }
 
-.in_set_menu a.icon {
-  width: 20%;
-  float:right;
-  display:block;
-  text-align: center;
-}
-
-.in_set_menu a.icon .label {
-  font-size: 12px;
-  font-weight: normal;
-}
-
-.in_set_menu a.icon img.icon {
-  display:block;
-  width: 50%;
-  margin: 0 25%;
-}
 
 /* Overlays */
 

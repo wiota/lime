@@ -1,9 +1,15 @@
+/*
+Old User green - 82db8a
+New User green - 78f7d8
+
+*/
+
 .admin_user_menu {
   z-index: 1000;
   position:fixed;
   bottom:0;
   left: 0%;
-  background: #82db8a;
+  background: #78f7d8;
   padding: 1%;
   width: 17.098300562504%;
   }

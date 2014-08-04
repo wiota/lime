@@ -72,6 +72,11 @@ App.View.SuccessorItemView['Vertex'] = App.SuccessorItemView = Backbone.View.ext
 
 });
 
+App.View.SuccessorItemView['Vertex.Body'] = App.CategorySuccessorItemView = App.SuccessorItemView.extend({
+  className: 'body successorItem',
+  template:_.template($('#body_in_set').html())
+});
+
 App.View.SuccessorItemView['Vertex.Category'] = App.CategorySuccessorItemView = App.SuccessorItemView.extend({
   className: 'category successorItem',
   template:_.template($('#category_in_set').html())

@@ -10,6 +10,52 @@ App.Upload = {};
 // kept track of as well.
 
 
+
+/* ------------------------------------------------------------------- */
+// Batch Item Progress View
+/* ------------------------------------------------------------------- */
+
+App.Upload.batchItemProgressView = Backbone.View.extend({
+  percent: 0,
+  label: null,
+  tagName: 'div',
+  className: 'batch_item',
+  template: _.template($('#batch_item').html()),
+
+  initialize: function(file){
+    this.file = file;
+    this.label = file.name;
+    this.percent = 0;
+    this.errorThrown = false;
+    // these function names need work
+    _.bindAll(this, 'update', 'success', 'close', 'collapse', 'cancel', 'error');
+    this.render();
+  },
+
+  render: function(){
+    this.$el.html(this.template({'label':this.label, 'width': this.percent}));
+    this.$bar = this.$el.find('.progress_bar_fill');
+    return this;
+  },
+
+  update: function(percent){
+    this.percent = percent;
+    this.$bar.animate({'width': this.percent+"%"});
+  },
+
+  statusUploaded: function(){
+    this.$el.addClass('uploaded');
+    this.$bar.fadeOut(100);
+  },
+
+  setLabel: function(string){
+    this.label = string;
+    this.render();
+  }
+
+});
+
+
 /* ------------------------------------------------------------------- */
 // Upload Bar - Individual Upload Views
 /* ------------------------------------------------------------------- */
@@ -20,7 +66,6 @@ App.Upload.batchItemView = Backbone.View.extend({
   tagName: 'div',
   className: 'batch_item',
   template: _.template($('#batch_item').html()),
-  uploaded: false,
   wrapped: false,
   href: null,
 
@@ -69,7 +114,7 @@ App.Upload.batchItemView = Backbone.View.extend({
     this.$el.animate({'height': 0}, 200, 'linear', this.cancel);
   },
 
-  shrink: function(){
+  statusUploaded: function(){
     this.$el.addClass('uploaded');
     this.$bar.fadeOut(100);
   },
@@ -77,19 +122,6 @@ App.Upload.batchItemView = Backbone.View.extend({
   setLabel: function(string){
     this.label = string;
     this.render();
-  },
-
-  noteVertexCreation: function(className){
-    vertex = $('<a></a>').addClass('vertex_note '+className).appendTo(this.$el);
-    return vertex
-  },
-
-  noteVertexSync: function(vertex){
-    vertex.addClass('synced');
-  },
-
-  noteEdges: function(){
-    this.$el.addClass('edges');
   },
 
   // view actions
@@ -105,9 +137,8 @@ App.Upload.batchItemView = Backbone.View.extend({
 
   success: function(href){
     this.href = href;
-    this.uploaded = true;
     this.formView.wrapUpload(href, this);
-    this.shrink();
+    this.statusUploaded();
   },
 
   error: function(){
@@ -128,6 +159,47 @@ App.Upload.batchItemView = Backbone.View.extend({
 
 });
 
+
+/* ------------------------------------------------------------------- */
+// Batch Progress View
+/* ------------------------------------------------------------------- */
+
+App.Upload.batchProgressView = Backbone.View.extend({
+  tagName: 'div',
+  template: _.template($('#batch').html()),
+
+  initialize: function(options){
+    options = options || {};
+    this.batchItems = [];
+  },
+
+  render: function(){
+    this.$el.html(this.template({'batch_count': this.batchItems.length}))
+    this.$batchItems = this.$el.find('.batch_items');
+    this.$batchCount = this.$el.find('.batch_count');
+    return this;
+  },
+
+  setBatchNumber: function(){
+    var i = this.batchItems.length;
+    this.$batchCount.css({'font-size': i*24 + "px"})
+    this.$batchCount.text(this.batchItems.length);
+  },
+
+  addBatchItem: function(file){
+    var batchItem = new App.Upload.batchItemProgressView(file, this);
+    this.$batchItems.append(batchItem.render().el);
+    //this.listenTo(batchItem, 'cancel', this.removeBatchItem);
+    this.setBatchNumber();
+  },
+
+  removeBatchItem: function(batchItemView){
+
+  }
+
+});
+
+
 /* ------------------------------------------------------------------- */
 // Upload batch
 /* ------------------------------------------------------------------- */
@@ -141,7 +213,7 @@ App.Upload.batchView = Backbone.View.extend({
     this.files = options.files || null;
     this.predecessor = options.predecessor || null;
     this.nesting = options.nesting || [];
-    this.batchItems = []
+    this.batchItems = [];
     _.bindAll(this, 'close');
   },
 
@@ -173,18 +245,18 @@ App.Upload.batchView = Backbone.View.extend({
     }, this);
   },
 
+  setBatchNumber: function(){
+    var i = this.batchItems.length;
+    this.$batchCount.css({'font-size': i*24 + "px"})
+    this.$batchCount.text(this.batchItems.length);
+  },
+
   addBatchItem: function(file){
     var batchItem = new App.Upload.batchItemView(file, this);
     this.$batchItems.append(batchItem.render().el);
     this.batchItems.push(batchItem);
     this.listenTo(batchItem, 'cancel', this.removeBatchItem);
     this.setBatchNumber();
-  },
-
-  setBatchNumber: function(){
-    var i = this.batchItems.length;
-    this.$batchCount.css({'font-size': i*24 + "px"})
-    this.$batchCount.text(this.batchItems.length);
   },
 
   cancelAllBatchItems: function(){
@@ -261,10 +333,6 @@ App.Upload.batchView = Backbone.View.extend({
     // Verticies are created, edges are not
     App.requestPanel.batchRequest(vertices, edges, batchItemView);
 
-  // This is a first stab at a batch list and a mechanism to link them up
-  // and check for broken links. Edges should be entered Pred -> Succ
-
-  // If an error exists, it can be listed and then checked and then repaired
 
   }
 

@@ -18,7 +18,7 @@
   </script>
 
   <script type="text/template" id="portfolio_summary">
-    <div class='portfolio_title title'>Portfolio</div>
+    <div class='portfolio_title title'>The Body</div>
     <div class='in_set_menu'>
       <a class='add_work'>add work</a>
       <a class='add_category'>add category</a>
@@ -27,7 +27,7 @@
   </script>
 
   <script type="text/template" id="category_summary">
-    <div class='category_title title'><%= title %>
+    <div class='category_title title'><%= title %></div>
     <div class='in_set_menu'>
       <a class='update'>update</a>
       <a class='add_work'>add work</a>
@@ -47,35 +47,45 @@
 
   <!-- SuccsetItem -->
 
+  <script type="text/template" id="body_in_set">
+    <a class='in_set_link' href='#'></a>
+    <i class='info_tag'><%= _cls %> - <%= _id %></i>
+    <b class='title'>Body</b>
+    <div class='in_set_menu'>
+      <a class='update'>update</a>
+      <a class='drag_handle'>&#8597;</a>
+    </div>
+  </script>
+
   <script type="text/template" id="category_in_set">
-    <a class='drag_handle'>&#8597;</a>
     <a class='in_set_link' href='#category/<%= _id %>'></a>
     <i class='info_tag'><%= _cls %> - <%= _id %></i>
     <b class='title'><%= title %></b>
     <div class='in_set_menu'>
       <a class='update'>update</a>
       <a class='delete'>delete</a>
+      <a class='drag_handle'>&#8597;</a>
     </div>
   </script>
 
   <script type="text/template" id="work_in_set">
-    <a class='drag_handle'>&#8597;</a>
     <a class='in_set_link' href='#work/<%= _id %>'></a>
     <i class='info_tag'><%= _cls %> - <%= _id %></i>
     <b class='title'><%= title %></b>
     <div class='in_set_menu'>
       <a class='update'>update</a>
       <a class='delete'>delete</a>
+      <a class='drag_handle'>&#8597;</a>
     </div>
   </script>
 
   <script type="text/template" id="photo_in_set">
-    <a class='drag_handle'>&#8597;</a>
     <a class='in_set_link' href='<%= href %>'></a>
     <img src="<%= href %>" alt="" />
     <i class='info_tag'><%= _cls %> - <%= _id %></i>
     <div class='in_set_menu'>
       <a class='delete'>delete</a>
+      <a class='drag_handle'>&#8597;</a>
     </div>
   </script>
 
@@ -175,7 +185,7 @@
   <script src='{{ url_for('static', filename='js/admin_backbone_form_views.js') }}'></script>
   <script src='{{ url_for('static', filename='js/admin_backbone_upload_views.js') }}'></script>
   <script src='{{ url_for('static', filename='js/admin_backbone_router.js') }}'></script>
-  <script src='{{ url_for('static', filename='js/admin_backbone_request_manager.js') }}'></script>
+  <script src='{{ url_for('static', filename='js/admin_backbone_request.js') }}'></script>
 
   <script src='{{ url_for('static', filename='js/work.js') }}'></script>
 {% endblock %}
