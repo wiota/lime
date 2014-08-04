@@ -62,6 +62,17 @@ def post_category():
     return category.to_bson(), 200
 
 
+@mod.route('/event/', methods=['POST'])
+@login_required
+def post_event():
+    data = request.json
+    print data
+    data['slug'] = slugify(data['title'])
+    data['owner'] = current_user.id
+    event = Event(**data).save()
+    return event.to_bson(), 200
+
+
 @mod.route('/category/<id>/', methods=['PUT'])
 @login_required
 def put_category(id):
@@ -128,6 +139,12 @@ def category_form():
 @login_required
 def medium_form():
     return Medium().to_form()
+
+
+@mod.route('/event/form/')
+@login_required
+def event_form():
+    return Event().to_form()
 
 
 @mod.route('/edge/', methods=["POST"])
