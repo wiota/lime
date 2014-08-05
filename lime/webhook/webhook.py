@@ -2,6 +2,7 @@ from flask import Blueprint
 from flask import current_app as app
 from flask import render_template
 from flask import request
+from flask import url_for
 from flask.ext.login import login_required
 from flask.ext.login import current_user
 from toolbox.models import User, Host
@@ -25,6 +26,6 @@ def stripe_hook():
             invoice.save()
 
             subject = "Wiota Co. - Invoice"
-            html = render_template("invoice_created_email.html", e=e, link="http://foobar.com")
+            html = render_template("invoice_created_email.html", e=e, link=url_for("account.get_invoice", id=invoice.id, _external=True))
             send_email(user.email, subject, html)
     return '', 200
