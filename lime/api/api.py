@@ -43,6 +43,16 @@ def post_work():
     return work.to_bson(), 200
 
 
+@mod.route('/tag/', methods=['POST'])
+@login_required
+def post_tag():
+    data = request.json
+    data['owner'] = current_user.id
+    data['slug'] = slugify(data['title'])
+    tag = Tag(**data).save()
+    return tag.to_bson(), 200
+
+
 @mod.route('/work/<id>/', methods=['PUT'])
 @login_required
 def put_work(id):
