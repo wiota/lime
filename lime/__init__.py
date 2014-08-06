@@ -13,6 +13,7 @@ from lime.root import root
 from lime.upload import upload
 from lime.webhook import webhook
 from toolbox.models import User
+from toolbox.template_tools import format_date, format_money
 
 # Create a starter app
 app = Flask(__name__)
@@ -24,6 +25,10 @@ sslify = SSLify(app, permanent=True)
 app.debug = os.environ.get('FLASK_DEBUG') == 'True'
 # Tell jinja to trim blocks
 app.jinja_env.trim_blocks = True
+
+# Jinja formatting functions
+app.jinja_env.filters["date"] = format_date
+app.jinja_env.filters["money"] = format_money
 
 # For CSRF usage
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')

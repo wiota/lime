@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <style type="text/css">
-table{ 
+table{
 border: 1px solid #ddd;
 -webkit-border-radius: 4px;
 -moz-border-radius: 4px;
@@ -11,13 +11,17 @@ border: 1px solid #ddd;
 -o-border-radius: 4px;
 border-radius: 4px;
 width: 100%;
-max-width: 500px; }
+max-width: 500px;
 }
 </style>
 </head>
 <body>
 A new invoice has been created with the following charges:<br/>
-<br/>
+{% if invoice.period_start|date == invoice.period_end|date %}
+    {{ invoice.period_start|date }}
+{% else %}
+    {{ invoice.period_start|date }} - {{ invoice.period_end|date }}<br/>
+{% endif %}
 <table>
   <thead>
     <tr><th>Description</th>
@@ -25,22 +29,22 @@ A new invoice has been created with the following charges:<br/>
     <th class="amount">Amount</th>
   </tr></thead>
   <tbody>
-{% for line in e["data"]["object"]["lines"]["data"] %}
+{% for line in invoice.lines.data %}
 <tr>
-  <td class="description">{{ line["description"] }}</td>
-  <td class="date">{{ line["period"]["start"]|date }}</td>
-  <td class="amount">{{ line["amount"]|money }}</td>
+  <td class="description">{{ line.description }}</td>
+  <td class="date">{{ line.period.start|date }}</td>
+  <td class="amount">{{ line.amount|money }}</td>
 <tr>
 {% endfor %}
 <tfoot>
   <tr>
     <td></td>
     <td class="label">Total:</td>
-    <td class="total">{{ e["data"]["object"]["total"]|money }}</td>
+    <td class="total">{{ invoice.total|money }}</td>
   </tr></tfoot>
 </table>
 <br/>
-This invoice is due in 30 days. <a href="{{ link }}">Click here to pay now</a>.
+This invoice is due in 30 days. <a href="{{ url_for("account.pay_invoice", id=invoice.id) }}">Click here to pay now</a>.
 Cheers!<br/>
 <br/>
 Ryan and Dustin<br/>

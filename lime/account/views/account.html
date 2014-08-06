@@ -96,15 +96,13 @@ Subtitle: {{ host.subtitle }}<br/>
 <br/>
 
 <h2>Plans</h2>
-{% if cust.subscriptions.total_count < 1 %}
-    You don't currently have any hosting plans.<br/>
+<ul>
+{% for sub in cust.subscriptions.data %}
+    <li>{{ sub.plan.name }} ({{ sub.plan.amount|money }} per {{ sub.plan.interval }})</li>
 {% else %}
-    <ul>
-    {% for sub in cust.subscriptions.data %}
-        <li>{{ sub.plan.name }} ({{ "$%.2f"|format(sub.plan.amount/100) }} per {{ sub.plan.interval }})</li>
-    {% endfor %}
-    </ul>
-{% endif %}
+    You don't currently have any hosting plans.<br/>
+{% endfor %}
+</ul>
 
 <h2>Cards</h2>
 {% if cust.cards.total_count < 1 %}
@@ -155,5 +153,24 @@ Subtitle: {{ host.subtitle }}<br/>
     {% endfor %}
     </ul>
 {% endif %}
+<h2>Invoices</h2>
+<h3>Unpaid</h3>
+<ul>
+{% for invoice in invoices.data if not invoice.paid %}
+    <li>{{ invoice.date|date }} - {{ invoice.total|money }} <a href="{{ url_for("account.get_invoice", id=invoice.id) }}">Pay invoice now</a></li>
+{% else %}
+    All paid up!
+{% endfor %}
+</ul>
+
+<h3>Paid</h3>
+<ul>
+{% for invoice in invoices.data if invoice.paid %}
+    <li>{{ invoice.date|date }} - {{ invoice.total|money }} <a href="{{ url_for("account.get_receipt", id=invoice.id) }}">View receipt</a></li>
+{% else %}
+    No invoices yet!
+{% endfor %}
+</ul>
+
     </body>
 </html>

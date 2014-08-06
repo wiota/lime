@@ -16,8 +16,9 @@ def account():
     user = User.objects.get(id=current_user.id)
     host = Host.objects.get(owner=user)
     cust = stripe.Customer.retrieve(user.stripe_id)
+    invoices = stripe.Invoice.all()
     pubkey = app.config['STRIPE_PUBLIC_KEY']
-    return render_template("account.html", user=user, host=host, cust=cust, pubkey=pubkey)
+    return render_template("account.html", user=user, host=host, cust=cust, pubkey=pubkey, invoices=invoices)
 
 
 @mod.route('/card/new/', methods=['POST'])
@@ -47,7 +48,15 @@ def get_invoice(id):
     invoice = stripe.Invoice.retrieve(id)
     user = User.objects.get(stripe_id=invoice.customer)
     login_user(user)
-    return render_template("pay_invoice.html", invoice=invoice)
+    return render_template("invoice.html", invoice=invoice)
+
+@mod.route('/receipt/<id>/', methods=['GET'])
+def get_receipt(id):
+    stripe.api_key = app.config['STRIPE_SECRET_KEY']
+    invoice = stripe.Invoice.retrieve(id)
+    user = User.objects.get(stripe_id=invoice.customer)
+    login_user(user)
+    return render_template("receipt.html", invoice=invoice)
 
 @mod.route('/invoice/<id>/pay/', methods=['GET'])
 @login_required
