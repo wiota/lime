@@ -105,7 +105,7 @@ App.RequestApi = {
 
   graphRequest: function(vertices, edges){
     var request = this;
-    App.requestPanel.serial([
+    request.serial([
       {'func': App.RequestApi.verticesRequest, 'args': [vertices]},
       {'func': App.RequestApi.edgesRequest, 'args': [edges]}
     ],
@@ -165,6 +165,58 @@ App.RequestApi = {
   }
 }
 
+/* ------------------------------------------------------------------- */
+// Request Library
+/* ------------------------------------------------------------------- */
+
+App.RequestLibrary = {
+  request: function(options){
+
+    // create new request
+    var options = options || {};
+    options.rid = App.requestPanel.getId();
+    var request = new App.Request(options);
+
+    // keep track of it
+    App.requestPanel.allRequests.push(request);
+    App.requestPanel.listenTo(request, 'complete', App.requestPanel.removeRequest);
+
+    // Show status in RequestPanel
+    App.requestPanel.render();
+    return request;
+  },
+
+  parallel: function(requests){
+    _.each(requests, function(r){
+      request.execute();
+    })
+  },
+
+  serial: function(requests, callback, error){
+    // callback immediately if no requests
+    if(!requests || requests.length == 0){return callback()}
+    // map object notation to request object
+    var requestObjects = _.map(requests, function(r){return this.request(r)}, this);
+    // last request for chaining and callback
+    var lastRequest = _.last(requestObjects);
+
+    // Set up callback depending on request context
+    var callback = callback || this.callback || function(){
+      console.log('Serial Complete')
+    }
+    this.listenTo(lastRequest, 'complete', function(){return callback()})
+
+    _.reduceRight(_.initial(requestObjects),
+      function(r1, r2) {
+        r1.listenTo(r2, 'complete', function() {
+          r1.execute(_.rest(arguments));
+        })
+        return r2;
+      },
+      lastRequest
+    ).execute();
+  }
+}
 
 /* ------------------------------------------------------------------- */
 // Request Function
@@ -180,6 +232,10 @@ App.Request = Backbone.View.extend({
   execute: function(parameters){
     console.log('---- Executing ' + this.rid + ' -------');
     return this.options.func.apply(this, this.options.args.concat(parameters));
+  },
+
+  complete: function(){
+    this.trigger('complete', this);
   }
 
 });
@@ -205,59 +261,6 @@ App.RequestPanel = Backbone.View.extend({
     return this.requestsMade++;
   },
 
-  request: function(options){
-
-    // create new request
-    var options = options || {};
-    options.rid = this.getId();
-    var request = new App.Request(options);
-
-    // keep track of it
-    this.allRequests.push(request);
-    this.listenTo(request, 'complete', this.removeRequest);
-
-    this.render();
-
-    // automatic cleanup
-    //this.listenTo(request, 'subrequestscomplete', request.complete);
-
-    return request;
-
-    // call it
-    //console.log('Called '+ request.rid)
-    //return func.apply(request, arguments);
-
-  },
-
-  parallel: function(requests){
-    _.each(requests, function(r){
-      request.execute();
-    })
-  },
-
-  serial: function(requests, callback, error){
-    if(!requests || requests.length == 0){
-      return callback();
-    }
-    var requestObjects = _.map(requests, function(r){return this.request(r)}, this);
-    var lastRequest = _.last(requestObjects);
-    var callback = callback || function(){
-      // need access to calling context
-      console.log('Serial Complete')
-    }
-    this.listenTo(lastRequest, 'complete', function(){return callback()})
-
-    _.reduceRight(_.initial(requestObjects),
-      function(r1, r2) {
-        r1.listenTo(r2, 'complete', function() {
-          r1.execute(_.rest(arguments));
-        })
-        return r2;
-      },
-      lastRequest
-    ).execute();
-  },
-
   removeRequest: function(request){
     console.log('removed request '+ request.rid);
     // remove from master list
@@ -269,3 +272,6 @@ App.RequestPanel = Backbone.View.extend({
 
 })
 
+
+_.extend(App.RequestPanel.prototype, App.RequestLibrary);
+_.extend(App.Request.prototype, App.RequestLibrary);
