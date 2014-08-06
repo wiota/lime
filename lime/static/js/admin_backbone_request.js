@@ -126,12 +126,6 @@ App.RequestLibrary = {
     return new App.Request(options);
   },
 
-  parallel: function(requests, callback, error){
-    _.each(requests, function(r){
-      request.execute();
-    })
-  },
-
   serial: function(requests, callback, error){
 
     // context for callback
@@ -177,7 +171,49 @@ App.RequestLibrary = {
       },
       this
     ));
+  },
+
+  parallel: function(requests, callback, error){
+    // context for callback
+    var context = this;
+
+    // callback immediately if no requests
+    if(!requests || requests.length == 0){return callback.apply(context, arguments)}
+
+    // map object notation to request object
+    var requestObjects = _.map(requests, function(r){return this.request(r)}, this);
+
+    // Set up callback depending on request context
+    var callback = callback || this.callback || function(){
+      console.log('parallel complete');
+      this.trigger('complete');
+    }
+
+    var notches = requestObjects.length;
+    var notch = 0;
+
+    // execute all requests
+    _.each(requestObjects, function(request){
+      this.listenTo(request, 'complete', function(){
+        notch++;
+        if(notch>=notches){return callback.apply(context);}
+      });
+      request.execute();
+    }, this)
+  },
+
+  mapParallel: function(array, func, callback, error){
+    this.parallel(
+      _.map(
+        array,
+        function(item){return {'func': func, 'args': [item]}},
+        this
+      ),
+      callback,
+      error
+    );
   }
+
 }
 
 /* ------------------------------------------------------------------- */
@@ -196,6 +232,8 @@ App.Request = Backbone.View.extend({
     App.requestPanel.listenTo(this, 'complete', function(){
       App.requestPanel.unregister(request);
     });
+
+    _.bindAll(this, 'callback', 'error');
   },
 
   execute: function(parameters){
@@ -243,7 +281,7 @@ App.RequestPanel = Backbone.View.extend({
   unregister: function(request){
     console.log('---- Unregister ' + request.rid + ' -------');
     this.allRequests = _.without(this.allRequests, request);
-    request.remove();
+    //request.remove();
     this.render();
   }
 
