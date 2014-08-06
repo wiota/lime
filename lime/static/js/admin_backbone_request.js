@@ -2,10 +2,6 @@
 // Portphillio Admin Request Panel
 /* ------------------------------------------------------------------- */
 
-// The two reasons you would create subrequests are if
-// A: You have several requests you want to call in series
-// B: You have an array for which you want to loop and make requests
-
 // id tag
 // on success, remove them
 // on error, rerun once and then flag the manager to halt requests
@@ -14,102 +10,123 @@
 // Request API
 /* ------------------------------------------------------------------- */
 
-// Passed to the make request function to initiate
-// Can be called within themselves
-// granularity for requests
-
 // These functions will be called in the context of the request
-
-// these functions set up more requests
-// subrequests if many - callParallel/callSerial
-// request if only one - call
-
+  // when triggering the complete event
+  // pass any variables that need to be
+  // passed to the next function in serial
+  // or (not implemented yet) back to the parent
 
 App.RequestApi = {
+
+
+
+  uploadFile: function(file){
+    var request = this;
+
+    // S3 uploader
+    var uploader = new App.Uploader();
+    uploader.on('complete', function(href){
+      request.trigger('complete', request, href, file.name);
+    });
+    uploader.uploadFile(file);
+  },
+
+  wrapUploadedFile: function(request, href, title){
+    console.log("Callback: <a href='"+href+"'>"+title+"</a>");
+
+    var photo = new App.Model['Vertex.Medium.Photo']({'href': href});
+    var work = new App.Model['Vertex.Work']({'title':title});
+
+     // ???????????????????????
+    var predecessor = null;
+     // ???????????????????????
+
+    vertices = [photo, work];
+    edges = [[work, photo], [predecessor, work]];
+
+    var request = App.requestPanel.initRequest(
+      App.RequestApi.graphRequest,
+      [vertices, edges]
+    );
+  },
+
+
   batchPhotoUploadRequest: function(files, newPhotoNesting, model, predecessor){
-    var subrequests = this.subrequests = [];
-    // var request;
+    console.log('Batch');
+    var request = this;
+    var requestChain = [];
 
     // if model is new, add to predecessor
     if(model.isNew()){
       vertices = [model];
       edges = [[predecessor, model]];
-
-      subrequests.push(
-        App.requestPanel.initRequest('graphRequest',[vertices, edges])
-      );
+      requestChain.push({'func': App.RequestApi.graphRequest, 'args': [vertices, edges]});
     }
 
-    // registering creates a reference to the parent of the subrequest
-    // also attached handler to request to listen to subrequest complete
-    this.registerSubrequests(subrequests);
+    App.requestPanel.serial(requestChain,function(){
+      request.trigger('complete', request);
+    });
 
-    // Call in Parallel
-    this.callParallelSubrequests(subrequests);
-
-    /* OLD CODE from before requestPanel refactor
-    // initiate new subrequests
-    var subrequests = _.map(files, function(file){
-      return this.photoUploadRequest(file, newPhotoNesting, model);
-    }, this);
-
-    // register subrequests
-    request.registerSubrequests(subrequests);
+    // var r = App.requestPanel.serial([
+    //   {'func': App.RequestApi.uploadFile, 'args': [file]},
+    // ]);
 
     // upload
     // request.batchView = new App.Upload.batchProgressView({'className': 'batch'});
     // App.actionPanel.$el.prepend(request.batchView.render().el);
-    */
 
   },
 
-  photoUploadRequest: function(file, nesting, model){
-    var request = this.initRequest();
-    request.requestType = 'nestedphoto';
-    request.file = file;
-    request.nesting = nesting;
-    request.model = model;
+  photoNestingRequest: function(file, nesting, model){
+    var subrequests = this.subrequests = [];
 
-    var time = (Math.random() * 2000) + 1000;
-    setTimeout(function(){
-      request.trigger('complete', request);
-    }, time)
-
-    return request;
-  },
-
-  graphRequest: function(vertices, edges){
-    var subrequests = this.subrequests = [
-      App.requestPanel.initRequest('verticesRequest',[vertices]),
-      App.requestPanel.initRequest('edgesRequest',[edges])
-    ];
-
+    subrequest.push(
+      App.requestPanel.initRequest(App.RequestApi.photoUploadRequest,[file])
+    )
     this.registerSubrequests(subrequests);
     this.callSerialSubrequests(subrequests);
   },
 
+  photoUploadRequest: function(file){
+
+    // S3 uploader
+    this.uploader = new App.Uploader();
+    this.listenTo(this.uploader, 'complete', function(href){
+      console.log('upload complete');
+      //this.trigger(complete, this, href);
+    });
+
+    this.listenTo(this.uploader, 'uploadError', function(error){
+      console.log(error);
+    });
+
+    this.uploader.uploadFile(this.file);
+  },
+
+  graphRequest: function(vertices, edges){
+    var request = this;
+    App.requestPanel.serial([
+      {'func': App.RequestApi.verticesRequest, 'args': [vertices]},
+      {'func': App.RequestApi.edgesRequest, 'args': [edges]}
+    ],
+    function(){
+      request.trigger('complete', request);
+    });
+  },
+
   verticesRequest: function(vertices){
-    // test
-    // this.trigger('complete', this);
-    // return false;
-
-    console.log(vertices);
-
-    var subrequests = _.map(vertices, function(vertex){
-      return App.requestPanel.initRequest('vertexRequest',[vertex]);
+    var request = this;
+    var requestChain = _.map(vertices, function(vertex){
+      return {'func': App.RequestApi.vertexRequest, 'args': [vertex]}
     }, this);
 
-    console.log(subrequests.length);
-
-    this.registerSubrequests(subrequests);
-    this.listenTo(this, 'subrequestscomplete', function(){
-      console.log('Vertices Done');
-    })
-    this.callParallelSubrequests(subrequests);
-
+    App.requestPanel.serial(requestChain, function(){
+      request.trigger('complete', request);
+    });
   },
 
   vertexRequest: function(vertex){
+    var request = this;
     var _cls = vertex.get('_cls')
 
     // client side
@@ -117,33 +134,37 @@ App.RequestApi = {
     collection.add(vertex);
 
     // persistence
-    vertex.save(vertex.changedAttributes(), {'success':this.complete,'error':this.error});
+    vertex.save(vertex.changedAttributes(), {'success':function(){
+      request.trigger('complete', request);
+    },
+    'error':function(){
+      request.trigger('error', request);
+    }});
   },
 
   edgesRequest: function(edges){
-
-    console.log(edges);
-    var subrequests = _.map(edges, function(edge){
-      return App.requestPanel.initRequest('edgeRequest',[edge]);
+    var request = this;
+    var requestChain = _.map(edges, function(edge){
+      return {'func': App.RequestApi.edgeRequest, 'args': [edge]}
     }, this);
 
-    this.registerSubrequests(subrequests);
-
-    this.listenTo(this, 'subrequestscomplete', function(){
-      console.log('Edges done');
-    })
-    this.callParallelSubrequests(subrequests);
-
+    App.requestPanel.serial(requestChain, function(){
+      request.trigger('complete', request);
+    });
   },
 
   edgeRequest: function(edge){
+    var request = this;
     var vertex = edge[0];
-    console.log(vertex);
-    vertex.addToSuccset(edge[1], {'success':this.complete,'error':this.error});
-
-    console.log('added '+ vertex.get('_cls') + ' to ' + edge[1].get('_cls'));
+    vertex.addToSuccset(edge[1], {'success':function(){
+      request.trigger('complete', request);
+    },
+    'error':function(){
+      request.trigger('error', request);
+    }});
   }
 }
+
 
 /* ------------------------------------------------------------------- */
 // Request Function
@@ -152,76 +173,13 @@ App.RequestApi = {
 App.Request = Backbone.View.extend({
 
   initialize: function(options){
-    // object passed from initRequest
-    var content = options.content;
-    this.func = content.func;
-    this.args = content.args;
-
-    // id passed from initRequest
-    this.rid = options.rid;
-    this.type = options.type || 'noop';
-
-    _.bindAll(this,'complete', 'error');
+    this.options = options || {};
+    this.rid = this.options.rid;
   },
 
-  call: function(request){
-    console.log("Call " + request.type + ' ' + request.rid);
-    var func = request.func
-    var args = request.args;
-    // calls function as if it is a method
-    func.apply(request, args);
-  },
-
-  registerSubrequest: function(subrequest){
-    // set parent variable of subrequest
-    // set handler to remove subrequest from request
-    console.log('registered ' + subrequest.type + ' with ' + this.type);
-    subrequest.parentRequest = this;
-    this.listenTo(subrequest, 'complete', this.removeSubrequest);
-  },
-
-  registerSubrequests: function(subrequests){
-    console.log('registering ' + subrequests.length + ' ')
-    _.each(subrequests, this.registerSubrequest, this);
-  },
-
-  callParallelSubrequests: function(subrequests){
-    _.each(subrequests, this.call, this)
-  },
-
-  callSerialSubrequests: function(subrequests){
-    // set up handlers
-    var first = null;
-    var prereq = null;
-    _.each(subrequests, function(subrequest){
-      if(!prereq){
-        first = subrequest;
-      } else {
-        subrequest.listenTo(prereq, 'complete', function(){
-          subrequest.call(subrequest);
-        })
-      }
-      prereq = subrequest;
-    })
-    this.call(first);
-  },
-
-  removeSubrequest: function(subrequest){
-    console.log('Removed from parent list '+ subrequest.type + ' ' + subrequest.rid);
-    this.subrequests = _.without(this.subrequests, subrequest)
-    if(this.subrequests.length <= 0){
-      console.log('Subrequest complete of ' + this.type + ' ' + this.rid);
-      this.trigger('subrequestscomplete', this);
-
-    }
-  },
-
-  complete: function(model, response, options){
-    this.trigger('complete', this);
-  },
-
-  error: function(model, response, options){
-    this.trigger('error', this);
+  execute: function(parameters){
+    console.log('---- Executing ' + this.rid + ' -------');
+    return this.options.func.apply(this, this.options.args.concat(parameters));
   }
 
 });
@@ -233,53 +191,78 @@ App.Request = Backbone.View.extend({
 App.RequestPanel = Backbone.View.extend({
   el: $('#request_panel'),
   requestsMade: 0,
-  queuedRequests: [],
-  activeRequests: [],
-  completedRequests: [],
+  allRequests: [],
 
-  initialize: function(){},
+  initialize: function(){
+    this.render();
+  },
 
-  // Public Interface
-
-  makeRequest: function(functionName, arguments){
-    var request = this.initRequest(functionName, arguments);
-    _.defer(request.call, request);
-    return request;
+  render: function(){
+    this.$el.html(this.allRequests.length);
   },
 
   getId: function(){
     return this.requestsMade++;
   },
 
-  initRequest: function(functionName, arguments){
-    // creates and registers the request with the master list
-    // (as opposed to with the parent request)
-    // purpose: to keep track of all pending or queued requests
+  request: function(options){
 
     // create new request
     var options = options || {};
-    options.content = {'func': App.RequestApi[functionName],'args':arguments};
-    options.type = functionName;
     options.rid = this.getId();
     var request = new App.Request(options);
 
     // keep track of it
-    this.queuedRequests.push(request);
+    this.allRequests.push(request);
     this.listenTo(request, 'complete', this.removeRequest);
-    // automatic cleanup
-    this.listenTo(request, 'subrequestscomplete', request.complete);
 
-    // log
-    //console.log('Request Init '+ request.type + ' ' + request.rid + ' created');
+    this.render();
+
+    // automatic cleanup
+    //this.listenTo(request, 'subrequestscomplete', request.complete);
+
     return request;
+
+    // call it
+    //console.log('Called '+ request.rid)
+    //return func.apply(request, arguments);
+
+  },
+
+  parallel: function(requests){
+    _.each(requests, function(r){
+      request.execute();
+    })
+  },
+
+  serial: function(requests, callback, error){
+    if(!requests || requests.length == 0){
+      return callback();
+    }
+    var requestObjects = _.map(requests, function(r){return this.request(r)}, this);
+    var lastRequest = _.last(requestObjects);
+    var callback = callback || function(){
+      // need access to calling context
+      console.log('Serial Complete')
+    }
+    this.listenTo(lastRequest, 'complete', function(){return callback()})
+
+    _.reduceRight(_.initial(requestObjects),
+      function(r1, r2) {
+        r1.listenTo(r2, 'complete', function() {
+          r1.execute(_.rest(arguments));
+        })
+        return r2;
+      },
+      lastRequest
+    ).execute();
   },
 
   removeRequest: function(request){
-    console.log('Removed from master list ' + request.type + ' ' + request.rid);
-
+    console.log('removed request '+ request.rid);
     // remove from master list
-    this.queuedRequests = _.without(this.queuedRequests, request);
-
+    this.allRequests = _.without(this.allRequests, request);
+    this.render();
     // remove request (backbone view)
     request.remove();
   }

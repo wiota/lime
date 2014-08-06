@@ -49,6 +49,7 @@
     <div class='title'><%= title %></div>
     <div class='location'><%= location %></div>
     <div class='start'><%= start_date %></div>
+    <div class='end'>End Date: <% if (typeof end_date !== "undefined") { print(end_date) } %></div>
 
     <div class='in_set_menu'>
       <a class='update'>update</a>
@@ -127,7 +128,6 @@
     <!--<label for='files'><%= label %></label>-->
     <input type="file" multiple="multiple" name="files[]" class="files"/>
     <div class='files_container'>
-
       <i class='message'><%= label %></i>
     </div>
   </script>

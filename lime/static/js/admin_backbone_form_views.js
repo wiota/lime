@@ -330,19 +330,34 @@ App.FormView['Vertex'] = Backbone.View.extend({
   // Events
 
   filesChanged: function(files){
-    // this syntax instead?
-    // App.requestPanel.trigger()
 
-    var request = App.requestPanel.makeRequest('batchPhotoUploadRequest', [
-      files,
-      this.newPhotoNesting,
-      this.model,
-      this.predecessor
+    file = files[0];
+
+    this.model;
+    this.newPhotoNesting;
+    this.predecessor;
+
+    var a = function(msg){
+      console.log(msg);
+      console.log(_.rest(arguments));
+      this.trigger('complete', this);
+    }
+
+
+
+    var r = App.requestPanel.serial([
+      {'func': App.RequestApi.batchPhotoUploadRequest, 'args': [files, this.newPhotoNesting, this.model, this.predecessor]},
+      {'func': a, 'args': ['Hello']},
+      {'func': a, 'args': ['Goodbye']}
     ]);
 
-    this.listenTo(request, 'complete', function(){
-      console.log('filesChanged complete');
-    })
+
+    // var request = App.requestPanel.request(
+    //   App.RequestApi.uploadFile,
+    //   [file],
+    //   App.RequestApi.wrapUploadedFile
+    // );
+
 
     /*
     App.actionPanel.addBatch(files, this.model, this.newPhotoNesting);
