@@ -26,7 +26,7 @@ App.RequestApi = {
     // S3 uploader
     var uploader = new App.Uploader();
     uploader.on('complete', function(href){
-      request.trigger('complete', request, href, file.name);
+      request.trigger('complete', href, file.name);
     });
     uploader.uploadFile(file);
   },
@@ -52,8 +52,6 @@ App.RequestApi = {
 
 
   batchPhotoUploadRequest: function(files, newPhotoNesting, model, predecessor){
-    console.log('Batch');
-    var request = this;
     var requestChain = [];
 
     // if model is new, add to predecessor
@@ -63,9 +61,7 @@ App.RequestApi = {
       requestChain.push({'func': App.RequestApi.graphRequest, 'args': [vertices, edges]});
     }
 
-    App.requestPanel.serial(requestChain,function(){
-      request.trigger('complete', request);
-    });
+    this.serial(requestChain);
 
     // var r = App.requestPanel.serial([
     //   {'func': App.RequestApi.uploadFile, 'args': [file]},
@@ -104,64 +100,55 @@ App.RequestApi = {
   },
 
   graphRequest: function(vertices, edges){
-    var request = this;
-    request.serial([
+    this.serial([
       {'func': App.RequestApi.verticesRequest, 'args': [vertices]},
       {'func': App.RequestApi.edgesRequest, 'args': [edges]}
-    ],
-    function(){
-      request.trigger('complete', request);
-    });
+    ]);
   },
 
   verticesRequest: function(vertices){
-    var request = this;
-    var requestChain = _.map(vertices, function(vertex){
-      return {'func': App.RequestApi.vertexRequest, 'args': [vertex]}
-    }, this);
-
-    App.requestPanel.serial(requestChain, function(){
-      request.trigger('complete', request);
-    });
+    this.mapSerial(vertices, App.RequestApi.vertexRequest);
   },
 
   vertexRequest: function(vertex){
-    var request = this;
     var _cls = vertex.get('_cls')
 
     // client side
     var collection = App.collection[_cls];
     collection.add(vertex);
 
+    // options
+    var request = this;
+    var options = {
+      success:function(){
+        request.trigger('complete');
+      },
+      error:function(){
+        request.trigger('error');
+      }
+    }
+
     // persistence
-    vertex.save(vertex.changedAttributes(), {'success':function(){
-      request.trigger('complete', request);
-    },
-    'error':function(){
-      request.trigger('error', request);
-    }});
+    vertex.save(vertex.changedAttributes(), options);
   },
 
   edgesRequest: function(edges){
-    var request = this;
-    var requestChain = _.map(edges, function(edge){
-      return {'func': App.RequestApi.edgeRequest, 'args': [edge]}
-    }, this);
-
-    App.requestPanel.serial(requestChain, function(){
-      request.trigger('complete', request);
-    });
+    this.mapSerial(edges, App.RequestApi.edgeRequest);
   },
 
   edgeRequest: function(edge){
+    // options
     var request = this;
-    var vertex = edge[0];
-    vertex.addToSuccset(edge[1], {'success':function(){
-      request.trigger('complete', request);
-    },
-    'error':function(){
-      request.trigger('error', request);
-    }});
+    var options = {
+      success:function(){
+        request.trigger('complete');
+      },
+      error:function(){
+        request.trigger('error');
+      }
+    }
+
+    edge[0].addToSuccset(edge[1], options);
   }
 }
 
@@ -181,19 +168,31 @@ App.RequestLibrary = {
   },
 
   serial: function(requests, callback, error){
+
+    // context for callback
+    var context = this;
+
     // callback immediately if no requests
-    if(!requests || requests.length == 0){return callback()}
+    if(!requests || requests.length == 0){return callback.apply(context, arguments)}
+
     // map object notation to request object
     var requestObjects = _.map(requests, function(r){return this.request(r)}, this);
+
     // last request for chaining and callback
     var lastRequest = _.last(requestObjects);
 
     // Set up callback depending on request context
     var callback = callback || this.callback || function(){
-      console.log('Serial Complete')
+      this.trigger('complete');
     }
-    this.listenTo(lastRequest, 'complete', function(){return callback()})
 
+    // set up callback to listen to last request
+    this.listenTo(lastRequest, 'complete', function(){
+      return callback.apply(context, arguments)
+    })
+
+    // set up latter request to listen former request
+    // and execute foremost
     _.reduceRight(_.initial(requestObjects),
       function(r1, r2) {
         r1.listenTo(r2, 'complete', function() {
@@ -203,6 +202,16 @@ App.RequestLibrary = {
       },
       lastRequest
     ).execute();
+  },
+
+  mapSerial: function(array, func, callback, error){
+    this.serial(_.map(
+      array,
+      function(item){
+        return {'func': func, 'args': [item]}
+      },
+      this
+    ));
   }
 }
 
@@ -229,10 +238,14 @@ App.Request = Backbone.View.extend({
     return this.options.func.apply(this, this.options.args.concat(parameters));
   },
 
-  complete: function(){
-    this.trigger('complete', this);
-  }
+  // default callbacks, can be overriden
+  callback: function(){
+    this.trigger('complete', arguments);
+  },
 
+  error: function(){
+    this.trigger('error', arguments);
+  }
 });
 
 /* ------------------------------------------------------------------- */
@@ -257,13 +270,13 @@ App.RequestPanel = Backbone.View.extend({
   },
 
   register: function(request){
-    console.log('---- Register ' + this.rid + ' -------');
+    console.log('---- Register ' + request.rid + ' -------');
     this.allRequests.push(request);
     this.render();
   },
 
   unregister: function(request){
-    console.log('---- Unregister ' + this.rid + ' -------');
+    console.log('---- Unregister ' + request.rid + ' -------');
     this.allRequests = _.without(this.allRequests, request);
     request.remove();
     this.render();
