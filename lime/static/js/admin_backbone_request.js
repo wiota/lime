@@ -81,10 +81,10 @@ App.RequestApi = {
     // S3 uploader
     var uploader = new App.Uploader();
     uploader.on('complete', function(href){
-      request.trigger('complete', href, file.name);
+      request.trigger('complete', href);
     });
     uploader.on('error', function(href){
-      request.trigger('error', href, file.name);
+      request.trigger('error', href);
     });
     uploader.uploadFile(file);
   },
@@ -97,14 +97,9 @@ App.RequestApi = {
     collection.add(vertex);
 
     // options
-    var request = this;
     var options = {
-      success:function(){
-        request.trigger('complete');
-      },
-      error:function(){
-        request.trigger('error');
-      }
+      success: this.callback,
+      error: this.error
     }
 
     // persistence
@@ -113,14 +108,9 @@ App.RequestApi = {
 
   edgeRequest: function(edge){
     // options
-    var request = this;
     var options = {
-      success:function(){
-        request.trigger('complete');
-      },
-      error:function(){
-        request.trigger('error');
-      }
+      success: this.callback,
+      error: this.error
     }
 
     edge[0].addToSuccset(edge[1], options);
