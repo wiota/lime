@@ -18,18 +18,41 @@
 
 App.RequestApi = {
 
+  // Highest Level
 
+  batchPhotoUploadRequest: function(files, newPhotoNesting, model, predecessor){
+    var requestChain = [];
 
-  uploadFile: function(file){
-    var request = this;
+    // if model is new, add to predecessor
+    if(model.isNew()){
+      vertices = [model];
+      edges = [[predecessor, model]];
+      requestChain.push({'func': App.RequestApi.graphRequest, 'args': [vertices, edges]});
+    }
 
-    // S3 uploader
-    var uploader = new App.Uploader();
-    uploader.on('complete', function(href){
-      request.trigger('complete', href, file.name);
-    });
-    uploader.uploadFile(file);
+    this.serial(requestChain);
+
+    // request.batchView = new App.Upload.batchProgressView({'className': 'batch'});
+    // App.actionPanel.$el.prepend(request.batchView.render().el);
   },
+
+  graphRequest: function(vertices, edges){
+    this.serial([
+      {'func': App.RequestApi.verticesRequest, 'args': [vertices]},
+      {'func': App.RequestApi.edgesRequest, 'args': [edges]}
+    ]);
+  },
+
+  // High Level
+
+  verticesRequest: function(vertices){
+    this.mapSerial(vertices, App.RequestApi.vertexRequest);
+  },
+
+  edgesRequest: function(edges){
+    this.mapSerial(edges, App.RequestApi.edgeRequest);
+  },
+
 
   wrapUploadedFile: function(request, href, title){
     console.log("Callback: <a href='"+href+"'>"+title+"</a>");
@@ -50,64 +73,20 @@ App.RequestApi = {
     );
   },
 
+  // Lowest Level
 
-  batchPhotoUploadRequest: function(files, newPhotoNesting, model, predecessor){
-    var requestChain = [];
-
-    // if model is new, add to predecessor
-    if(model.isNew()){
-      vertices = [model];
-      edges = [[predecessor, model]];
-      requestChain.push({'func': App.RequestApi.graphRequest, 'args': [vertices, edges]});
-    }
-
-    this.serial(requestChain);
-
-    // var r = App.requestPanel.serial([
-    //   {'func': App.RequestApi.uploadFile, 'args': [file]},
-    // ]);
-
-    // upload
-    // request.batchView = new App.Upload.batchProgressView({'className': 'batch'});
-    // App.actionPanel.$el.prepend(request.batchView.render().el);
-
-  },
-
-  photoNestingRequest: function(file, nesting, model){
-    var subrequests = this.subrequests = [];
-
-    subrequest.push(
-      App.requestPanel.initRequest(App.RequestApi.photoUploadRequest,[file])
-    )
-    this.registerSubrequests(subrequests);
-    this.callSerialSubrequests(subrequests);
-  },
-
-  photoUploadRequest: function(file){
+  uploadFile: function(file){
+    var request = this;
 
     // S3 uploader
-    this.uploader = new App.Uploader();
-    this.listenTo(this.uploader, 'complete', function(href){
-      console.log('upload complete');
-      //this.trigger(complete, this, href);
+    var uploader = new App.Uploader();
+    uploader.on('complete', function(href){
+      request.trigger('complete', href, file.name);
     });
-
-    this.listenTo(this.uploader, 'uploadError', function(error){
-      console.log(error);
+    uploader.on('error', function(href){
+      request.trigger('error', href, file.name);
     });
-
-    this.uploader.uploadFile(this.file);
-  },
-
-  graphRequest: function(vertices, edges){
-    this.serial([
-      {'func': App.RequestApi.verticesRequest, 'args': [vertices]},
-      {'func': App.RequestApi.edgesRequest, 'args': [edges]}
-    ]);
-  },
-
-  verticesRequest: function(vertices){
-    this.mapSerial(vertices, App.RequestApi.vertexRequest);
+    uploader.uploadFile(file);
   },
 
   vertexRequest: function(vertex){
@@ -130,10 +109,6 @@ App.RequestApi = {
 
     // persistence
     vertex.save(vertex.changedAttributes(), options);
-  },
-
-  edgesRequest: function(edges){
-    this.mapSerial(edges, App.RequestApi.edgeRequest);
   },
 
   edgeRequest: function(edge){
