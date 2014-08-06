@@ -171,22 +171,10 @@ App.RequestApi = {
 
 App.RequestLibrary = {
   request: function(options){
-
-    // create new request
-    var options = options || {};
-    options.rid = App.requestPanel.getId();
-    var request = new App.Request(options);
-
-    // keep track of it
-    App.requestPanel.allRequests.push(request);
-    App.requestPanel.listenTo(request, 'complete', App.requestPanel.removeRequest);
-
-    // Show status in RequestPanel
-    App.requestPanel.render();
-    return request;
+    return new App.Request(options);
   },
 
-  parallel: function(requests){
+  parallel: function(requests, callback, error){
     _.each(requests, function(r){
       request.execute();
     })
@@ -226,7 +214,14 @@ App.Request = Backbone.View.extend({
 
   initialize: function(options){
     this.options = options || {};
-    this.rid = this.options.rid;
+    // Id this request
+    this.rid = App.requestPanel.getId();
+    // Keep track of it
+    var request = this;
+    App.requestPanel.register(request);
+    App.requestPanel.listenTo(this, 'complete', function(){
+      App.requestPanel.unregister(request);
+    });
   },
 
   execute: function(parameters){
@@ -261,13 +256,17 @@ App.RequestPanel = Backbone.View.extend({
     return this.requestsMade++;
   },
 
-  removeRequest: function(request){
-    console.log('removed request '+ request.rid);
-    // remove from master list
-    this.allRequests = _.without(this.allRequests, request);
+  register: function(request){
+    console.log('---- Register ' + this.rid + ' -------');
+    this.allRequests.push(request);
     this.render();
-    // remove request (backbone view)
+  },
+
+  unregister: function(request){
+    console.log('---- Unregister ' + this.rid + ' -------');
+    this.allRequests = _.without(this.allRequests, request);
     request.remove();
+    this.render();
   }
 
 })
