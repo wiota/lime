@@ -142,6 +142,7 @@ App.RequestLibrary = {
 
     // Set up callback depending on request context
     var callback = callback || this.callback || function(){
+      console.log('parallel complete');
       this.trigger('complete');
     }
 
@@ -164,13 +165,15 @@ App.RequestLibrary = {
   },
 
   mapSerial: function(array, func, callback, error){
-    this.serial(_.map(
-      array,
-      function(item){
-        return {'func': func, 'args': [item]}
-      },
-      this
-    ));
+    this.serial(
+      _.map(
+        array,
+        function(item){return {'func': func, 'args': [item]}},
+        this
+      ),
+      callback,
+      error
+    );
   },
 
   parallel: function(requests, callback, error){
