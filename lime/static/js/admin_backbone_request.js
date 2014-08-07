@@ -46,11 +46,11 @@ App.RequestApi = {
   // High Level
 
   verticesRequest: function(vertices){
-    this.mapSerial(vertices, App.RequestApi.vertexRequest);
+    this.serial(this.mapToInstructions(vertices, App.RequestApi.vertexRequest));
   },
 
   edgesRequest: function(edges){
-    this.mapSerial(edges, App.RequestApi.edgeRequest);
+    this.serial(this.mapToInstructions(edges, App.RequestApi.edgeRequest));
   },
 
 
@@ -122,41 +122,48 @@ App.RequestApi = {
 /* ------------------------------------------------------------------- */
 
 App.RequestLibrary = {
-  request: function(options){
-    return new App.Request(options);
+  request: function(instrution){
+    return new App.Request(instrution);
   },
 
-  serial: function(requests, callback, error){
+  requests: function(instructions){
+    return _.map(instructions, function(instruction){return this.request(instruction)}, this);
+  },
+
+  mapToInstructions: function(array, func){
+    return _.map(array, function(item){return {'func': func, 'args': [item]}}, this);
+  },
+
+  serial: function(instructions, callback, error){
 
     // context for callback
     var context = this;
 
     // callback immediately if no requests
-    if(!requests || requests.length == 0){return callback.apply(context, arguments)}
+    if(!instructions || instructions.length == 0){return callback.apply(context, arguments)}
 
     // map object notation to request object
-    var requestObjects = _.map(requests, function(r){return this.request(r)}, this);
+    var requests = this.requests(instructions);
 
     // last request for chaining and callback
-    var lastRequest = _.last(requestObjects);
+    var lastRequest = _.last(requests);
 
     // Set up callback depending on request context
     var callback = callback || this.callback || function(){
       console.log('parallel complete');
       this.trigger('complete');
     }
-
     // set up callback to listen to last request
     this.listenTo(lastRequest, 'complete', function(){
       return callback.apply(context, arguments)
     })
 
-    // set up latter request to listen former request
-    // and execute foremost
-    _.reduceRight(_.initial(requestObjects),
+    // set up latter request to listen former request and execute foremost
+    _.reduceRight(_.initial(requests),
       function(r1, r2) {
         r1.listenTo(r2, 'complete', function() {
-          r1.execute(_.rest(arguments));
+          console.log(arguments);
+          r1.execute(arguments);
         })
         return r2;
       },
@@ -164,27 +171,12 @@ App.RequestLibrary = {
     ).execute();
   },
 
-  mapSerial: function(array, func, callback, error){
-    this.serial(
-      _.map(
-        array,
-        function(item){return {'func': func, 'args': [item]}},
-        this
-      ),
-      callback,
-      error
-    );
-  },
-
-  parallel: function(requests, callback, error){
+  parallel: function(instructions, callback, error){
     // context for callback
     var context = this;
 
-    // callback immediately if no requests
-    if(!requests || requests.length == 0){return callback.apply(context, arguments)}
-
-    // map object notation to request object
-    var requestObjects = _.map(requests, function(r){return this.request(r)}, this);
+    // callback immediately if no instructions
+    if(!instructions || instructions.length == 0){return callback.apply(context, arguments)}
 
     // Set up callback depending on request context
     var callback = callback || this.callback || function(){
@@ -192,31 +184,19 @@ App.RequestLibrary = {
       this.trigger('complete');
     }
 
-    var notches = requestObjects.length;
+    var notches = instructions.length;
     var notch = 0;
 
     // execute all requests
-    _.each(requestObjects, function(request){
+    _.each(instructions, function(instruction){
+      var request = this.request(instruction);
       this.listenTo(request, 'complete', function(){
         notch++;
         if(notch>=notches){return callback.apply(context);}
       });
-      request.execute();
-    }, this)
-  },
-
-  mapParallel: function(array, func, callback, error){
-    this.parallel(
-      _.map(
-        array,
-        function(item){return {'func': func, 'args': [item]}},
-        this
-      ),
-      callback,
-      error
-    );
+      request.execute.apply(request);
+    }, this);
   }
-
 }
 
 /* ------------------------------------------------------------------- */
@@ -235,22 +215,23 @@ App.Request = Backbone.View.extend({
     App.requestPanel.listenTo(this, 'complete', function(){
       App.requestPanel.unregister(request);
     });
-
     _.bindAll(this, 'callback', 'error');
   },
 
-  execute: function(parameters){
+  execute: function(){
     console.log('---- Executing ' + this.rid + ' -------');
-    return this.options.func.apply(this, this.options.args.concat(parameters));
+    return this.options.func.apply(this, this.options.args.concat(_.toArray(arguments)));
   },
 
   // default callbacks, can be overriden
   callback: function(){
-    this.trigger('complete', arguments);
+    args = ['complete'].concat(_.toArray(arguments));
+    this.trigger.apply(this, args);
   },
 
   error: function(){
-    this.trigger('error', arguments);
+    args = ['error'].concat(_.toArray(arguments));
+    this.trigger.apply(this, args);
   }
 });
 
