@@ -41,10 +41,10 @@ shadow color  42,44,57
 /* Path Panel */
 
 #path_panel {
-  z-index: 3;
+  z-index: 4;
   width: 19.098300562504%;
   position:fixed;
-  overflow: visible;
+  overflow: auto;
   top: 0;
   left: 0;
   bottom: 0;
@@ -63,7 +63,7 @@ shadow color  42,44,57
   width: 48%;
   padding: 0 2% 0 0;
   position:fixed;
-  overflow: visible;
+  overflow: auto;
   top: 0;
   left: 19.098300562504%;
   bottom: 0;
@@ -75,7 +75,7 @@ shadow color  42,44,57
   display:block;
   z-index: 2;
   background-color: #fff;
-  overflow: visible;
+  overflow: auto;
   margin: 0;
   padding: 0 0 0 2%;
   width: 28.901699437496%;
@@ -87,16 +87,71 @@ shadow color  42,44,57
 
 #request_panel {
   display:block;
-  z-index: 5;
-  background-color: transparent;
-  overflow: visible;
+  z-index: 3;
+  background-color: rgba(255,255,255,0.9);
   margin: 0;
-  padding: 0 0 0 2%;
+  border-top: 1px solid #82db8a;
+  padding: 14px 0 0 2%;
   position:fixed;
-  top: 80%;
+  top: 50%;
   right: 0;
   left: 19.098300562504%;
   bottom: 0;
+  overflow: auto;
+}
+
+#request_panel div.container {
+  width: 100000px;
+}
+
+#request_panel div.requestlog {
+  text-align: left;
+  float:left;
+  font-size: 10px;
+  font-family: "Monaco","Lucida Console","Courier New", "`space";
+}
+
+#request_panel div.requestlog a {
+  display:block;
+  width: 4px;
+  height: 4px;
+  background-color: #838d8d;
+  position: relative;
+}
+
+#request_panel div.requestlog a span {
+  display:none;
+}
+
+#request_panel div.requestlog a.created {
+  background-color:#ffff00;
+}
+
+#request_panel div.requestlog a.registered {
+
+}
+
+#request_panel div.requestlog a.executing {
+  background-color:#82db8a;
+}
+
+#request_panel div.requestlog a.delayed {
+  background-color:#ffa53f;
+}
+
+#request_panel div.requestlog a.error {
+  background-color:#ff8800;
+}
+
+#request_panel div.requestlog a.complete {
+  background-color:#fff;
+  width: 2px;
+  height: 2px;
+  border: 1px dotted #000;
+}
+
+#request_panel div.requestlog a.unregistered {
+  background-color:#fff;
 }
 
 /* -------------------------------------------------------------------  */
@@ -193,7 +248,7 @@ ol.succset_list {
   position: relative;
   padding: 1% 1% 1% 4%;
   margin: 0 0 1.5% 0;
-  height: 1em;
+  min-height: 1em;
   }
 
 .succset_list li a.in_set_link {

@@ -20,7 +20,7 @@ App.RequestApi = {
 
   // Highest Level
 
-  batchPhotoUploadRequest: function(files, newPhotoNesting, model, predecessor){
+  batchPhotosToVertex: function(files, nesting, model, predecessor){
     var requestChain = [];
 
     // if model is new, add to predecessor
@@ -29,6 +29,8 @@ App.RequestApi = {
       edges = [[predecessor, model]];
       requestChain.push({'func': App.RequestApi.graphRequest, 'args': [vertices, edges]});
     }
+
+    requestChain.push({'func':App.RequestApi.splitBatchPhotos, 'args': [files, nesting, model]})
 
     this.serial(requestChain);
 
@@ -45,6 +47,18 @@ App.RequestApi = {
 
   // High Level
 
+  splitBatchPhotos: function(files, nesting, model){
+    this.parallel(this.mapToInstructions(files, App.RequestApi.photoRequest, [nesting, model]))
+  },
+
+  photoRequest: function(file, nesting, model){
+
+    this.serial([
+      {'func': App.RequestApi.filePutRequest, 'args': [file]},
+      {'func': App.RequestApi.wrapRequest, 'args': [file, nesting, model]}
+    ]);
+  },
+
   verticesRequest: function(vertices){
     this.serial(this.mapToInstructions(vertices, App.RequestApi.vertexRequest));
   },
@@ -53,29 +67,36 @@ App.RequestApi = {
     this.serial(this.mapToInstructions(edges, App.RequestApi.edgeRequest));
   },
 
+  // Lower Level
 
-  wrapUploadedFile: function(request, href, title){
-    console.log("Callback: <a href='"+href+"'>"+title+"</a>");
+  wrapRequest: function(file, nesting, model, href){
+    var vertices = [];
+    var edges = [];
 
-    var photo = new App.Model['Vertex.Medium.Photo']({'href': href});
-    var work = new App.Model['Vertex.Work']({'title':title});
+    // content type should map to vertex types
+    var lowest = new App.Model['Vertex.Medium.Photo']({"href": href});
+    vertices.push(lowest);
 
-     // ???????????????????????
-    var predecessor = null;
-     // ???????????????????????
+    var highest = _.reduce(nesting, function(v1, nest){
+      if(nesting == 'Vertex.Category'){var title = 'Category';}
+      else {var title = App.fileToName(file.name);}
+      var v2 = new App.Model[nest]({'title':title});
+      vertices.push(v2);
+      edges.push([v2, v1]);
+      return v2;
+    }, lowest);
 
-    vertices = [photo, work];
-    edges = [[work, photo], [predecessor, work]];
-
-    var request = App.requestPanel.initRequest(
-      App.RequestApi.graphRequest,
-      [vertices, edges]
-    );
+    edges.push([model, highest]);
+    this.serial([
+      {'func': App.RequestApi.verticesRequest, 'args': [vertices]},
+      {'func': App.RequestApi.edgesRequest, 'args': [edges]}
+    ]);
   },
+
 
   // Lowest Level
 
-  uploadFile: function(file){
+  filePutRequest: function(file){
     var request = this;
 
     // S3 uploader
@@ -83,8 +104,9 @@ App.RequestApi = {
     uploader.on('complete', function(href){
       request.trigger('complete', href);
     });
-    uploader.on('error', function(href){
-      request.trigger('error', href);
+    uploader.on('uploadError', function(){
+      console.log('error');
+      request.trigger('error');
     });
     uploader.uploadFile(file);
   },
@@ -107,6 +129,7 @@ App.RequestApi = {
   },
 
   edgeRequest: function(edge){
+    console.log(edge);
     // options
     var options = {
       success: this.callback,
@@ -122,22 +145,24 @@ App.RequestApi = {
 /* ------------------------------------------------------------------- */
 
 App.RequestLibrary = {
-  request: function(instrution){
-    return new App.Request(instrution);
+  request: function(instruction){
+    return new App.Request(instruction);
   },
 
   requests: function(instructions){
     return _.map(instructions, function(instruction){return this.request(instruction)}, this);
   },
 
-  mapToInstructions: function(array, func){
-    return _.map(array, function(item){return {'func': func, 'args': [item]}}, this);
+  mapToInstructions: function(array, func, additionalParams){
+    additionalParams = additionalParams || [];
+    return _.map(array, function(item){return {'func': func, 'args': [item].concat(additionalParams)}}, this);
   },
 
   serial: function(instructions, callback, error){
 
     // context for callback
     var context = this;
+    var errors = [];
 
     // callback immediately if no requests
     if(!instructions || instructions.length == 0){return callback.apply(context, arguments)}
@@ -150,20 +175,33 @@ App.RequestLibrary = {
 
     // Set up callback depending on request context
     var callback = callback || this.callback || function(){
-      console.log('parallel complete');
-      this.trigger('complete');
+      console.log('serial complete');
+      this.trigger('error');
     }
+
+    var error = error || this.error || function(){
+      console.log('serial error');
+      this.trigger('error');
+    }
+
     // set up callback to listen to last request
     this.listenTo(lastRequest, 'complete', function(){
       return callback.apply(context, arguments)
     })
 
+    // set up error to listen to all requests
+    _.each(requests, function(r){
+      this.listenTo(r, 'error', function(){
+        errors.push(r)
+        return error.apply(context, errors);
+      })
+    }, this)
+
     // set up latter request to listen former request and execute foremost
     _.reduceRight(_.initial(requests),
       function(r1, r2) {
         r1.listenTo(r2, 'complete', function() {
-          console.log(arguments);
-          r1.execute(arguments);
+          r1.execute.apply(r1, arguments);
         })
         return r2;
       },
@@ -184,6 +222,11 @@ App.RequestLibrary = {
       this.trigger('complete');
     }
 
+    var error = error || this.error || function(){
+      console.log('parallel error');
+      this.trigger('error');
+    }
+
     var notches = instructions.length;
     var notch = 0;
 
@@ -193,6 +236,9 @@ App.RequestLibrary = {
       this.listenTo(request, 'complete', function(){
         notch++;
         if(notch>=notches){return callback.apply(context);}
+      });
+      this.listenTo(request, 'error', function(){
+        return error.apply(context);
       });
       request.execute.apply(request);
     }, this);
@@ -209,17 +255,25 @@ App.Request = Backbone.View.extend({
     this.options = options || {};
     // Id this request
     this.rid = App.requestPanel.getId();
+    this.sts = "created";
     // Keep track of it
     var request = this;
     App.requestPanel.register(request);
+    this.sts = "registered";
     App.requestPanel.listenTo(this, 'complete', function(){
+      request.sts = "complete";
       App.requestPanel.unregister(request);
+      request.sts = "unregistered";
+    });
+    App.requestPanel.listenTo(this, 'error', function(){
+      request.sts = "error";
     });
     _.bindAll(this, 'callback', 'error');
   },
 
   execute: function(){
     console.log('---- Executing ' + this.rid + ' -------');
+    this.sts = "executing";
     return this.options.func.apply(this, this.options.args.concat(_.toArray(arguments)));
   },
 
@@ -230,6 +284,7 @@ App.Request = Backbone.View.extend({
   },
 
   error: function(){
+    console.log('error');
     args = ['error'].concat(_.toArray(arguments));
     this.trigger.apply(this, args);
   }
@@ -243,13 +298,11 @@ App.RequestPanel = Backbone.View.extend({
   el: $('#request_panel'),
   requestsMade: 0,
   allRequests: [],
+  completedRequests: [],
 
   initialize: function(){
     this.render();
-  },
-
-  render: function(){
-    this.$el.html(this.allRequests.length);
+    this.initPanelInterface();
   },
 
   getId: function(){
@@ -264,9 +317,43 @@ App.RequestPanel = Backbone.View.extend({
 
   unregister: function(request){
     console.log('---- Unregister ' + request.rid + ' -------');
-    this.allRequests = _.without(this.allRequests, request);
-    //request.remove();
     this.render();
+    //this.allRequests = _.without(this.allRequests, request);
+    this.completedRequests.push(request);
+    //request.remove();
+  },
+
+  completeById: function(){
+    return _.indexBy(this.completedRequests, 'rid');
+  },
+
+  initPanelInterface: function(){
+    var panel = this.$el;
+    panel.on('mousedown', function(e){
+      var of = e.offsetY;
+      console.log(of);
+      $(window).on('mousemove', function(e){
+        var top = ((e.pageY - of)/$(this).height()*100) + '%';
+        panel.css({'top':top})
+      });
+      $(window).on('mouseup', function(){
+        console.log($(this).height())
+        $(this).unbind('mouseup mousemove');
+      });
+      return false;
+    })
+  },
+
+  render: function(){
+    if(this.allRequests.length<=0){};
+    var a = $('<div class="requestlog"></div>');
+    _.each(this.allRequests, function(r){
+      if(r.rid < 10){format = '&nbsp;'}
+      else {format = ''}
+      display = "<a class='" + r.sts + "'><span>" + format + r.rid + "</span></a>";
+      a.append(display);
+    })
+    this.$el.children('.container').prepend(a);
   }
 
 })
