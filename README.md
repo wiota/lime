@@ -1,4 +1,4 @@
-portphilio_admin
+lime
 ==========
 
-The admin app for Portfolio
+Lime holds your work together.
