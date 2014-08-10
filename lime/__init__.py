@@ -5,7 +5,8 @@ from urlparse import urlparse
 from bson.objectid import ObjectId
 from flask.ext.mongoengine import MongoEngine
 from flask.ext.login import LoginManager
-from toolbox.tools import AnonymousUser
+from toolbox import tools
+import mongoexhaust
 from lime.account import account
 from lime.admin import admin
 from lime.api import api
@@ -70,8 +71,10 @@ app.register_blueprint(root.mod)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "root.login"
-login_manager.anonymous_user = AnonymousUser
+login_manager.anonymous_user = tools.AnonymousUser
 
+# Wrap the exhaust with our custom function
+mongoexhaust.wrapper = tools.make_response
 
 @login_manager.user_loader
 def load_user(userid):
