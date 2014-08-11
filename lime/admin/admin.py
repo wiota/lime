@@ -183,6 +183,8 @@ def rebuild():
 @mod.route('/clear_db/')
 @login_required
 def clear():
-    ''' This is a temporary endpoint '''
-    clear_db(current_user.username)
-    return "Success"
+    ''' This is a temporary endpoint, only for the testuser! '''
+    if current_user.username == "testuser":
+        clear_db(current_user.username)
+        return "Success."
+    return "Not allowed."
