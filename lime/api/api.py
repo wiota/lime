@@ -166,11 +166,8 @@ def happening_form():
 @mod.route('/edge/', methods=["POST"])
 @login_required
 def add_edge():
-    data = request.json
-    for edge in data["edges"]:
-        source_id = edge["_source"]
-        sink_id = edge["_sink"]
-
+    edges = request.json["edges"]
+    for source_id, sink_id in zip(edges, edges[1:]):
         source = Vertex.objects.get(id=source_id, owner=current_user.id)
         source.update(add_to_set__succset=sink_id)
 
@@ -183,11 +180,8 @@ def add_edge():
 @mod.route('/edge/', methods=["DELETE"])
 @login_required
 def delete_edge():
-    data = request.json
-    for edge in data["edges"]:
-        source_id = edge["_source"]
-        sink_id = edge["_sink"]
-
+    edges = request.json["edges"]
+    for source_id, sink_id in zip(edges, edges[1:]):
         source = Vertex.objects.get(id=source_id, owner=current_user.id)
         source.update(pull__succset=sink_id)
 
