@@ -155,10 +155,10 @@ shadow color  42,44,57
 }
 
 #request_panel div.requestlog a.error {
-  background-color:#ff8800;
+  background-color:#ff0000;
 }
 
-#request_panel div.requestlog a.delayed {
+#request_panel div.requestlog a.delay {
   background-color:#ffa53f;
 }
 

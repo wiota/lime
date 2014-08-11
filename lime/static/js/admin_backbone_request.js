@@ -99,13 +99,18 @@ App.RequestApi = {
   filePutRequest: function(file){
     var request = this;
 
+    // testing
+    if(Math.random()<.5){
+      request.trigger('error');
+      return false;
+    }
+
     // S3 uploader
     var uploader = new App.Uploader();
     uploader.on('complete', function(href){
       request.trigger('complete', href);
     });
     uploader.on('uploadError', function(){
-      console.log('error');
       request.trigger('error');
     });
     uploader.uploadFile(file);
@@ -175,7 +180,7 @@ App.RequestLibrary = {
     // Set up callback depending on request context
     var callback = callback || this.callback || function(){
       console.log('serial complete');
-      this.trigger('error');
+      this.trigger('complete');
     }
 
     var error = error || this.error || function(){
@@ -183,25 +188,32 @@ App.RequestLibrary = {
       this.trigger('error');
     }
 
+    var delay = delay || this.delay || function(){
+      console.log('serial delay');
+      this.trigger('delay');
+    }
+
     // set up callback to listen to last request
     this.listenTo(lastRequest, 'complete', function(){
       return callback.apply(context, arguments)
+    });
+
+
+    this.listenTo(lastRequest, 'error', function(){
+      return delay.apply(context, arguments)
     })
 
-    // set up error to listen to all requests
-    _.each(requests, function(r){
-      this.listenTo(r, 'error', function(){
-        errors.push(r)
-        return error.apply(context, errors);
-      })
-    }, this)
+    this.listenTo(lastRequest, 'delay', function(){
+      return delay.apply(context, arguments)
+    });
+
 
     // set up latter request to listen former request and execute foremost
     _.reduceRight(_.initial(requests),
       function(r1, r2) {
-        r1.listenTo(r2, 'complete', function() {
-          r1.execute.apply(r1, arguments);
-        })
+        r1.listenTo(r2, 'complete', function(){r1.execute.apply(r1, arguments);})
+        r1.listenTo(r2, 'error', function(){r1.delay.apply(r1, arguments);})
+        r1.listenTo(r2, 'delay', function(){r1.delay.apply(r1, arguments);})
         return r2;
       },
       lastRequest
@@ -226,6 +238,11 @@ App.RequestLibrary = {
       this.trigger('error');
     }
 
+    var delay = delay || this.delay || function(){
+      console.log('parallel delay');
+      this.trigger('delay');
+    }
+
     var notches = instructions.length;
     var notch = 0;
 
@@ -236,10 +253,9 @@ App.RequestLibrary = {
         notch++;
         if(notch>=notches){return callback.apply(context);}
       });
-      this.listenTo(request, 'error', function(){
-        return error.apply(context);
-      });
-      request.execute.apply(request);
+      this.listenTo(request, 'error', function(){return delay.apply(context);});
+      this.listenTo(request, 'delay', function(){return delay.apply(context);});
+      request.execute();
     }, this);
   }
 }
@@ -260,6 +276,7 @@ App.Request = Backbone.View.extend({
     var request = this;
     App.requestPanel.register(request);
     this.sts = "registered";
+    // Actions to take after events
     App.requestPanel.listenTo(this, 'complete', function(){
       request.sts = "complete";
       App.requestPanel.unregister(request);
@@ -268,11 +285,14 @@ App.Request = Backbone.View.extend({
     App.requestPanel.listenTo(this, 'error', function(){
       request.sts = "error";
     });
+    App.requestPanel.listenTo(this, 'delay', function(){
+      request.sts = "delay";
+    });
     _.bindAll(this, 'callback', 'error');
   },
 
   execute: function(){
-    console.log('---- Executing ' + this.rid + " " + this.options.func + ' -------');
+    //console.log('---- Executing ' + this.rid + " " + this.options.func + ' -------');
     this.sts = "executing";
     return App.RequestApi[this.options.func].apply(this, this.options.args.concat(_.toArray(arguments)));
   },
@@ -284,10 +304,15 @@ App.Request = Backbone.View.extend({
   },
 
   error: function(){
-    console.log('error');
     args = ['error'].concat(_.toArray(arguments));
     this.trigger.apply(this, args);
+  },
+
+  delay: function(){
+    args = ['delay'].concat(_.toArray(arguments));
+    this.trigger.apply(this, args);
   }
+
 });
 
 /* ------------------------------------------------------------------- */
@@ -311,7 +336,7 @@ App.RequestPanel = Backbone.View.extend({
 
   register: function(request){
     console.log('---- Register ' + request.rid + " " + request.options.func + ' -------');
-    console.log(request.options.args);
+    //console.log(request.options.args);
     this.pendingRequests.push(request);
     this.render();
   },
