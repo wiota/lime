@@ -88,7 +88,7 @@ shadow color  42,44,57
 #request_panel {
   display:block;
   z-index: 3;
-  background-color: rgba(255,255,255,0.9);
+  background-color: rgba(255,255,255,1);
   margin: 0;
   border-top: 1px solid #82db8a;
   padding: 14px 0 0 2%;
@@ -113,9 +113,8 @@ shadow color  42,44,57
 
 #request_panel div.requestlog a {
   display:block;
-  width: 14px;
-  height: 12px;
-  border: 1px solid #ccc;
+  width: 2px;
+  height: 2px;
   border-width: 1px 0;
   background-color: #838d8d;
   position: relative;
@@ -163,9 +162,7 @@ shadow color  42,44,57
 }
 
 #request_panel div.requestlog a.complete {
-  background-color:#fff;
-  width: 12px;
-  border: 1px dotted #000;
+  background-color:#7ef20c;
 }
 
 #request_panel div.requestlog a.unregistered {
@@ -207,7 +204,7 @@ shadow color  42,44,57
 .summary {
   z-index: 100;
   position: relative;
-  background-color: #f0f0f0;
+  background-color: #fff;
   width: 95%;
   padding: 4% 1% 4% 4%;
   margin: 0;
@@ -218,7 +215,7 @@ shadow color  42,44,57
     }
 
 .body.listing .summary {
-  background-color: #ff8800;
+  background: #ff8800;
   color: #fff;
   }
 

@@ -294,7 +294,8 @@ App.Request = Backbone.View.extend({
   execute: function(){
     //console.log('---- Executing ' + this.rid + " " + this.options.func + ' -------');
     this.sts = "executing";
-    return App.RequestApi[this.options.func].apply(this, this.options.args.concat(_.toArray(arguments)));
+    this.options.args = this.options.args.concat(_.toArray(arguments));
+    return App.RequestApi[this.options.func].apply(this, this.options.args);
   },
 
   // default callbacks, can be overriden
@@ -344,10 +345,17 @@ App.RequestPanel = Backbone.View.extend({
   unregister: function(request){
     //console.log('---- Unregister ' + request.rid + ' -------');
     this.render();
-    // turned off for rendering mountians
-    //this.pendingRequests = _.without(this.pendingRequests, request);
-    this.completedRequests.push(request);
-    //request.remove();
+    // turn off for lines instead of mountains
+    this.pendingRequests = _.without(this.pendingRequests, request);
+    request.remove();
+  },
+
+  retry: function(){
+    _.each(this.pendingRequests, function(r){
+      if(r.sts == 'error'){
+        r.execute();
+      }
+    });
   },
 
   completeById: function(){
