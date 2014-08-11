@@ -27,10 +27,10 @@ App.RequestApi = {
     if(model.isNew()){
       vertices = [model];
       edges = [[predecessor, model]];
-      requestChain.push({'func': App.RequestApi.graphRequest, 'args': [vertices, edges]});
+      requestChain.push({'func': 'graphRequest', 'args': [vertices, edges]});
     }
 
-    requestChain.push({'func':App.RequestApi.splitBatchPhotos, 'args': [files, nesting, model]})
+    requestChain.push({'func':'splitBatchPhotos', 'args': [files, nesting, model]})
 
     this.serial(requestChain);
 
@@ -40,31 +40,31 @@ App.RequestApi = {
 
   graphRequest: function(vertices, edges){
     this.serial([
-      {'func': App.RequestApi.verticesRequest, 'args': [vertices]},
-      {'func': App.RequestApi.edgesRequest, 'args': [edges]}
+      {'func': 'verticesRequest', 'args': [vertices]},
+      {'func': 'edgesRequest', 'args': [edges]}
     ]);
   },
 
   // High Level
 
   splitBatchPhotos: function(files, nesting, model){
-    this.parallel(this.mapToInstructions(files, App.RequestApi.photoRequest, [nesting, model]))
+    this.parallel(this.mapToInstructions(files, ['photoRequest'], [nesting, model]))
   },
 
   photoRequest: function(file, nesting, model){
 
     this.serial([
-      {'func': App.RequestApi.filePutRequest, 'args': [file]},
-      {'func': App.RequestApi.wrapRequest, 'args': [file, nesting, model]}
+      {'func': 'filePutRequest', 'args': [file]},
+      {'func': 'wrapRequest', 'args': [file, nesting, model]}
     ]);
   },
 
   verticesRequest: function(vertices){
-    this.serial(this.mapToInstructions(vertices, App.RequestApi.vertexRequest));
+    this.serial(this.mapToInstructions(vertices, ['vertexRequest']));
   },
 
   edgesRequest: function(edges){
-    this.serial(this.mapToInstructions(edges, App.RequestApi.edgeRequest));
+    this.serial(this.mapToInstructions(edges, ['edgeRequest']));
   },
 
   // Lower Level
@@ -88,8 +88,8 @@ App.RequestApi = {
 
     edges.push([model, highest]);
     this.serial([
-      {'func': App.RequestApi.verticesRequest, 'args': [vertices]},
-      {'func': App.RequestApi.edgesRequest, 'args': [edges]}
+      {'func': 'verticesRequest', 'args': [vertices]},
+      {'func': 'edgesRequest', 'args': [edges]}
     ]);
   },
 
@@ -129,7 +129,6 @@ App.RequestApi = {
   },
 
   edgeRequest: function(edge){
-    console.log(edge);
     // options
     var options = {
       success: this.callback,
@@ -255,6 +254,7 @@ App.Request = Backbone.View.extend({
     this.options = options || {};
     // Id this request
     this.rid = App.requestPanel.getId();
+    this.labelRendered = false;
     this.sts = "created";
     // Keep track of it
     var request = this;
@@ -272,9 +272,9 @@ App.Request = Backbone.View.extend({
   },
 
   execute: function(){
-    console.log('---- Executing ' + this.rid + ' -------');
+    console.log('---- Executing ' + this.rid + " " + this.options.func + ' -------');
     this.sts = "executing";
-    return this.options.func.apply(this, this.options.args.concat(_.toArray(arguments)));
+    return App.RequestApi[this.options.func].apply(this, this.options.args.concat(_.toArray(arguments)));
   },
 
   // default callbacks, can be overriden
@@ -297,7 +297,7 @@ App.Request = Backbone.View.extend({
 App.RequestPanel = Backbone.View.extend({
   el: $('#request_panel'),
   requestsMade: 0,
-  allRequests: [],
+  pendingRequests: [],
   completedRequests: [],
 
   initialize: function(){
@@ -310,15 +310,17 @@ App.RequestPanel = Backbone.View.extend({
   },
 
   register: function(request){
-    console.log('---- Register ' + request.rid + ' -------');
-    this.allRequests.push(request);
+    console.log('---- Register ' + request.rid + " " + request.options.func + ' -------');
+    console.log(request.options.args);
+    this.pendingRequests.push(request);
     this.render();
   },
 
   unregister: function(request){
-    console.log('---- Unregister ' + request.rid + ' -------');
+    //console.log('---- Unregister ' + request.rid + ' -------');
     this.render();
-    //this.allRequests = _.without(this.allRequests, request);
+    // turned off for rendering mountians
+    //this.pendingRequests = _.without(this.pendingRequests, request);
     this.completedRequests.push(request);
     //request.remove();
   },
@@ -330,14 +332,13 @@ App.RequestPanel = Backbone.View.extend({
   initPanelInterface: function(){
     var panel = this.$el;
     panel.on('mousedown', function(e){
+      if(e.which == 3) {return false}
       var of = e.offsetY;
-      console.log(of);
       $(window).on('mousemove', function(e){
         var top = ((e.pageY - of)/$(this).height()*100) + '%';
         panel.css({'top':top})
       });
       $(window).on('mouseup', function(){
-        console.log($(this).height())
         $(this).unbind('mouseup mousemove');
       });
       return false;
@@ -345,15 +346,64 @@ App.RequestPanel = Backbone.View.extend({
   },
 
   render: function(){
-    if(this.allRequests.length<=0){};
+    if(this.pendingRequests.length<=0){};
     var a = $('<div class="requestlog"></div>');
-    _.each(this.allRequests, function(r){
+    _.each(this.pendingRequests, function(r){
       if(r.rid < 10){format = '&nbsp;'}
       else {format = ''}
-      display = "<a class='" + r.sts + "'><span>" + format + r.rid + "</span></a>";
+      if(!r.labelRendered){label = this.renderLabels(r);}
+      else {label = '';}
+      display = "<a class='" + r.sts + " "+ r.options.func + "'>"+label+"<span>" + format + r.rid + "</span></a>";
       a.append(display);
-    })
+    }, this);
     this.$el.children('.container').prepend(a);
+  },
+
+  renderLabels: function(r){
+    var func = r.options.func;
+    var args = r.options.args
+
+    var returnString = "<span class='args'>";
+    returnString += func + " ";
+
+    if(func == 'batchPhotosToVertex'){
+      returnString += args[0].length + ' files';
+
+    } else if(func == 'graphRequest'){
+
+    } else if(func == 'verticesRequest'){
+      var vertices = args[0];
+      returnString += _.reduceRight(vertices, function(memo, v){
+        return memo + " {" + (v.attributes && (v.attributes.title || _.last(v.attributes.href.split('/'))))+"}";
+      }, '');
+
+    } else if(func == 'vertexRequest'){
+      returnString += "{"+(args[0].attributes && (args[0].attributes.title || _.last(args[0].attributes.href.split('/'))))+"}";
+
+    } else if(func == 'edgesRequest'){
+      var edges = args[0]
+      returnString += _.reduceRight(edges, function(memo, e){
+        return memo + " ["
+          + (e[0].attributes && (e[0].attributes.title || _.last(e[0].attributes.href.split('/'))))
+          + ", "
+          + (e[1].attributes && (e[1].attributes.title || _.last(e[1].attributes.href.split('/'))))
+          + "]";
+      }, '');
+
+    } else if(func == 'edgeRequest'){
+      returnString += "["
+        + (args[0][0].attributes && (args[0][0].attributes.title || _.last(args[0][0].attributes.href.split('/'))))
+        + ", "
+        + (args[0][1].attributes && (args[0][1].attributes.title || _.last(args[0][1].attributes.href.split('/'))))
+        + "]";
+
+    } else if(func == 'photoRequest' || func == 'filePutRequest' || func == 'wrapRequest'){
+      returnString += args[0].name;
+    }
+
+    returnString += "</span>";
+    r.labelRendered = true;
+    return returnString;
   }
 
 })

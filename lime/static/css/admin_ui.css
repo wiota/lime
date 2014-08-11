@@ -113,11 +113,26 @@ shadow color  42,44,57
 
 #request_panel div.requestlog a {
   display:block;
-  width: 4px;
-  height: 4px;
+  width: 14px;
+  height: 12px;
+  border: 1px solid #ccc;
+  border-width: 1px 0;
   background-color: #838d8d;
   position: relative;
 }
+
+#request_panel div.requestlog a span.args {
+  display:none;
+  position:absolute;
+  top: 0;
+  left: 14px;
+  font-size: 12px;
+  width: 550px;
+}
+
+#request_panel div.requestlog a:hover span.args {
+  display:block;
+  }
 
 #request_panel div.requestlog a span {
   display:none;
@@ -143,10 +158,13 @@ shadow color  42,44,57
   background-color:#ff8800;
 }
 
+#request_panel div.requestlog a.delayed {
+  background-color:#ffa53f;
+}
+
 #request_panel div.requestlog a.complete {
   background-color:#fff;
-  width: 2px;
-  height: 2px;
+  width: 12px;
   border: 1px dotted #000;
 }
 

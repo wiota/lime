@@ -346,7 +346,7 @@ App.FormView['Vertex'] = Backbone.View.extend({
 
 
     var r = App.requestPanel.serial([
-      {'func': App.RequestApi.batchPhotosToVertex, 'args': [files, this.newPhotoNesting, this.model, this.predecessor]},
+      {'func': 'batchPhotosToVertex', 'args': [files, this.newPhotoNesting, this.model, this.predecessor]},
     ]);
 
 
