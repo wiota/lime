@@ -194,7 +194,8 @@ App.View.SummaryView['Vertex'] = App.SummaryView = Backbone.View.extend({
     'click .save_order':'saveSuccset',
     'click .add_category':'addCategoryForm',
     'click .add_work':'addWorkForm',
-    'click .add_photo':'addPhotoForm'
+    'click .add_photo':'addPhotoForm',
+    'click .set_cover':'setCoverForm'
   },
 
   initialize: function(){
@@ -242,6 +243,10 @@ App.View.SummaryView['Vertex'] = App.SummaryView = Backbone.View.extend({
 
   addPhotoForm: function(){
     console.log("No longer functional");
+  },
+
+  setCoverForm: function(){
+    App.actionPanel.loadCoverForm(this.model);
   },
 
   saveSuccset: function(){

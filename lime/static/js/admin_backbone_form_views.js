@@ -343,8 +343,6 @@ App.FormView['Vertex'] = Backbone.View.extend({
       this.trigger('complete', this);
     }
 
-
-
     var r = App.requestPanel.serial([
       {'func': 'batchPhotosToVertex', 'args': [files, this.newPhotoNesting, this.model, this.predecessor]},
     ]);
@@ -408,6 +406,119 @@ App.FormView['Vertex'] = Backbone.View.extend({
 
 });
 
+/* ------------------------------------------------------------------- */
+// Cover Photo Form
+/* ------------------------------------------------------------------- */
+
+App.FormView['Cover'] = Backbone.View.extend({
+
+  passableOptions: ['model'],
+  tagName: 'form',
+
+  events: {},
+
+  initialize: function(options){
+    this.options = options || {};
+
+    this.children = [];
+    this.childOptions = _.pick(this.options, this.passableOptions);
+
+    this.appendFileUpload();
+    this.appendSaveView();
+
+    this.listenTo(this.model, 'sync', this.saveView.statusSaved);
+    this.listenTo(this.model, 'error', this.saveView.statusError);
+
+    _.bindAll(this, 'close', 'collapse');
+
+  },
+
+  appendFileUpload: function(){
+    this.fileUpload = new App.FormView.FileUploadView(this.childOptions),
+    this.$el.append(this.fileUpload.el);
+    this.listenTo(this.fileUpload, 'change', this.filesChanged);
+    this.children.push(this.fileUpload);
+  },
+
+  appendSaveView: function(){
+    this.saveView = new App.FormView.SaveView(this.childOptions);
+    this.$el.append(this.saveView.el);
+    this.listenTo(this.saveView, 'save', this.save)
+    this.listenTo(this.saveView, 'close', this.collapse)
+    this.children.push(this.saveView);
+  },
+
+  render: function(){
+    this.fileUpload.render();
+    this.saveView.render();
+    return this;
+  },
+
+  collapse: function(){
+    console.log('collapse');
+    if(this.model.isModified()){
+      this.save();
+    }
+    this.close();
+    // if animated, need to call stop listening on serialized attribute forms
+    //this.$el.animate({'height': 0, 'opacity':.3}, 300, 'linear', this.close);
+  },
+
+  // Events
+
+  filesChanged: function(files){
+
+    file = files[0];
+    this.model;
+    App.requestPanel.serial([
+      {'func': 'uploadCoverPhoto', 'args': [file, this.model]},
+    ]);
+
+  },
+
+  attributesChanged: function(changeObject){
+    this.saveView.statusUnsaved();
+    this.model.set(changeObject);
+    this.savePeriodically();
+  },
+
+  submit: function(evt){
+    this.collapse();
+    console.log('Submit');
+    return false;
+  },
+
+  save: function(){
+    if(!this.model.isModified()){
+      return false;
+    }
+    this.saveView.statusSaving();
+
+    if(this.model.isNew()){
+      console.log(this.model.get('title') + ' New Saving');
+      this.collection.createAndAddTo(this.model, this.predecessor);
+    } else {
+      console.log(this.model.get('title') + ' Old Saving');
+      this.model.save();
+    }
+    return false;
+  },
+
+  savePeriodically: _.debounce(function(){
+    this.save();
+  }, 1000),
+
+  cancel: function(){
+    if(!this.model.isNew() && this.model.isModified()){
+      this.model.outOfSync();
+    }
+    this.close();
+  }
+
+
+});
+
+
 
 /* ------------------------------------------------------------------- */
 // Action Panel
@@ -455,6 +566,23 @@ App.ActionPanel = Backbone.View.extend({
       'collection': App.collection[_cls],
       'newPhotoNesting': newPhotoNesting,
       'className': className
+    });
+
+    this.$el.css({'right': '-100%'});
+
+    this.$el.append(form.el);
+    form.render();
+    this.forms.push(form);
+    this.$el.animate({'right': '0'}, 200);
+  },
+
+  loadCoverForm: function(model){
+    this.closeForms();
+    var _cls = model.get('_cls');
+    var className = 'cover form';
+
+    var form = new App.FormView['Cover']({
+      'model': model
     });
 
     this.$el.css({'right': '-100%'});

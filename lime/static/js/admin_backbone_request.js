@@ -40,9 +40,24 @@ App.RequestApi = {
 
   graphRequest: function(vertices, edges){
     this.serial([
-      {'func': 'verticesRequest', 'args': [vertices]},
-      {'func': 'edgesRequest', 'args': [edges]}
+      {'func': 'createVerticesRequest', 'args': [vertices]},
+      {'func': 'createEdgesRequest', 'args': [edges]}
     ]);
+  },
+
+  uploadCoverPhoto: function(file, model){
+    this.serial([
+      {'func': 'filePutRequest', 'args': [file]},
+      {'func': 'wrapCover', 'args': []},
+      {'func': 'setCover', 'args': [model]}
+    ])
+  },
+
+  setCover: function(vertex, cover){
+    console.log(cover);
+    vertex.set({'cover':cover.id});
+    console.log(vertex.get('cover'));
+    vertex.save();
   },
 
   // High Level
@@ -55,21 +70,26 @@ App.RequestApi = {
 
     this.serial([
       {'func': 'filePutRequest', 'args': [file]},
-      {'func': 'wrapRequest', 'args': [file, nesting, model]}
+      {'func': 'wrapVertex', 'args': [file, nesting, model]}
     ]);
   },
 
-  verticesRequest: function(vertices){
-    this.serial(this.mapToInstructions(vertices, ['vertexRequest']));
+  createVerticesRequest: function(vertices){
+    this.serial(this.mapToInstructions(vertices, ['createVertexRequest']));
   },
 
-  edgesRequest: function(edges){
-    this.serial(this.mapToInstructions(edges, ['edgeRequest']));
+  createEdgesRequest: function(edges){
+    this.serial(this.mapToInstructions(edges, ['createEdgeRequest']));
   },
 
   // Lower Level
 
-  wrapRequest: function(file, nesting, model, href){
+  wrapCover: function(href){
+    var photo = new App.Model['Vertex.Medium.Photo']({"href": href});
+    this.serial([{'func':'createVertexRequest', 'args':[photo]}]);
+  },
+
+  wrapVertex: function(file, nesting, model, href){
     var vertices = [];
     var edges = [];
 
@@ -88,8 +108,8 @@ App.RequestApi = {
 
     edges.push([model, highest]);
     this.serial([
-      {'func': 'verticesRequest', 'args': [vertices]},
-      {'func': 'edgesRequest', 'args': [edges]}
+      {'func': 'createVerticesRequest', 'args': [vertices]},
+      {'func': 'createEdgesRequest', 'args': [edges]}
     ]);
   },
 
@@ -100,10 +120,10 @@ App.RequestApi = {
     var request = this;
 
     // testing
-    if(Math.random()<.5){
-      request.trigger('error');
-      return false;
-    }
+    // if(Math.random()<.5){
+    //   request.trigger('error');
+    //   return false;
+    // }
 
     // S3 uploader
     var uploader = new App.Uploader();
@@ -116,7 +136,7 @@ App.RequestApi = {
     uploader.uploadFile(file);
   },
 
-  vertexRequest: function(vertex){
+  createVertexRequest: function(vertex){
     var _cls = vertex.get('_cls')
 
     // client side
@@ -133,7 +153,7 @@ App.RequestApi = {
     vertex.save(vertex.changedAttributes(), options);
   },
 
-  edgeRequest: function(edge){
+  createEdgeRequest: function(edge){
     // options
     var options = {
       success: this.callback,
@@ -142,6 +162,7 @@ App.RequestApi = {
 
     edge[0].addToSuccset(edge[1], options);
   }
+
 }
 
 /* ------------------------------------------------------------------- */
@@ -267,6 +288,7 @@ App.RequestLibrary = {
 App.Request = Backbone.View.extend({
 
   initialize: function(options){
+
     this.options = options || {};
     // Id this request
     this.rid = App.requestPanel.getId();
@@ -292,7 +314,7 @@ App.Request = Backbone.View.extend({
   },
 
   execute: function(){
-    //console.log('---- Executing ' + this.rid + " " + this.options.func + ' -------');
+    console.log('---- Executing ' + this.rid + " " + this.options.func + ' -------');
     this.sts = "executing";
     this.options.args = this.options.args.concat(_.toArray(arguments));
     return App.RequestApi[this.options.func].apply(this, this.options.args);
@@ -327,7 +349,7 @@ App.RequestPanel = Backbone.View.extend({
   completedRequests: [],
 
   initialize: function(){
-    this.render();
+    //this.render();
     this.initPanelInterface();
   },
 
@@ -339,12 +361,12 @@ App.RequestPanel = Backbone.View.extend({
     console.log('---- Register ' + request.rid + " " + request.options.func + ' -------');
     //console.log(request.options.args);
     this.pendingRequests.push(request);
-    this.render();
+    //this.render();
   },
 
   unregister: function(request){
     //console.log('---- Unregister ' + request.rid + ' -------');
-    this.render();
+    //this.render();
     // turn off for lines instead of mountains
     this.pendingRequests = _.without(this.pendingRequests, request);
     request.remove();
@@ -404,16 +426,16 @@ App.RequestPanel = Backbone.View.extend({
 
     } else if(func == 'graphRequest'){
 
-    } else if(func == 'verticesRequest'){
+    } else if(func == 'createVerticesRequest'){
       var vertices = args[0];
       returnString += _.reduceRight(vertices, function(memo, v){
         return memo + " {" + (v.attributes && (v.attributes.title || _.last(v.attributes.href.split('/'))))+"}";
       }, '');
 
-    } else if(func == 'vertexRequest'){
+    } else if(func == 'createVertexRequest'){
       returnString += "{"+(args[0].attributes && (args[0].attributes.title || _.last(args[0].attributes.href.split('/'))))+"}";
 
-    } else if(func == 'edgesRequest'){
+    } else if(func == 'createEdgesRequest'){
       var edges = args[0]
       returnString += _.reduceRight(edges, function(memo, e){
         return memo + " ["
@@ -423,14 +445,14 @@ App.RequestPanel = Backbone.View.extend({
           + "]";
       }, '');
 
-    } else if(func == 'edgeRequest'){
+    } else if(func == 'createEdgeRequest'){
       returnString += "["
         + (args[0][0].attributes && (args[0][0].attributes.title || _.last(args[0][0].attributes.href.split('/'))))
         + ", "
         + (args[0][1].attributes && (args[0][1].attributes.title || _.last(args[0][1].attributes.href.split('/'))))
         + "]";
 
-    } else if(func == 'photoRequest' || func == 'filePutRequest' || func == 'wrapRequest'){
+    } else if(func == 'photoRequest' || func == 'filePutRequest' || func == 'wrapVertex'){
       returnString += args[0].name;
     }
 
