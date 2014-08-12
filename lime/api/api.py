@@ -8,71 +8,33 @@ from flask.ext.login import current_user
 
 mod = Blueprint('api', __name__, url_prefix='/api/v1')
 
+'''
+Body endpoints
+'''
 
-@mod.route('/apex/body/')
+@mod.route('/apex/body/', methods=['GET'])
 @login_required
 def body():
     return Body.objects.get(owner=current_user.id).to_bson()
 
 
-@mod.route('/apex/happenings/')
+@mod.route('/apex/body/succset/', methods=['PUT'])
 @login_required
-def happenings():
-    return Happenings.objects.get(owner=current_user.id).to_bson()
-
-
-@mod.route('/user/')
-@login_required
-def user():
-    return User.objects.get(id=current_user.id).to_bson()
-
-
-@mod.route('/work/', methods=['GET'])
-@login_required
-def work():
-    return Work.objects(owner=current_user.id).to_bson()
-
-
-@mod.route('/work/', methods=['POST'])
-@login_required
-def post_work():
-    data = request.json
-    data['owner'] = current_user.id
-    work = Work(**data).save()
-    return work.to_bson(), 200
-
-
-@mod.route('/tag/', methods=['POST'])
-@login_required
-def post_tag():
-    data = request.json
-    data['owner'] = current_user.id
-    tag = Tag(**data).save()
-    return tag.to_bson(), 200
-
-
-@mod.route('/work/<id>/', methods=['PUT'])
-@login_required
-def put_work(id):
-    doc = Work.objects.get(owner=current_user.id, id=request.json['_id'])
-    data = {k: request.json[k] for k in doc.get_save_fields()}
-    update_document(doc, data).save()
+def put_body_succset():
+    Body.objects(
+        owner=current_user.id).update_one(
+        set__succset=request.json['succset'])
     return jsonify(result="success"), 200  # TODO: Should be a 204
 
 
-@mod.route('/category/', methods=['GET'])
-@login_required
-def work_individual():
-    return Category.objects(owner=current_user.id).to_bson()
+'''
+Happening endpoints
+'''
 
-
-@mod.route('/category/', methods=['POST'])
+@mod.route('/apex/happenings/', methods=['GET'])
 @login_required
-def post_category():
-    data = request.json
-    data['owner'] = current_user.id
-    category = Category(**data).save()
-    return category.to_bson(), 200
+def happenings():
+    return Happenings.objects.get(owner=current_user.id).to_bson()
 
 
 @mod.route('/happening/', methods=['POST'])
@@ -84,6 +46,75 @@ def post_happening():
     return happening.to_bson(), 200
 
 
+@mod.route('/happening/form/', methods=['GET'])
+@login_required
+def happening_form():
+    return Happening().to_form()
+
+
+'''
+User endpoints
+'''
+
+@mod.route('/user/', methods=['GET'])
+@login_required
+def user():
+    return User.objects.get(id=current_user.id).to_bson()
+
+'''
+Work endpoints
+'''
+
+@mod.route('/work/', methods=['POST'])
+@login_required
+def post_work():
+    data = request.json
+    data['owner'] = current_user.id
+    work = Work(**data).save()
+    return work.to_bson(), 200
+
+
+@mod.route('/work/<id>/', methods=['PUT'])
+@login_required
+def put_work(id):
+    doc = Work.objects.get(owner=current_user.id, id=request.json['_id'])
+    data = {k: request.json[k] for k in doc.get_save_fields()}
+    update_document(doc, data).save()
+    return jsonify(result="success"), 200  # TODO: Should be a 204
+
+
+@mod.route('/work/form/', methods=['GET'])
+@login_required
+def work_form():
+    return Work().to_form()
+
+
+'''
+Tag endpoints
+'''
+
+@mod.route('/tag/', methods=['POST'])
+@login_required
+def post_tag():
+    data = request.json
+    data['owner'] = current_user.id
+    tag = Tag(**data).save()
+    return tag.to_bson(), 200
+
+
+'''
+Category endpoints
+'''
+
+@mod.route('/category/', methods=['POST'])
+@login_required
+def post_category():
+    data = request.json
+    data['owner'] = current_user.id
+    category = Category(**data).save()
+    return category.to_bson(), 200
+
+
 @mod.route('/category/<id>/', methods=['PUT'])
 @login_required
 def put_category(id):
@@ -93,16 +124,17 @@ def put_category(id):
     return jsonify(result="success"), 200  # TODO: Should be a 204
 
 
-@mod.route('/photo/', methods=['POST'])
+@mod.route('/category/form/', methods=['GET'])
 @login_required
-def post_photo():
-    data = request.json
-    data['owner'] = current_user.id
-    photo = Photo(**data).save()
-    return photo.to_bson(expand=False), 200
+def category_form():
+    return Category().to_form()
 
 
-@mod.route('/<vertex_type>/<id>/')
+'''
+Vertex endpoints
+'''
+
+@mod.route('/<vertex_type>/<id>/', methods=['GET'])
 @login_required
 def vertex_id(vertex_type, id):
     return Vertex.objects.get(owner=current_user.id, id=id).to_bson()
@@ -118,15 +150,6 @@ def put_succset(vertex_type, id):
     return jsonify(result="success"), 200  # TODO: Should be a 204
 
 
-@mod.route('/apex/body/succset/', methods=['PUT'])
-@login_required
-def put_body_succset():
-    Body.objects(
-        owner=current_user.id).update_one(
-        set__succset=request.json['succset'])
-    return jsonify(result="success"), 200  # TODO: Should be a 204
-
-
 @mod.route('/<vertex_type>/<id>/', methods=['DELETE'])
 @login_required
 def delete_by_id(vertex_type, id):
@@ -134,29 +157,50 @@ def delete_by_id(vertex_type, id):
     return jsonify(result="success"), 200  # TODO: Should be a 204
 
 
-@mod.route('/work/form/')
+'''
+Photo endpoints
+'''
+
+@mod.route('/photo/', methods=['POST'])
 @login_required
-def work_form():
-    return Work().to_form()
+def post_photo():
+    data = request.json
+    data['owner'] = current_user.id
+    photo = Photo(**data).save()
+    return photo.to_bson(expand=False), 200
 
 
-@mod.route('/category/form/')
+'''
+Page endpoints
+'''
+
+@mod.route('/page/', methods=['POST'])
 @login_required
-def category_form():
-    return Category().to_form()
+def post_page():
+    data = request.json
+    data['owner'] = current_user.id
+    page = CustomPage(**data).save()
+    return page.to_bson(), 200
 
 
-@mod.route('/medium/form/')
+@mod.route('/page/<id>/', methods=['PUT'])
 @login_required
-def medium_form():
-    return Medium().to_form()
+def put_page(id):
+    doc = CustomPage.objects.get(owner=current_user.id, id=request.json['_id'])
+    data = {k: request.json[k] for k in doc.get_save_fields()}
+    update_document(doc, data).save()
+    return jsonify(result="success"), 200  # TODO: Should be a 204
 
 
-@mod.route('/happening/form/')
+@mod.route('/page/form/', methods=['GET'])
 @login_required
-def happening_form():
-    return Happening().to_form()
+def page_form():
+    return CustomPage().to_form()
 
+
+'''
+Edge endpoints
+'''
 
 @mod.route('/edge/', methods=["POST"])
 @login_required
@@ -165,10 +209,8 @@ def add_edge():
     for source_id, sink_id in zip(edges, edges[1:]):
         source = Vertex.objects.get(id=source_id, owner=current_user.id)
         source.update(add_to_set__succset=sink_id)
-
         sink = Vertex.objects.get(id=sink_id, owner=current_user.id)
         sink.update(add_to_set__predset=source_id)
-
     return jsonify(result="success"), 200  # TODO: Should be a 204
 
 
@@ -179,8 +221,16 @@ def delete_edge():
     for source_id, sink_id in zip(edges, edges[1:]):
         source = Vertex.objects.get(id=source_id, owner=current_user.id)
         source.update(pull__succset=sink_id)
-
         sink = Vertex.objects.get(id=sink_id, owner=current_user.id)
         sink.update(pull__predset=source_id)
-
     return jsonify(result="success"), 200  # TODO: Should be a 204
+
+
+'''
+Medium endpoint
+'''
+
+@mod.route('/medium/form/', methods=['GET'])
+@login_required
+def medium_form():
+    return Medium().to_form()
