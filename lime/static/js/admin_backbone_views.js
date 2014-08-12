@@ -223,6 +223,10 @@ App.View.SummaryView['Vertex'] = App.SummaryView = Backbone.View.extend({
     }
     msg.log("Rendering Summary", 'render');
     this.$el.html(this.template(this.model.toJSON()));
+    this.$covers = this.$el.children('.cover');
+    _.each(this.model.get('cover'), function(coverItem){
+      this.$covers.append("<img src='"+coverItem.get('href')+"?w=500' alt='' />")
+    }, this);
     this.delegateEvents();
     return this;
   },

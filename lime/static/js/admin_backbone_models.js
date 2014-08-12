@@ -71,7 +71,7 @@ App.Model['Vertex']= Backbone.Model.extend({
   parse: function(response){
     if(response.result){
       response.result.succset = this.reference(response.result.succset);
-      response.result.cover = this.reference(response.result.succset);
+      response.result.cover = this.reference(response.result.cover);
       return response.result;
     }
 
@@ -186,7 +186,57 @@ App.Model['Vertex']= Backbone.Model.extend({
     this.saveSuccset();
   },
 
+  /* ------------------------------------------------------------------- */
+  // Cover Functions
+  /* ------------------------------------------------------------------- */
+
+  setCover: function(photos, options){
+    this.set({'cover':photos});
+    this.saveCover(options);
+  },
+
+  saveCover: function(options){
+    var list = this.get('cover');
+    var model = this;
+
+    options = options || {};
+
+    var success = options.success;
+    var error = options.error;
+
+    options.success = function(resp){
+      if(success) success(model, resp, options);
+      model.trigger('sync', model, resp);
+      console.log('sync cover save on ' + model.get('_id'))
+    }
+
+    options.error = function(resp){
+      if(error) error(model, resp, options);
+      model.trigger('error', model, resp);
+    }
+
+    options.url = this.url();
+    options.contentType = "application/json";
+    options.data = JSON.stringify({'cover': _.pluck(list, 'id')});
+
+    Backbone.sync('update', this, options);
+  },
+
+  // for reordering
+  setSuccset: function(idList){
+    var succset = this.get('succset');
+    var update = [];
+    _.each(idList, function(id, index, list){
+      var obj = _.findWhere(succset, {'id': id});
+      update.push(obj);
+    });
+    //console.log(_.pluck(update, 'id'));
+    this.set({'succset': update});
+    this.saveSuccset();
+  },
+
 });
+
 
 /* ------------------------------------------------------------------- */
 // Category

@@ -145,6 +145,9 @@ shadow color  42,44,57
     font-size: 140%;
     }
 
+  .summary .cover {width: 30%;}
+  .summary .cover img {width: 100%;}
+
 .body.listing .summary {
   background: #ff8800;
   color: #fff;

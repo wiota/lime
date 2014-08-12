@@ -54,7 +54,7 @@ App.RequestApi = {
   },
 
   setCover: function(vertex, cover){
-    vertex.set({'cover':[cover.id]});
+    vertex.setCover({'cover':[cover.id]});
     vertex.save();
   },
 
@@ -83,7 +83,7 @@ App.RequestApi = {
   // Lower Level
 
   wrapCover: function(href){
-    var photo = new App.Model['Vertex.Medium.Photo']({"href": href});
+    var photo = new App.Model['Vertex.Medium.Photo']({"href": href, 'resize_href': file.name});
     this.serial([{'func':'createVertexRequest', 'args':[photo]}]);
   },
 
@@ -92,7 +92,7 @@ App.RequestApi = {
     var edges = [];
 
     // content type should map to vertex types
-    var lowest = new App.Model['Vertex.Medium.Photo']({"href": href});
+    var lowest = new App.Model['Vertex.Medium.Photo']({"href": href, 'resize_href': file.name});
     vertices.push(lowest);
 
     var highest = _.reduce(nesting, function(v1, nest){
