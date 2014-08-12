@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from flask import current_app as app
-from toolbox.tools import update_document, slugify
+from toolbox.tools import update_document
 from toolbox.models import *
 from flask.ext.login import login_required
 from flask.ext.login import current_user
@@ -38,7 +38,6 @@ def work():
 def post_work():
     data = request.json
     data['owner'] = current_user.id
-    data['slug'] = slugify(data['title'])
     work = Work(**data).save()
     return work.to_bson(), 200
 
@@ -48,7 +47,6 @@ def post_work():
 def post_tag():
     data = request.json
     data['owner'] = current_user.id
-    data['slug'] = slugify(data['title'])
     tag = Tag(**data).save()
     return tag.to_bson(), 200
 
@@ -72,7 +70,6 @@ def work_individual():
 @login_required
 def post_category():
     data = request.json
-    data['slug'] = slugify(data['title'])
     data['owner'] = current_user.id
     category = Category(**data).save()
     return category.to_bson(), 200
@@ -82,8 +79,6 @@ def post_category():
 @login_required
 def post_happening():
     data = request.json
-    print data
-    data['slug'] = slugify(data['title'])
     data['owner'] = current_user.id
     happening = Happening(**data).save()
     return happening.to_bson(), 200
