@@ -77,7 +77,7 @@ def post_work():
 @mod.route('/work/<id>/', methods=['PUT'])
 @login_required
 def put_work(id):
-    doc = Work.objects.get(owner=current_user.id, id=request.json['_id'])
+    doc = Work.objects.get(owner=current_user.id, id=id)
     data = {k: request.json[k] for k in doc.get_save_fields()}
     update_document(doc, data).save()
 
@@ -123,7 +123,7 @@ def post_category():
 @mod.route('/category/<id>/', methods=['PUT'])
 @login_required
 def put_category(id):
-    doc = Category.objects.get(owner=current_user.id, id=request.json['_id'])
+    doc = Category.objects.get(owner=current_user.id, id=id)
     data = {k: request.json[k] for k in doc.get_save_fields()}
     update_document(doc, data).save()
     return jsonify(result="success"), 200  # TODO: Should be a 204
@@ -191,7 +191,7 @@ def post_page():
 @mod.route('/page/<id>/', methods=['PUT'])
 @login_required
 def put_page(id):
-    doc = CustomPage.objects.get(owner=current_user.id, id=request.json['_id'])
+    doc = CustomPage.objects.get(owner=current_user.id, id=id)
     data = {k: request.json[k] for k in doc.get_save_fields()}
     update_document(doc, data).save()
     return jsonify(result="success"), 200  # TODO: Should be a 204
