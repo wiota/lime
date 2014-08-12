@@ -71,6 +71,7 @@ App.Model['Vertex']= Backbone.Model.extend({
   parse: function(response){
     if(response.result){
       response.result.succset = this.reference(response.result.succset);
+      response.result.cover = this.reference(response.result.succset);
       return response.result;
     }
 
