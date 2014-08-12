@@ -80,6 +80,11 @@ def put_work(id):
     doc = Work.objects.get(owner=current_user.id, id=request.json['_id'])
     data = {k: request.json[k] for k in doc.get_save_fields()}
     update_document(doc, data).save()
+
+    # TODO: This is a hack. get_save_fields should be reworked.
+    doc.reload()
+    doc.update(set__cover=request.json['cover'])
+
     return jsonify(result="success"), 200  # TODO: Should be a 204
 
 
