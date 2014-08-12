@@ -86,7 +86,7 @@ shadow color  42,44,57
   }
 
 #request_panel {
-  display:block;
+  display:none;
   z-index: 3;
   background-color: rgba(255,255,255,1);
   margin: 0;
@@ -98,75 +98,6 @@ shadow color  42,44,57
   left: 19.098300562504%;
   bottom: 0;
   overflow: auto;
-}
-
-#request_panel div.container {
-  width: 100000px;
-}
-
-#request_panel div.requestlog {
-  text-align: left;
-  float:left;
-  font-size: 10px;
-  font-family: "Monaco","Lucida Console","Courier New", "`space";
-}
-
-#request_panel div.requestlog a {
-  display:block;
-  width: 2px;
-  height: 2px;
-  border-width: 1px 0;
-  background-color: #838d8d;
-  position: relative;
-}
-
-#request_panel div.requestlog a span.args {
-  display:none;
-  position:absolute;
-  top: 0;
-  left: 14px;
-  font-size: 12px;
-  width: 550px;
-}
-
-#request_panel div.requestlog a:hover span.args {
-  display:block;
-  }
-
-#request_panel div.requestlog a span {
-  display:none;
-}
-
-#request_panel div.requestlog a.created {
-  background-color:#ffff00;
-}
-
-#request_panel div.requestlog a.registered {
-
-}
-
-#request_panel div.requestlog a.executing {
-  background-color:#82db8a;
-}
-
-#request_panel div.requestlog a.delayed {
-  background-color:#ffa53f;
-}
-
-#request_panel div.requestlog a.error {
-  background-color:#ff0000;
-}
-
-#request_panel div.requestlog a.delay {
-  background-color:#ffa53f;
-}
-
-#request_panel div.requestlog a.complete {
-  background-color:#7ef20c;
-}
-
-#request_panel div.requestlog a.unregistered {
-  background-color:#fff;
 }
 
 /* -------------------------------------------------------------------  */
@@ -643,3 +574,76 @@ i.info_tag {
   height: 100%;
   width: 0%;
 }
+
+/* -------------------------------------------------------------------  */
+/* Request Panel Mountains */
+
+#request_panel div.container {
+  width: 100000px;
+}
+
+#request_panel div.requestlog {
+  text-align: left;
+  float:left;
+  font-size: 10px;
+  font-family: "Monaco","Lucida Console","Courier New", "`space";
+}
+
+#request_panel div.requestlog a {
+  display:block;
+  width: 2px;
+  height: 2px;
+  border-width: 1px 0;
+  background-color: #838d8d;
+  position: relative;
+}
+
+#request_panel div.requestlog a span.args {
+  display:none;
+  position:absolute;
+  top: 0;
+  left: 14px;
+  font-size: 12px;
+  width: 550px;
+}
+
+#request_panel div.requestlog a:hover span.args {
+  display:block;
+  }
+
+#request_panel div.requestlog a span {
+  display:none;
+}
+
+#request_panel div.requestlog a.created {
+  background-color:#ffff00;
+}
+
+#request_panel div.requestlog a.registered {
+
+}
+
+#request_panel div.requestlog a.executing {
+  background-color:#82db8a;
+}
+
+#request_panel div.requestlog a.delayed {
+  background-color:#ffa53f;
+}
+
+#request_panel div.requestlog a.error {
+  background-color:#ff0000;
+}
+
+#request_panel div.requestlog a.delay {
+  background-color:#ffa53f;
+}
+
+#request_panel div.requestlog a.complete {
+  background-color:#7ef20c;
+}
+
+#request_panel div.requestlog a.unregistered {
+  background-color:#fff;
+}
+
