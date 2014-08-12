@@ -1,6 +1,6 @@
 import os
 from flask_sslify import SSLify
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, flash
 from urlparse import urlparse
 from bson.objectid import ObjectId
 from flask.ext.mongoengine import MongoEngine
@@ -15,6 +15,8 @@ from lime.upload import upload
 from lime.webhook import webhook
 from toolbox.models import User
 from toolbox.template_tools import format_date, format_money
+from toolbox.tools import AnonymousUser
+from pymongo.errors import AutoReconnect
 
 # Create a starter app
 app = Flask(__name__)
@@ -80,5 +82,10 @@ mongoexhaust.wrapper = tools.make_response
 def load_user(userid):
     try:
         return User.objects.get(id=userid)
-    except:
+    except AutoReconnect:
+        # TODO: This is not a good thing to do
+        flash("Cannot connect to DB.... sorry.")
+        return AnonymousUser()
+    except User.DoesNotExist:
+        flash("This user account no longer exists.")
         return AnonymousUser()
