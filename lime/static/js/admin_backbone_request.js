@@ -54,7 +54,7 @@ App.RequestApi = {
   },
 
   setCover: function(vertex, cover){
-    vertex.setCover({'cover':[cover.id]});
+    vertex.setCover([cover]);
     vertex.save();
   },
 

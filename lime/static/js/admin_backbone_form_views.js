@@ -219,8 +219,7 @@ App.FormView.SaveView = Backbone.View.extend({
 
   statusError: function(){
     this.$savebutton.attr('class', 'input save error');
-    this.$savebutton.html('Not Saved');
-    this.$savebutton.off();
+    this.$savebutton.val('Not Saved');
     this.$savebutton.on('click', this.triggerSave);
 
   },
