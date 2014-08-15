@@ -27,6 +27,7 @@ Backbone.Model.prototype.idAttribute = "_id";
 /* ------------------------------------------------------------------- */
 
 App.Model['Vertex']= Backbone.Model.extend({
+  referencedFields: ['succset', 'predset', 'cover'],
 
   initialize: function(options){
     options = options || {};
@@ -125,6 +126,41 @@ App.Model['Vertex']= Backbone.Model.extend({
 
   resynced: function(){
     this.trigger('resynced');
+  },
+
+  /* ------------------------------------------------------------------- */
+  // Attribute Functions
+  /* ------------------------------------------------------------------- */
+
+  saveAttributes: function(options){
+    var attrs = _.omit(this.attributes, this.referencedFields);
+    var model = this;
+
+    options = options || {};
+
+    var success = options.success;
+    var error = options.error;
+
+    options.success = function(resp){
+      if(success) success(model, resp, options);
+      model.trigger('sync', model, resp);
+      console.log('sync attributes save on ' + model.get('_id'))
+    }
+
+    options.error = function(resp){
+      if(error) error(model, resp, options);
+      model.trigger('error', model, resp);
+    }
+
+    options.url = this.url();
+    options.contentType = "application/json";
+    options.data = JSON.stringify(attrs);
+
+    console.log(options.data);
+
+    Backbone.sync('update', this, options);
+
+    //this.save();
   },
 
   /* ------------------------------------------------------------------- */

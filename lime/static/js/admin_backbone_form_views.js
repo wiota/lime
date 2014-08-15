@@ -383,10 +383,10 @@ App.FormView['Vertex'] = Backbone.View.extend({
 
     if(this.model.isNew()){
       console.log(this.model.get('title') + ' New Saving');
+      // Use Request Manager Here
       this.collection.createAndAddTo(this.model, this.predecessor);
     } else {
-      console.log(this.model.get('title') + ' Old Saving');
-      this.model.save();
+      this.model.saveAttributes();
     }
     return false;
   },
