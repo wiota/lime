@@ -9,6 +9,7 @@ from flask.ext.login import current_user
 from toolbox.tools import admin_required
 from toolbox.models import User, Host, Vertex, Body, Happenings
 from toolbox.email import *
+from toolbox.s3 import s3_config
 from flask.ext.login import login_user
 from .forms import *
 import requests
@@ -95,11 +96,11 @@ def delete_user(id):
 @admin_required
 def definitely_delete_user(id):
     user = User.objects.get(id=id)
-    if user.username == request.form["username"]:
+    if user.email == request.form["email"]:
         # Delete the S3 Bucket
         conn = boto.connect_s3()
-        bucket_name = '%s_%s' % (os.environ["S3_BUCKET"], user.username)
         try:
+            bucket_name = '%s_%s' % (os.environ["S3_BUCKET"], user.email_hash)
             b = boto.s3.bucket.Bucket(conn, bucket_name)
             for x in b.list():
                 b.delete_key(x.key)
@@ -118,9 +119,9 @@ def definitely_delete_user(id):
         Host.objects(owner=user).delete()
         Vertex.objects(owner=user).delete()
         user.delete()
-        flash("User '%s' successfully deleted" % (user.username))
+        flash("User '%s' successfully deleted" % (user.email))
         return redirect(url_for("admin.index"))
-    flash("Username is incorrect!")
+    flash("Email address is incorrect!")
     return redirect(url_for("admin.delete_user", id=id))
 
 
@@ -159,6 +160,7 @@ def create_user():
     if form.validate_on_submit():
         email_hash = md5.new(form.email.data.strip().lower()).hexdigest()
         user = User(email=form.email.data, email_hash=email_hash)
+        hostname = form.hostname.data
 
         # Create a stripe customer
         stripe.api_key = app.config['STRIPE_SECRET_KEY']
@@ -175,6 +177,18 @@ def create_user():
 
         user.save()
 
+        # Create the S3 stuff
+        conn = boto.connect_s3()
+        bucket_name = '%s_%s' % (os.environ["S3_BUCKET"], email_hash)
+        bucket = conn.create_bucket(bucket_name)
+        s3_conf = s3_config()
+        bucket.set_policy(s3_conf.get_policy(email_hash))
+        bucket.set_cors_xml(s3_conf.get_cors())
+
+        # Create the host
+        host = Host(hostname=hostname, template=hostname, bucketname=bucket_name, owner=user.id)
+        host.save()
+
         if form.send_invite.data:
             send_invite(user)
         else:
@@ -187,8 +201,8 @@ def create_user():
 @login_required
 def rebuild():
     ''' This is a temporary endpoint, only for the testuser! '''
-    if current_user.username == "testuser":
-        build_db(current_user.username)
+    if current_user.email == "test@test.com":
+        build_db(current_user)
         return "Success."
     return "Not allowed."
 
@@ -197,7 +211,7 @@ def rebuild():
 @login_required
 def clear():
     ''' This is a temporary endpoint, only for the testuser! '''
-    if current_user.username == "testuser":
-        clear_db(current_user.username)
+    if current_user.email == "test@test.com":
+        clear_db(current_user)
         return "Success."
     return "Not allowed."

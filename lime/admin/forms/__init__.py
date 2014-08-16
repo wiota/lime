@@ -7,6 +7,7 @@ from toolbox.models import User
 
 class CreateForm(Form):
     email = TextField('Email address', [Required(), Email()])
+    hostname = TextField('Hostname', [Required()])
     send_invite = BooleanField('Send invitation email?', [Required()])
     submit = SubmitField('Submit')
 

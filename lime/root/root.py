@@ -2,7 +2,6 @@ from flask import Blueprint, request, redirect, render_template, url_for, flash,
 
 from toolbox.models import *
 from toolbox.tools import retrieve_image
-from toolbox.s3 import s3_config
 from toolbox.email import *
 from toolbox.nocache import nocache
 from flask.ext.login import LoginManager
@@ -39,7 +38,7 @@ def index():
 
 @mod.route('/image/<image_name>')
 def image(image_name):
-    return retrieve_image(image_name, current_user.username)
+    return retrieve_image(image_name, current_user.email_hash)
 
 
 @mod.route("/logout/")
@@ -123,20 +122,7 @@ def confirm(payload=None):
             return redirect(url_for("root.index"))
     if form.validate_on_submit():
         user = User.objects.get(id=session["user_id"])
-        user.username = form.username.data
         user.password = generate_password_hash(form.password.data)
-
-        # Create the S3 stuff
-        conn = boto.connect_s3()
-        bucket_name = '%s_%s' % (os.environ["S3_BUCKET"], user.username)
-        bucket = conn.create_bucket(bucket_name)
-        s3_conf = s3_config()
-        bucket.set_policy(s3_conf.get_policy(user.username))
-        bucket.set_cors_xml(s3_conf.get_cors())
-
-        # Create the host
-        host = Host(bucketname=bucket_name, owner=user.id)
-        host.save()
 
         user.registered = True
         user.save()

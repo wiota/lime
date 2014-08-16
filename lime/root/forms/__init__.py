@@ -23,7 +23,7 @@ class ForgotPasswordForm(Form):
 
 
 class LoginForm(Form):
-    username = TextField('Username or Email', [Required()])
+    email = TextField('Email address', [Required()])
     password = PasswordField('Password', [Required()])
     submit = SubmitField('Login')
 
@@ -33,8 +33,7 @@ class LoginForm(Form):
 
     def validate(self):
         try:
-            user = User.objects.get(
-                Q(username=self.username.data) | Q(email=self.username.data))
+            user = User.objects.get(email=self.email.data)
         except User.DoesNotExist:
             flash("Username or email does not exist, please try again.")
             return False
@@ -70,8 +69,7 @@ class ResetPasswordForm(Form):
 
 
 class ConfirmForm(Form):
-    username = TextField('Choose a username', [Required()])
-    password = PasswordField('Password', [Required()])
+    password = PasswordField('Choose a Password', [Required()])
     confirm = PasswordField('Repeat Password', [
         Required(),
         EqualTo('password', message='Passwords must match')
@@ -83,7 +81,4 @@ class ConfirmForm(Form):
         self.user = None
 
     def validate(self):
-        if User.objects(username=self.username.data).first() is not None:
-            flash("Username is already taken")
-            return False
         return True

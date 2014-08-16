@@ -11,7 +11,7 @@
       {% elif not user.registered %}
         <span class="danger">(Unregistered)</span>
       {% else %}
-        ({{user.username}})
+        (Confirmed &amp; Registered)
       {% endif %}
     </li>
   </ul>
@@ -19,7 +19,7 @@
   <h2>Admins:</h2>
   {% for admin in admins %}
   <ul>
-    <li><b>{{admin.email}}</b> ({{admin.username}})</li>
+    <li><b>{{admin.email}}</b></li>
   </ul>
   {% endfor %}
 {% endblock %}
