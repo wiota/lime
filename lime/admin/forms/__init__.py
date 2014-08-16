@@ -1,12 +1,14 @@
 from flask import flash
 from flask.ext.wtf import Form
-from wtforms import TextField
+from wtforms import TextField, BooleanField, SubmitField
 from wtforms.validators import Required, Email
 from toolbox.models import User
 
 
-class InviteForm(Form):
+class CreateForm(Form):
     email = TextField('Email address', [Required(), Email()])
+    send_invite = BooleanField('Send invitation email?', [Required()])
+    submit = SubmitField('Submit')
 
     def __init__(self, *args, **kwargs):
         Form.__init__(self, *args, **kwargs)

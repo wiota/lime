@@ -26,6 +26,17 @@ mod = Blueprint(
     url_prefix='/admin')
 
 
+def send_invite(user):
+    s = URLSafeSerializer(app.config['SECRET_KEY'])
+    payload = s.dumps(str(user.id))
+    link = url_for("root.confirm", payload=payload, _external=True)
+
+    subject = "Confirm your new Lime account!"
+    html = render_template("confirm_email.html", link=link)
+    send_email(user.email, subject, html)
+    flash("Successfully sent invitation.")
+
+
 @mod.route("/")
 @admin_required
 def index():
@@ -61,6 +72,14 @@ def individual_user(id):
 def login_as_user(id):
     login_user(User.objects.get(id=id, admin=False))
     return redirect(url_for("root.index"))
+
+
+@mod.route("/user/<id>/invite/")
+@login_required
+@admin_required
+def invite_user(id):
+    send_invite(User.objects.get(id=id, admin=False))
+    return redirect(url_for("admin.index"))
 
 
 @mod.route("/user/<id>/delete/")
@@ -129,21 +148,17 @@ def remove_plan(user_id, sub_id):
     return redirect(url_for("admin.individual_user", id=user_id))
 
 
-@mod.route("/invite/", methods=["GET", "POST"])
+@mod.route("/create/", methods=["GET", "POST"])
 @login_required
 @admin_required
-def invite():
+def create_user():
     ref = request.args.get('ref', None)
-    form = InviteForm()
+    form = CreateForm()
     if request.method == 'GET':
-        return render_template("invite.html", form=form, ref=ref)
+        return render_template("create_user.html", form=form, ref=ref)
     if form.validate_on_submit():
         email_hash = md5.new(form.email.data.strip().lower()).hexdigest()
         user = User(email=form.email.data, email_hash=email_hash)
-
-        s = URLSafeSerializer(app.config['SECRET_KEY'])
-        payload = s.dumps(str(user.id))
-        link = url_for("root.confirm", payload=payload, _external=True)
 
         # Create a stripe customer
         stripe.api_key = app.config['STRIPE_SECRET_KEY']
@@ -160,14 +175,12 @@ def invite():
 
         user.save()
 
-        subject = "Confirm your new Lime account!"
-        html = render_template("confirm_email.html", link=link)
-
-        send_email(user.email, subject, html)
-
-        flash("Successfully sent invitation.")
-        return redirect(url_for("admin.invite"))
-    return render_template("invite.html", form=form, ref=ref)
+        if form.send_invite.data:
+            send_invite(user)
+        else:
+            flash("Successfully created user.")
+        return redirect(url_for("admin.create_user"))
+    return render_template("create_user.html", form=form, ref=ref)
 
 
 @mod.route('/build_db/')

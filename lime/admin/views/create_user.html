@@ -1,13 +1,9 @@
 {% extends "admin.html" %}
 {% block admin_content %}
-  <h2>Invite new user</h2>
+  <h2>Create a new user</h2>
   {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
-  <form action="{{ url_for('admin.invite') }}" method=post>
-    <dl>
-      <dt>{{ form.email.label }}</dt>
-      <dd>{{ form.email }}</dd>
-      <dd><input type=submit value=Submit>
-    </dl>
+  <form action="{{ url_for('admin.create_user') }}" method=post>
+    {{ render(form) }}
   </form>
 {% endblock %}
 
