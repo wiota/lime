@@ -24,6 +24,15 @@
         <li>Title: {{host.title}}</li>
         <li>Subtitle: {{host.subtitle}}</li>
     </ul>
+    <h4>Pages</h4>
+    <ul>
+    {% for page in host.custom_pages %}
+        <li>{{ page.title }} - <a href="http://{{ host.hostname }}/{{ page.slug }}/">http://{{ host.hostname }}/{{ page.slug }}/</a></li>
+    {% else %}
+        No custom pages.
+    {% endfor %}
+    </ul>
+    <a href="">Add a new custom page</a>
 
 <h2>Plans</h2>
 <h3>Enrolled</h3>
