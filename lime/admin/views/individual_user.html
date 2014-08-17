@@ -8,22 +8,21 @@
 {% endif %}
     <h3>Information</h3>
     <ul>
-        <li>Email: {{user.email}}</li>
-        <li>User ID: {{user.id}}</li>
-        <li>Stripe ID: {{user.stripe_id}}</li>
+        <li>Email: <a href="mailto:{{user.email}}">{{user.email}}</a></li>
+        <li>User ID: <a href="https://partners.mongohq.com/app12544446-heroku-com/mongo/app12544446/collections/user/documents/o:{{user.id}}">{{user.id}}</a></li>
+        <li>Stripe ID: <a href="https://dashboard.stripe.com/test/customers/{{user.stripe_id}}">{{user.stripe_id}}</a></li>
         <li>Confirmed: {{user.confirmed}}</li>
         <li>Registered: {{user.registered}}</li>
     </ul>
-{% if user.registered %}
     <h3>Host</h3>
     <ul>
-        <li>Hostname: {{host.hostname}}</li>
+        <li>Hostname: <a href="http://{{host.hostname}}">{{host.hostname}}</a></li>
         <li>Bucketname: {{host.bucketname}}</li>
         <li>Template name: {{host.template}}
         <li>Title: {{host.title}}</li>
         <li>Subtitle: {{host.subtitle}}</li>
     </ul>
-    <h4>Pages</h4>
+    <h3>Pages - <a href="">Add a new custom page</a></h3>
     <ul>
     {% for page in host.custom_pages %}
         <li>{{ page.title }} - <a href="http://{{ host.hostname }}/{{ page.slug }}/">http://{{ host.hostname }}/{{ page.slug }}/</a></li>
@@ -31,7 +30,6 @@
         No custom pages.
     {% endfor %}
     </ul>
-    <a href="">Add a new custom page</a>
 
 <h2>Plans</h2>
 <h3>Enrolled</h3>
@@ -60,7 +58,6 @@
         <li>{{ card.brand }} ending in {{ card.last4}} expiring on {{ card.exp_month }}/{{ card.exp_year }}</li>
     {% endfor %}
     </ul>
-{% endif %}
 {% endif %}
 
 
