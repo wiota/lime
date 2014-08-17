@@ -16,7 +16,7 @@ def account():
     user = User.objects.get(id=current_user.id)
     host = Host.objects.get(owner=user)
     cust = stripe.Customer.retrieve(user.stripe_id)
-    invoices = stripe.Invoice.all()
+    invoices = stripe.Invoice.all(customer=user.stripe_id)
     pubkey = app.config['STRIPE_PUBLIC_KEY']
     return render_template("account.html", user=user, host=host, cust=cust, pubkey=pubkey, invoices=invoices)
 
