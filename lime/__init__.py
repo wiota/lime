@@ -6,6 +6,7 @@ from bson.objectid import ObjectId
 from flask.ext.mongoengine import MongoEngine
 from flask.ext.login import LoginManager
 from toolbox import tools
+from toolbox import email
 import mongoexhaust
 from lime.account import account
 from lime.admin import admin
@@ -17,6 +18,7 @@ from toolbox.models import User
 from toolbox.template_tools import format_date, format_money
 from toolbox.tools import AnonymousUser
 from pymongo.errors import AutoReconnect
+import traceback
 
 # Create a starter app
 app = Flask(__name__)
@@ -89,3 +91,8 @@ def load_user(userid):
     except User.DoesNotExist:
         flash("This user account no longer exists.")
         return AnonymousUser()
+
+@app.errorhandler(Exception)
+def catch_all(exception):
+    if not app.debug:
+        email.send_exception(exception, traceback)
