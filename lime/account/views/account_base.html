@@ -29,7 +29,7 @@
           </div>
 
           <div class='identification'>
-          {% if current_user.email_hash %}
+          {% if current_user.admin %}
             <div class="circle" style="background: url(http://www.gravatar.com/avatar/{{current_user.email_hash}}?s=30?d=mm)"/></div>
           {% endif %}
             <div id="name">{{ current_user.email}}</div>
