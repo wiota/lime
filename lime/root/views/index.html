@@ -181,17 +181,16 @@
 
 {% block js_footer %}
 
-  <script src='{{ url_for('static', filename='js/admin_app.js') }}'></script>
+  <script src='{{ url_for('static', filename='js/app.js') }}'></script>
   <script type="text/javascript" src='{{ url_for('static', filename='js/s3upload.js') }}'></script>
-  <script src='{{ url_for('static', filename='js/admin_backbone_messages.js') }}'></script>
-  <script src='{{ url_for('static', filename='js/admin_backbone_models.js') }}'></script>
-  <script src='{{ url_for('static', filename='js/admin_backbone_collections.js') }}'></script>
-  <script src='{{ url_for('static', filename='js/admin_backbone_views.js') }}'></script>
-  <script src='{{ url_for('static', filename='js/admin_backbone_form_views.js') }}'></script>
-  <script src='{{ url_for('static', filename='js/admin_backbone_upload_views.js') }}'></script>
-  <script src='{{ url_for('static', filename='js/admin_backbone_router.js') }}'></script>
-  <script src='{{ url_for('static', filename='js/admin_backbone_request.js') }}'></script>
-  <script src='{{ url_for('static', filename='js/admin_backbone_request_api.js') }}'></script>
+  <script src='{{ url_for('static', filename='js/app.msg.js') }}'></script>
+  <script src='{{ url_for('static', filename='js/app.model.js') }}'></script>
+  <script src='{{ url_for('static', filename='js/app.collection.js') }}'></script>
+  <script src='{{ url_for('static', filename='js/app.view.js') }}'></script>
+  <script src='{{ url_for('static', filename='js/app.form.js') }}'></script>
+  <script src='{{ url_for('static', filename='js/app.upload.js') }}'></script>
+  <script src='{{ url_for('static', filename='js/app.router.js') }}'></script>
+  <script src='{{ url_for('static', filename='js/app.request.js') }}'></script>
+  <script src='{{ url_for('static', filename='js/app.requestapi.js') }}'></script>
 
-  <script src='{{ url_for('static', filename='js/work.js') }}'></script>
 {% endblock %}

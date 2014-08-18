@@ -52,4 +52,12 @@ App.clsToClass = function(_cls){
   return _cls.toLowerCase().split('.').join(' ');
 }
 
-console.log(App.titlePref('Ready-for-mixing'));
+
+$(document).ready(function() {
+  //msg.init();
+
+  App.router = new App.Router();
+  Backbone.history.start();
+
+
+});
