@@ -152,12 +152,7 @@ App.Model['Vertex']= Backbone.Model.extend({
       model.trigger('error', model, resp);
     }
 
-    //options.url = this.url();
-    //options.contentType = "application/json";
     options.attrs = attrs;
-
-    console.log(options.data);
-
     Backbone.sync('update', this, options);
   },
 
@@ -248,10 +243,7 @@ App.Model['Vertex']= Backbone.Model.extend({
       model.trigger('error', model, resp);
     }
 
-    options.url = this.url();
-
     options.attrs = {'cover': _.pluck(list, 'id')};
-
     Backbone.sync('update', this, options);
   },
 
