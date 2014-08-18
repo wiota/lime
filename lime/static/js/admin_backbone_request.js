@@ -194,8 +194,8 @@ App.RequestPanel = Backbone.View.extend({
   completedRequests: [],
 
   initialize: function(){
-    //this.render();
     this.initPanelInterface();
+    this.render();
   },
 
   getId: function(){
@@ -206,14 +206,14 @@ App.RequestPanel = Backbone.View.extend({
     console.log('---- Register ' + request.rid + " " + request.options.func + ' -------');
     //console.log(request.options.args);
     this.pendingRequests.push(request);
-    //this.render();
+    this.render();
   },
 
   unregister: function(request){
-    //console.log('---- Unregister ' + request.rid + ' -------');
-    //this.render();
+    console.log('---- Unregister ' + request.rid + ' -------');
     // turn off for lines instead of mountains
     this.pendingRequests = _.without(this.pendingRequests, request);
+    this.render();
     request.remove();
   },
 
@@ -231,6 +231,7 @@ App.RequestPanel = Backbone.View.extend({
 
   initPanelInterface: function(){
     var panel = this.$el;
+    /*
     panel.on('mousedown', function(e){
       if(e.which == 3) {return false}
       var of = e.offsetY;
@@ -243,12 +244,38 @@ App.RequestPanel = Backbone.View.extend({
       });
       return false;
     })
+*/
+    //this.mountains = new App.MountainView();
+    //this.$el.append(this.mountains.el);
+
   },
 
   render: function(){
-    if(this.pendingRequests.length<=0){};
+    this.$el.html('');
     var a = $('<div class="requestlog"></div>');
     _.each(this.pendingRequests, function(r){
+      if(r.rid < 10){format = '&nbsp;'}
+      else {format = ''}
+      display = "<a class='" + r.sts + "'><span>" + format + r.rid + "</span></a>";
+      a.append(display);
+    }, this);
+    this.$el.prepend(a);
+    //this.mountains.render(this.pendingRequests);
+    return this;
+  }
+
+})
+
+App.MountainView = Backbone.View.extend({
+
+  tagName: 'div',
+  className: 'mountain_view',
+
+  render: function(pendingRequests){
+    console.log(pendingRequests.length);
+    if(pendingRequests.length<=0){};
+    var a = $('<div class="requestlog"></div>');
+    _.each(pendingRequests, function(r){
       if(r.rid < 10){format = '&nbsp;'}
       else {format = ''}
       if(!r.labelRendered){label = this.renderLabels(r);}
@@ -256,7 +283,8 @@ App.RequestPanel = Backbone.View.extend({
       display = "<a class='" + r.sts + " "+ r.options.func + "'>"+label+"<span>" + format + r.rid + "</span></a>";
       a.append(display);
     }, this);
-    this.$el.children('.container').prepend(a);
+    this.$el.prepend(a);
+    return this;
   },
 
   renderLabels: function(r){
@@ -307,7 +335,6 @@ App.RequestPanel = Backbone.View.extend({
   }
 
 })
-
 
 _.extend(App.RequestPanel.prototype, App.RequestLibrary);
 _.extend(App.Request.prototype, App.RequestLibrary);

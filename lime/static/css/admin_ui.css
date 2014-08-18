@@ -86,15 +86,14 @@ shadow color  42,44,57
   }
 
 #request_panel {
-  display:none;
+  display:block;
   z-index: 3;
-  background-color: rgba(255,255,255,1);
+  /* background-color: rgba(255,255,255,1); */
   margin: 0;
-  border-top: 1px solid #82db8a;
-  padding: 14px 0 0 2%;
+  padding: 0%;
   position:fixed;
-  top: 50%;
-  right: 0;
+  width: 48%;
+  height: auto;
   left: 19.098300562504%;
   bottom: 0;
   overflow: auto;
@@ -581,18 +580,18 @@ i.info_tag {
 /* -------------------------------------------------------------------  */
 /* Request Panel Mountains */
 
-#request_panel div.container {
+#request_panel div.mountain_view {
   width: 100000px;
 }
 
-#request_panel div.requestlog {
+div.mountain_view div.requestlog {
   text-align: left;
   float:left;
   font-size: 10px;
   font-family: "Monaco","Lucida Console","Courier New", "`space";
 }
 
-#request_panel div.requestlog a {
+div.mountain_view div.requestlog a {
   display:block;
   width: 2px;
   height: 2px;
@@ -601,7 +600,7 @@ i.info_tag {
   position: relative;
 }
 
-#request_panel div.requestlog a span.args {
+div.mountain_view div.requestlog a span.args {
   display:none;
   position:absolute;
   top: 0;
@@ -610,43 +609,56 @@ i.info_tag {
   width: 550px;
 }
 
-#request_panel div.requestlog a:hover span.args {
+div.mountain_view div.requestlog a:hover span.args {
   display:block;
   }
 
-#request_panel div.requestlog a span {
+div.mountain_view div.requestlog a span {
   display:none;
 }
 
-#request_panel div.requestlog a.created {
+div.mountain_view div.requestlog a.created {
   background-color:#ffff00;
 }
 
-#request_panel div.requestlog a.registered {
+div.mountain_view div.requestlog a.registered {
 
 }
 
-#request_panel div.requestlog a.executing {
+
+div.mountain_view a.executing {
   background-color:#82db8a;
 }
 
-#request_panel div.requestlog a.delayed {
+div.mountain_view a.delayed {
   background-color:#ffa53f;
 }
 
-#request_panel div.requestlog a.error {
+div.mountain_view a.error {
   background-color:#ff0000;
 }
 
-#request_panel div.requestlog a.delay {
+div.mountain_view a.delay {
   background-color:#ffa53f;
 }
 
-#request_panel div.requestlog a.complete {
+div.mountain_view a.complete {
   background-color:#7ef20c;
 }
 
-#request_panel div.requestlog a.unregistered {
+div.mountain_view a.unregistered {
   background-color:#fff;
 }
 
+#request_panel div.requestlog {
+  display:block;
+  float: left;
+}
+
+#request_panel a {
+  display:block;
+  padding: 1%;
+  background-color:#82db8a;
+
+
+}
