@@ -26,7 +26,7 @@ Hostname: {{ host.hostname }}<br/>
 
 {% if cust.cards.total_count < 1 %}
         <h2>Add a new card</h2>
-        <div class="help">(You need to add a credit card before your site can go live.)</div>
+        <div class="help">(You need to add a credit card before your site can go live. <a href="https://stripe.com/">Securely processed by Stripe</a>.)</div>
         <form action="./card/new/" method="post" id="stripe-form" style="display: none;">
             <div class="form-row">
                 <label>Card number:</label>
