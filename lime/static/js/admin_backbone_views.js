@@ -8,19 +8,6 @@ App.View = {};
 // App Model Overrides
 /* ------------------------------------------------------------------- */
 
-Backbone.View.prototype.flashOut = function(){
-  this.$el.addClass('outofsync');
-},
-
-// This function seems to reveal that there are leftover
-// views with event handlers laying around. See issue #20
-Backbone.View.prototype.flash = function(){
-  msg.log('flash ' + this.model.get('_id'));
-  this.$el.css({'opacity': '0'});
-  this.$el.removeClass('outofsync');
-  this.$el.animate({'opacity': '1'},2000);
-},
-
 Backbone.View.prototype.close = function(){
   //console.log(this.className + ' close');
   if(this.children){
@@ -37,6 +24,11 @@ Backbone.View.prototype.close = function(){
 /* ------------------------------------------------------------------- */
 // Successor Item View (SuccsetItemView?)
 /* ------------------------------------------------------------------- */
+
+App.View.InlineFormView = {
+  // For inline forms
+
+};
 
 App.View.SuccessorItemView = {};
 
@@ -75,27 +67,27 @@ App.View.SuccessorItemView['Vertex'] = App.SuccessorItemView = Backbone.View.ext
 
 });
 
-App.View.SuccessorItemView['Vertex.Apex.Body'] = App.CategorySuccessorItemView = App.SuccessorItemView.extend({
+App.View.SuccessorItemView['Vertex.Apex.Body'] = App.View.SuccessorItemView['Vertex'].extend({
   className: 'body successorItem',
   template:_.template($('#body_in_set').html())
 });
 
-App.View.SuccessorItemView['Vertex.Category'] = App.CategorySuccessorItemView = App.SuccessorItemView.extend({
+App.View.SuccessorItemView['Vertex.Category'] = App.View.SuccessorItemView['Vertex'].extend({
   className: 'category successorItem',
   template:_.template($('#category_in_set').html())
 });
 
-App.View.SuccessorItemView['Vertex.Work'] = App.WorkSuccessorItemView = App.SuccessorItemView.extend({
+App.View.SuccessorItemView['Vertex.Work'] = App.View.SuccessorItemView['Vertex'].extend({
   className: 'work successorItem',
   template:_.template($('#work_in_set').html())
 });
 
-App.View.SuccessorItemView['Vertex.Medium.Photo'] = App.PhotoSuccessorItemView = App.SuccessorItemView.extend({
+App.View.SuccessorItemView['Vertex.Medium.Photo'] = App.View.SuccessorItemView['Vertex'].extend({
   className: 'photo successorItem',
   template:_.template($('#photo_in_set').html())
 });
 
-App.View.SuccessorItemView['empty'] = App.emptyListItem = Backbone.View.extend({
+App.View.SuccessorItemView['empty'] = Backbone.View.extend({
   tagName: 'li',
   initialize: function(){
     this.$el.html('Empty');
@@ -110,7 +102,7 @@ App.View.SuccessorItemView['empty'] = App.emptyListItem = Backbone.View.extend({
 
 App.View.SuccsetListView = {};
 
-App.View.SuccsetListView['Vertex'] = App.SuccsetListView = Backbone.View.extend({
+App.View.SuccsetListView['Vertex'] = Backbone.View.extend({
   tagName: 'ol',
   className: 'succset_list',
   sortFunction: null,
@@ -297,7 +289,7 @@ App.View.ListingView['Vertex'] = App.ListingView = Backbone.View.extend({ // Aki
 
     var viewFactory = App.View.SummaryView[_cls];
     this.summary = new viewFactory({model:this.model}),
-    this.list = new App.SuccsetListView({model:this.model})
+    this.list = new App.View.SuccsetListView['Vertex']({model:this.model})
 
     this.children = [this.summary, this.list];
 
