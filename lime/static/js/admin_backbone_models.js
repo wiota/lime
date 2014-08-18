@@ -152,15 +152,13 @@ App.Model['Vertex']= Backbone.Model.extend({
       model.trigger('error', model, resp);
     }
 
-    options.url = this.url();
-    options.contentType = "application/json";
-    options.data = JSON.stringify(attrs);
+    //options.url = this.url();
+    //options.contentType = "application/json";
+    options.attrs = attrs;
 
     console.log(options.data);
 
     Backbone.sync('update', this, options);
-
-    //this.save();
   },
 
   /* ------------------------------------------------------------------- */
@@ -203,8 +201,7 @@ App.Model['Vertex']= Backbone.Model.extend({
     }
 
     options.url = this.url() + 'succset/';
-    options.contentType = "application/json";
-    options.data = JSON.stringify({'succset': _.pluck(list, 'id')});
+    options.attrs = {'succset': _.pluck(list, 'id')};
 
     Backbone.sync('update', this, options);
   },
@@ -252,8 +249,8 @@ App.Model['Vertex']= Backbone.Model.extend({
     }
 
     options.url = this.url();
-    options.contentType = "application/json";
-    options.data = JSON.stringify({'cover': _.pluck(list, 'id')});
+
+    options.attrs = {'cover': _.pluck(list, 'id')};
 
     Backbone.sync('update', this, options);
   },
