@@ -42,7 +42,7 @@ def sign_s3():
     signature = urllib.quote_plus(signature.strip())
 
     # Build the URL of the file in anticipation of its imminent upload:
-    url = 'https://%s.s3.amazonaws.com/%s' % (S3_BUCKET, object_name)
+    url = 'https://s3.amazonaws.com/%s/%s' % (S3_BUCKET, object_name)
 
     content = json.dumps({
         'signed_request': '%s?AWSAccessKeyId=%s&Expires=%d&Signature=%s' % (url, AWS_ACCESS_KEY, expires, signature),
