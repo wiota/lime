@@ -174,7 +174,7 @@ App.RequestApi = {
       success: this.callback,
       error: this.error
     }
-    vertex.saveAttributes({}, options);
+    vertex.saveAttributes(options);
   }
 
 }
