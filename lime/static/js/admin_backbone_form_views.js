@@ -342,7 +342,7 @@ App.FormView['Vertex'] = Backbone.View.extend({
       this.trigger('complete', this);
     }
 
-    var r = App.requestPanel.serial([
+    App.requestPanel.one([
       {'func': 'batchPhotosToVertex', 'args': [files, this.newPhotoNesting, this.model, this.predecessor]},
     ]);
 
@@ -383,10 +383,18 @@ App.FormView['Vertex'] = Backbone.View.extend({
 
     if(this.model.isNew()){
       console.log(this.model.get('title') + ' New Saving');
-      // Use Request Manager Here
-      this.collection.createAndAddTo(this.model, this.predecessor);
+      App.requestPanel.one([
+        {'func': 'graphRequest', 'args': [
+          [this.model],
+          [[this.predecessor, this.model]]
+        ]},
+      ]);
+      //this.collection.createAndAddTo(this.model, this.predecessor);
     } else {
-      this.model.saveAttributes();
+      App.requestPanel.one([
+        {'func': 'updateVertexRequest', 'args': [this.model]},
+      ]);
+      //this.model.saveAttributes();
     }
     return false;
   },
@@ -423,13 +431,8 @@ App.FormView['Cover'] = Backbone.View.extend({
     this.childOptions = _.pick(this.options, this.passableOptions);
 
     this.appendFileUpload();
-    this.appendSaveView();
-
-    this.listenTo(this.model, 'sync', this.saveView.statusSaved);
-    this.listenTo(this.model, 'error', this.saveView.statusError);
 
     _.bindAll(this, 'close', 'collapse');
-
   },
 
   appendFileUpload: function(){
@@ -439,17 +442,8 @@ App.FormView['Cover'] = Backbone.View.extend({
     this.children.push(this.fileUpload);
   },
 
-  appendSaveView: function(){
-    this.saveView = new App.FormView.SaveView(this.childOptions);
-    this.$el.append(this.saveView.el);
-    this.listenTo(this.saveView, 'save', this.save)
-    this.listenTo(this.saveView, 'close', this.collapse)
-    this.children.push(this.saveView);
-  },
-
   render: function(){
     this.fileUpload.render();
-    this.saveView.render();
     return this;
   },
 
@@ -473,47 +467,7 @@ App.FormView['Cover'] = Backbone.View.extend({
       {'func': 'uploadCoverPhoto', 'args': [file, this.model]},
     ]);
 
-  },
-
-  attributesChanged: function(changeObject){
-    this.saveView.statusUnsaved();
-    this.model.set(changeObject);
-    this.savePeriodically();
-  },
-
-  submit: function(evt){
-    this.collapse();
-    console.log('Submit');
-    return false;
-  },
-
-  save: function(){
-    if(!this.model.isModified()){
-      return false;
-    }
-    this.saveView.statusSaving();
-
-    if(this.model.isNew()){
-      console.log(this.model.get('title') + ' New Saving');
-      this.collection.createAndAddTo(this.model, this.predecessor);
-    } else {
-      console.log(this.model.get('title') + ' Old Saving');
-      this.model.save();
-    }
-    return false;
-  },
-
-  savePeriodically: _.debounce(function(){
-    this.save();
-  }, 1000),
-
-  cancel: function(){
-    if(!this.model.isNew() && this.model.isModified()){
-      this.model.outOfSync();
-    }
-    this.close();
   }
-
 
 });
 
