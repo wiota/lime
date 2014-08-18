@@ -36,7 +36,7 @@ def post_index():
         login_user(user)
         flash("Logged in successfully.")
         if user.admin :
-            redirect(url_for("admin.index"))
+            return redirect(url_for("admin.index"))
         return redirect(ref or url_for("root.index"))
     return render_template("login.html", form=form, ref=ref)
 
