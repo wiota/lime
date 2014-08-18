@@ -380,9 +380,8 @@ App.FormView['Vertex'] = Backbone.View.extend({
       return false;
     }
     this.saveView.statusSaving();
-
+    this.model.modified = false;
     if(this.model.isNew()){
-      console.log(this.model.get('title') + ' New Saving');
       App.requestPanel.one([
         {'func': 'graphRequest', 'args': [
           [this.model],

@@ -140,11 +140,14 @@ App.RequestApi = {
     // options
     var options = {
       success: this.callback,
-      error: this.error
+      error: function(){
+        this.trigger('error');
+        vertex.modified = true;
+      }
     }
 
     // persistence
-    vertex.save(vertex.changedAttributes(), options);
+    vertex.save({}, options);
   },
 
   createEdgeRequest: function(edge){
@@ -171,7 +174,7 @@ App.RequestApi = {
       success: this.callback,
       error: this.error
     }
-    vertex.saveAttributes(vertex.changedAttributes(), options);
+    vertex.saveAttributes({}, options);
   }
 
 }
