@@ -57,7 +57,10 @@ App.View.SuccessorItemView['Vertex'] = App.SuccessorItemView = Backbone.View.ext
   },
 
   delete: function(){
-    this.predecessor.removeFromSuccset(this.model);
+    App.requestPanel.one([
+      {'func': 'removeEdgeRequest', 'args': [[this.predecessor, this.model]]},
+    ]);
+    //this.predecessor.removeEdge(this.model);
   },
 
   updateForm: function(){

@@ -160,19 +160,83 @@ App.Model['Vertex']= Backbone.Model.extend({
   // Succset Functions
   /* ------------------------------------------------------------------- */
 
-  addToSuccset: function(model, options){
+  addEdgeTo: function(successor, options){
+    // succset
     var succset = _.clone(this.get('succset'));
-    succset.unshift(model);
+    succset.unshift(successor);
     this.set({'succset':succset});
-    // should be replace with edge request
-    this.saveSuccset(options);
+
+    // predset
+    var predset = _.clone(successor.get('predset'));
+    predset.unshift(this);
+    successor.set({'predset': predset});
+
+    this.createEdge(successor, options);
   },
 
-  removeFromSuccset: function(model, options){
+  removeEdgeTo: function(successor, options){
+    // succset
     var succset = this.get('succset');
-    this.set({'succset':_.without(succset, model)});
-    // should be replace with edge request
-    this.saveSuccset(options);
+    this.set({'succset':_.without(succset, successor)});
+
+    // predset
+    var predset = successor.get('predset');
+    successor.set({'succset':_.without(predset, this)});
+
+    this.destroyEdge(successor, options);
+  },
+
+  destroyEdge: function(successor, options){
+    var model = this;
+
+    options = options || {};
+
+    var success = options.success;
+    var error = options.error;
+
+    options.success = function(resp){
+      if(success) success(model, resp, options);
+      model.trigger('sync', model, resp);
+      console.log('sync succset save on ' + model.get('_id'))
+    }
+
+    options.error = function(resp){
+      if(error) error(model, resp, options);
+      model.trigger('error', model, resp);
+    }
+
+    options.url = 'api/v1/edge/';
+    options.data = JSON.stringify({'edges': [this.get('_id'),successor.get('_id')]});
+    console.log(options.data);
+    options.contentType = 'application/json';
+    Backbone.sync('delete', this, options);
+  },
+
+
+  createEdge: function(successor, options){
+    var model = this;
+
+    options = options || {};
+
+    var success = options.success;
+    var error = options.error;
+
+    options.success = function(resp){
+      if(success) success(model, resp, options);
+      model.trigger('sync', model, resp);
+      console.log('sync succset save on ' + model.get('_id'))
+    }
+
+    options.error = function(resp){
+      if(error) error(model, resp, options);
+      model.trigger('error', model, resp);
+    }
+
+    options.url = 'api/v1/edge/';
+    options.data = JSON.stringify({'edges': [this.get('_id'),successor.get('_id')]});
+    console.log(options.data);
+    options.contentType = 'application/json';
+    Backbone.sync('create', this, options);
   },
 
   saveSuccset: function(options){
@@ -245,20 +309,7 @@ App.Model['Vertex']= Backbone.Model.extend({
 
     options.attrs = {'cover': _.pluck(list, 'id')};
     Backbone.sync('update', this, options);
-  },
-
-  // for reordering
-  setSuccset: function(idList){
-    var succset = this.get('succset');
-    var update = [];
-    _.each(idList, function(id, index, list){
-      var obj = _.findWhere(succset, {'id': id});
-      update.push(obj);
-    });
-    //console.log(_.pluck(update, 'id'));
-    this.set({'succset': update});
-    this.saveSuccset();
-  },
+  }
 
 });
 
