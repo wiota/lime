@@ -18,21 +18,26 @@ import stripe
 mod = Blueprint('root', __name__, template_folder='views')
 
 
-@mod.route('/', methods=["GET", "POST"])
+@mod.route('/', methods=["GET"])
 @nocache
 def index():
     if current_user.is_authenticated():
         return render_template('index.html')
-    ref = request.args.get('next', None)
+    return render_template("login.html", form=LoginForm(), ref=request.args.get('next', None))
+
+@mod.route('/', methods=["POST"])
+@nocache
+def post_index():
     form = LoginForm()
-    if request.method == 'GET':
-        return render_template("login.html", form=form, ref=ref)
+    ref = request.values.get('next', None)
     if form.validate_on_submit():
         # login and validate the user...
         user = User.objects.get(id=form.user.id)
         login_user(user)
         flash("Logged in successfully.")
-        return redirect(request.values.get("next") or url_for("admin.index"))
+        if user.admin :
+            redirect(url_for("admin.index"))
+        return redirect(ref or url_for("root.index"))
     return render_template("login.html", form=form, ref=ref)
 
 

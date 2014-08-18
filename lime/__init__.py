@@ -72,7 +72,7 @@ app.register_blueprint(root.mod)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
-login_manager.login_view = "root.login"
+login_manager.login_view = "root.index"
 login_manager.anonymous_user = tools.AnonymousUser
 
 # Wrap the exhaust with our custom function

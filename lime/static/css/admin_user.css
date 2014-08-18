@@ -267,5 +267,51 @@ div#forgot_password a {
   color: #237ab1;
 }
 
+.admin_ui h2 {
+    border-bottom:1px #000 solid;
+    clear:both;
+}
 
+#stripe-form {
+}
 
+#stripe-form div.form-row {
+    clear:both;
+}
+
+#stripe-form label {
+    display:block;
+    float:left;
+    width:20%;
+    padding: 7px;
+}
+
+#stripe-form label.error {
+    float:left;
+    width:40%;
+    color:#f96625 !important;
+}
+
+#stripe-form input, #stripe-form div.expiry-wrapper {
+    font-size: 18pt;
+    float:left;
+    width:35%;
+}
+
+#stripe-form select {
+    font-size:18pt;
+    border-color:#999;
+}
+
+#stripe-form button {
+    float:right;
+    font-size:18pt;
+}
+
+div.help {
+    font-size: 16px;
+    font-style: italic;
+    color: #AAA;
+    margin-top: -1em;
+    padding-bottom: 1.5em;
+}

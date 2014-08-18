@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <link rel="icon" type="image/png" href="https://s3.amazonaws.com/wiota/lime/favicon.ico">
+
+    {% block head %}
+
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel='stylesheet' href='{{ url_for('static', filename='css/admin_user.css') }}' type='text/css' media='all' />
+    <link rel='stylesheet' href='{{ url_for('static', filename='css/admin_ui.css') }}' type='text/css' media='all' />
+
+    <script src='{{ url_for('static', filename='js/jquery.min.js') }}'></script>
+    <script src='{{ url_for('static', filename='js/flash.js') }}'></script>
+
+    {% endblock %}
+  </head>
+
+  <body>
+    {%- block user -%}
+    {% if not current_user.is_anonymous() %}
+      <div class="admin_user_menu">
+        <div class='admin_user'>
+          <div class='admin_user_nav'>
+            <ul>
+              <li><a href=" {{ url_for('account.account') }} ">Account</a></li>
+              <li><a href=" {{ url_for('root.logout') }} ">Logout</a></li>
+            </ul>
+          </div>
+
+          <div class='identification'>
+          {% if current_user.email_hash %}
+            <div class="circle" style="background: url(http://www.gravatar.com/avatar/{{current_user.email_hash}}?s=30?d=mm)"/></div>
+          {% endif %}
+            <div id="name">{{ current_user.email}}</div>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+    {%- endblock -%}
+
+    {% for message in get_flashed_messages() %}
+    <div class='admin_flashes'>
+      <div class='flash'>{{ message }}</div>
+    </div>
+    {% endfor %}
+
+    <div class="content">
+      {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
+      <div class="admin_ui backlink">
+        {% block backlink %}{% endblock %}
+      </div>
+      <div class="admin_ui admin_content">
+        {% block content %}{% endblock %}
+      </div>
+    </div>
+  </body>
+</html>

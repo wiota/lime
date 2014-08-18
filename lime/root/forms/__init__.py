@@ -35,7 +35,7 @@ class LoginForm(Form):
         try:
             user = User.objects.get(email=self.email.data)
         except User.DoesNotExist:
-            flash("Username or email does not exist, please try again.")
+            flash("This email address is not in the system.")
             return False
 
         if not user.confirmed:

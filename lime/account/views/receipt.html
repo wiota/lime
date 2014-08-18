@@ -1,27 +1,18 @@
-<!doctype html>
-<html>
-<head>
-<meta charset="utf-8" />
-<style type="text/css">
-table{
-border: 1px solid #ddd;
--webkit-border-radius: 4px;
--moz-border-radius: 4px;
--ms-border-radius: 4px;
--o-border-radius: 4px;
-border-radius: 4px;
-width: 100%;
-max-width: 500px;
-}
-</style>
-</head>
-<body>
-This invoice has been paid. Your receipt is below:<br/>
+{% extends "invoice_base.html" %}
+{% block head %}
+    <title>Lime - Reciept Details</title>
+    {{ super() }}
+{% endblock %}
+{% block content %}
+<h2>Reciept:&nbsp;
 {% if invoice.period_start|date == invoice.period_end|date %}
     {{ invoice.period_start|date }}
 {% else %}
-    {{ invoice.period_start|date }} - {{ invoice.period_end|date }}<br/>
+    {{ invoice.period_start|date }}&nbsp;-&nbsp;{{ invoice.period_end|date }}<br/>
 {% endif %}
+</h2>
+This invoice has been paid. Your receipt is below:<br/>
+<br/>
 <table>
   <thead>
     <tr><th>Description</th>
@@ -43,6 +34,4 @@ This invoice has been paid. Your receipt is below:<br/>
     <td class="total">{{ invoice.total|money }}</td>
   </tr></tfoot>
 </table>
-<br/>
-</body>
-</html>
+{% endblock %}

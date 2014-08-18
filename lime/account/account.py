@@ -13,49 +13,46 @@ mod = Blueprint('account', __name__, static_folder='static', template_folder='vi
 @login_required
 def account():
     stripe.api_key = app.config['STRIPE_SECRET_KEY']
-    user = User.objects.get(id=current_user.id)
-    host = Host.objects.get(owner=user)
-    cust = stripe.Customer.retrieve(user.stripe_id)
-    invoices = stripe.Invoice.all(customer=user.stripe_id)
+    host = Host.objects.get(owner=current_user.id)
+    cust = stripe.Customer.retrieve(current_user.stripe_id)
+    invoices = stripe.Invoice.all(customer=current_user.stripe_id)
     pubkey = app.config['STRIPE_PUBLIC_KEY']
-    return render_template("account.html", user=user, host=host, cust=cust, pubkey=pubkey, invoices=invoices)
+    return render_template("account.html", user=current_user, host=host, cust=cust, pubkey=pubkey, invoices=invoices)
 
 
 @mod.route('/card/new/', methods=['POST'])
 @login_required
 def new_card():
     stripe.api_key = app.config['STRIPE_SECRET_KEY']
-    user = User.objects.get(id=current_user.id)
-    cust = stripe.Customer.retrieve(user.stripe_id)
+    cust = stripe.Customer.retrieve(current_user.stripe_id)
     cust.cards.create(card=request.form.get('stripeToken'))
+    flash("Card successfully added.")
     return redirect(url_for("account.account"))
 
 @mod.route('/card/delete/<id>', methods=['GET'])
 @login_required
 def delete_card(id):
     stripe.api_key = app.config['STRIPE_SECRET_KEY']
-    user = User.objects.get(id=current_user.id)
-    cust = stripe.Customer.retrieve(user.stripe_id)
+    cust = stripe.Customer.retrieve(current_user.stripe_id)
     try:
         cust.cards.retrieve(id).delete()
     except:
         pass
+    flash("Your card has been deleted.")
     return redirect(url_for("account.account"))
 
 @mod.route('/invoice/<id>/', methods=['GET'])
+@login_required
 def get_invoice(id):
     stripe.api_key = app.config['STRIPE_SECRET_KEY']
     invoice = stripe.Invoice.retrieve(id)
-    user = User.objects.get(stripe_id=invoice.customer)
-    login_user(user)
     return render_template("invoice.html", invoice=invoice)
 
 @mod.route('/receipt/<id>/', methods=['GET'])
+@login_required
 def get_receipt(id):
     stripe.api_key = app.config['STRIPE_SECRET_KEY']
     invoice = stripe.Invoice.retrieve(id)
-    user = User.objects.get(stripe_id=invoice.customer)
-    login_user(user)
     return render_template("receipt.html", invoice=invoice)
 
 @mod.route('/invoice/<id>/pay/', methods=['GET'])
@@ -63,8 +60,13 @@ def get_receipt(id):
 def pay_invoice(id):
     stripe.api_key = app.config['STRIPE_SECRET_KEY']
     invoice = stripe.Invoice.retrieve(id)
-    invoice.closed = False
-    invoice.save()
-    invoice.pay()
-    flash("Successfully paid!")
+    cust = stripe.Customer.retrieve(current_user.stripe_id)
+
+    if cust.cards.total_count < 1 :
+        flash("Please add a card first.")
+    else :
+        invoice.closed = False
+        invoice.save()
+        invoice.pay()
+        flash("Successfully paid!")
     return redirect(url_for("account.account"))
