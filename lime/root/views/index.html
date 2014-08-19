@@ -27,11 +27,13 @@
   </script>
 
   <script type="text/template" id="category_summary">
+    <div class='cover'></div>
     <div class='category_title title'><%= title %></div>
     <div class='in_set_menu'>
       <a class='update'>update</a>
       <a class='add_work'>add work</a>
       <a class='add_category'>add category</a>
+      <a class='set_cover'>set cover</a>
     </div>
     <i class='info_tag'><%= _cls %> - <%= _id %></i>
   </script>
@@ -41,7 +43,6 @@
     <div class='work_title title'><%= title %></div>
     <div class='in_set_menu'>
       <a class='update'>update</a>
-      <a class='add_photo'>add photo</a>
       <a class='set_cover'>set cover</a>
     </div>
     <i class='info_tag'><%= _cls %> - <%= _id %></i>
@@ -63,7 +64,7 @@
 
   <script type="text/template" id="body_in_set">
     <a class='in_set_link' href='#'></a>
-    <i class='info_tag'><%= _cls %> - <%= _id %></i>
+    <div class='cover'></div>
     <b class='title'>Body</b>
     <div class='in_set_menu'>
       <a class='update'>update</a>
@@ -73,7 +74,7 @@
 
   <script type="text/template" id="category_in_set">
     <a class='in_set_link' href='#category/<%= _id %>'></a>
-    <i class='info_tag'><%= _cls %> - <%= _id %></i>
+    <div class='cover'></div>
     <b class='title'><%= title %></b>
     <div class='in_set_menu'>
       <a class='update'>update</a>
@@ -84,7 +85,7 @@
 
   <script type="text/template" id="work_in_set">
     <a class='in_set_link' href='#work/<%= _id %>'></a>
-    <i class='info_tag'><%= _cls %> - <%= _id %></i>
+    <div class='cover'></div>
     <b class='title'><%= title %></b>
     <div class='in_set_menu'>
       <a class='update'>update</a>

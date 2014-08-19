@@ -199,6 +199,9 @@ ol.succset_list {
   min-height: 1em;
   }
 
+  .succset_list li .cover {width: 30%;}
+  .succset_list li .cover img {width: 100%;}
+
 .succset_list li a.in_set_link {
   display:block;
   position:absolute;
@@ -264,6 +267,7 @@ ol.succset_list {
   }
 
 .succset_list li .in_set_menu a.drag_handle {
+  display:none;
   z-index: 200;
   padding: 0% 5px 2%;
   text-align: center;
@@ -283,11 +287,11 @@ ol.succset_list {
   }
 
 .update {
-  color: #f80;
+  color: #82db8a;
   }
 
 .update:hover {
-  color: #930;
+  color: #00db14;
   }
 
 

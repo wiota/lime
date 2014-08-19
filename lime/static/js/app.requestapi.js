@@ -40,18 +40,18 @@ App.RequestApi = {
   uploadCoverPhoto: function(file, model){
     this.serial([
       {'func': 'filePutRequest', 'args': [file]},
-      {'func': 'wrapCover', 'args': []},
-      {'func': 'setCover', 'args': [model]}
+      {'func': 'setCover', 'args': [model, file]}
     ])
   },
 
-  setCover: function(vertex, cover){
+  setCover: function(vertex, file, href){
+    var coverObj = [{"href": href, 'resize_href': "/images/"+file.name}];
     var options = {
       success: this.callback,
       error: this.error
     }
 
-    vertex.setCover([cover], options);
+    vertex.setCover(coverObj, options);
   },
 
   // High Level
@@ -79,7 +79,7 @@ App.RequestApi = {
   // Lower Level
 
   wrapCover: function(href){
-    var photo = new App.Model['Vertex.Medium.Photo']({"href": href, 'resize_href': file.name});
+    var coverObj = {"href": href, 'resize_href': "/images/"+file.name};
     this.serial([{'func':'createVertexRequest', 'args':[photo]}]);
   },
 
@@ -88,13 +88,13 @@ App.RequestApi = {
     var edges = [];
 
     // content type should map to vertex types
-    var lowest = new App.Model['Vertex.Medium.Photo']({"href": href, 'resize_href': file.name});
+    var lowest = new App.Model['Vertex.Medium.Photo']({"href": href, 'resize_href': "/images/"+file.name});
     vertices.push(lowest);
 
     var highest = _.reduce(nesting, function(v1, nest){
       if(nesting == 'Vertex.Category'){var title = 'Category';}
       else {var title = App.fileToName(file.name);}
-      var v2 = new App.Model[nest]({'title':title});
+      var v2 = new App.Model[nest]({'title':title, 'cover':[{"href": href, 'resize_href': "/images/"+file.name}]});
       vertices.push(v2);
       edges.push([v2, v1]);
       return v2;

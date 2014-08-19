@@ -27,7 +27,7 @@ Backbone.Model.prototype.idAttribute = "_id";
 /* ------------------------------------------------------------------- */
 
 App.Model['Vertex']= Backbone.Model.extend({
-  referencedFields: ['succset', 'predset', 'cover'],
+  referencedFields: ['succset', 'predset'],
 
   initialize: function(options){
     options = options || {};
@@ -72,7 +72,6 @@ App.Model['Vertex']= Backbone.Model.extend({
   parse: function(response){
     if(response.result){
       response.result.succset = this.reference(response.result.succset);
-      response.result.cover = this.reference(response.result.cover);
       return response.result;
     }
 
@@ -282,9 +281,9 @@ App.Model['Vertex']= Backbone.Model.extend({
   // Cover Functions
   /* ------------------------------------------------------------------- */
 
-  setCover: function(photos, options){
-    this.set({'cover':photos});
-    this.saveCover(options);
+  setCover: function(coverObj, options){
+    this.set({'cover':coverObj});
+    this.saveAttributes(options);
   },
 
   saveCover: function(options){

@@ -60,7 +60,14 @@ App.View.SuccessorItemView['Vertex'] = App.SuccessorItemView = Backbone.View.ext
   },
 
   render: function(){
+    //template
     this.$el.html(this.template(this.model.toJSON()));
+    // cover
+    this.$cover = this.$el.children('.cover');
+    _.each(this.model.get('cover'), function(coverItem){
+      //this.$covers.append("<img src='"+coverItem.resize_href+"?w=500' alt='' />")
+      this.$cover.append("<img src='"+coverItem.href+"?w=500' alt='' />")
+    }, this);
     this.delegateEvents();
     return this
   }
@@ -124,8 +131,8 @@ App.View.SuccsetListView['Vertex'] = Backbone.View.extend({
       axis:'y',
       cursor: 'move',
       opacity: 0.8,
-      distance: 0,
-      handle: '.drag_handle',
+      distance: 4,
+      //handle: '.drag_handle',
       update: this.update,
       forcePlaceholderSize: true,
       helper: 'original',
@@ -218,11 +225,10 @@ App.View.SummaryView['Vertex'] = App.SummaryView = Backbone.View.extend({
     }
     msg.log("Rendering Summary", 'render');
     this.$el.html(this.template(this.model.toJSON()));
-    this.$covers = this.$el.children('.cover');
+    this.$cover = this.$el.children('.cover');
     _.each(this.model.get('cover'), function(coverItem){
-      //this.$covers.append("<img src='"+coverItem.get('resize_href')+"?w=500' alt='' />")
-      this.$covers.append("<img src='"+coverItem.get('href')+"?w=500' alt='' />")
-      //console.log(coverItem);
+      //this.$covers.append("<img src='"+coverItem.resize_href+"?w=500' alt='' />")
+      this.$cover.append("<img src='"+coverItem.href+"?w=500' alt='' />")
     }, this);
     this.delegateEvents();
     return this;

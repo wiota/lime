@@ -588,22 +588,6 @@ App.ActionPanel = Backbone.View.extend({
     this.forms.push(form);
   },
 
-  loadBatchForms: function(predecessor){
-    var _cls = predecessor.get('_cls');
-
-    // This form loading needs to be improved and expanded on
-    // including the ability to add all items to a single pred
-
-    if(_cls == 'Vertex.Category' || _cls == 'Vertex.Body'){
-      this.batchToManyCategory(predecessor);
-      this.batchToManyWork(predecessor);
-    }
-
-    if(_cls == 'Vertex.Work'){
-      // Photos
-      this.batchToManyPhoto(predecessor);
-    }
-  },
   */
 
   closeForms: function(){
