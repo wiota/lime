@@ -336,12 +336,6 @@ App.FormView['Vertex'] = Backbone.View.extend({
     this.newPhotoNesting;
     this.predecessor;
 
-    var a = function(msg){
-      console.log(msg);
-      console.log(_.rest(arguments));
-      this.trigger('complete', this);
-    }
-
     App.requestPanel.one([
       {'func': 'batchPhotosToVertex', 'args': [files, this.newPhotoNesting, this.model, this.predecessor]},
     ]);
