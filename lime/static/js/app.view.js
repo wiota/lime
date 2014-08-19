@@ -192,6 +192,7 @@ App.View.SummaryView['Vertex'] = App.SummaryView = Backbone.View.extend({
   template:_.template($('#default_summary').html()),
 
   events:{
+    'click .title':'toggleMeta',
     'click .update':'updateForm',
     'click .save_order':'saveSuccset',
     'click .add_category':'addCategoryForm',
@@ -224,14 +225,29 @@ App.View.SummaryView['Vertex'] = App.SummaryView = Backbone.View.extend({
       return false;
     }
     msg.log("Rendering Summary", 'render');
+
+    // template
     this.$el.html(this.template(this.model.toJSON()));
-    this.$cover = this.$el.children('.cover');
+
+    // meta
+    this.$meta = this.$el.children('.meta');
+    this.$meta.hide();
+
+    // cover
+    this.$cover = this.$el.find('.cover');
     _.each(this.model.get('cover'), function(coverItem){
+      console.log(coverItem.href);
       //this.$covers.append("<img src='"+coverItem.resize_href+"?w=500' alt='' />")
       this.$cover.append("<img src='"+coverItem.href+"?w=500' alt='' />")
     }, this);
+
+
     this.delegateEvents();
     return this;
+  },
+
+  toggleMeta: function(){
+    this.$meta.slideToggle();
   },
 
   updateForm: function(){
@@ -306,6 +322,7 @@ App.View.ListingView['Vertex'] = App.ListingView = Backbone.View.extend({ // Aki
   },
 
   render: function(){
+    this.upload.render();
     this.summary.render();
     this.list.render();
   },

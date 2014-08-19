@@ -266,6 +266,12 @@ ol.succset_list {
   font-family: "Monaco","Lucida Console","Courier New", "monospace";
   }
 
+.summary .in_set_menu a {
+  display:block;
+  margin: 3% 0;
+  padding: 1% 3px;
+  }
+
 .succset_list li .in_set_menu a.drag_handle {
   display:none;
   z-index: 200;
