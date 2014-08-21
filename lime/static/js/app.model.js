@@ -319,7 +319,8 @@ App.Model['Vertex']= Backbone.Model.extend({
 
 App.Model['Vertex.Category'] = App.Model['Vertex'].extend({
   urlRoot: "api/v1/category/",
-  _cls: "Vertex.Category"
+  _cls: "Vertex.Category",
+  photoNesting: ['Vertex.Work']
 });
 
 /* ------------------------------------------------------------------- */
@@ -328,7 +329,8 @@ App.Model['Vertex.Category'] = App.Model['Vertex'].extend({
 
 App.Model['Vertex.Work'] = App.Model['Vertex'].extend({
   urlRoot: "api/v1/work/",
-  _cls: "Vertex.Work"
+  _cls: "Vertex.Work",
+  photoNesting: []
 });
 
 /* ------------------------------------------------------------------- */
@@ -337,7 +339,8 @@ App.Model['Vertex.Work'] = App.Model['Vertex'].extend({
 
 App.Model['Vertex.Tag'] = Backbone.Model.extend({
   urlRoot: "api/v1/tag/",
-  _cls: "Vertex.Tag"
+  _cls: "Vertex.Tag",
+  photoNesting: ['Vertex.Work']
 });
 
 /* ------------------------------------------------------------------- */
@@ -372,6 +375,7 @@ App.Model['Vertex.Medium.Photo'] = App.Model['Vertex.Medium'].extend({
 App.Model['Vertex.Apex.Body'] = App.Model['Vertex'].extend({
   urlRoot: "api/v1/apex/body/",
   _cls: "Vertex.Apex.Body",
+  photoNesting: ['Vertex.Work'],
 
   url: function(){
     return this.urlRoot;

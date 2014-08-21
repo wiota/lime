@@ -8,34 +8,24 @@ App.View = {};
 // App Model Overrides
 /* ------------------------------------------------------------------- */
 
+// Close Function to clean up views
 Backbone.View.prototype.close = function(){
-  //console.log(this.className + ' close');
-  if(this.children){
-    _.each(this.children, function(childView){
-      childView.close();
-    })
-  }
-  this.children = [];
+  if(this.children){_.invoke(this.children, 'close')};
+  this.children = null;
   this.stopListening();
   this.unbind();
   this.remove();
 }
 
 /* ------------------------------------------------------------------- */
-// Successor Item View (SuccsetItemView?)
+// Successor Item View
 /* ------------------------------------------------------------------- */
-
-App.View.InlineFormView = {
-  // For inline forms
-
-};
 
 App.View.SuccessorItemView = {};
 
 App.View.SuccessorItemView['Vertex'] = App.SuccessorItemView = Backbone.View.extend({ // Abstract class - do not instantiate!
   tagName: 'li',
   className: 'successorItem',
-
   events:{
     'click .delete':'delete',
     'click .update':'updateForm'
@@ -43,8 +33,6 @@ App.View.SuccessorItemView['Vertex'] = App.SuccessorItemView = Backbone.View.ext
 
   initialize: function(options){
     this.predecessor = options.predecessor;
-    this.listenTo(this.model, 'outofsync', this.flashOut);
-    this.listenTo(this.model, 'resynced', this.flash);
     this.$el.attr('id', "_id_"+this.model.id);
   },
 
@@ -60,18 +48,15 @@ App.View.SuccessorItemView['Vertex'] = App.SuccessorItemView = Backbone.View.ext
   },
 
   render: function(){
-    //template
     this.$el.html(this.template(this.model.toJSON()));
-    // cover
     this.$cover = this.$el.children('.cover');
     _.each(this.model.get('cover'), function(coverItem){
-      //this.$covers.append("<img src='"+coverItem.resize_href+"?w=500' alt='' />")
+      // use template
       this.$cover.append("<img src='"+coverItem.href+"?w=500' alt='' />")
     }, this);
     this.delegateEvents();
-    return this
+    return this;
   }
-
 });
 
 App.View.SuccessorItemView['Vertex.Apex.Body'] = App.View.SuccessorItemView['Vertex'].extend({
@@ -114,7 +99,13 @@ App.View.SuccsetListView['Vertex'] = Backbone.View.extend({
   className: 'succset_list',
   sortFunction: null,
 
+  events: {
+    'mousedown': 'sortHeightFix',
+    'mouseup': 'sortHeightRestore'
+  },
+
   initialize: function(){
+    // Should be listening to add event and appending element
     this.listenTo(this.model, 'change:succset', this.render);
     if(!this.model.isDeep()){
       this.listenToOnce(this.model, 'sync', this.render);
@@ -126,12 +117,31 @@ App.View.SuccsetListView['Vertex'] = Backbone.View.extend({
     this.sortInit();
   },
 
+  sortHeightFix: function(){
+    var h = this.$el.height() + 50;
+    this.$el.css({'height': h+'px', 'max-height': h+'px'});
+    $('#listing_panel').css({'max-height': h+'px'});
+  },
+
+  sortHeightRestore: function(){
+    this.$el.css({'height': 'auto', 'max-height': 'none'});
+    $('#listing_panel').css({'max-height': 'none'});
+  },
+
+  // This function can be optimized
+  // Perhaps tie this in with dragging images
   sortInit: function(){
+    var container = this.$el;
     this.sortFunction = this.$el.sortable({
       axis:'y',
       cursor: 'move',
-      opacity: 0.8,
-      distance: 4,
+      opacity: 1,
+      distance: 0,
+      delay: 100,
+      containment: 'parent',
+      scrollSensitivity: 20,
+      scrollSpeed: 20,
+      tolerance: "pointer",
       //handle: '.drag_handle',
       update: this.update,
       forcePlaceholderSize: true,
@@ -141,35 +151,26 @@ App.View.SuccsetListView['Vertex'] = Backbone.View.extend({
         var e = ui.helper.height()+5;
         ui.placeholder.height(s);
         ui.placeholder.animate({'height':e+'px'}, 50, 'linear');
-      }
+      },
     });
   },
 
+  // See sorting comment above
   update: function(event, ui){
-    var ids = [];
-    var lis = this.$el.children();
-    lis.each(function(){
-      ids.push($(this)[0].id.slice(4));
-    })
+    var ids = _.map(this.$el.children(), function(li){return li.id.slice(4)})
     this.model.setSuccset(ids);
   },
 
   render: function(){
-    // check if deep
-    if(!this.model.isDeep()){
-      return false;
-    }
+    // if model needs to be refetched for dereferenced succset
+    if(!this.model.isDeep()){return false;}
 
-    msg.log("Rendering Succset", 'render');
-    msg.log(this.model._cls + " " + this.model.get('title'), 'render');
     successors = this.model.get('succset');
     this.$el.empty();
 
     _.each(successors, function(successor, index){
-      msg.log(successor._cls, 'render');
       var viewFactory = App.View.SuccessorItemView[successor._cls];
       var successorItemView = new viewFactory({'model':successor, 'predecessor': this.model});
-
       this.$el.append(successorItemView.render().el);
       successorItemView.listenTo(successor, 'change', successorItemView.render);
       this.children.push(successorItemView);
@@ -300,45 +301,66 @@ App.View.SummaryView['Vertex.Happening'] = App.WorkSummaryView = App.SummaryView
 
 App.View.ListingView = {};
 
-App.View.ListingView['Vertex'] = App.ListingView = Backbone.View.extend({ // Akin to FormView
+App.View.ListingView['Vertex'] = Backbone.View.extend({ // Akin to FormView
   tagName: 'div',
   _cls: null,
   summary: null,
   list: null,
+  photoNesting: [],
+  events: {
+    'dragover': 'outline',
+    'dragleave .files_container': 'disappear',
+    'drop': 'disappear'
+  },
 
   initialize: function(){
     var _cls = this.model.get('_cls');
 
-    var viewFactory = App.View.SummaryView[_cls];
-    this.summary = new viewFactory({model:this.model}),
+    // child views
+    this.summary = new App.View.SummaryView[_cls]({model:this.model}),
+
     this.list = new App.View.SuccsetListView['Vertex']({model:this.model})
+    this.upload = new App.FormView['Succset']({
+      'model': this.model,
+      'photoNesting': this.model.photoNesting,
+      'className': 'succset draggable form'
+    });
 
-    this.children = [this.summary, this.list];
+    this.$succset = $('<div class="succset container"></div>')
 
+    this.children = [this.summary, this.list, this.upload];
     this.appendElements();
-    // View does not render on initialize
-    // Must be explicitly rendered by ListingPanel
-
   },
 
   render: function(){
-    this.upload.render();
-    this.summary.render();
-    this.list.render();
+    _.each(this.children, function(c){c.render()}, this);
   },
 
   appendElements: function(){
-    this.$el.append(this.summary.el);
+    //this.$el.append(this.summary.el);
+    //this.$el.append(this.$succset);
     this.$el.append(this.list.el);
+    this.$el.append(this.upload.el);
+    this.upload.$el.hide();
   },
+
+  outline: function(e){
+    this.upload.$el.show();
+
+  },
+
+  disappear: function(e){
+    this.upload.$el.hide();
+  },
+
 
 });
 
-App.View.ListingView['Vertex.Apex.Body'] = App.PortfolioListingView = App.ListingView.extend({});
+App.View.ListingView['Vertex.Apex.Body'] = App.View.ListingView['Vertex'].extend({});
 
-App.View.ListingView['Vertex.Category'] = App.CategoryListingView = App.ListingView.extend({});
+App.View.ListingView['Vertex.Category'] = App.View.ListingView['Vertex'].extend({});
 
-App.View.ListingView['Vertex.Work'] = App.WorkListingView = App.ListingView.extend({});
+App.View.ListingView['Vertex.Work'] = App.View.ListingView['Vertex'].extend({});
 
 /* ------------------------------------------------------------------- */
 // Listing Panel
@@ -362,7 +384,7 @@ App.ListingPanel = Backbone.View.extend({
       this.view.close();
     }
 
-    this.view = new App.ListingView({'model':this.listed_model, 'className': className});
+    this.view = new App.View.ListingView[_cls]({'model':this.listed_model, 'className': className});
     this.$el.html(this.view.el);
     this.view.render();
 
