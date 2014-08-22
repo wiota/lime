@@ -26,13 +26,6 @@ def stripe_hook():
             # This is a manual invoice, close it so it can be paid later
             invoice.closed = True
             invoice.save()
-            date = format_date(invoice.period_start)
-            end_date = format_date(invoice.period_end)
-            if date != end_date:
-                date += " - %s" % end_date
-            subject = "Wiota Co. - Invoice (%s)" % date
-            html = render_template("invoice_created_email.html", e=e, link=url_for("account.get_invoice", id=invoice.id, _external=True))
-            print "Sending email"
-            send_email(user.email, subject, html)
-            print "Sent email"
+            link = url_for("account.get_invoice", id=invoice.id, _external=True)
+            BillingEmail(user.email, invoice, e, link).send()
     return '', 200

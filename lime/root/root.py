@@ -2,7 +2,7 @@ from flask import Blueprint, request, redirect, render_template, url_for, flash,
 
 from toolbox.models import *
 from toolbox.tools import retrieve_image
-from toolbox.email import *
+from toolbox.email import ActionEmail
 from toolbox.nocache import nocache
 from flask.ext.login import LoginManager
 from flask.ext.login import login_required, login_user, logout_user, current_user
@@ -68,12 +68,12 @@ def forgot_password():
 
         s = URLSafeSerializer(app.config['SECRET_KEY'])
         payload = s.dumps(str(user.id))
-        link = url_for("root.reset_password", payload=payload, _external=True)
-
+        link_href = url_for("root.reset_password", payload=payload, _external=True)
+        link_text = "Reset password"
         subject = "Forgotten password reset"
-        html = render_template("forgot_password_email.html", link=link)
+        content = "Click the link below to reset your password:"
 
-        send_email(user.email, subject, html)
+        ActionEmail(user.email, subject, content, link_text, link_href).send()
         flash("Reset sent. Check your email.")
     return render_template("forgot_password.html", form=form)
 
