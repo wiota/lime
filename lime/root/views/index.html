@@ -4,7 +4,8 @@
   {{ super() }}
 
   <script src='{{ url_for('static', filename='js/backbone.js') }}'></script>
-  <script src='{{ url_for('static', filename='js/jquery-ui.custom.min.js') }}'></script>
+  <!--<script src='{{ url_for('static', filename='js/jquery-ui.custom.min.js') }}'></script>-->
+  <script src='{{ url_for('static', filename='js/sortable.js') }}'></script>
   </script>
 
 {% endblock %}
@@ -159,14 +160,16 @@
   <div id='request_panel'><div class='container'></div></div>
   <div id='path_panel'>
     <div class='path'>
-      <a class='vertex body' href='/#'>
-        <img class='icon' src='https://s3.amazonaws.com/wiota/lime/home.svg'>
-        <b class='label'>home</b>
-      </a>
-      <a class='vertex back' onclick='javascript: history.go(-1)'>
-        <img class='icon' src='https://s3.amazonaws.com/wiota/lime/back.svg'>
-        <b class='label'>back</b>
-      </a>
+      <div class='static_graph_nav'>
+        <a class='vertex body' href='/#'>
+          <img class='icon' src='https://s3.amazonaws.com/wiota/lime/home.svg'>
+          <b class='label'>home</b>
+        </a>
+        <a class='vertex back' onclick='javascript: history.go(-1)'>
+          <img class='icon' src='https://s3.amazonaws.com/wiota/lime/back.svg'>
+          <b class='label'>back</b>
+        </a>
+      </div>
     </div>
   </div>
   <div id='action_panel'></div>

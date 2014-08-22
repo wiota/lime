@@ -12,6 +12,7 @@ a {text-decoration: none; color: #000;}
 
 };
 
+
 /*
 Body:
   terra cotta: #dd7700
@@ -88,50 +89,34 @@ shadow color  42,44,57
 /* Path Panel */
 /* -------------------------------------------------------------------  */
 
-.path .vertex {
-  display:block;
-  width: 50%;
-  margin: 25% 25%;
-  text-align: center;
+.path {
+  overflow: auto;
+}
+
+.path .static_graph_nav .vertex {
+  display:inline-block;
+  float:left;
+  width: 30%;
+  margin: 8% 0 0 10%;
+  text-align: left;
   }
 
 .path .icon {
   width: 100%;
   }
+  .path .back .icon {
+    transform: rotate(270deg);
+    -webkit-transform: rotate(270deg);
+    -moz-transform: rotate(270deg);
+    -o-transform: rotate(270deg);
+    -ms-transform: rotate(270deg);
+    }
 
 .path .label {
   font-weight: normal;
   font-family: "Monaco","Lucida Console","Courier New", "monospace";
-  font-size: 16px;
+  font-size: 14px;
   }
-
-/* -------------------------------------------------------------------  */
-/* Listing Panel */
-/* -------------------------------------------------------------------  */
-
-#listing_panel {
-  background: #f6f7f7 url('https://s3.amazonaws.com/wiota/lime/4grid_light.png');
-  z-index: 2;
-  margin: 0 0;
-  width: 50%;
-  padding: 0;
-  position:fixed;
-  border: 1px solid #f00;
-  top: 0;
-  left: 19.098300562504%;
-  bottom: 0;
-  }
-
-#listing_panel .listing {
-  position:absolute;
-  top: 0;
-  bottom: 0;
-  right:0;
-  left:0;
-  padding: 0 10px 0 0;
-  background-color: #ccc;
-  overflow: auto;
-}
 
 /* Summary (one for each vertex) */
 
@@ -172,11 +157,43 @@ shadow color  42,44,57
   background-color: #ddd;
 }
 
+
+/* -------------------------------------------------------------------  */
+/* Listing Panel */
+/* -------------------------------------------------------------------  */
+
+#listing_panel {
+  background: #f6f7f7 url('https://s3.amazonaws.com/wiota/lime/4grid_light.png');
+  z-index: 2;
+  margin: 0 0;
+  width: 50%;
+  padding: 0;
+  position:fixed;
+  top: 0;
+  left: 19.098300562504%;
+  bottom:0;
+  overflow: auto;
+  }
+
+#listing_panel .listing {
+
+  position:relative;
+  padding: 0 10px 0 0;
+
+}
+
 /* Succset Container */
 
 div.succset.container {
-  position:relative;
 }
+
+
+/* Sortable */
+
+body.dragging, body.dragging * {
+  cursor: move !important;
+}
+
 
 /* Child List (one for each vertex) */
 
@@ -185,7 +202,6 @@ ol.succset_list {
   width: 100%;
   margin: 0;
   padding: .1% 0% 5%;
-  background-color: #ccf;
   }
 
 .category.listing .succset_list
@@ -200,6 +216,11 @@ ol.succset_list {
   margin: 1.5%;
   min-height: 1em;
   }
+
+  .succset_list li.dragged {
+    position:absolute;
+    z-index: 30;
+    }
 
   .succset_list li .cover {width: 30%;}
   .succset_list li .cover img {width: 100%;}

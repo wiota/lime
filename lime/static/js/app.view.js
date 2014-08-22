@@ -97,11 +97,12 @@ App.View.SuccsetListView = {};
 App.View.SuccsetListView['Vertex'] = Backbone.View.extend({
   tagName: 'ol',
   className: 'succset_list',
+  idName: 'succset_list',
   sortFunction: null,
 
   events: {
-    'mousedown': 'sortHeightFix',
-    'mouseup': 'sortHeightRestore'
+    'mousedown': 'startScrolling',
+    'mouseup': 'stopScrolling'
   },
 
   initialize: function(){
@@ -117,22 +118,56 @@ App.View.SuccsetListView['Vertex'] = Backbone.View.extend({
     this.sortInit();
   },
 
-  sortHeightFix: function(){
-    var h = this.$el.height() + 50;
-    this.$el.css({'height': h+'px', 'max-height': h+'px'});
-    $('#listing_panel').css({'max-height': h+'px'});
+  startScrolling: function(){
+    //var h = this.$el.height() + 50;
+    //this.$el.css({'height': h+'px', 'max-height': h+'px'});
+    //$('#listing_panel').css({'max-height': h+'px'});
+    this.scrollTimer = null;
+    var tolerance = 100;
+    var exponent = 40;
+    var initialSpeed = 1;
+    var container = $('#listing_panel');
+    var windowHeight = $(window).height();
+    var scrollLimit = this.$el.height() - windowHeight;
+
+    $(document).on('mousemove', function(event){
+      var y = event.pageY;
+      var h = windowHeight;
+      var sb = 0;
+
+      if(y < tolerance){
+        sb = (y - tolerance)/tolerance;
+      } else if (y > (h-tolerance)){
+        sb = (y - (h-tolerance))/tolerance;
+      }
+
+      sb = sb*exponent;
+
+      var scrollTo = $('#listing_panel').scrollTop()+sb;
+      if(scrollTo > scrollLimit){scrollTo = scrollLimit}
+      $('#listing_panel').scrollTop(scrollTo);
+
+      var list = $(this)
+      clearInterval(this.scrollTimer);
+      if(sb != 0){
+        this.scrollTimer = setInterval(function(){
+          //var e = jQuery.Event("mousemove", event);
+          list.trigger(event)
+        }, 30)
+      }
+
+    })
   },
 
-  sortHeightRestore: function(){
-    this.$el.css({'height': 'auto', 'max-height': 'none'});
-    $('#listing_panel').css({'max-height': 'none'});
+  stopScrolling: function(){
+    clearInterval(this.scrollTimer);
+    $(document).off('mousemove');
   },
 
-  // This function can be optimized
-  // Perhaps tie this in with dragging images
   sortInit: function(){
-    var container = this.$el;
-    this.sortFunction = this.$el.sortable({
+    var view = this;
+
+    var jqueryui_opt = {
       axis:'y',
       cursor: 'move',
       opacity: 1,
@@ -151,8 +186,48 @@ App.View.SuccsetListView['Vertex'] = Backbone.View.extend({
         var e = ui.helper.height()+5;
         ui.placeholder.height(s);
         ui.placeholder.animate({'height':e+'px'}, 50, 'linear');
+      }
+    }
+
+    var sortable_opt = {
+      distance: 1,
+      delay: 100,
+      tolerance: -100,
+      placeholder: $('<li class="placeholder succsetItem"/>'),
+      onDrag: function ($item, position, _super, event) {
+        position.left = 0;
+        position.top -= $item.yOff;
+        $item.css(position)
       },
-    });
+      onDragStart: function ($item, container, _super, event) {
+        // mouse grab offset
+        $item.xOff = event.offsetX;
+        $item.yOff = event.offsetY;
+
+        // cache item dimensions
+        var itemDim = {
+          height: $item.height(),
+          width: $item.width()
+        }
+
+        // set placeholder and item dimensions
+        this.placeholder.css(itemDim);
+        $item.css(itemDim);
+
+        // add classes
+        $item.addClass("dragged");
+        $("body").addClass("dragging");
+      },
+      onDrop: function ($item, container, _super, event) {
+        $item.removeClass("dragged").removeAttr("style");
+        $("body").removeClass("dragging");
+        view.update();
+      }
+    }
+
+    this.$el.sortable(sortable_opt);
+
+    //this.sortFunction = this.$el.sortable(sortable_opt);
   },
 
   // See sorting comment above
@@ -189,7 +264,6 @@ App.View.SummaryView = {};
 
 App.View.SummaryView['Vertex'] = App.SummaryView = Backbone.View.extend({
   tagName: 'div',
-  className: 'summary',
   template:_.template($('#default_summary').html()),
 
   events:{
@@ -317,7 +391,7 @@ App.View.ListingView['Vertex'] = Backbone.View.extend({ // Akin to FormView
     var _cls = this.model.get('_cls');
 
     // child views
-    this.summary = new App.View.SummaryView[_cls]({model:this.model}),
+    this.summary = new App.View.SummaryView[_cls]({model:this.model, className: App.clsToClass(_cls)+" summary"}),
 
     this.list = new App.View.SuccsetListView['Vertex']({model:this.model})
     this.upload = new App.FormView['Succset']({
@@ -337,7 +411,7 @@ App.View.ListingView['Vertex'] = Backbone.View.extend({ // Akin to FormView
   },
 
   appendElements: function(){
-    //this.$el.append(this.summary.el);
+    $('#path_panel').append(this.summary.el);
     //this.$el.append(this.$succset);
     this.$el.append(this.list.el);
     this.$el.append(this.upload.el);
