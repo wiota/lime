@@ -42,8 +42,9 @@ shadow color  42,44,57
 /* Path Panel */
 
 #path_panel {
-  z-index: 4;
+  z-index: 5;
   width: 19.098300562504%;
+  background-color: #fff;
   position:fixed;
   overflow: auto;
   top: 0;
@@ -54,22 +55,6 @@ shadow color  42,44,57
   box-shadow:         0px 0px 3px 0px rgba(42, 44, 57, 0.80);
 }
 
-
-/* Action Panel */
-
-#action_panel {
-  display:block;
-  z-index: 1;
-  background-color: #fff;
-  overflow: auto;
-  margin: 0;
-  padding: 0 0 0 2%;
-  width: 28.901699437496%;
-  position:fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  }
 
 #request_panel {
   display:block;
@@ -93,11 +78,17 @@ shadow color  42,44,57
   overflow: auto;
 }
 
+.path .static_graph_nav {
+  background-color: #d8e8e8;
+  padding: 0 0 10%;
+  overflow: auto;
+}
+
 .path .static_graph_nav .vertex {
   display:inline-block;
   float:left;
   width: 30%;
-  margin: 8% 0 0 10%;
+  margin: 8% 0 0 5%;
   text-align: left;
   }
 
@@ -120,12 +111,12 @@ shadow color  42,44,57
 
 /* Summary (one for each vertex) */
 
+
 .summary {
   z-index: 120;
   position: relative;
   background-color: #fff;
-  width: 95%;
-  padding: 4% 1% 4% 4%;
+  padding: 5%;
   margin: 0;
   }
 
@@ -133,28 +124,26 @@ shadow color  42,44,57
     font-size: 140%;
     }
 
-  .summary .cover {width: 30%;}
+  .summary .cover {width: 100%;}
   .summary .cover img {width: 100%;}
 
-.body.listing .summary {
-  background: #ff8800;
+.summary.body {
+  background: #a3afaf;
   color: #fff;
   }
 
-  .body.listing .summary .title {
-    font-size: 180%;
-    font-weight: bold;
+  .summary.body .title {
   }
 
-.category.listing .summary {
-  background-color: #ff6;
+.summary.category {
+  background-color: #ffff85;
   }
 
-.tag.listing .summary {
+.summary.tag {
   background-color: #8779ef;
   }
-.work.listing .summary {
-  background-color: #ddd;
+.summary.work {
+  background-color: #d8e8e8;
 }
 
 
@@ -166,11 +155,11 @@ shadow color  42,44,57
   background: #f6f7f7 url('https://s3.amazonaws.com/wiota/lime/4grid_light.png');
   z-index: 2;
   margin: 0 0;
-  width: 50%;
   padding: 0;
   position:fixed;
   top: 0;
   left: 19.098300562504%;
+  width: 80.901699437496%;
   bottom:0;
   overflow: auto;
   }
@@ -215,6 +204,8 @@ ol.succset_list {
   padding: 1% 1% 1% 1%;
   margin: 1.5%;
   min-height: 1em;
+  max-width: 50%;
+  overflow: auto;
   }
 
   .succset_list li.dragged {
@@ -222,7 +213,7 @@ ol.succset_list {
     z-index: 30;
     }
 
-  .succset_list li .cover {width: 30%;}
+  .succset_list li .cover {width: 15%; float:left;margin: 0 2% 0 0;}
   .succset_list li .cover img {width: 100%;}
 
 .succset_list li a.in_set_link {
@@ -247,7 +238,7 @@ ol.succset_list {
   }
 
 .succset_list li.category {
-  background-color: #ff6;
+  background-color: #ffff85;
   }
 
 .succset_list li.tag {}
@@ -288,6 +279,11 @@ ol.succset_list {
   background-color: rgba(255,255,255,1);
   font-family: "Monaco","Lucida Console","Courier New", "monospace";
   }
+
+.summary .in_set_menu {
+  position:relative;
+  text-align: left;
+}
 
 .summary .in_set_menu a {
   display:block;
@@ -385,6 +381,22 @@ ol.succset_list {
 
 
 /* -------------------------------------------------------------------  */
+/* Action Panel */
+/* -------------------------------------------------------------------  */
+
+#action_panel {
+  display:block;
+  background-color: #e8ecec;
+  z-index: 4;
+  overflow: auto;
+  margin: 0;
+  padding: 0 40% 0 2%;
+  left: 19.098300562504%;
+  position:fixed;
+  top: 0;
+  right: 100%;
+  bottom: 0%;
+  }
 /* Form */
 
 fieldset {
@@ -412,7 +424,7 @@ fieldset {
   margin: 0% 1.5% 1.5% 0;
   font-size: 14px;
   border-style:none;
-  background-color: #ebf4f4;
+  background-color: #fff;
   }
 
 #action_panel .save_status {

@@ -320,8 +320,7 @@ App.FormView['Vertex'] = Backbone.View.extend({
       this.save();
     }
     this.close();
-    // if animated, need to call stop listening on serialized attribute forms
-    //this.$el.animate({'height': 0, 'opacity':.3}, 300, 'linear', this.close);
+    App.actionPanel.rollUp();
   },
 
   // Events
@@ -396,6 +395,7 @@ App.FormView['Vertex'] = Backbone.View.extend({
       this.model.outOfSync();
     }
     this.close();
+    App.actionPanel.rollUp();
   }
 
 
@@ -441,8 +441,7 @@ App.FormView['Cover'] = Backbone.View.extend({
       this.save();
     }
     this.close();
-    // if animated, need to call stop listening on serialized attribute forms
-    //this.$el.animate({'height': 0, 'opacity':.3}, 300, 'linear', this.close);
+    App.actionPanel.rollUp();
   },
 
   // Events
@@ -495,8 +494,7 @@ App.FormView['Succset'] = Backbone.View.extend({
       this.save();
     }
     this.close();
-    // if animated, need to call stop listening on serialized attribute forms
-    //this.$el.animate({'height': 0, 'opacity':.3}, 300, 'linear', this.close);
+    App.actionPanel.rollUp();
   },
 
   // Events
@@ -567,12 +565,11 @@ App.ActionPanel = Backbone.View.extend({
       'className': className
     });
 
-    this.$el.css({'right': '-100%'});
 
     this.$el.append(form.el);
     form.render();
     this.forms.push(form);
-    this.$el.animate({'right': '0'}, 200);
+    this.rollDown();
   },
 
   loadCoverForm: function(model){
@@ -584,11 +581,20 @@ App.ActionPanel = Backbone.View.extend({
       'model': model
     });
 
-    this.$el.css({'right': '-100%'});
-
     this.$el.append(form.el);
     form.render();
     this.forms.push(form);
+    this.rollDown();
+  },
+
+  rollUp: function(){
+    this.$el.css({'right': '0%'});
+    this.$el.animate({'right': '100%'}, 200);
+  },
+
+  rollDown: function(){
+    console.log('rolldown');
+    this.$el.css({'right': '100%'});
     this.$el.animate({'right': '0'}, 200);
   },
 
@@ -639,7 +645,7 @@ App.ActionPanel = Backbone.View.extend({
 
   closeForms: function(){
     _.each(this.forms, function(form, index){
-      form.collapse();
+      form.close;
     });
     this.forms = [];
   },

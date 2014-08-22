@@ -306,7 +306,7 @@ App.View.SummaryView['Vertex'] = App.SummaryView = Backbone.View.extend({
 
     // meta
     this.$meta = this.$el.children('.meta');
-    this.$meta.hide();
+    //this.$meta.hide();
 
     // cover
     this.$cover = this.$el.find('.cover');
@@ -322,7 +322,7 @@ App.View.SummaryView['Vertex'] = App.SummaryView = Backbone.View.extend({
   },
 
   toggleMeta: function(){
-    this.$meta.slideToggle();
+    //this.$meta.slideToggle();
   },
 
   updateForm: function(){
