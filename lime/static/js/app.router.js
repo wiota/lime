@@ -6,7 +6,8 @@ App.Router = Backbone.Router.extend({
 
   routes:{
 
-  "":"getBody",
+  "":"home",
+  "body":"getBody",
   "category/:id":"getCategory",
   "work/:id":"getWork",
   "happenings/":"getHappeningsApex",
@@ -19,7 +20,15 @@ App.Router = Backbone.Router.extend({
     App.requestPanel = new App.RequestPanel();
     App.listingPanel = new App.ListingPanel();
     App.actionPanel = new App.ActionPanel();
+    App.pathPanel = new App.Path.PathPanel();
 
+    App.pathPanel.render();
+
+  },
+
+  home: function() {
+    App.listingPanel.apexMenu();
+    App.actionPanel.closeForms();
   },
 
   // Body of work
@@ -27,7 +36,6 @@ App.Router = Backbone.Router.extend({
     var body = App.collection['Vertex.Apex.Body'].lookup();
     App.listingPanel.list(body);
     App.actionPanel.closeForms();
-    //App.actionPanel.loadBatchForms(body);
   },
 
   // Category
@@ -36,7 +44,6 @@ App.Router = Backbone.Router.extend({
     var category = App.collection['Vertex.Category'].lookup(id);
     App.listingPanel.list(category);
     App.actionPanel.closeForms();
-    //App.actionPanel.loadBatchForms(category);
   },
 
   // Work
@@ -45,7 +52,6 @@ App.Router = Backbone.Router.extend({
     var work = App.collection['Vertex.Work'].lookup(id);
     App.listingPanel.list(work);
     App.actionPanel.closeForms();
-    //App.actionPanel.loadBatchForms(work);
   },
 
   // Happenings Apex

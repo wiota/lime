@@ -10,7 +10,7 @@ a {text-decoration: none; color: #000;}
   -moz-box-shadow:    0px 0px 2px 0px rgba(42, 44, 57, 0.80);
   box-shadow:         0px 0px 2px 0px rgba(42, 44, 57, 0.80);
 
-};
+}
 
 
 /*
@@ -28,6 +28,23 @@ shadow color  42,44,57
 
 */
 
+/* -------------------------------------------------------------------  */
+/* Apex Menu */
+/* -------------------------------------------------------------------  */
+
+.apex_menu {
+  padding: 2%;
+  font-size: 60px;
+}
+
+.apex_menu li {
+  padding: 1%;
+}
+
+/* -------------------------------------------------------------------  */
+/* Admin Nav */
+/* -------------------------------------------------------------------  */
+
 
 
 #admin_nav a {
@@ -39,21 +56,10 @@ shadow color  42,44,57
   color: #fff;
   }
 
-/* Path Panel */
 
-#path_panel {
-  z-index: 5;
-  width: 19.098300562504%;
-  background-color: #fff;
-  position:fixed;
-  overflow: auto;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  -webkit-box-shadow: 0px 0px 3px 0px rgba(42, 44, 57, 0.80);
-  -moz-box-shadow:    0px 0px 3px 0px rgba(42, 44, 57, 0.80);
-  box-shadow:         0px 0px 3px 0px rgba(42, 44, 57, 0.80);
-}
+/* -------------------------------------------------------------------  */
+/* Request Panel */
+/* -------------------------------------------------------------------  */
 
 
 #request_panel {
@@ -74,17 +80,27 @@ shadow color  42,44,57
 /* Path Panel */
 /* -------------------------------------------------------------------  */
 
-.path {
+#path_panel {
+  z-index: 5;
+  width: 19.098300562504%;
+  background-color: #fff;
+  position:fixed;
   overflow: auto;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  -webkit-box-shadow: 0px 0px 3px 0px rgba(42, 44, 57, 0.80);
+  -moz-box-shadow:    0px 0px 3px 0px rgba(42, 44, 57, 0.80);
+  box-shadow:         0px 0px 3px 0px rgba(42, 44, 57, 0.80);
 }
 
-.path .static_graph_nav {
+.static_graph_nav {
   background-color: #d8e8e8;
   padding: 0 0 10%;
   overflow: auto;
 }
 
-.path .static_graph_nav .vertex {
+.static_graph_nav .vertex {
   display:inline-block;
   float:left;
   width: 30%;
@@ -92,10 +108,10 @@ shadow color  42,44,57
   text-align: left;
   }
 
-.path .icon {
+.icon {
   width: 100%;
   }
-  .path .back .icon {
+  .back .icon {
     transform: rotate(270deg);
     -webkit-transform: rotate(270deg);
     -moz-transform: rotate(270deg);
@@ -103,11 +119,16 @@ shadow color  42,44,57
     -ms-transform: rotate(270deg);
     }
 
-.path .label {
+.label {
   font-weight: normal;
   font-family: "Monaco","Lucida Console","Courier New", "monospace";
   font-size: 14px;
   }
+
+.path {
+
+}
+
 
 /* Summary (one for each vertex) */
 
@@ -162,10 +183,14 @@ shadow color  42,44,57
   width: 80.901699437496%;
   bottom:0;
   overflow: auto;
+  perspective: 1000px;
+  -webkit-perspective: 1000px;
+  -moz-perspective: 1000px;
+  -o-perspective: 1000px;
   }
 
 #listing_panel .listing {
-
+  max-width: 50%;
   position:relative;
   padding: 0 10px 0 0;
 
@@ -174,6 +199,7 @@ shadow color  42,44,57
 /* Succset Container */
 
 div.succset.container {
+
 }
 
 
@@ -193,23 +219,18 @@ ol.succset_list {
   padding: .1% 0% 5%;
   }
 
-.category.listing .succset_list
-.tag.listing .succset_list {}
-.work.listing .succset_list {}
-
-/* Child in set */
-
 .succset_list li {
   position: relative;
   padding: 1% 1% 1% 1%;
   margin: 1.5%;
   min-height: 1em;
-  max-width: 50%;
   overflow: auto;
   }
 
+
   .succset_list li.dragged {
     position:absolute;
+
     z-index: 30;
     }
 
@@ -330,6 +351,7 @@ ol.succset_list {
   right: 0;
   padding: 0%;
   margin: 0%;
+  background-color: rgba(255,255,255,0.5)
 }
 
 .listing .files_container {
@@ -394,8 +416,8 @@ ol.succset_list {
   left: 19.098300562504%;
   position:fixed;
   top: 0;
-  right: 100%;
-  bottom: 0%;
+  right: 0%;
+  bottom: 100%;
   }
 /* Form */
 

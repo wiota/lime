@@ -588,14 +588,14 @@ App.ActionPanel = Backbone.View.extend({
   },
 
   rollUp: function(){
-    this.$el.css({'right': '0%'});
-    this.$el.animate({'right': '100%'}, 200);
+    this.$el.css({'bottom': '0%'});
+    this.$el.animate({'bottom': '100%'}, 200);
   },
 
   rollDown: function(){
     console.log('rolldown');
-    this.$el.css({'right': '100%'});
-    this.$el.animate({'right': '0'}, 200);
+    this.$el.css({'bottom': '100%'});
+    this.$el.animate({'bottom': '0'}, 200);
   },
 
   /*

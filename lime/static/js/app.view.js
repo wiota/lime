@@ -167,28 +167,6 @@ App.View.SuccsetListView['Vertex'] = Backbone.View.extend({
   sortInit: function(){
     var view = this;
 
-    var jqueryui_opt = {
-      axis:'y',
-      cursor: 'move',
-      opacity: 1,
-      distance: 0,
-      delay: 100,
-      containment: 'parent',
-      scrollSensitivity: 20,
-      scrollSpeed: 20,
-      tolerance: "pointer",
-      //handle: '.drag_handle',
-      update: this.update,
-      forcePlaceholderSize: true,
-      helper: 'original',
-      start: function(e, ui){
-        var s = ui.helper.height()+2;
-        var e = ui.helper.height()+5;
-        ui.placeholder.height(s);
-        ui.placeholder.animate({'height':e+'px'}, 50, 'linear');
-      }
-    }
-
     var sortable_opt = {
       distance: 1,
       delay: 100,
@@ -226,8 +204,6 @@ App.View.SuccsetListView['Vertex'] = Backbone.View.extend({
     }
 
     this.$el.sortable(sortable_opt);
-
-    //this.sortFunction = this.$el.sortable(sortable_opt);
   },
 
   // See sorting comment above
@@ -436,6 +412,21 @@ App.View.ListingView['Vertex.Category'] = App.View.ListingView['Vertex'].extend(
 
 App.View.ListingView['Vertex.Work'] = App.View.ListingView['Vertex'].extend({});
 
+
+/* ------------------------------------------------------------------- */
+// Apex Menu
+/* ------------------------------------------------------------------- */
+
+App.View.ApexMenu = Backbone.View.extend({ // Akin to FormView
+  tagName: 'ul',
+  template: _.template($('#apex_menu').html()),
+  className: 'apex_menu',
+
+  render: function(){
+    this.$el.html(this.template({}));
+  }
+})
+
 /* ------------------------------------------------------------------- */
 // Listing Panel
 // This panel should be the startpoint for all listings
@@ -447,11 +438,9 @@ App.ListingPanel = Backbone.View.extend({
   listed_model: null,
 
   list: function(model){
-    msg.log('- List '+model.id+ ' ' + model.deep + ' ------------------','model')
-    msg.log('- List '+model.id+' ------------------','render')
     this.listed_model = model;
     var _cls = this.listed_model.get('_cls');
-    var className = _cls.toLowerCase().split('.').join(' ') + ' listing';
+    var className = App.clsToClass(_cls) + ' listing';
 
     // View
     if(this.view){
@@ -463,6 +452,15 @@ App.ListingPanel = Backbone.View.extend({
     this.view.render();
 
   },
+
+  apexMenu: function(){
+    if(this.view){
+      this.view.close();
+    }
+    this.view = new App.View.ApexMenu();
+    this.$el.html(this.view.el);
+    this.view.render();
+  }
 
 
 

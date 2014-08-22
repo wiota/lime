@@ -12,6 +12,33 @@
 
 {% block backbone_templates %}
 
+
+  <!-- Home Page Menu -->
+
+  <script type="text/template" id="apex_menu">
+    <li class='body'><a href='#body'>Body of Work</a></li>
+    <li class='happening'><a href='#happening'>Happenings</a></li>
+  </script>
+
+  <!-- Path Panel -->
+
+<script type="text/template" id="path_panel_template">
+
+  <div class='static_graph_nav'>
+    <a class='vertex body' href='/#'>
+      <img class='icon' src='https://s3.amazonaws.com/wiota/lime/home.svg'>
+      <b class='label'>home</b>
+    </a>
+    <a class='vertex back' onclick='javascript: history.go(-1)'>
+      <img class='icon' src='https://s3.amazonaws.com/wiota/lime/back.svg'>
+      <b class='label'>back</b>
+    </a>
+  </div>
+  <div class='path'>
+
+  </div>
+</script>
+
   <!-- Summary -->
 
   <script type="text/template" id="portfolio_summary">
@@ -76,7 +103,7 @@
     <b class='title'><%= title %></b>
     <div class='in_set_menu'>
       <a class='update'>update</a>
-      <a class='delete'>delete</a>
+      <!--<a class='delete'>delete</a>-->
       <a class='drag_handle'>&#8597;</a>
     </div>
   </script>
@@ -160,20 +187,7 @@
 
 {% block content %}
   <div id='request_panel'><div class='container'></div></div>
-  <div id='path_panel'>
-    <div class='path'>
-      <div class='static_graph_nav'>
-        <a class='vertex body' href='/#'>
-          <img class='icon' src='https://s3.amazonaws.com/wiota/lime/home.svg'>
-          <b class='label'>home</b>
-        </a>
-        <a class='vertex back' onclick='javascript: history.go(-1)'>
-          <img class='icon' src='https://s3.amazonaws.com/wiota/lime/back.svg'>
-          <b class='label'>back</b>
-        </a>
-      </div>
-    </div>
-  </div>
+  <div id='path_panel'></div>
   <div id='action_panel'></div>
   <div id='listing_panel'></div>
 
@@ -188,6 +202,7 @@
   <script src='{{ url_for('static', filename='js/app.collection.js') }}'></script>
   <script src='{{ url_for('static', filename='js/app.view.js') }}'></script>
   <script src='{{ url_for('static', filename='js/app.form.js') }}'></script>
+  <script src='{{ url_for('static', filename='js/app.path.js') }}'></script>
   <script src='{{ url_for('static', filename='js/app.upload.js') }}'></script>
   <script src='{{ url_for('static', filename='js/app.router.js') }}'></script>
   <script src='{{ url_for('static', filename='js/app.request.js') }}'></script>
