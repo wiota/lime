@@ -17,14 +17,14 @@ from lime.webhook import webhook
 from toolbox.models import User
 from toolbox.template_tools import format_date, format_money
 from toolbox.tools import AnonymousUser
-from pymongo.errors import AutoReconnect
 import traceback
 
 # Create a starter app
 app = Flask(__name__)
 
 # Force SSL/HTTPS
-sslify = SSLify(app, permanent=True)
+if os.environ.get('SSLIFY', False):
+    sslify = SSLify(app, permanent=True)
 
 # Turn on debugging if it's set
 app.debug = os.environ.get('FLASK_DEBUG', False)
