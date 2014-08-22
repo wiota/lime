@@ -92,7 +92,7 @@ def load_user(userid):
         flash("This user account no longer exists.")
         return AnonymousUser()
 
-@app.errorhandler(Exception)
-def catch_all(exception):
-    if not app.debug:
+if not app.debug:
+    @app.errorhandler(Exception)
+    def catch_all(exception):
         email.send_exception(exception, traceback)
