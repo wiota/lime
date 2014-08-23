@@ -224,9 +224,11 @@ def add_edge():
     edges = request.json["edges"]
     for source_id, sink_id in zip(edges, edges[1:]):
         source = Vertex.objects.get(id=source_id, owner=current_user.id)
-        source.update(add_to_set__succset=sink_id)
+        succset = [sink_id] + source.succset
+        source.update(set__succset=succset)
         sink = Vertex.objects.get(id=sink_id, owner=current_user.id)
-        sink.update(add_to_set__predset=source_id)
+        predset = [source_id] + sink.predset
+        sink.update(set__predset=predset)
     return jsonify(result="success"), 200  # TODO: Should be a 204
 
 
