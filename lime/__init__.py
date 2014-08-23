@@ -6,7 +6,7 @@ from bson.objectid import ObjectId
 from flask.ext.mongoengine import MongoEngine
 from flask.ext.login import LoginManager
 from toolbox import tools
-from toolbox.email import ExceptionEmail
+from toolbox.email import LimeExceptionEmail
 import mongoexhaust
 from lime.account import account
 from lime.admin import admin
@@ -96,4 +96,4 @@ if not app.debug:
     @app.errorhandler(Exception)
     def catch_all(exception):
         tb = traceback.format_exc()
-        ExceptionEmail(exception, tb).send()
+        LimeExceptionEmail(exception, tb).send()
