@@ -16,7 +16,8 @@ mod = Blueprint('webhook', __name__, template_folder='views', url_prefix='/webho
 
 @mod.route('/stripe/', methods=['POST'])
 def stripe_hook():
-    StripeEmail(request.json).send()
+    if request.json["livemode"] or app.debug:
+        StripeEmail(request.json).send()
     stripe.api_key = app.config['STRIPE_SECRET_KEY']
     e = stripe.Event.retrieve(request.json["id"])
     if e["type"] == "invoice.created" :
