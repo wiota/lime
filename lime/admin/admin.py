@@ -131,8 +131,10 @@ def add_plan(user_id, plan_id):
     stripe.api_key = app.config['STRIPE_SECRET_KEY']
     user = User.objects.get(id=user_id)
     cust = stripe.Customer.retrieve(user.stripe_id)
-    cust.subscriptions.create(plan=plan_id)
-
+    if cust.cards.total_count > 0:
+        cust.subscriptions.create(plan=plan_id)
+    else:
+        flash("The user must add a card first.")
     return redirect(url_for("admin.individual_user", id=user_id))
 
 
