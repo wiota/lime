@@ -2,7 +2,7 @@ from flask import Blueprint, request, redirect, render_template, url_for, flash,
 
 from toolbox.models import *
 from toolbox.tools import retrieve_image
-from toolbox.email import ActionEmail
+from toolbox.email import ActionEmail, AdminAlertEmail
 from toolbox.nocache import nocache
 from flask.ext.login import LoginManager
 from flask.ext.login import login_required, login_user, logout_user, current_user
@@ -121,7 +121,8 @@ def confirm(payload=None):
         if not user.registered:
             user.activate()
             flash("Your email has been verified.")
-            session["user_id"] = user_id
+            AdminAlertEmail(subject="Confirmed user: %s" % user.email, body="User %s has confirmed their email address." % user.email).send()
+            session["user_id"] = user_id # TODO: Why is this here?
             return render_template("confirm.html", form=form)
         else:
             return redirect(url_for("root.index"))
@@ -130,6 +131,7 @@ def confirm(payload=None):
         user.password = generate_password_hash(form.password.data)
 
         user.registered = True
+        AdminAlertEmail(subject="Registered user: %s" % user.email, body="User %s has finished registration." % user.email).send()
         user.save()
         login_user(user)
         return redirect(url_for("root.index"))
