@@ -15,22 +15,27 @@ This invoice has been paid. Your receipt is below:<br/>
 <br/>
 <table>
   <thead>
-    <tr><th>Description</th>
+    <tr>
     <th class="date">Date</th>
+    <th>Description</th>
     <th class="amount">Amount</th>
   </tr></thead>
   <tbody>
 {% for line in invoice.lines.data %}
 <tr>
-  <td class="description">{{ line.description }}</td>
   <td class="date">{{ line.period.start|date }}</td>
+  {% if line.type == 'subscription' %}
+    <td class="description">{{ line.plan.name }}</td>
+  {% else %}
+    <td class="description">{{ line.description }}</td>
+  {% endif %}
   <td class="amount">{{ line.amount|money }}</td>
 <tr>
 {% endfor %}
 <tfoot>
   <tr>
     <td></td>
-    <td class="label">Total:</td>
+    <td class="total">Total:</td>
     <td class="total">{{ invoice.total|money }}</td>
   </tr></tfoot>
 </table>
