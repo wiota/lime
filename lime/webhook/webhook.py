@@ -6,7 +6,7 @@ from flask import url_for
 from flask.ext.login import login_required
 from flask.ext.login import current_user
 from toolbox.models import User, Host
-from toolbox.email import StripeEmail
+from toolbox.email import StripeEmail, ReceiptEmail
 from time import strftime, localtime
 import stripe
 from toolbox.template_tools import format_date
@@ -29,4 +29,9 @@ def stripe_hook():
             invoice.save()
             link = url_for("account.get_invoice", id=invoice.id, _external=True)
             BillingEmail(user.email, invoice, e, link).send()
+    elif e["type"] == "invoice.payment_succeeded" :
+        user = User.objects.get(stripe_id=e["data"]["object"]["customer"])
+        invoice = stripe.Invoice.retrieve(e["data"]["object"]["id"])
+        link = url_for("account.get_receipt", id=invoice.id, _external=True)
+        ReceiptEmail(user.email, invoice, e, link).send()
     return '', 200
