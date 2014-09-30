@@ -34,6 +34,9 @@ App.View.SuccessorItemView['Vertex'] = App.SuccessorItemView = Backbone.View.ext
   initialize: function(options){
     this.predecessor = options.predecessor;
     this.$el.attr('id', "_id_"+this.model.id);
+    if(this.model.deleteable){
+      this.$el.find('.delete').hide();
+    }
   },
 
   delete: function(){
