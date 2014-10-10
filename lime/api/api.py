@@ -46,6 +46,23 @@ def post_happening():
     return happening.to_bson(), 200
 
 
+@mod.route('/happening/<id>/', methods=['PUT'])
+@login_required
+def put_happening(id):
+    doc = Happening.objects.get(owner=current_user.id, id=id)
+
+    # TODO: This is a bad function
+    data = {k: request.json[k] for k in doc.get_save_fields() if k in request.json.keys()}
+    update_document(doc, data).save()
+
+    # TODO: This is a hack. get_save_fields should be reworked.
+    if 'cover' in request.json.keys():
+        doc.reload()
+        doc.update(set__cover=request.json['cover'])
+
+    return jsonify(result="success"), 200  # TODO: Should be a 204
+
+
 @mod.route('/happening/form/', methods=['GET'])
 @login_required
 def happening_form():
