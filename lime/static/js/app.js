@@ -1,6 +1,39 @@
 var App = {
 };
 
+App.god = (function(){
+  var keyin = 0;
+  var keycheck = [71,79,68];
+  var god = false;
+
+  var revealGodButton = function(){
+    $('.lime_nav .god').fadeIn();
+    revealGod();
+  }
+
+  var revealGod = function(){
+    console.log('GOD');
+    $('body').addClass('godman');
+  }
+
+  $(document).keyup(function(event){
+    if(event.which == keycheck[keyin]){
+      keyin++;
+    } else {
+      keyin = 0;
+    }
+    if(keyin >= keycheck.length){
+      god = true;
+      revealGodButton();
+    }
+  })
+
+
+
+  return function(){return revealGod;}
+})();
+
+
 App.titleCleaner = {};
 App.titleCleaner.casePref = 'titlecase';
 App.titleCleaner.spacePref = 'add';
@@ -58,6 +91,5 @@ $(document).ready(function() {
 
   App.router = new App.Router();
   Backbone.history.start();
-
 
 });

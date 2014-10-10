@@ -17,7 +17,9 @@ App.FormView.templates = {
   'text': _.template($('#text').html()),
   'textarea': _.template($('#textarea').html()),
   'button': _.template($('#button').html()),
-  'file_upload': _.template($('#html5_file_upload').html())
+  'file_upload': _.template($('#html5_file_upload').html()),
+  'datetime-local': function(){return false}
+
 };
 
 /* ------------------------------------------------------------------- */
@@ -28,12 +30,7 @@ App.FormView.SerialFieldsView = Backbone.View.extend({
   tagName: 'fieldset',
   className: 'serial_fields',
   serialization: null,
-  templates: {
-    'text': _.template($('#text').html()),
-    'textarea': _.template($('#textarea').html()),
-    'button': _.template($('#button').html()),
-    'file_upload': _.template($('#html5_file_upload').html())
-  },
+  templates: App.FormView.templates,
 
   events: {
     'blur input':'focusEnd',
@@ -55,6 +52,7 @@ App.FormView.SerialFieldsView = Backbone.View.extend({
 
       var hasExistingValue = this.model && this.model.get(field.name);
       value = hasExistingValue || '';
+      console.log(field.type);
       var templateFunction = this.templates[field.type];
 
       // Pass key, field, and value to form input template function and append result
@@ -81,7 +79,7 @@ App.FormView.SerialFieldsView = Backbone.View.extend({
 
   events: {
     'input input' :'attributeChange',
-    'input textarea' :'attributeChange',
+    'input textarea' :'attributeChange'
   },
 
   attributeChange: function(evt){
@@ -93,6 +91,46 @@ App.FormView.SerialFieldsView = Backbone.View.extend({
   }
 
 });
+
+
+/* ------------------------------------------------------------------- */
+// God attributes - features not available to casual users
+/* ------------------------------------------------------------------- */
+
+App.FormView.GodAttributes = Backbone.View.extend({
+  tagName: 'fieldset',
+  className: 'god_attributes god',
+  template: _.template($('#god_attributes').html()),
+
+  events: {
+    'input change' :'attributeChange'
+  },
+
+  initialize: function(options){
+    _.bindAll(this, 'render', 'attributeChange');
+  },
+
+  render: function(){
+    var deletable = this.model.get('deletable')
+    var obj = {'deletable':""};
+    if(this.model.get('deletable')){
+      obj.deletable = "checked='checked'";
+    }
+    this.$el.html(this.template(obj));
+    this.$el.find('#deletable').change(this.attributeChange);
+    return this;
+  },
+
+  attributeChange: function(evt){
+    var inputId = evt.currentTarget.id;
+    var value = $(evt.currentTarget).is(':checked');
+
+    var changeObject = {}
+    changeObject[inputId] = value;
+    console.log(this);
+    this.trigger('change', changeObject);
+  }
+})
 
 /* ------------------------------------------------------------------- */
 // Upload Field - triggers change event and passes files to handlers
@@ -274,7 +312,8 @@ App.FormView['Vertex'] = Backbone.View.extend({
     this.children = [];
     this.childOptions = _.pick(this.options, this.passableOptions);
 
-    this.appendFileUpload();
+    //this.appendFileUpload();
+    this.appendGodAttributes();
     this.appendAtrributeFields();
     this.appendSaveView();
 
@@ -292,6 +331,14 @@ App.FormView['Vertex'] = Backbone.View.extend({
     this.children.push(this.fileUpload);
   },
 
+  appendGodAttributes: function(){
+    this.godAttributes = new App.FormView.GodAttributes(this.childOptions)
+    this.$el.append(this.godAttributes.el);
+    this.listenTo(this.godAttributes, 'change', this.attributesChanged);
+    this.children.push(this.godAttributes);
+  },
+
+
   appendAtrributeFields: function(){
     this.attributeFields = new App.FormView.SerialFieldsView(this.childOptions)
     this.$el.append(this.attributeFields.el);
@@ -308,8 +355,9 @@ App.FormView['Vertex'] = Backbone.View.extend({
   },
 
   render: function(){
-    this.listenToOnce(this.attributeFields, 'rendered', this.fileUpload.render);
+    //this.listenToOnce(this.attributeFields, 'rendered', this.fileUpload.render);
     this.listenToOnce(this.attributeFields, 'rendered', this.saveView.render)
+    this.listenToOnce(this.attributeFields, 'rendered', this.godAttributes.render)
     this.attributeFields.render();
     return this;
   },
@@ -334,13 +382,6 @@ App.FormView['Vertex'] = Backbone.View.extend({
       {'func': 'batchPhotosToVertex', 'args': [files, this.photoNesting, this.model, this.predecessor]},
     ]);
 
-    /*
-    App.actionPanel.addBatch(files, this.model, this.photoNesting);
-    if(this.model.isNew()){
-      console.log(this.model.get('title') + ' Saving before Batch');
-      this.collection.createAndAddTo(this.model, this.predecessor);
-    }
-    */
   },
 
   attributesChanged: function(changeObject){
@@ -369,6 +410,7 @@ App.FormView['Vertex'] = Backbone.View.extend({
     }
     this.saveView.statusSaving();
     this.model.modified = false;
+    // Lets use a different form for new models
     if(this.model.isNew()){
       App.requestPanel.one([
         {'func': 'graphRequest', 'args': [
@@ -589,13 +631,13 @@ App.ActionPanel = Backbone.View.extend({
 
   rollUp: function(){
     this.$el.css({'bottom': '0%'});
-    this.$el.animate({'bottom': '100%'}, 200);
+    this.$el.css({'bottom': '100%'}, 200);
   },
 
   rollDown: function(){
     console.log('rolldown');
     this.$el.css({'bottom': '100%'});
-    this.$el.animate({'bottom': '0'}, 200);
+    this.$el.css({'bottom': '0'}, 200);
   },
 
   /*

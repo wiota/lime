@@ -384,6 +384,21 @@ App.Model['Vertex.Apex.Body'] = App.Model['Vertex'].extend({
 });
 
 /* ------------------------------------------------------------------- */
+// Happenings Apex
+/* ------------------------------------------------------------------- */
+
+App.Model['Vertex.Apex.Happenings'] = App.Model['Vertex'].extend({
+  urlRoot: "api/v1/apex/happenings/",
+  _cls: "Vertex.Apex.Happenings",
+  photoNesting: ['Vertex.Event'],
+
+  url: function(){
+    return this.urlRoot;
+  }
+
+});
+
+/* ------------------------------------------------------------------- */
 // Happening
 /* ------------------------------------------------------------------- */
 

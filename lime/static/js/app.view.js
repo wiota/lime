@@ -34,9 +34,6 @@ App.View.SuccessorItemView['Vertex'] = App.SuccessorItemView = Backbone.View.ext
   initialize: function(options){
     this.predecessor = options.predecessor;
     this.$el.attr('id', "_id_"+this.model.id);
-    if(this.model.deleteable){
-      this.$el.find('.delete').hide();
-    }
   },
 
   delete: function(){
@@ -58,6 +55,9 @@ App.View.SuccessorItemView['Vertex'] = App.SuccessorItemView = Backbone.View.ext
       this.$cover.append("<img src='"+coverItem.href+"?w=500' alt='' />")
     }, this);
     this.delegateEvents();
+    if(!this.model.get('deletable')){
+      this.$el.find('.delete').hide();
+    }
     return this;
   }
 });
@@ -65,6 +65,11 @@ App.View.SuccessorItemView['Vertex'] = App.SuccessorItemView = Backbone.View.ext
 App.View.SuccessorItemView['Vertex.Apex.Body'] = App.View.SuccessorItemView['Vertex'].extend({
   className: 'body successorItem',
   template:_.template($('#body_in_set').html())
+});
+
+App.View.SuccessorItemView['Vertex.Happening'] = App.View.SuccessorItemView['Vertex'].extend({
+  className: 'happening successorItem',
+  template:_.template($('#happening_in_set').html())
 });
 
 App.View.SuccessorItemView['Vertex.Category'] = App.View.SuccessorItemView['Vertex'].extend({
@@ -252,6 +257,7 @@ App.View.SummaryView['Vertex'] = App.SummaryView = Backbone.View.extend({
     'click .add_category':'addCategoryForm',
     'click .add_work':'addWorkForm',
     'click .add_photo':'addPhotoForm',
+    'click .add_happening':'addHappeningForm',
     'click .set_cover':'setCoverForm'
   },
 
@@ -322,6 +328,11 @@ App.View.SummaryView['Vertex'] = App.SummaryView = Backbone.View.extend({
     console.log("No longer functional");
   },
 
+  addHappeningForm: function(){
+    var newHappening = new App.Model['Vertex.Happening'];
+    App.actionPanel.loadVertexForm(newHappening, this.model);
+  },
+
   setCoverForm: function(){
     App.actionPanel.loadCoverForm(this.model);
   },
@@ -334,6 +345,10 @@ App.View.SummaryView['Vertex'] = App.SummaryView = Backbone.View.extend({
 
 App.View.SummaryView['Vertex.Apex.Body'] = App.PortfolioSummaryView = App.SummaryView.extend({
   template:_.template($('#portfolio_summary').html())
+});
+
+App.View.SummaryView['Vertex.Apex.Happenings'] = App.PortfolioSummaryView = App.SummaryView.extend({
+  template:_.template($('#happenings_apex_summary').html())
 });
 
 App.View.SummaryView['Vertex.Category'] = App.CategorySummaryView = App.SummaryView.extend({
@@ -409,7 +424,11 @@ App.View.ListingView['Vertex'] = Backbone.View.extend({ // Akin to FormView
 
 });
 
+App.View.ListingView['Vertex.Apex.Happenings'] = App.View.ListingView['Vertex'].extend({});
+
 App.View.ListingView['Vertex.Apex.Body'] = App.View.ListingView['Vertex'].extend({});
+
+App.View.ListingView['Vertex.Happening'] = App.View.ListingView['Vertex'].extend({});
 
 App.View.ListingView['Vertex.Category'] = App.View.ListingView['Vertex'].extend({});
 

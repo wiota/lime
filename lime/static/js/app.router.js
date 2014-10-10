@@ -10,7 +10,7 @@ App.Router = Backbone.Router.extend({
   "body":"getBody",
   "category/:id":"getCategory",
   "work/:id":"getWork",
-  "happenings/":"getHappeningsApex",
+  "happenings":"getHappeningsApex",
   "happening/:id":"getHappening"
 
   },
@@ -24,11 +24,16 @@ App.Router = Backbone.Router.extend({
 
     App.pathPanel.render();
 
+    App.icon = new Iconset();
+    App.icon.add("bookcase", '.bookcase.icon');
+    App.icon.refresh();
+
   },
 
   home: function() {
     App.listingPanel.apexMenu();
     App.actionPanel.closeForms();
+    App.icon.refresh();
   },
 
   // Body of work
@@ -57,7 +62,9 @@ App.Router = Backbone.Router.extend({
   // Happenings Apex
 
   getHappeningsApex: function(){
-    null;
+    var happenings = App.collection['Vertex.Apex.Happenings'].lookup();
+    App.listingPanel.list(happenings);
+    App.actionPanel.closeForms();
   },
 
   getHappening: function(id){

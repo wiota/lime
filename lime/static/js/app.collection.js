@@ -146,6 +146,35 @@ App.Collection['Vertex.Apex.Body'] = App.Collection['Vertex'].extend({ // Unique
   }
 });
 
+App.Collection['Vertex.Apex.Happenings'] = App.Collection['Vertex'].extend({
+  model: App.Model['Vertex.Apex.Happenings'],
+  _cls: 'Vertex.Apex.Happenings',
+  happenings: null,
+
+  lookup: function(){
+    var happenings = this.get() || this.getEmpty();
+    msgExtra = "";
+    msgExtra += happenings.isFetched() ? "<b>FETCHED</b> " : "";
+    msgExtra += happenings.isDeep() ? "<b>DEEP</b> " : "";
+    msg.log("Lookup: Happenings Apex " + msgExtra, 'lookup');
+
+    if(!happenings.isFetched()){
+      return happenings.deepen();
+    } else {
+      return happenings;
+    }
+  },
+
+  add: function(model){
+    this.happenings = model;
+    msg.log("Added Body",'model');
+  },
+
+  get: function(){
+    return this.happenings;
+  }
+});
+
 /* ------------------------------------------------------------------- */
 // Collection instances
 /* ------------------------------------------------------------------- */
@@ -153,6 +182,7 @@ App.Collection['Vertex.Apex.Body'] = App.Collection['Vertex'].extend({ // Unique
 App.collection = {};
 
 App.collection['Vertex.Apex.Body'] = new App.Collection['Vertex.Apex.Body']();
+App.collection['Vertex.Apex.Happenings'] = new App.Collection['Vertex.Apex.Happenings']();
 App.collection['Vertex.Category'] = new App.Collection['Vertex.Category']();
 App.collection['Vertex.Work'] = new App.Collection['Vertex.Work']();
 App.collection['Vertex.Medium.Photo'] = new App.Collection['Vertex.Medium.Photo']();

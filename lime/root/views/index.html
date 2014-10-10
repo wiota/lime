@@ -3,6 +3,7 @@
 
   {{ super() }}
 
+  <script src='{{ url_for('static', filename='js/icon.js') }}'></script>
   <script src='{{ url_for('static', filename='js/backbone.js') }}'></script>
   <!--<script src='{{ url_for('static', filename='js/jquery-ui.custom.min.js') }}'></script>-->
   <script src='{{ url_for('static', filename='js/sortable.js') }}'></script>
@@ -16,30 +17,71 @@
   <!-- Home Page Menu -->
 
   <script type="text/template" id="apex_menu">
-    <li class='body'><a href='#body'>Body of Work</a></li>
-    <li class='happening'><a href='#happening'>Happenings</a></li>
+    <li class='body'>
+      <a href='#body'><b class='icon bookcase'></b>body of work</a>
+    </li>
+    <li class='happening'>
+      <a href='#happenings'>
+      <b class='icon calendar'>
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 16 16"><polyline fill="none" stroke="#FFFFFF" stroke-miterlimit="10" points="15.5,2.5 15.5,15.5 6.5,15.5 "/><rect y="1" fill="#78F7D8" width="16" height="13"/><rect x="1" y="4" fill="#FFFFFF" width="1" height="1"/><rect x="3" y="4" fill="#FFFFFF" width="1" height="1"/><rect x="5" y="4" fill="#FFFFFF" width="1" height="1"/><rect x="7" y="4" fill="#FFFFFF" width="1" height="1"/><rect x="9" y="4" fill="#FFFFFF" width="1" height="1"/><rect x="11" y="4" fill="#FFFFFF" width="1" height="1"/><rect x="13" y="4" fill="#FFFFFF" width="1" height="1"/><rect x="1" y="6" fill="#FFFFFF" width="1" height="1"/><rect x="3" y="6" fill="#FFFFFF" width="1" height="1"/><rect x="5" y="6" fill="#FFFFFF" width="1" height="1"/><rect x="7" y="6" fill="#FFFFFF" width="1" height="1"/><rect x="9" y="6" fill="#FFFFFF" width="1" height="1"/><rect x="11" y="6" fill="#FFFFFF" width="1" height="1"/><rect x="13" y="6" fill="#FFFFFF" width="1" height="1"/><rect x="1" y="8" fill="#FFFFFF" width="1" height="1"/><rect x="3" y="8" fill="#FFFFFF" width="1" height="1"/><rect x="5" y="8" fill="#FFFFFF" width="1" height="1"/><rect x="7" y="8" fill="#FFFFFF" width="1" height="1"/><rect x="9" y="8" fill="#FFFFFF" width="1" height="1"/><rect x="11" y="8" fill="#FFFFFF" width="1" height="1"/><rect x="13" y="8" fill="#FFFFFF" width="1" height="1"/><rect x="1" y="10" fill="#FFFFFF" width="1" height="1"/><rect x="3" y="10" fill="#FFFFFF" width="1" height="1"/><rect x="5" y="10" fill="#FFFFFF" width="1" height="1"/><rect x="1" y="12" fill="#FFFFFF" width="1" height="1"/><rect x="3" y="12" fill="#FFFFFF" width="1" height="1"/><rect x="13" y="2" fill="#FFFFFF" width="1" height="1"/><rect x="7" y="10" fill="#FFFFFF" width="1" height="1"/><rect x="9" y="10" fill="#FFFFFF" width="1" height="1"/><rect x="11" y="10" fill="#FFFFFF" width="1" height="1"/><rect x="13" y="10" fill="#FFFFFF" width="1" height="1"/></svg>
+      </b>happenings</a>
+    </li>
   </script>
 
   <!-- Path Panel -->
 
 <script type="text/template" id="path_panel_template">
 
-  <div class='static_graph_nav'>
-    <a class='vertex body' href='/#'>
-      <img class='icon' src='https://s3.amazonaws.com/wiota/lime/home.svg'>
-      <b class='label'>home</b>
-    </a>
-    <a class='vertex back' onclick='javascript: history.go(-1)'>
-      <img class='icon' src='https://s3.amazonaws.com/wiota/lime/back.svg'>
-      <b class='label'>back</b>
-    </a>
-  </div>
+  <ul class='lime_nav'>
+    <li class='god'>
+      <a>
+        <b class='icon god'>
+          <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 16 16"><polyline fill="none" stroke="#000000" points="0.5,1 0.5,15.5 15.5,15.5 15.5,1.5 2.5,1.5 2.5,13.5 13.5,13.5 13.5,3.5 4.5,3.5 4.5,11.5 11.5,11.5 11.5,5.5 6.5,5.5 6.5,9.5 9.5,9.5 9.5,7.5 8,7.5 "/><polyline fill="none" stroke="#fffff" points="1.5,1 1.5,14.5 14.5,14.5 14.5,2.5 3.5,2.5 3.5,12.5 12.5,12.5 12.5,4.5 5.5,4.5 5.5,10.5 10.5,10.5 10.5,6.5 7.5,6.5 7.5,8.5 9,8.5 "/></svg>
+        </b>
+        <b class='label'>god</b>
+      </a>
+    </li>
+    <li class='home'>
+      <a href='/#'>
+        <b class='icon home'>
+          <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 16 16"><rect x="0.5" y="1.5" fill="none" stroke="#000000" stroke-miterlimit="10" width="15" height="14"/><line fill="none" stroke="#ffffff" stroke-width="0.5" stroke-miterlimit="10" x1="1" y1="3.25" x2="15" y2="3.25"/><line fill="none" stroke="#ffffff" stroke-width="0.5" stroke-miterlimit="10" x1="1" y1="4.75" x2="15" y2="4.75"/><line fill="none" stroke="#ffffff" stroke-width="0.5" stroke-miterlimit="10" x1="4.25" y1="2" x2="4.25" y2="3"/><line fill="none" stroke="#ffffff" stroke-width="0.5" stroke-miterlimit="10" x1="7.75" y1="2" x2="7.75" y2="3"/><line fill="none" stroke="#ffffff" stroke-width="0.5" stroke-miterlimit="10" x1="11.25" y1="2" x2="11.25" y2="3"/><line fill="none" stroke="#ffffff" stroke-width="0.5" stroke-miterlimit="10" x1="14.75" y1="2" x2="14.75" y2="3"/><line fill="none" stroke="#ffffff" stroke-width="0.5" stroke-miterlimit="10" x1="2.5" y1="3.5" x2="2.5" y2="4.5"/><line fill="none" stroke="#ffffff" stroke-width="0.5" stroke-miterlimit="10" x1="6" y1="3.5" x2="6" y2="4.5"/><line fill="none" stroke="#ffffff" stroke-width="0.5" stroke-miterlimit="10" x1="9.5" y1="3.5" x2="9.5" y2="4.5"/><line fill="none" stroke="#ffffff" stroke-width="0.5" stroke-miterlimit="10" x1="13" y1="3.5" x2="13" y2="4.5"/><line fill="none" stroke="#ffffff" stroke-width="0.5" stroke-miterlimit="10" x1="1" y1="6.25" x2="15" y2="6.25"/><line fill="none" stroke="#ffffff" stroke-width="0.5" stroke-miterlimit="10" x1="1" y1="7.75" x2="15" y2="7.75"/><line fill="none" stroke="#ffffff" stroke-width="0.5" stroke-miterlimit="10" x1="4.25" y1="5" x2="4.25" y2="6"/><line fill="none" stroke="#ffffff" stroke-width="0.5" stroke-miterlimit="10" x1="7.75" y1="5" x2="7.75" y2="6"/><line fill="none" stroke="#ffffff" stroke-width="0.5" stroke-miterlimit="10" x1="11.25" y1="5" x2="11.25" y2="6"/><line fill="none" stroke="#ffffff" stroke-width="0.5" stroke-miterlimit="10" x1="14.75" y1="5" x2="14.75" y2="6"/><line fill="none" stroke="#ffffff" stroke-width="0.5" stroke-miterlimit="10" x1="2.5" y1="6.5" x2="2.5" y2="7.5"/><line fill="none" stroke="#ffffff" stroke-width="0.5" stroke-miterlimit="10" x1="6" y1="6.5" x2="6" y2="7.5"/><line fill="none" stroke="#ffffff" stroke-width="0.5" stroke-miterlimit="10" x1="9.5" y1="6.5" x2="9.5" y2="7.5"/><line fill="none" stroke="#ffffff" stroke-width="0.5" stroke-miterlimit="10" x1="13" y1="6.5" x2="13" y2="7.5"/><line fill="none" stroke="#ffffff" stroke-width="0.5" stroke-miterlimit="10" x1="1" y1="9.25" x2="15" y2="9.25"/><line fill="none" stroke="#ffffff" stroke-width="0.5" stroke-miterlimit="10" x1="1" y1="10.75" x2="15" y2="10.75"/><line fill="none" stroke="#ffffff" stroke-width="0.5" stroke-miterlimit="10" x1="4.25" y1="8" x2="4.25" y2="9"/><line fill="none" stroke="#ffffff" stroke-width="0.5" stroke-miterlimit="10" x1="7.75" y1="8" x2="7.75" y2="9"/><line fill="none" stroke="#ffffff" stroke-width="0.5" stroke-miterlimit="10" x1="11.25" y1="8" x2="11.25" y2="9"/><line fill="none" stroke="#ffffff" stroke-width="0.5" stroke-miterlimit="10" x1="14.75" y1="8" x2="14.75" y2="9"/><line fill="none" stroke="#ffffff" stroke-width="0.5" stroke-miterlimit="10" x1="2.5" y1="9.5" x2="2.5" y2="10.5"/><line fill="none" stroke="#ffffff" stroke-width="0.5" stroke-miterlimit="10" x1="6" y1="9.5" x2="6" y2="10.5"/><line fill="none" stroke="#ffffff" stroke-width="0.5" stroke-miterlimit="10" x1="9.5" y1="9.5" x2="9.5" y2="10.5"/><line fill="none" stroke="#ffffff" stroke-width="0.5" stroke-miterlimit="10" x1="13" y1="9.5" x2="13" y2="10.5"/><line fill="none" stroke="#ffffff" stroke-width="0.5" stroke-miterlimit="10" x1="1" y1="12.25" x2="15" y2="12.25"/><line fill="none" stroke="#ffffff" stroke-width="0.5" stroke-miterlimit="10" x1="1" y1="13.75" x2="15" y2="13.75"/><line fill="none" stroke="#ffffff" stroke-width="0.5" stroke-miterlimit="10" x1="4.25" y1="11" x2="4.25" y2="12"/><line fill="none" stroke="#ffffff" stroke-width="0.5" stroke-miterlimit="10" x1="7.75" y1="11" x2="7.75" y2="12"/><line fill="none" stroke="#ffffff" stroke-width="0.5" stroke-miterlimit="10" x1="11.25" y1="11" x2="11.25" y2="12"/><line fill="none" stroke="#ffffff" stroke-width="0.5" stroke-miterlimit="10" x1="14.75" y1="11" x2="14.75" y2="12"/><line fill="none" stroke="#ffffff" stroke-width="0.5" stroke-miterlimit="10" x1="2.5" y1="12.5" x2="2.5" y2="13.5"/><line fill="none" stroke="#ffffff" stroke-width="0.5" stroke-miterlimit="10" x1="6" y1="12.5" x2="6" y2="13.5"/><line fill="none" stroke="#ffffff" stroke-width="0.5" stroke-miterlimit="10" x1="9.5" y1="12.5" x2="9.5" y2="13.5"/><line fill="none" stroke="#ffffff" stroke-width="0.5" stroke-miterlimit="10" x1="13" y1="12.5" x2="13" y2="13.5"/><line fill="none" stroke="#ffffff" stroke-width="0.5" stroke-miterlimit="10" x1="4.25" y1="14" x2="4.25" y2="15"/><line fill="none" stroke="#ffffff" stroke-width="0.5" stroke-miterlimit="10" x1="7.75" y1="14" x2="7.75" y2="15"/><line fill="none" stroke="#ffffff" stroke-width="0.5" stroke-miterlimit="10" x1="11.25" y1="14" x2="11.25" y2="15"/><line fill="none" stroke="#ffffff" stroke-width="0.5" stroke-miterlimit="10" x1="14.75" y1="14" x2="14.75" y2="15"/><polyline fill="#000" stroke="#000" stroke-miterlimit="10" points="9.5,15 9.5,9 6.5,9 6.5,15 "/></svg>
+        </b>
+        <b class='label'>home</b>
+      </a>
+    </li>
+    <li class='vertex body'>
+      <a href='/#body'>
+        <b class='icon bookcase'></b>
+        <b class='label'>body of work</b>
+      </a>
+    </li>
+    <li class='back'>
+      <a onclick='javascript: history.go(-1)'>
+        <b class='icon backover'>
+          <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 16 16"><polyline fill="none" stroke="#FFFFFF" stroke-miterlimit="10" points="15.5,2.5 15.5,15.5 6.5,15.5 "/><rect x="5.5" y="0.542" fill="#FFFFFF" stroke="#FFFFFF" stroke-miterlimit="10" width="8" height="13"/><line fill="none" stroke="#FFFFFF" stroke-miterlimit="10" x1="6.499" y1="14.479" x2="5.5" y2="14.479"/></svg>
+          </b>
+        <b class='icon back'>
+          <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 16 16"><polyline fill="none" stroke="#0083c6" points="6,3.5 2,7.5 6,11.5"/><line fill="none" stroke="#0083c6" x1="9" y1="8.5" x2="14" y2="8.5"/><line fill="none" stroke="#0083c6" x1="2" y1="7.5" x2="8" y2="7.5"/><rect x="0.5" y="1.5" fill="none" stroke="#FFFFFF" stroke-miterlimit="10" width="15" height="13"/><line fill="none" stroke="#FFFFFF" stroke-miterlimit="10" x1="8.5" y1="14.5" x2="8.5" y2="1.5"/></svg>
+        </b>
+        <b class='label'>back</b>
+      </a>
+    </li>
+  </ul>
   <div class='path'>
 
   </div>
 </script>
 
   <!-- Summary -->
+
+  <script type="text/template" id="happenings_apex_summary">
+    <div class='happenings_title title'>Happenings</div>
+    <div class='meta'>
+      <div class='in_set_menu'>
+        <a class='add_happening'>add happening</a>
+      </div>
+    </div>
+  </script>
 
   <script type="text/template" id="portfolio_summary">
     <div class='portfolio_title title'>Body of Work</div>
@@ -77,9 +119,6 @@
   <script type="text/template" id="happening_summary">
     <div class='title'><%= title %></div>
     <div class='location'><%= location %></div>
-    <div class='start'><%= start_date %></div>
-    <div class='end'>End Date: <% if (typeof end_date !== "undefined") { print(end_date) } %></div>
-
     <div class='in_set_menu'>
       <a class='update'>update</a>
     </div>
@@ -112,6 +151,18 @@
     <a class='in_set_link' href='#work/<%= _id %>'></a>
     <div class='cover'></div>
     <b class='title'><%= title %></b>
+    <div class='in_set_menu'>
+      <a class='update'>update</a>
+      <a class='delete'>delete</a>
+      <a class='drag_handle'>&#8597;</a>
+    </div>
+  </script>
+
+  <script type="text/template" id="happening_in_set">
+    <a class='in_set_link' href='#happening/<%= _id %>'></a>
+    <div class='cover'></div>
+    <b class='title'><%= title %></b>
+    <b class='date'><% if (typeof date_string !== "undefined") { print(date_string) } %></b>
     <div class='in_set_menu'>
       <a class='update'>update</a>
       <a class='delete'>delete</a>
@@ -152,11 +203,18 @@
   </script>
 
   <script type="text/template" id="html5_file_upload">
-    <!--<label for='files'><%= label %></label>-->
     <input type="file" multiple="multiple" name="files[]" class="files"/>
     <div class='files_container'>
       <i class='message'><%= label %></i>
     </div>
+  </script>
+
+  <script type="text/template" id="god_attributes">
+    <b class='icon god'>
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 16 16"><polyline fill="none" stroke="#000000" points="0.5,1 0.5,15.5 15.5,15.5 15.5,1.5 2.5,1.5 2.5,13.5 13.5,13.5 13.5,3.5 4.5,3.5 4.5,11.5 11.5,11.5 11.5,5.5 6.5,5.5 6.5,9.5 9.5,9.5 9.5,7.5 8,7.5 "/><polyline fill="none" stroke="#fffff" points="1.5,1 1.5,14.5 14.5,14.5 14.5,2.5 3.5,2.5 3.5,12.5 12.5,12.5 12.5,4.5 5.5,4.5 5.5,10.5 10.5,10.5 10.5,6.5 7.5,6.5 7.5,8.5 9,8.5 "/></svg>
+    </b>
+    <label for='deletable'><input id="deletable" type="checkbox" name="deletable" value="true" <%= deletable %> /> Deletable</label>
+
   </script>
 
   <script type="text/template" id="batch">
