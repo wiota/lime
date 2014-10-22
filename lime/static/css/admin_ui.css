@@ -33,7 +33,11 @@ Request:
 Form
   aluminum: #ebf4f4;
   lead: #cbdada;
+Action
+  foam: #78F7D8;
+  acid: #04e8e8;
 shadow color  42,44,57
+
 
 */
 
@@ -89,17 +93,23 @@ shadow color  42,44,57
   top: 0;
   left: 0;
   bottom: 0;
+  padding-top: 20%;
   -webkit-box-shadow: 0px 0px 3px 0px rgba(42, 44, 57, 0.80);
   -moz-box-shadow:    0px 0px 3px 0px rgba(42, 44, 57, 0.80);
   box-shadow:         0px 0px 3px 0px rgba(42, 44, 57, 0.80);
 }
 
 .lime_nav {
-  background-color: #d8e8e8;
+  background-color: #f6f7f2;
   margin: 0;
-  padding: 0 0 10%;
+  padding: 0% 0% 3%;
   overflow: auto;
   list-style-type: none;
+  position:absolute;
+  z-index: 200;
+  top: 0;
+  left: 0;
+  right: 0;
 
 }
 
@@ -107,8 +117,16 @@ shadow color  42,44,57
   cursor: pointer;
   width: 90%;
   margin: 0;
-  padding: 5%;
+  padding: 5% 5% 2%;
   clear:left;
+}
+
+.lime_nav li.secondary {
+  display: none;
+}
+
+.lime_nav:hover li.secondary {
+  display: block;
 }
 
 .lime_nav a {
@@ -173,16 +191,20 @@ shadow color  42,44,57
   .summary .cover img {width: 100%;}
 
 .summary.body {
-  background: #a3afaf;
-  color: #fff;
+  background: #f4f794;
+  color: #000;
   }
 
   .summary.body .title {
   }
 
 .summary.category {
-  background-color: #ffff85;
+  background-color: #fff;
   }
+
+.summary.happenings {
+  background-color: #a1f7d3;
+}
 
 .summary.tag {
   background-color: #8779ef;
@@ -190,7 +212,6 @@ shadow color  42,44,57
 .summary.work {
   background-color: #d8e8e8;
 }
-
 
 /* -------------------------------------------------------------------  */
 /* Listing Panel */
@@ -214,8 +235,13 @@ shadow color  42,44,57
   }
 
 #listing_panel .listing {
-  max-width: 50%;
-  position:relative;
+  position:fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  overflow: auto;
+  max-width: 100%;
   padding: 0 10px 0 0;
 
 }
@@ -227,20 +253,21 @@ div.succset.container {
 }
 
 
-/* Sortable */
+/* Sortable ------------------------------------- */
 
 body.dragging, body.dragging * {
   cursor: move !important;
 }
 
 
-/* Child List (one for each vertex) */
+/* Child List (one for each vertex) ------------------------------------- */
 
 ol.succset_list {
   z-index: 110;
   width: 100%;
   margin: 0;
   padding: .1% 0% 5%;
+  position:relative;
   }
 
 .succset_list li {
@@ -254,7 +281,6 @@ ol.succset_list {
 
   .succset_list li.dragged {
     position:absolute;
-
     z-index: 30;
     }
 
@@ -273,6 +299,7 @@ ol.succset_list {
 
 .succset_list li b.title {
   font-weight: normal;
+  display:block;
 }
 
 .succset_list li:hover b.title {
@@ -283,11 +310,15 @@ ol.succset_list {
   }
 
 .succset_list li.category {
-  background-color: #ffff85;
+  background-color: #fff;
   }
 
 .succset_list li.tag {}
 .succset_list li.work {
+  background-color: #fff;
+  }
+
+  .succset_list li.happening {
   background-color: #fff;
   }
 
@@ -305,7 +336,7 @@ ol.succset_list {
 
 .succset_list li.video {}
 
-/* In Set Menus */
+/* In Set Menus ------------------------------------- */
 
 .in_set_menu {
   position:absolute;
@@ -328,6 +359,11 @@ ol.succset_list {
 .summary .in_set_menu {
   position:relative;
   text-align: left;
+  display:none;
+}
+
+.summary:hover .in_set_menu {
+  display:block;
 }
 
 .summary .in_set_menu a {
@@ -353,22 +389,24 @@ ol.succset_list {
   }
 
 .delete:hover {
-  color: #900;
+  background-color: #f00;
+  color: #fff;
   }
 
 .update {
-  color: #82db8a;
+  color: #78F7D8;
   }
 
 .update:hover {
-  color: #00db14;
+  background-color: #78F7D8;
+  color: #fff;
   }
 
-/* Succset form */
+/* Succset form ------------------------------------- */
 
-.listing form.succset {
-  z-index: 110;
-  position:absolute;
+form.succset {
+  z-index: 210;
+  position:fixed;
   top: 0;
   left: 0;
   bottom: 0;
@@ -378,19 +416,23 @@ ol.succset_list {
   background-color: rgba(255,255,255,0.5)
 }
 
-.listing .files_container {
+form.succset .files_container {
   position:absolute;
   top: 0;
   left: 0;
   bottom: 0;
   right: 0;
   overflow:hidden;
-  border: 5px dotted #a3afaf;
+  border-style: none;
   margin: 0;
   padding: 1%;
 }
 
-.listing .vertex.photo.form .files {
+form.succset .over .files_container {
+  border: 5px dotted #a3afaf;
+}
+
+form.succset .vertex.photo.form .files {
   position: absolute;
   top:0;
   left:0;
@@ -399,22 +441,22 @@ ol.succset_list {
   height: 100%
 }
 
-.listing .file_upload.over .files_container {
+form.succset .file_upload.over .files_container {
 }
 
-.listing .files_container .message {
+form.succset .files_container .message {
   font-size: 20px;
   font-style: normal;
   color: #000;
   position:relative;
 }
 
-.listing .over .files_container .message {
+form.succset .over .files_container .message {
   top: 1px;
   left: 1px;
 }
 
-.listing .file_upload input {
+form.succset .file_upload input {
   position:absolute;
   bottom: 0;
   left: 0;
@@ -432,7 +474,7 @@ ol.succset_list {
 
 #action_panel {
   display:block;
-  background-color: #e8ecec;
+  background: #f6f7f7 url('https://s3.amazonaws.com/wiota/lime/4grid_light.png');
   z-index: 4;
   overflow: auto;
   margin: 0;
@@ -460,16 +502,22 @@ fieldset {
 #action_panel label {
   font-size: 11px;
   display:block;
-  padding: 2%;
+  padding: 1%;
   margin: 1.5% 1.5% 0% 0;
   }
 
 #action_panel .input {
   width: 93%;
-  padding: 2%;
+  padding: 1%;
   margin: 0% 1.5% 1.5% 0;
-  font-size: 30px;
+  font-size: 14px;
   border-style:none;
+  background-color: #fff;
+  }
+
+#action_panel .input#title {
+
+  font-size: 34px;
   background-color: transparent;
   }
 

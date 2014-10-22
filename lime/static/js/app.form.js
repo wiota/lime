@@ -52,11 +52,11 @@ App.FormView.SerialFieldsView = Backbone.View.extend({
 
       var hasExistingValue = this.model && this.model.get(field.name);
       value = hasExistingValue || '';
-      console.log(field.type);
       var templateFunction = this.templates[field.type];
 
       // Pass key, field, and value to form input template function and append result
       var formInput = $(templateFunction({'id':field.name, 'label':field.label, 'value': value}));
+
       formInput.appendTo(this.$el);
     }, this);
 
@@ -168,12 +168,14 @@ App.FormView.FileUploadView = Backbone.View.extend({
 
   dragover: function(event){
     this.$el.addClass('over');
-    this.cancelEvent(event);
+    console.log('over');
+    //this.cancelEvent(event);
   },
 
   dragleave: function(event){
     this.$el.removeClass('over');
-    this.cancelEvent(event);
+    console.log('leave');
+    //this.cancelEvent(event);
   },
 
   cancelEvent: function(event){
@@ -686,6 +688,7 @@ App.ActionPanel = Backbone.View.extend({
   */
 
   closeForms: function(){
+    console.log(this.forms);
     _.each(this.forms, function(form, index){
       form.close;
     });

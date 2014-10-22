@@ -48,6 +48,7 @@ App.View.SuccessorItemView['Vertex'] = App.SuccessorItemView = Backbone.View.ext
   },
 
   render: function(){
+    this.model.toJSON()
     this.$el.html(this.template(this.model.toJSON()));
     this.$cover = this.$el.children('.cover');
     _.each(this.model.get('cover'), function(coverItem){
@@ -134,7 +135,7 @@ App.View.SuccsetListView['Vertex'] = Backbone.View.extend({
     var tolerance = 100;
     var exponent = 40;
     var initialSpeed = 1;
-    var container = $('#listing_panel');
+    var container = $('#listing_panel .listing');
     var windowHeight = $(window).height();
     var scrollLimit = this.$el.height() - windowHeight;
 
@@ -151,9 +152,9 @@ App.View.SuccsetListView['Vertex'] = Backbone.View.extend({
 
       sb = sb*exponent;
 
-      var scrollTo = $('#listing_panel').scrollTop()+sb;
+      var scrollTo = container.scrollTop()+sb;
       if(scrollTo > scrollLimit){scrollTo = scrollLimit}
-      $('#listing_panel').scrollTop(scrollTo);
+      container.scrollTop(scrollTo);
 
       var list = $(this)
       clearInterval(this.scrollTimer);
@@ -186,9 +187,16 @@ App.View.SuccsetListView['Vertex'] = Backbone.View.extend({
         $item.css(position)
       },
       onDragStart: function ($item, container, _super, event) {
+
+        // margin top
+        var marginTop = Number($item.css('margin-top').replace('px', ''));
+
         // mouse grab offset
         $item.xOff = event.offsetX;
-        $item.yOff = event.offsetY;
+        $item.yOff = event.offsetY + marginTop;
+
+        console.log(marginTop, $item.yOff);
+        //console.log(event);
 
         // cache item dimensions
         var itemDim = {
@@ -394,30 +402,33 @@ App.View.ListingView['Vertex'] = Backbone.View.extend({ // Akin to FormView
       'className': 'succset draggable form'
     });
 
-    this.$succset = $('<div class="succset container"></div>')
-
+    this.$succset = $('<div class="succset container"></div>');
     this.children = [this.summary, this.list, this.upload];
-    this.appendElements();
+
   },
 
   render: function(){
     _.each(this.children, function(c){c.render()}, this);
+    this.appendElements();
   },
 
   appendElements: function(){
     $('#path_panel').append(this.summary.el);
-    //this.$el.append(this.$succset);
+    //this.$el.append(this.summary.el);
     this.$el.append(this.list.el);
     this.$el.append(this.upload.el);
+    //this.$el.append(this.upload.el);
     this.upload.$el.hide();
   },
 
   outline: function(e){
+    console.log('outline')
     this.upload.$el.show();
 
   },
 
   disappear: function(e){
+    console.log('disappear')
     this.upload.$el.hide();
   },
 
