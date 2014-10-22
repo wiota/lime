@@ -45,6 +45,9 @@ def post_index():
 def image(image_name):
     return retrieve_image(image_name, current_user.email_hash)
 
+@mod.route('/icon/<icon_name>', methods=['GET'])
+def icon(icon_name):
+    return render_template("icons/" + icon_name, color=request.args.get('c', None))
 
 @mod.route("/logout/")
 @nocache

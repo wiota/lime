@@ -22,6 +22,10 @@ def stripe_hook():
         print request.json
     stripe.api_key = app.config['STRIPE_SECRET_KEY']
     e = stripe.Event.retrieve(request.json["id"])
+
+    # This should catch manual invoices, but needs tweaking. Leaving this out
+    # until we need manual invoicing.
+    '''
     if e["type"] == "invoice.created" :
         user = User.objects.get(stripe_id=e["data"]["object"]["customer"])
         invoice = stripe.Invoice.retrieve(e["data"]["object"]["id"])
@@ -32,6 +36,8 @@ def stripe_hook():
             link = url_for("account.get_invoice", id=invoice.id, _external=True)
             BillingEmail(user.email, invoice, e, link).send()
     elif e["type"] == "invoice.payment_succeeded" :
+    '''
+    if e["type"] == "invoice.payment_succeeded" :
         user = User.objects.get(stripe_id=e["data"]["object"]["customer"])
         invoice = stripe.Invoice.retrieve(e["data"]["object"]["id"])
         link = url_for("account.get_receipt", id=invoice.id, _external=True)

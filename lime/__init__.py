@@ -18,6 +18,7 @@ from toolbox.models import User
 from toolbox.template_tools import format_date, format_money
 from toolbox.tools import AnonymousUser
 import traceback
+from pymongo.errors import AutoReconnect
 
 # Create a starter app
 app = Flask(__name__)
