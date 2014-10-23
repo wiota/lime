@@ -1,3 +1,4 @@
+import sys
 from flask import Blueprint, request, jsonify
 from flask import current_app as app
 from toolbox.tools import update_document
@@ -7,6 +8,15 @@ from flask.ext.login import current_user
 
 
 mod = Blueprint('api', __name__, url_prefix='/api/v1')
+
+def str_to_class(str):
+    return reduce(getattr, str.split("."), sys.modules[__name__])
+
+@mod.route('/<classname>/form/', methods=['GET'])
+@login_required
+def vertex_to_form(classname):
+    return str_to_class(classname.title())().to_form()
+
 
 '''
 Body endpoints
@@ -63,12 +73,6 @@ def put_happening(id):
     return jsonify(result="success"), 200  # TODO: Should be a 204
 
 
-@mod.route('/happening/form/', methods=['GET'])
-@login_required
-def happening_form():
-    return Happening().to_form()
-
-
 '''
 User endpoints
 '''
@@ -106,12 +110,6 @@ def put_work(id):
         doc.update(set__cover=request.json['cover'])
 
     return jsonify(result="success"), 200  # TODO: Should be a 204
-
-
-@mod.route('/work/form/', methods=['GET'])
-@login_required
-def work_form():
-    return Work().to_form()
 
 
 '''
@@ -155,12 +153,6 @@ def put_category(id):
         doc.update(set__cover=request.json['cover'])
 
     return jsonify(result="success"), 200  # TODO: Should be a 204
-
-
-@mod.route('/category/form/', methods=['GET'])
-@login_required
-def category_form():
-    return Category().to_form()
 
 
 '''
@@ -225,12 +217,6 @@ def put_page(id):
     return jsonify(result="success"), 200  # TODO: Should be a 204
 
 
-@mod.route('/page/form/', methods=['GET'])
-@login_required
-def page_form():
-    return CustomPage().to_form()
-
-
 '''
 Edge endpoints
 '''
@@ -259,13 +245,3 @@ def delete_edge():
         sink = Vertex.objects.get(id=sink_id, owner=current_user.id)
         sink.update(pull__predset=source_id)
     return jsonify(result="success"), 200  # TODO: Should be a 204
-
-
-'''
-Medium endpoint
-'''
-
-@mod.route('/medium/form/', methods=['GET'])
-@login_required
-def medium_form():
-    return Medium().to_form()
