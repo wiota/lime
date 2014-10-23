@@ -108,8 +108,12 @@ shadow color  42,44,57
   top: 0;
   left: 0;
   right: 0;
-
 }
+  .lime_nav:hover {
+    -webkit-box-shadow: 0px 0px 100px 0px rgba(42, 44, 57, 0.80);
+    -moz-box-shadow:    0px 0px 100px 0px rgba(42, 44, 57, 0.80);
+    box-shadow:         0px 0px 100px 0px rgba(42, 44, 57, 0.80);
+  }
 
 .lime_nav li {
   cursor: pointer;
@@ -144,7 +148,6 @@ shadow color  42,44,57
 }
 
 .lime_nav li.god {
-  background-color: #ffffff;
   }
 
 .lime_nav .icon {

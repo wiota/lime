@@ -27,20 +27,23 @@ App.Router = Backbone.Router.extend({
     App.icon = new Iconset();
     App.icon.add("bookcase", '.bookcase.icon');
     App.icon.refresh();
+    this.on('route', function(r,p){
+      App.icon.refresh();
+      App.actionPanel.closeForms();
+    })
 
   },
 
   home: function() {
     App.listingPanel.apexMenu();
-    App.actionPanel.closeForms();
-    App.icon.refresh();
+    App.pathPanel.jsonLink('#');
   },
 
   // Body of work
   getBody: function() {
     var body = App.collection['Vertex.Apex.Body'].lookup();
     App.listingPanel.list(body);
-    App.actionPanel.closeForms();
+    App.pathPanel.jsonLink('/api/v1/apex/body/');
   },
 
   // Category
@@ -48,7 +51,7 @@ App.Router = Backbone.Router.extend({
   getCategory: function(id) {
     var category = App.collection['Vertex.Category'].lookup(id);
     App.listingPanel.list(category);
-    App.actionPanel.closeForms();
+    App.pathPanel.jsonLink('/api/v1/category/'+id);
   },
 
   // Work
@@ -56,7 +59,7 @@ App.Router = Backbone.Router.extend({
   getWork: function(id){
     var work = App.collection['Vertex.Work'].lookup(id);
     App.listingPanel.list(work);
-    App.actionPanel.closeForms();
+    App.pathPanel.jsonLink('/api/v1/work/'+id);
   },
 
   // Happenings Apex
@@ -64,12 +67,13 @@ App.Router = Backbone.Router.extend({
   getHappeningsApex: function(){
     var happenings = App.collection['Vertex.Apex.Happenings'].lookup();
     App.listingPanel.list(happenings);
-    App.actionPanel.closeForms();
+    App.pathPanel.jsonLink('/api/v1/happenings/');
   },
 
   getHappening: function(id){
     var happening = App.collection['Vertex.Happening'].lookup(id);
     App.listingPanel.list(happening);
+    App.pathPanel.jsonLink('/api/v1/happening/'+id);
   }
 
  
