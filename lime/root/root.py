@@ -1,4 +1,4 @@
-from flask import Blueprint, request, redirect, render_template, url_for, flash, session
+from flask import Blueprint, request, redirect, render_template, url_for, flash, session, make_response
 
 from toolbox.models import *
 from toolbox.tools import retrieve_image
@@ -47,7 +47,9 @@ def image(image_name):
 
 @mod.route('/icon/<icon_name>', methods=['GET'])
 def icon(icon_name):
-    return render_template("icons/" + icon_name, color=request.args.get('c', None))
+    r = make_response(render_template("icons/" + icon_name, color=request.args.get('c', None)))
+    r.mimetype = "image/svg+xml"
+    return r
 
 @mod.route("/logout/")
 @nocache
