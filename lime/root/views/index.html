@@ -16,7 +16,7 @@
 
   <!-- Home Page Menu -->
 
-  <script type="text/template" id="apex_menu">
+  <script type="text/template" id="home_menu">
     <li class='body'>
       <a href='#body'><b class='icon bookcase'></b>body of work</a>
     </li>
@@ -194,7 +194,7 @@
   <script type="text/template" id="category_in_set">
     <a class='in_set_link' href='#category/<%= _id %>'></a>
     <div class='cover'></div>
-    <b class='title'><%= title %></b>
+    <b class='title'><img class='icon book' src='/icon/book.svg'><%= title %></b>
     <div class='in_set_menu'>
       <a class='update'>update</a>
       <a class='delete'>delete</a>
@@ -217,7 +217,6 @@
     <a class='in_set_link' href='#happening/<%= _id %>'></a>
     <div class='cover'></div>
     <b class='title'><%= title %></b>
-    <b class='date'><% if (typeof date_string !== "undefined") {print(date_string) } %></b>
     <div class='in_set_menu'>
       <a class='update'>update</a>
       <a class='delete'>delete</a>

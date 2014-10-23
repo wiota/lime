@@ -127,10 +127,8 @@ App.View.SuccsetListView['Vertex'] = Backbone.View.extend({
     this.sortInit();
   },
 
-  startScrolling: function(){
-    //var h = this.$el.height() + 50;
-    //this.$el.css({'height': h+'px', 'max-height': h+'px'});
-    //$('#listing_panel').css({'max-height': h+'px'});
+  startScrolling: function(event){
+
     this.scrollTimer = null;
     var tolerance = 100;
     var exponent = 40;
@@ -140,6 +138,7 @@ App.View.SuccsetListView['Vertex'] = Backbone.View.extend({
     var scrollLimit = this.$el.height() - windowHeight;
 
     $(document).on('mousemove', function(event){
+
       var y = event.pageY;
       var h = windowHeight;
       var sb = 0;
@@ -194,9 +193,6 @@ App.View.SuccsetListView['Vertex'] = Backbone.View.extend({
         // mouse grab offset
         $item.xOff = event.offsetX;
         $item.yOff = event.offsetY + marginTop;
-
-        console.log(marginTop, $item.yOff);
-        //console.log(event);
 
         // cache item dimensions
         var itemDim = {
@@ -450,10 +446,10 @@ App.View.ListingView['Vertex.Work'] = App.View.ListingView['Vertex'].extend({});
 // Apex Menu
 /* ------------------------------------------------------------------- */
 
-App.View.ApexMenu = Backbone.View.extend({ // Akin to FormView
+App.View.HomeMenu = Backbone.View.extend({ // Akin to FormView
   tagName: 'ul',
-  template: _.template($('#apex_menu').html()),
-  className: 'apex_menu',
+  template: _.template($('#home_menu').html()),
+  className: 'home_menu',
 
   render: function(){
     this.$el.html(this.template({}));
@@ -490,7 +486,7 @@ App.ListingPanel = Backbone.View.extend({
     if(this.view){
       this.view.close();
     }
-    this.view = new App.View.ApexMenu();
+    this.view = new App.View.HomeMenu();
     this.$el.html(this.view.el);
     this.view.render();
   }

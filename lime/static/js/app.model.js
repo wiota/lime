@@ -250,7 +250,7 @@ App.Model['Vertex']= Backbone.Model.extend({
     options.success = function(resp){
       if(success) success(model, resp, options);
       model.trigger('sync', model, resp);
-      console.log('sync succset save on ' + model.get('_id'))
+      //console.log('sync succset save on ' + model.get('_id'))
     }
 
     options.error = function(resp){
