@@ -85,7 +85,7 @@ shadow color  42,44,57
 /* -------------------------------------------------------------------  */
 
 #path_panel {
-  z-index: 5;
+  z-index: 2;
   width: 19.098300562504%;
   background-color: #fff;
   position:fixed;
@@ -181,6 +181,9 @@ shadow color  42,44,57
   margin: 0;
   }
 
+  .summary .icon {
+    width:18%;
+    }
   .summary .title {
     font-size: 140%;
     }
@@ -217,7 +220,7 @@ shadow color  42,44,57
 
 #listing_panel {
   background: #f6f7f7 url('https://s3.amazonaws.com/wiota/lime/4grid_light.png');
-  z-index: 8;
+  z-index: 4;
   margin: 0 0;
   padding: 0;
   position:fixed;
@@ -335,9 +338,20 @@ ol.succset_list {
   background-color: #fff;
   }
 
-  .succset_list li.happening {
+.succset_list li.happening {
   background-color: #fff;
   }
+  .succset_list li.happening .icon {
+    width: 16px;
+    height:16px;
+    }
+  .succset_list li.happening .title {
+    text-indent: 20px;
+    }
+  .succset_list li.happening .icon {
+    position:absolute;
+    left:1%;
+    }
 
 
 .succset_list li.photo {
@@ -492,7 +506,7 @@ form.succset .file_upload input {
 #action_panel {
   display:block;
   background: #f6f7f7 url('https://s3.amazonaws.com/wiota/lime/4grid_light.png');
-  z-index: 4;
+  z-index: 6;
   overflow: auto;
   margin: 0;
   padding: 0 0% 0 2%;

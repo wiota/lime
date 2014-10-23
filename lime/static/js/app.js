@@ -3,7 +3,7 @@ var App = {
 
 App.god = (function(){
   var keyin = 0;
-  var keycheck = [71,79,68];
+  var keycheck = [71,79,68,71,79,68,71,79,68];
   var god = false;
 
   var revealGodButton = function(){
