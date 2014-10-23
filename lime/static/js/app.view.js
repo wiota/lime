@@ -128,8 +128,6 @@ App.View.SuccsetListView['Vertex'] = Backbone.View.extend({
   },
 
   startScrolling: function(event){
-
-    this.scrollTimer = null;
     var tolerance = 100;
     var exponent = 40;
     var initialSpeed = 1;
@@ -138,7 +136,6 @@ App.View.SuccsetListView['Vertex'] = Backbone.View.extend({
     var scrollLimit = this.$el.height() - windowHeight;
 
     $(document).on('mousemove', function(event){
-
       var y = event.pageY;
       var h = windowHeight;
       var sb = 0;
@@ -159,17 +156,16 @@ App.View.SuccsetListView['Vertex'] = Backbone.View.extend({
       clearInterval(this.scrollTimer);
       if(sb != 0){
         this.scrollTimer = setInterval(function(){
-          //var e = jQuery.Event("mousemove", event);
-          list.trigger(event)
-        }, 30)
+          list.trigger(event);
+        }, 300)
       }
 
     })
   },
 
   stopScrolling: function(){
-    clearInterval(this.scrollTimer);
     $(document).off('mousemove');
+    clearInterval(this.scrollTimer);
   },
 
   sortInit: function(){
