@@ -1,0 +1,238 @@
+body {margin:0; padding: 0; font-size: 90%; font-family: 'Helvetica', 'Arial', 'san-serif';}
+
+ul, ol {margin: 0; padding:0;list-style-type: none;}
+
+a {text-decoration: none; color: #000;}
+
+:focus {
+  border-left: 3px solid #7ec5e4;
+  outline:none;
+  /*
+  -webkit-box-shadow: 0px 0px 2px 0px rgba(42, 44, 57, 0.80);
+  -moz-box-shadow:    0px 0px 2px 0px rgba(42, 44, 57, 0.80);
+  box-shadow:         0px 0px 2px 0px rgba(42, 44, 57, 0.80);
+  */
+}
+
+fieldset {
+  margin: 0;
+  padding: 0;
+  border-style: none;
+}
+
+
+.admin_flashes {
+  z-index: 1001;
+  position:fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  font-size: 110px;
+  font-weight: normal;
+  padding: 5%;
+  background-color: #78f7d8;
+  color: #fff;
+  }
+
+/* -------------------------------------------------------------------  */
+/* Path Panel */
+/* -------------------------------------------------------------------  */
+
+#path_panel {
+  z-index: 2;
+  width: 19.098300562504%;
+  background-color: #fff;
+  position:fixed;
+  overflow: auto;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  padding-top: 20%;
+  }
+
+#path_panel .nav {
+
+}
+
+/* User Nav */
+
+.user_nav {
+  z-index: 1000;
+  position: absolute;
+  top:0;
+  left: 0;
+  right: 0;
+  background: #f5f8f8;
+  padding: 1%;
+  width: 100%;
+  }
+
+.user_nav li {
+  display:block;
+  float:left;
+  position:relative;
+  margin: 5%;
+}
+
+.user_nav li a {
+  width: 16px;
+  height: 16px;
+  overflow: hidden;
+}
+
+.user_nav li a span {
+  display:none;
+}
+
+.user_nav li a img{
+}
+
+/* Lime Graph Nav */
+
+.lime_nav {
+  background-color: #f5f8f8;
+  margin: 0;
+  padding: 20% 0% 3%;
+  overflow: auto;
+  list-style-type: none;
+  position:absolute;
+  z-index: 200;
+  top: 0px;
+  left: 0;
+  right: 0;
+}
+  .lime_nav:hover {
+    -webkit-box-shadow: 0px 0px 100px 0px rgba(42, 44, 57, 0.80);
+    -moz-box-shadow:    0px 0px 100px 0px rgba(42, 44, 57, 0.80);
+    box-shadow:         0px 0px 100px 0px rgba(42, 44, 57, 0.80);
+  }
+
+.lime_nav li {
+  cursor: pointer;
+  width: 90%;
+  margin: 0;
+  padding: 5% 5% 2%;
+  clear:left;
+}
+
+.lime_nav li.secondary {
+  display: none;
+}
+
+.lime_nav:hover li.secondary {
+  display: block;
+}
+
+.lime_nav a {
+  text-align: left;
+  }
+
+.lime_nav li.back .backover {
+  display:none;
+}
+
+.lime_nav li.back:hover .backover {
+  display:block;
+}
+
+.lime_nav li.back:hover .back {
+  display:none;
+}
+
+.lime_nav li.god {
+}
+
+.lime_nav .icon {
+  display:block;
+  float:left;
+  width: 18%;
+  margin: 0% 5% 0% 0%;
+}
+
+
+/* -------------------------------------------------------------------  */
+/* Request Panel */
+/* -------------------------------------------------------------------  */
+
+#request_panel {
+  display:block;
+  z-index: 8;
+  margin: 0;
+  padding: 0%;
+  position:fixed;
+  width: auto;
+  height: auto;
+  right: 0%;
+  bottom: 0;
+  overflow: auto;
+}
+
+/* -------------------------------------------------------------------  */
+/* Listing Panel */
+/* -------------------------------------------------------------------  */
+
+#listing_panel {
+  background: #f6f7f7 url('https://s3.amazonaws.com/wiota/lime/bricks_lowc_light.png');
+  z-index: 4;
+  margin: 0 0;
+  padding: 0;
+  position:fixed;
+  top: 0;
+  left: 19.098300562504%;
+  width: 80.901699437496%;
+  bottom:0;
+  overflow: auto;
+  perspective: 1000px;
+  -webkit-perspective: 1000px;
+  -moz-perspective: 1000px;
+  -o-perspective: 1000px;
+  -webkit-box-shadow: 0px 0px 16px 0px rgba(42, 44, 57, 0.80);
+  -moz-box-shadow:    0px 0px 16px 0px rgba(42, 44, 57, 0.80);
+  box-shadow:         0px 0px 16px 0px rgba(42, 44, 57, 0.80);
+  }
+
+/* -------------------------------------------------------------------  */
+/* Account Panel */
+/* -------------------------------------------------------------------  */
+
+#account_panel, #admin_panel {
+  background: #f6f7f7 url('https://s3.amazonaws.com/wiota/lime/bricks_lowc_limeblue.png');
+  z-index: 4;
+  margin: 0 0;
+  padding: 2%;
+  position:fixed;
+  top: 0;
+  left: 19.098300562504%;
+  width: 80.901699437496%;
+  bottom:0;
+  overflow: auto;
+  perspective: 1000px;
+  -webkit-perspective: 1000px;
+  -moz-perspective: 1000px;
+  -o-perspective: 1000px;
+  -webkit-box-shadow: 0px 0px 16px 0px rgba(42, 44, 57, 0.80);
+  -moz-box-shadow:    0px 0px 16px 0px rgba(42, 44, 57, 0.80);
+  box-shadow:         0px 0px 16px 0px rgba(42, 44, 57, 0.80);
+  }
+
+
+
+
+/* -------------------------------------------------------------------  */
+/* Action Panel */
+/* -------------------------------------------------------------------  */
+
+#action_panel {
+  display:block;
+  background: #f6f7f7 url('https://s3.amazonaws.com/wiota/lime/bricks_lowc_limeblue.png');
+  z-index: 6;
+  overflow: auto;
+  margin: 0;
+  padding: 0 0% 0 2%;
+  left: 19.098300562504%;
+  position:fixed;
+  top: 0;
+  right: 0%;
+  bottom: 100%;
+  }
