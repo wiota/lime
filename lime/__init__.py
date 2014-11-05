@@ -6,7 +6,7 @@ from bson.objectid import ObjectId
 from flask.ext.mongoengine import MongoEngine
 from flask.ext.login import LoginManager
 from toolbox import tools
-from toolbox.email import LimeExceptionEmail
+from toolbox.emailer import LimeExceptionEmail
 import mongoexhaust
 from lime.account import account
 from lime.admin import admin

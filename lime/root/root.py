@@ -2,7 +2,7 @@ from flask import Blueprint, request, redirect, render_template, url_for, flash,
 
 from toolbox.models import *
 from toolbox.tools import retrieve_image
-from toolbox.email import ActionEmail, AdminAlertEmail
+from toolbox.emailer import ActionEmail, AdminAlertEmail
 from toolbox.nocache import nocache
 from flask.ext.login import LoginManager
 from flask.ext.login import login_required, login_user, logout_user, current_user
@@ -17,6 +17,27 @@ import stripe
 
 mod = Blueprint('root', __name__, template_folder='views')
 
+@mod.route('/run/')
+def run():
+    from toolbox.models import Vertex, CustomVertexField
+    host = Host.objects.get(owner=current_user.id)
+
+    bio = CustomVertexField()
+    bio.name = "bio"
+    bio.field_type = "LongStringField"
+    bio.required = False
+    bio.verbose_name = "Biography"
+
+    web = CustomVertexField()
+    web.name = "website"
+    web.field_type = "StringField"
+    web.required = False
+    web.verbose_name = "Website"
+
+    host.custom_vertex_fields["Category"] = [bio, web]
+
+    host.save()
+    return host.to_bson()
 
 @mod.route('/', methods=["GET"])
 @nocache

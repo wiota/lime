@@ -8,7 +8,7 @@ from flask.ext.login import login_required
 from flask.ext.login import current_user
 from toolbox.tools import admin_required
 from toolbox.models import User, Host, Vertex, Body, Happenings
-from toolbox.email import ActionEmail
+from toolbox.emailer import ActionEmail
 from toolbox.s3 import s3_config
 from flask.ext.login import login_user
 from .forms import *

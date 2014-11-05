@@ -6,7 +6,7 @@ from flask import url_for
 from flask.ext.login import login_required
 from flask.ext.login import current_user
 from toolbox.models import User, Host
-from toolbox.email import StripeEmail, ReceiptEmail
+from toolbox.emailer import StripeEmail, ReceiptEmail
 from time import strftime, localtime
 import stripe
 from toolbox.template_tools import format_date
