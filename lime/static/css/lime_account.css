@@ -1,63 +1,6 @@
-/*
-Old User green - 82db8a
-New User green - 78f7d8
-
-*/
-
-.admin_user_menu {
-  z-index: 1000;
-  position:fixed;
-  bottom:0;
-  left: 0%;
-  background: #78f7d8;
-  padding: 1%;
-  width: 17.098300562504%;
-  }
-
-.admin_user_menu .identification {
-  padding: 0;
-  /* Internet Explorer 10 */
-  display:-ms-flexbox;
-  -ms-flex-pack:center;
-  -ms-flex-align:center;
-
-  /* Firefox */
-  display:-moz-box;
-  -moz-box-pack:center;
-  -moz-box-align:center;
-
-  /* Safari, Opera, and Chrome */
-  display:-webkit-box;
-  -webkit-box-pack:center;
-  -webkit-box-align:center;
-
-  /* W3C */
-  display:box;
-  box-pack:center;
-  box-align:center;
-  }
-
-
-.admin_user_menu .identification #name {
-  padding-left: 5px;
-  font-weight:bold;
-}
-
-.circle {
-  width:30px;
-  height:30px;
-  border-radius: 15px;
-  -webkit-border-radius: 15px;
-  -moz-border-radius: 15px;
-}
-
-.admin_user .admin_user_nav {display:none;}
-.admin_user:hover .admin_user_nav {display:block;}
-.admin_user .admin_user_nav li {
-  display:block;
-  padding: 5% 0;
-
-  }
+/* -------------------------------------------------------------------  */
+/* Lime Account styles */
+/* -------------------------------------------------------------------  */
 
 .admin_flashes {
   z-index: 1001;
@@ -73,7 +16,10 @@ New User green - 78f7d8
   color: #fff;
   }
 
-/* Login */
+/* -------------------------------------------------------------------  */
+/* Login Panel */
+/* -------------------------------------------------------------------  */
+
 
 .fancyform {
   width: 30%;
@@ -178,6 +124,9 @@ New User green - 78f7d8
   color: #ffa;
   }
 
+/* -------------------------------------------------------------------  */
+/* Account Panel */
+/* -------------------------------------------------------------------  */
 /* Styling for the Admin UI (not the Lime UI) */
 div.admin_content {
   padding: 0 2% 0 2%;

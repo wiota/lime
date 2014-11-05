@@ -1,27 +1,3 @@
-body {margin:0; padding: 0; font-size: 90%; font-family: 'Helvetica', 'Arial', 'san-serif';}
-
-ul, ol {margin: 0; padding:0;list-style-type: none;}
-
-a {text-decoration: none; color: #000;}
-
-:focus {
-  border-left: 3px solid #7ec5e4;
-  outline:none;
-  /*
-  -webkit-box-shadow: 0px 0px 2px 0px rgba(42, 44, 57, 0.80);
-  -moz-box-shadow:    0px 0px 2px 0px rgba(42, 44, 57, 0.80);
-  box-shadow:         0px 0px 2px 0px rgba(42, 44, 57, 0.80);
-  */
-}
-
-.god {
-  display:none;
-}
-
-.godman .god {
-  display: block;
-}
-
 /*
 Body:
   terra cotta: #dd7700
@@ -37,9 +13,15 @@ Action
   foam: #78F7D8;
   acid: #04e8e8;
 shadow color  42,44,57
-
-
 */
+
+.god {
+  display:none;
+}
+
+.godman .god {
+  display: block;
+}
 
 /* -------------------------------------------------------------------  */
 /* Apex Menu */
@@ -66,96 +48,10 @@ shadow color  42,44,57
 /* -------------------------------------------------------------------  */
 
 
-#request_panel {
-  display:block;
-  z-index: 8;
-  /* background-color: rgba(255,255,255,1); */
-  margin: 0;
-  padding: 0%;
-  position:fixed;
-  width: auto;
-  height: auto;
-  right: 0%;
-  bottom: 0;
-  overflow: auto;
-}
 
 /* -------------------------------------------------------------------  */
 /* Path Panel */
 /* -------------------------------------------------------------------  */
-
-#path_panel {
-  z-index: 2;
-  width: 19.098300562504%;
-  background-color: #fff;
-  position:fixed;
-  overflow: auto;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  padding-top: 20%;
-
-}
-
-.lime_nav {
-  background-color: #f6f7f2;
-  margin: 0;
-  padding: 0% 0% 3%;
-  overflow: auto;
-  list-style-type: none;
-  position:absolute;
-  z-index: 200;
-  top: 0;
-  left: 0;
-  right: 0;
-}
-  .lime_nav:hover {
-    -webkit-box-shadow: 0px 0px 100px 0px rgba(42, 44, 57, 0.80);
-    -moz-box-shadow:    0px 0px 100px 0px rgba(42, 44, 57, 0.80);
-    box-shadow:         0px 0px 100px 0px rgba(42, 44, 57, 0.80);
-  }
-
-.lime_nav li {
-  cursor: pointer;
-  width: 90%;
-  margin: 0;
-  padding: 5% 5% 2%;
-  clear:left;
-}
-
-.lime_nav li.secondary {
-  display: none;
-}
-
-.lime_nav:hover li.secondary {
-  display: block;
-}
-
-.lime_nav a {
-  text-align: left;
-  }
-
-.lime_nav li.back .backover {
-  display:none;
-}
-
-.lime_nav li.back:hover .backover {
-  display:block;
-}
-
-.lime_nav li.back:hover .back {
-  display:none;
-}
-
-.lime_nav li.god {
-  }
-
-.lime_nav .icon {
-  display:block;
-  float:left;
-  width: 18%;
-  margin: 0% 5% 0% 0%;
-  }
 
 
 .label {
@@ -220,26 +116,6 @@ shadow color  42,44,57
 /* -------------------------------------------------------------------  */
 /* Listing Panel */
 /* -------------------------------------------------------------------  */
-
-#listing_panel {
-  background: #f6f7f7 url('https://s3.amazonaws.com/wiota/lime/4grid_light.png');
-  z-index: 4;
-  margin: 0 0;
-  padding: 0;
-  position:fixed;
-  top: 0;
-  left: 19.098300562504%;
-  width: 80.901699437496%;
-  bottom:0;
-  overflow: auto;
-  perspective: 1000px;
-  -webkit-perspective: 1000px;
-  -moz-perspective: 1000px;
-  -o-perspective: 1000px;
-  -webkit-box-shadow: 0px 0px 3px 0px rgba(42, 44, 57, 0.80);
-  -moz-box-shadow:    0px 0px 3px 0px rgba(42, 44, 57, 0.80);
-  box-shadow:         0px 0px 3px 0px rgba(42, 44, 57, 0.80);
-  }
 
 #listing_panel .listing {
   position:fixed;
@@ -506,26 +382,6 @@ form.succset .file_upload input {
 /* Action Panel */
 /* -------------------------------------------------------------------  */
 
-#action_panel {
-  display:block;
-  background: #f6f7f7 url('https://s3.amazonaws.com/wiota/lime/4grid_light.png');
-  z-index: 6;
-  overflow: auto;
-  margin: 0;
-  padding: 0 0% 0 2%;
-  left: 19.098300562504%;
-  position:fixed;
-  top: 0;
-  right: 0%;
-  bottom: 100%;
-  }
-/* Form */
-
-fieldset {
-  margin: 0;
-  padding: 0;
-  border-style: none;
-}
 
 #action_panel form {
   margin: 0 0 .2% 0;
@@ -579,12 +435,26 @@ fieldset {
   -o-perspective: 500px;
 }
 
-#action_panel .input.save,
+#action_panel .input.save {
+  cursor: pointer;
+  width: 150px;
+  padding: 1%;
+  /* margin: 1.5% 1.5% 1.5% 0%; */
+  z-index: 500;
+  font-family: "Monaco","Lucida Console","Courier New", "monospace";
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+  transition: background-color, transform .5s ease-in-out;
+  -webkit-transition: background-color, transform .5s ease-in-out;
+  -moz-transition: background-color, transform .5s ease-in-out;
+  -o-transition: background-color, transform .5s ease-in-out;
+}
+
 #action_panel .input.cancel,
 #action_panel .input.close {
   border-style:none;
   cursor: pointer;
-  float:left;
   width: 150px;
   padding: 1%;
   margin: 1.5% 1.5% 1.5% 0%;
@@ -602,6 +472,9 @@ fieldset {
 }
 
 #action_panel .input.save {
+  position:absolute;
+  bottom: 0;
+  right: 0;
   color: #fff;
   background-color: #82db8a;
 }
@@ -706,14 +579,6 @@ fieldset {
   -webkit-box-shadow: inset 0px 0px 3px 0px rgba(0,0,0,0.1);
   -moz-box-shadow: inset 0px 0px 3px 0px rgba(0,0,0,0.1);
   box-shadow: inset 0px 0px 3px 0px rgba(0,0,0,0.1);
-  }
-
-#action_panel .batch.work {
-  background: url('http://s3.amazonaws.com/wiota/lime/work_up_back.png');
-  }
-
-#action_panel .batch.category {
-  background: url('http://s3.amazonaws.com/wiota/lime/work_up_back.png');
   }
 
 #action_panel .batch .batch_count {

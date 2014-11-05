@@ -43,7 +43,7 @@ def send_invite(user):
 @mod.route("/")
 @admin_required
 def index():
-    return render_template('admin_index.html')
+    return render_template('admin_index.html', admins=User.objects(admin=True), users=User.objects(admin=False))
 
 
 @mod.route("/user/")

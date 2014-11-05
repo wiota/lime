@@ -2,13 +2,13 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <link rel="icon" type="image/png" href="https://s3.amazonaws.com/wiota/lime/favicon.ico">
+    <link rel="icon" type="image/png" href="https://s3.amazonaws.com/wiota/lime/lime_16_icon.png">
 
     {% block head %}
 
     <meta name='viewport' content='width=device-width, initial-scale=1'>
-    <link rel='stylesheet' href='{{ url_for('static', filename='css/admin_user.css') }}' type='text/css' media='all' />
-    <link rel='stylesheet' href='{{ url_for('static', filename='css/admin_ui.css') }}' type='text/css' media='all' />
+    <link rel='stylesheet' href='{{ url_for('static', filename='css/lime_base.css') }}' type='text/css' media='all' />
+    <link rel='stylesheet' href='{{ url_for('static', filename='css/lime_account.css') }}' type='text/css' media='all' />
 
     <script src='{{ url_for('static', filename='js/jquery.min.js') }}'></script>
     <script src='{{ url_for('static', filename='js/flash.js') }}'></script>
@@ -17,40 +17,39 @@
   </head>
 
   <body>
-    {%- block user -%}
-    {% if not current_user.is_anonymous() %}
-      <div class="admin_user_menu">
-        <div class='admin_user'>
-          <div class='admin_user_nav'>
-            <ul>
-              <li><a href=" {{ url_for('account.account') }} ">Account</a></li>
-              <li><a href=" {{ url_for('root.logout') }} ">Logout</a></li>
-            </ul>
-          </div>
-
-          <div class='identification'>
-          {% if current_user.admin %}
-            <div class="circle" style="background: url(http://www.gravatar.com/avatar/{{current_user.email_hash}}?s=30?d=mm)"/></div>
-          {% endif %}
-            <div id="name">{{ current_user.email}}</div>
-          </div>
-        </div>
-      </div>
-    {% endif %}
-    {%- endblock -%}
-
     {% for message in get_flashed_messages() %}
     <div class='admin_flashes'>
       <div class='flash'>{{ message }}</div>
     </div>
     {% endfor %}
 
-    <div class="content">
+    <div id='path_panel'>
+      {%- block user -%}
+      {% if not current_user.is_anonymous() %}
+          <ul class="user_nav">
+            <li class='home'>
+              <a href=" {{ url_for('root.index') }} "><img src='https://s3.amazonaws.com/wiota/lime/home.png'><span>Home</span></a>
+            </li>
+            <li class='account'>
+              <a href=" {{ url_for('account.account') }} "><img src='https://s3.amazonaws.com/wiota/lime/account_face.png'><span>Account</span></a>
+            </li>
+            {% if current_user.admin %}
+              <li class='admin'>
+                <a href=" {{ url_for('admin.index') }} "><img src='https://s3.amazonaws.com/wiota/lime/admin.png'><span>Admin</span></a>
+              </li>
+            {% endif %}
+            <li class='logout'><a href=" {{ url_for('root.logout') }} "><img src='https://s3.amazonaws.com/wiota/lime/logout.png'><span>Logout</span></a></li>
+          </ul>
+      {% endif %}
+      {%- endblock -%}
+    </div>
+
+    <div id="account_panel">
       {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
-      <div class="admin_ui backlink">
+      <div class="backlink">
         {% block backlink %}{% endblock %}
       </div>
-      <div class="admin_ui admin_content">
+      <div class="admin_content">
         {% block content %}{% endblock %}
       </div>
     </div>

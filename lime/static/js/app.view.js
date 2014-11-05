@@ -135,29 +135,38 @@ App.View.SuccsetListView['Vertex'] = Backbone.View.extend({
     var windowHeight = $(window).height();
     var scrollLimit = this.$el.height() - windowHeight;
 
-    $(document).on('mousemove', function(event){
-      var y = event.pageY;
+    var scrollWindow = function(y){
+      console.log(y);
+      var y = y;
       var h = windowHeight;
-      var sb = 0;
-
-      if(y < tolerance){
-        sb = (y - tolerance)/tolerance;
-      } else if (y > (h-tolerance)){
-        sb = (y - (h-tolerance))/tolerance;
-      }
+      var sb = borderExponent(y, h, tolerance)
 
       sb = sb*exponent;
 
       var scrollTo = container.scrollTop()+sb;
       if(scrollTo > scrollLimit){scrollTo = scrollLimit}
       container.scrollTop(scrollTo);
+      return sb;
+    }
 
-      var list = $(this)
+    var borderExponent = function(position, length, tolerance){
+      if(position < tolerance){
+        return (position - tolerance)/tolerance;
+      } else if (position > (length-tolerance)){
+        return (position - (length-tolerance))/tolerance;
+      } else {
+        return 0;
+      }
+    };
+
+    $(document).on('mousemove', function(event){
+      var sb = scrollWindow(event.pageY);
+
       clearInterval(this.scrollTimer);
       if(sb != 0){
         this.scrollTimer = setInterval(function(){
-          list.trigger(event);
-        }, 300)
+          list.trigger(event);;
+        }, 10)
       }
 
     })
@@ -170,25 +179,32 @@ App.View.SuccsetListView['Vertex'] = Backbone.View.extend({
 
   sortInit: function(){
     var view = this;
+    var xOff = 0;
+    var yOff = 0;
 
     var sortable_opt = {
-      distance: 1,
+      distance: 0,
       delay: 100,
-      tolerance: -100,
-      placeholder: $('<li class="placeholder succsetItem"/>'),
+      tolerance: 0,
+      placeholder: $('<li class="placeholder"/>'),
+
       onDrag: function ($item, position, _super, event) {
+        console.log(position);
         position.left = 0;
-        position.top -= $item.yOff;
+        position.top -= yOff;
         $item.css(position)
       },
-      onDragStart: function ($item, container, _super, event) {
 
+      onDragStart: function ($item, container, _super, event) {
         // margin top
         var marginTop = Number($item.css('margin-top').replace('px', ''));
 
         // mouse grab offset
-        $item.xOff = event.offsetX;
-        $item.yOff = event.offsetY + marginTop;
+        xOff = event.offsetX;
+        yOff = event.offsetY + marginTop;
+
+        console.log('------------------------');
+        console.log(yOff);
 
         // cache item dimensions
         var itemDim = {
@@ -203,6 +219,7 @@ App.View.SuccsetListView['Vertex'] = Backbone.View.extend({
         // add classes
         $item.addClass("dragged");
         $("body").addClass("dragging");
+
       },
       onDrop: function ($item, container, _super, event) {
         $item.removeClass("dragged").removeAttr("style");
@@ -460,11 +477,12 @@ App.View.HomeMenu = Backbone.View.extend({ // Akin to FormView
 App.ListingPanel = Backbone.View.extend({
   el: $('#listing_panel'),
   view: null,
-  listed_model: null,
+  listedModel: null,
+  listStyle: 'list',
 
   list: function(model){
-    this.listed_model = model;
-    var _cls = this.listed_model.get('_cls');
+    this.listedModel = model;
+    var _cls = this.listedModel.get('_cls');
     var className = App.clsToClass(_cls) + ' listing';
 
     // View
@@ -472,7 +490,7 @@ App.ListingPanel = Backbone.View.extend({
       this.view.close();
     }
 
-    this.view = new App.View.ListingView[_cls]({'model':this.listed_model, 'className': className});
+    this.view = new App.View.ListingView[_cls]({'model':this.listedModel, 'className': className});
     this.$el.html(this.view.el);
     this.view.render();
 
