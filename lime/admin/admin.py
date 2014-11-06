@@ -8,7 +8,7 @@ from flask.ext.login import login_required
 from flask.ext.login import current_user
 from toolbox.tools import admin_required
 from toolbox.models import User, Host, Vertex, Body, Happenings
-from toolbox.emailer import ActionEmail
+from toolbox.emailer import InviteEmail
 from toolbox.s3 import s3_config
 from flask.ext.login import login_user
 from .forms import *
@@ -30,13 +30,9 @@ mod = Blueprint(
 def send_invite(user):
     s = URLSafeSerializer(app.config['SECRET_KEY'])
     payload = s.dumps(str(user.id))
-
-    link_text = "Confirm email address"
     link_href = url_for("root.confirm", payload=payload, _external=True)
-    subject = "Confirm your new Lime account!"
-    content = "Clink the link below to confirm your account:"
 
-    ActionEmail(user.email, subject, content, link_text, link_href).send()
+    InviteEmail(user.email, link_href).send()
     flash("Successfully sent invitation.")
 
 

@@ -2,7 +2,7 @@ from flask import Blueprint, request, redirect, render_template, url_for, flash,
 
 from toolbox.models import *
 from toolbox.tools import retrieve_image
-from toolbox.emailer import ActionEmail, AdminAlertEmail
+from toolbox.emailer import ActionEmail, AdminAlertEmail, RegistrationEmail
 from toolbox.nocache import nocache
 from flask.ext.login import LoginManager
 from flask.ext.login import login_required, login_user, logout_user, current_user
@@ -44,7 +44,12 @@ def run():
 def index():
     if current_user.is_authenticated():
         return render_template('index.html')
-    return render_template("login.html", form=LoginForm(), ref=request.args.get('next', None))
+
+    # Get the email param from the URL and autofill
+    form = LoginForm()
+    form.email.data = request.args.get('email', '')
+
+    return render_template("login.html", form=form, ref=request.args.get('next', None))
 
 @mod.route('/', methods=["POST"])
 @nocache
@@ -157,6 +162,7 @@ def confirm(payload=None):
         user.password = generate_password_hash(form.password.data)
 
         user.registered = True
+        RegistrationEmail(user.email).send()
         AdminAlertEmail(subject="Registered user: %s" % user.email, body="User %s has finished registration." % user.email).send()
         user.save()
         login_user(user)
