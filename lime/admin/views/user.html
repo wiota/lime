@@ -1,5 +1,5 @@
-{% extends "admin.html" %}
-{% block admin_content %}
+{% extends "admin_base.html" %}
+{% block content %}
   <h2>Current Users:</h2>
   {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
   {% for user in users %}

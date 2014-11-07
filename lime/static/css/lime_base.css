@@ -1,17 +1,15 @@
+/* -------------------------------------------------------------------  */
+/* Lime Default Styles */
+/* -------------------------------------------------------------------  */
+
 body {margin:0; padding: 0; font-size: 90%; font-family: 'Helvetica', 'Arial', 'san-serif';}
-
 ul, ol {margin: 0; padding:0;list-style-type: none;}
-
 a {text-decoration: none; color: #000;}
 
+/* Forms */
+
 :focus {
-  border-left: 3px solid #7ec5e4;
-  outline:none;
-  /*
-  -webkit-box-shadow: 0px 0px 2px 0px rgba(42, 44, 57, 0.80);
-  -moz-box-shadow:    0px 0px 2px 0px rgba(42, 44, 57, 0.80);
-  box-shadow:         0px 0px 2px 0px rgba(42, 44, 57, 0.80);
-  */
+  outline: 1px dotted #999;
 }
 
 fieldset {
@@ -20,6 +18,32 @@ fieldset {
   border-style: none;
 }
 
+label {
+  font-size: 13px;
+  display:block;
+  padding: 1% 0;
+  margin: 1.5% 1.5% 0% 0;
+}
+
+input[type='text'],
+textarea,
+input[type='submit'],
+button {
+  padding: 1%;
+  margin: 0% 1.5% 1.5% 0;
+  font-size: 14px;
+  border-style:none;
+  background-color: #fff;
+  border: 1px solid #cbdada;
+  }
+
+input[type='text'],
+textarea {
+  width: 93%;
+  /* why this */
+  }
+
+/* Flashes */
 
 .admin_flashes {
   z-index: 1001;
@@ -35,63 +59,130 @@ fieldset {
   color: #fff;
   }
 
+
 /* -------------------------------------------------------------------  */
-/* Path Panel */
+/* Layout */
 /* -------------------------------------------------------------------  */
 
-#path_panel {
+#navigation_column {
   z-index: 2;
-  width: 19.098300562504%;
+  width: 250px;
   background-color: #fff;
   position:fixed;
   overflow: auto;
   top: 0;
   left: 0;
   bottom: 0;
-  padding-top: 20%;
-  }
+  padding: 0;
+}
 
-#path_panel .nav {
+#display_column {
+  background: #f6f7f7 url('https://s3.amazonaws.com/wiota/lime/4grid_light.png');
+  background: #f6f7f7 url('https://s3.amazonaws.com/wiota/lime/bricks_lowc_light.png');
+  z-index: 4;
+  margin: 0 0;
+  padding: 0;
+  position:fixed;
+  top: 0;
+  right: 0;
+  left: 250px;
+  bottom:0;
+  overflow: auto;
+  perspective: 1000px;
+  -webkit-perspective: 1000px;
+  -moz-perspective: 1000px;
+  -o-perspective: 1000px;
 
 }
 
-/* User Nav */
-
-.user_nav {
-  z-index: 1000;
-  position: absolute;
-  top:0;
-  left: 0;
-  right: 0;
-  background: #f5f8f8;
-  padding: 1%;
-  width: 100%;
+#storage_column {
+  position:absolute;
+  width: 0%;
   }
 
-.user_nav li {
+/* -------------------------------------------------------------------  */
+/* Navigation */
+/* -------------------------------------------------------------------  */
+
+/* All navigation */
+
+.nav {
+  z-index: 1000;
+  padding: 1%;
+  margin: 0 0 8%;
+  border-bottom: 1px solid #f5f8f8;
+  overflow: auto;
+  width: 98%;
+  font-weight: normal;
+  font-family: "Monaco","Lucida Console","Courier New", "monospace";
+  letter-spacing: -1px;
+  font-size: 14px;
+  }
+  .nav:hover {
+    -webkit-box-shadow: 0px 0px 120px 0px rgba(42, 44, 57, 0.30);
+    -moz-box-shadow:    0px 0px 120px 0px rgba(42, 44, 57, 0.30);
+    box-shadow:         0px 0px 120px 0px rgba(42, 44, 57, 0.30);
+  }
+
+.nav li {
+  cursor: pointer;
+  clear:left;
+  width: 90%;
+  margin: 0;
+  padding: 2% 0 2% 5%;
+}
+  .nav li .icon.over {
+    display:none;
+    }
+  .nav li:hover .icon.over {
+    display:block;
+    }
+  .nav li:hover .out {
+    display:none;
+    }
+
+.nav .icon {
+  display:block;
+  float:left;
+  width: 12%;
+  margin: 0% 4% 0 0;
+  }
+
+.nav .label {
+  display:block;
+  padding: 2% 0;
+  }
+
+.subnav li {
+  padding: 2% 0;
+}
+
+/* Account Nav */
+
+.account_nav:hover {
+    -webkit-box-shadow: 0px 0px 120px 0px rgba(42, 44, 57, 0.60);
+    -moz-box-shadow:    0px 0px 120px 0px rgba(42, 44, 57, 0.60);
+    box-shadow:         0px 0px 120px 0px rgba(42, 44, 57, 0.60);
+  }
+
+.account_nav li {
   display:block;
   float:left;
   position:relative;
-  margin: 5%;
 }
 
-.user_nav li a {
-  width: 16px;
-  height: 16px;
-  overflow: hidden;
+
+/* Lime Nav */
+
+.lime_nav:hover {
+
 }
 
-.user_nav li a span {
-  display:none;
-}
 
-.user_nav li a img{
-}
+/* Graph Nav */
 
-/* Lime Graph Nav */
-
-.lime_nav {
-  background-color: #f5f8f8;
+.graph_nav {
+  /* background-color: #f5f8f8;
   margin: 0;
   padding: 20% 0% 3%;
   overflow: auto;
@@ -101,14 +192,13 @@ fieldset {
   top: 0px;
   left: 0;
   right: 0;
+  */
 }
-  .lime_nav:hover {
-    -webkit-box-shadow: 0px 0px 100px 0px rgba(42, 44, 57, 0.80);
-    -moz-box-shadow:    0px 0px 100px 0px rgba(42, 44, 57, 0.80);
-    box-shadow:         0px 0px 100px 0px rgba(42, 44, 57, 0.80);
+  .graph_nav:hover {
+
   }
 
-.lime_nav li {
+.graph_nav li {
   cursor: pointer;
   width: 90%;
   margin: 0;
@@ -116,123 +206,165 @@ fieldset {
   clear:left;
 }
 
-.lime_nav li.secondary {
-  display: none;
-}
-
-.lime_nav:hover li.secondary {
-  display: block;
-}
-
-.lime_nav a {
+.graph_nav a {
   text-align: left;
   }
 
-.lime_nav li.back .backover {
-  display:none;
-}
-
-.lime_nav li.back:hover .backover {
-  display:block;
-}
-
-.lime_nav li.back:hover .back {
-  display:none;
-}
-
-.lime_nav li.god {
-}
-
-.lime_nav .icon {
-  display:block;
-  float:left;
-  width: 18%;
-  margin: 0% 5% 0% 0%;
+.graph_nav li.god {
 }
 
 
-/* -------------------------------------------------------------------  */
-/* Request Panel */
-/* -------------------------------------------------------------------  */
 
-#request_panel {
-  display:block;
-  z-index: 8;
-  margin: 0;
-  padding: 0%;
-  position:fixed;
-  width: auto;
-  height: auto;
-  right: 0%;
-  bottom: 0;
-  overflow: auto;
-}
 
 /* -------------------------------------------------------------------  */
-/* Listing Panel */
+/* Login Panel */
 /* -------------------------------------------------------------------  */
 
-#listing_panel {
-  background: #f6f7f7 url('https://s3.amazonaws.com/wiota/lime/bricks_lowc_light.png');
-  z-index: 4;
-  margin: 0 0;
-  padding: 0;
-  position:fixed;
-  top: 0;
-  left: 19.098300562504%;
-  width: 80.901699437496%;
-  bottom:0;
-  overflow: auto;
-  perspective: 1000px;
-  -webkit-perspective: 1000px;
-  -moz-perspective: 1000px;
-  -o-perspective: 1000px;
-  -webkit-box-shadow: 0px 0px 16px 0px rgba(42, 44, 57, 0.80);
-  -moz-box-shadow:    0px 0px 16px 0px rgba(42, 44, 57, 0.80);
-  box-shadow:         0px 0px 16px 0px rgba(42, 44, 57, 0.80);
-  }
-
-/* -------------------------------------------------------------------  */
-/* Account Panel */
-/* -------------------------------------------------------------------  */
-
-#account_panel, #admin_panel {
-  background: #f6f7f7 url('https://s3.amazonaws.com/wiota/lime/bricks_lowc_limeblue.png');
-  z-index: 4;
-  margin: 0 0;
+.fancyform {
+  width: 30%;
   padding: 2%;
-  position:fixed;
-  top: 0;
-  left: 19.098300562504%;
-  width: 80.901699437496%;
-  bottom:0;
-  overflow: auto;
-  perspective: 1000px;
-  -webkit-perspective: 1000px;
-  -moz-perspective: 1000px;
-  -o-perspective: 1000px;
-  -webkit-box-shadow: 0px 0px 16px 0px rgba(42, 44, 57, 0.80);
-  -moz-box-shadow:    0px 0px 16px 0px rgba(42, 44, 57, 0.80);
-  box-shadow:         0px 0px 16px 0px rgba(42, 44, 57, 0.80);
+  margin: 0 auto;
+  border-style:none;
   }
 
-
-
-
-/* -------------------------------------------------------------------  */
-/* Action Panel */
-/* -------------------------------------------------------------------  */
-
-#action_panel {
-  display:block;
-  background: #f6f7f7 url('https://s3.amazonaws.com/wiota/lime/bricks_lowc_limeblue.png');
-  z-index: 6;
-  overflow: auto;
+.fancyform fieldset {
+  border-style: none;
   margin: 0;
-  padding: 0 0% 0 2%;
-  left: 19.098300562504%;
-  position:fixed;
-  top: 0;
-  right: 0%;
-  bottom: 100%;
+  padding: 0;
   }
+
+.fancyform label {
+  font-size: 14px;
+  display:block;
+  padding: 1%;
+  margin: 1.5% 1.5% 0%;
+  }
+
+.fancyform .input_element input {
+  width: 89%;
+  padding: 2% 4% 2% 4%;
+  margin: 0% 1.5% 1.5%;
+  font-size: 22px;
+  border-style:none;
+  background-color: #f0f0f0;
+  border-top: 2px solid #f0f0f0;
+  border-bottom: 4px solid #f0f0f0;
+  transition: border-color 1s ease;
+}
+
+.fancyform .input_element input:focus {
+  outline: 0;
+  border-bottom: 4px solid #d0d0d0;
+  transition: border-color 1s ease;
+}
+
+.fancyform input#submit {
+  font-family: "Monaco","Lucida Console","Courier New", "monospace";
+  position: relative;
+  vertical-align: top;
+  width: 97%;
+  height: 60px;
+  padding: 0;
+  font-size: 22px;
+  font-weight: bold;
+  color: white;
+  text-align: center;
+  text-shadow: 0 1px 2px rgba(221, 119, 0, 0.5);
+  background: #ffa53f;
+  border: 0;
+  cursor: pointer;
+  margin: 5% 1.5% 1.5%;
+  border-top: 2px solid #ffa53f;
+  border-bottom: 4px solid #ffa53f;
+  transition: border-color 1s ease;
+}
+
+.fancyform input#submit:focus, .fancyform input#submit:hover {
+  outline: 0;
+  border-bottom: 4px solid #dd7700;
+  transition: border-color 1s ease;
+}
+
+.fancyform input#submit:active {
+  top: 1px;
+  outline: none;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+
+/* msg class */
+.msg_display {
+  font-family: 'courier', 'monospaced';
+  font-size: 12px;
+  line-height: 20px;
+  overflow: auto;
+  background-color:rgba(50,50,50,1);
+  color: #fff;
+  }
+
+.msg_display a {
+  color: #fff;
+  }
+
+.msg_display .close {
+  background-color:rgba(0,0,0,0.4);
+  color: #fff;
+  }
+
+.msg_display .clear {
+  background-color:rgba(0,0,0,0.4);
+  color: #fff;
+  }
+
+.msg_display .stack {
+  display:none;
+  background-color:rgba(80,80,80,1);
+  padding: 1.5%;
+  color: #ffa;
+  }
+
+.lime {
+  margin: 0% 1.5% 1.5%;
+  padding-bottom: 2%;
+}
+
+.lime h2 {
+  color: #0b2231;
+  font: 700 100px/1 "cardo";
+  font-style: normal;
+  text-indent: 0px;
+  margin-bottom: 1.5%;
+  z-index: 100;
+  border-bottom: 4px solid #000;
+}
+
+.lime span {
+  font: 400 20px/1.4 "cardo";
+  font-style: italic;
+  padding-left: 1.5%;
+}
+
+.madeby {
+  font-size: 12px;
+  text-align: center;
+  position:fixed;
+  bottom:0;
+  width:100%;
+  padding-bottom: 5%;
+}
+
+.fancyform a, .madeby a, .admin_ui a{
+  color: #237ab1;
+}
+
+div#forgot_password {
+  text-align: right;
+  margin: 0% 1.5% 1.5%;
+  padding-top:2%;
+}
+
+div#forgot_password a {
+  color: #237ab1;
+}
+
+

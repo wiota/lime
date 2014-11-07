@@ -15,7 +15,7 @@ App.Path.PathPanel = Backbone.View.extend({
 
   jsonLink: function(link){
     console.log(link)
-    this.$el.find('li.god a').attr('href', link).attr('target', 'blank');
+    $('li.god a').attr('href', link).attr('target', 'blank');
   },
 
 });

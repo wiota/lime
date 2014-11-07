@@ -1,227 +1,28 @@
 /* -------------------------------------------------------------------  */
-/* Lime Account styles */
+/* Lime Account/Admin page styles */
 /* -------------------------------------------------------------------  */
 
-.admin_flashes {
-  z-index: 1001;
-  position:fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  font-size: 110px;
-  font-weight: normal;
-  padding: 5%;
-  background-color: #78f7d8;
-  color: #fff;
-  }
+#display_column .account {margin: 0 5%;}
 
-/* -------------------------------------------------------------------  */
-/* Login Panel */
-/* -------------------------------------------------------------------  */
+#display_column .account h2 {margin: 2% 0; font-size: 20px;}
 
+#display_column .account a {font-weight: bold;color: #000;text-decoration: underline; padding: 3px;}
+#display_column .account .pro_tip {font-size: 80%;text-decoration: none;}
 
-.fancyform {
-  width: 30%;
-  padding: 2%;
-  margin: 0 auto;
-  border-style:none;
-  }
+#display_column .account .toolbar {margin: 2% 0;}
+#display_column .account .toolbar a {background-color: #fff;padding: 5px; border: 1px solid #cbdada; display:inline-block; }
 
-.fancyform fieldset {
-  border-style: none;
-  margin: 0;
-  padding: 0;
-  }
-
-.fancyform label {
-  font-size: 14px;
-  display:block;
-  padding: 1%;
-  margin: 1.5% 1.5% 0%;
-  }
-
-.fancyform .input_element input {
-  width: 89%;
-  padding: 2% 4% 2% 4%;
-  margin: 0% 1.5% 1.5%;
-  font-size: 22px;
-  border-style:none;
-  background-color: #f0f0f0;
-  border-top: 2px solid #f0f0f0;
-  border-bottom: 4px solid #f0f0f0;
-  transition: border-color 1s ease;
-}
-
-.fancyform .input_element input:focus {
-  outline: 0;
-  border-bottom: 4px solid #d0d0d0;
-  transition: border-color 1s ease;
-}
-
-.fancyform input#submit {
-  font-family: "Monaco","Lucida Console","Courier New", "monospace";
-  position: relative;
-  vertical-align: top;
-  width: 97%;
-  height: 60px;
-  padding: 0;
-  font-size: 22px;
-  font-weight: bold;
-  color: white;
-  text-align: center;
-  text-shadow: 0 1px 2px rgba(221, 119, 0, 0.5);
-  background: #ffa53f;
-  border: 0;
-  cursor: pointer;
-  margin: 5% 1.5% 1.5%;
-  border-top: 2px solid #ffa53f;
-  border-bottom: 4px solid #ffa53f;
-  transition: border-color 1s ease;
-}
-
-.fancyform input#submit:focus, .fancyform input#submit:hover {
-  outline: 0;
-  border-bottom: 4px solid #dd7700;
-  transition: border-color 1s ease;
-}
-
-.fancyform input#submit:active {
-  top: 1px;
-  outline: none;
-  -webkit-box-shadow: none;
-  box-shadow: none;
-}
-
-/* msg class */
-.msg_display {
-  font-family: 'courier', 'monospaced';
-  font-size: 12px;
-  line-height: 20px;
-  overflow: auto;
-  background-color:rgba(50,50,50,1);
-  color: #fff;
-  }
-
-.msg_display a {
-  color: #fff;
-  }
-
-.msg_display .close {
-  background-color:rgba(0,0,0,0.4);
-  color: #fff;
-  }
-
-.msg_display .clear {
-  background-color:rgba(0,0,0,0.4);
-  color: #fff;
-  }
-
-.msg_display .stack {
-  display:none;
-  background-color:rgba(80,80,80,1);
-  padding: 1.5%;
-  color: #ffa;
-  }
+#display_column .account .topcon {display:block;margin: 2% 0; width: 16%;}
 
 /* -------------------------------------------------------------------  */
 /* Account Panel */
 /* -------------------------------------------------------------------  */
-/* Styling for the Admin UI (not the Lime UI) */
-div.admin_content {
-  padding: 0 2% 0 2%;
-  position:fixed;
-  overflow: auto;
-  top: 0;
-  bottom: 0;
-  right: 0;
-  left: 19.098300562504%;
-  padding-top:20px;
-  padding-bottom:40px;
-  font-size:20px;
-}
-
-div.admin_ui li {
-  list-style-type: square;
-}
-
-div.admin_ui ul {
-  padding-left: 30px;
-}
-
-div.backlink {
-  position:fixed;
-  width: 15.098300562504%;
-  left: 0%;
-  top: 0;
-  padding: 2% 2%;
-  font-size:20px;
-}
 
 .danger {
   color:#f96625 !important;
 }
 
-input.danger {
-  color:#f96625 !important;
-  font-size:2em;
-  border-style:none;
-  background-color:transparent;
-  font-weight:bold;
-  padding:0;
-  font-family: Helvetica, Arial, san-serif;
-  cursor: pointer;
-}
-
-.lime {
-  margin: 0% 1.5% 1.5%;
-  padding-bottom: 2%;
-}
-
-.lime h2 {
-  color: #0b2231;
-  font: 700 100px/1 "cardo";
-  font-style: normal;
-  text-indent: 0px;
-  margin-bottom: 1.5%;
-  z-index: 100;
-  border-bottom: 4px solid #000;
-}
-
-.lime span {
-  font: 400 20px/1.4 "cardo";
-  font-style: italic;
-  padding-left: 1.5%;
-}
-
-.madeby {
-  font-size: 12px;
-  text-align: center;
-  position:fixed;
-  bottom:0;
-  width:100%;
-  padding-bottom: 5%;
-}
-
-.fancyform a, .madeby a, .admin_ui a{
-  color: #237ab1;
-}
-
-div#forgot_password {
-  text-align: right;
-  margin: 0% 1.5% 1.5%;
-  padding-top:2%;
-}
-
-div#forgot_password a {
-  color: #237ab1;
-}
-
-.admin_ui h2 {
-    border-bottom:1px #000 solid;
-    clear:both;
-}
-
+/* stripe */
 #stripe-form {
 }
 

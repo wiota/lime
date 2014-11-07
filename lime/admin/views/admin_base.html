@@ -7,13 +7,13 @@
 
     {% block head %}
 
-    <title>Lime Admin</title>
+    <title>Lime - Admin</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <link rel='stylesheet' href='{{ url_for('static', filename='css/lime_base.css') }}' type='text/css' media='all' />
     <link rel='stylesheet' href='{{ url_for('static', filename='css/lime_account.css') }}' type='text/css' media='all' />
 
     <script src='{{ url_for('static', filename='js/jquery.min.js') }}'></script>
-    <script src='{{ url_for('static', filename='js/flash.js') }}'></script>
+    <script src='{{ url_for('static', filename='js/app.js') }}'></script>
 
     {% endblock %}
   </head>
@@ -25,32 +25,118 @@
     </div>
     {% endfor %}
 
-    <div id='path_panel'>
-      {%- block user -%}
+    <div id='navigation_column'>
+
+    {%- block user -%}
       {% if not current_user.is_anonymous() %}
-        <ul class="user_nav">
-          <li class='home'>
-            <a href=" {{ url_for('root.index') }} "><img src='https://s3.amazonaws.com/wiota/lime/home.png'><span>Home</span></a>
+
+        <ul class='account_nav nav vertical'>
+          <li class='identification'>
+            <a class='drop'>
+              <b class='label'>{{current_user.email}}</b>
+            </a>
+            <ul class='subnav drop'>
+              <li class='account'>
+                <a href='{{ url_for('account.account') }}'>
+                  <b class='icon face'>
+                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 16 16"><circle fill="#FFFFFF" stroke="#000000" stroke-miterlimit="10" cx="8" cy="8" r="7.3"/><circle cx="6.5" cy="7.5" r="0.75"/><circle cx="9.5" cy="7.5" r="0.75"/><path fill="none" stroke="#000000" stroke-miterlimit="10" d="M5.5,10.5c0.516,0.625,1.438,1.062,2.5,1.062h0.001H8 c1.062,0,1.984-0.438,2.5-1.062"/></svg>
+                    </b>
+                  <b class='label'>account settings</b>
+                </a>
+                <div class='drop'>
+
+                </div>
+              </li>
+
+              <li class='logout'>
+                <a href="{{ url_for('root.logout') }} ">
+                  <b class='icon'>
+                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 16 16"><line fill="none" stroke="#000000" stroke-miterlimit="10" x1="1" y1="1.5" x2="15" y2="1.5"/><line fill="none" stroke="#000000" stroke-miterlimit="10" x1="1" y1="13.5" x2="15" y2="13.5"/><line fill="none" stroke="#000000" stroke-miterlimit="10" x1="0.5" y1="2" x2="0.5" y2="13"/><line fill="none" stroke="#000000" stroke-miterlimit="10" x1="15.5" y1="2" x2="15.5" y2="13"/><line fill="none" stroke="#D80404" stroke-miterlimit="10" x1="2.5" y1="3" x2="2.5" y2="12"/><line fill="none" stroke="#D80404" stroke-miterlimit="10" x1="2" y1="3.5" x2="4" y2="3.5"/><line fill="none" stroke="#D80404" stroke-miterlimit="10" x1="2" y1="7.5" x2="4" y2="7.5"/><line fill="none" stroke="#D80404" stroke-miterlimit="10" x1="2" y1="11.5" x2="4" y2="11.5"/><polygon fill="#D80404" points="8,12 7,12 5,3 6,3 "/><polygon fill="#D80404" points="5,12 6,12 8,3 7,3 "/><line fill="none" stroke="#D80404" stroke-miterlimit="10" x1="9.5" y1="3" x2="9.5" y2="12"/><line fill="none" stroke="#D80404" stroke-miterlimit="10" x1="11" y1="3.5" x2="14" y2="3.5"/><line fill="none" stroke="#D80404" stroke-miterlimit="10" x1="12.5" y1="3.5" x2="12.5" y2="12"/></svg>
+                    </b>
+                  <b class='label'>Logout</b>
+                </a>
+              </li>
+
+              {% if current_user.admin %}
+                <li class='admin'>
+                  <a href=" {{ url_for('admin.index') }} ">
+                    <b class='eye icon'>
+                      <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 16 16"><circle fill="#FFFFFF" stroke="#000000" stroke-miterlimit="10" cx="8" cy="8" r="7.3"/><circle cx="6.499" cy="10.5" r="2"/></svg>
+                      </b>
+                    <b class='label'>Admin</b>
+                  </a>
+                </li>
+              {% endif %}
+            </ul>
           </li>
-          <li class='account'>
-            <a href=" {{ url_for('account.account') }} "><img src='https://s3.amazonaws.com/wiota/lime/account_face.png'><span>Account</span></a>
-          </li>
-          {% if current_user.admin %}
-            <li class='admin'>
-              <a href=" {{ url_for('admin.index') }} "><img src='https://s3.amazonaws.com/wiota/lime/admin.png'><span>Admin</span></a>
-            </li>
-          {% endif %}
-          <li class='logout'><a href=" {{ url_for('root.logout') }} "><img src='https://s3.amazonaws.com/wiota/lime/logout.png'><span>Logout</span></a></li>
         </ul>
+
+        <ul class='lime_nav nav vertical'>
+          <li class='home'>
+            <a href=" {{ url_for('root.index') }} ">
+              <b class='icon home'>
+                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 33 33"><rect fill="#FFFFFF" width="33" height="33"/><rect x="1" y="1" fill="#4f5555" width="7" height="3"/><rect x="9" y="1" fill="#4f5555" width="7" height="3"/><rect x="17" y="1" fill="#4f5555" width="7" height="3"/><rect x="25" y="1" fill="#4f5555" width="7" height="3"/><rect x="1" y="29" fill="#4f5555" width="7" height="3"/><rect x="9" y="29" fill="#4f5555" width="7" height="3"/><rect x="17" y="29" fill="#4f5555" width="7" height="3"/><rect x="5" y="21" fill="#4f5555" width="7" height="7"/><rect x="13" y="21" fill="#4f5555" width="7" height="7"/><rect x="21" y="21" fill="#4f5555" width="7" height="7"/><rect x="29" y="21" fill="#4f5555" width="3" height="7"/><rect x="1" y="21" fill="#4f5555" width="3" height="7"/><rect x="5" y="5" fill="#4f5555" width="7" height="7"/><rect x="13" y="5" fill="#4f5555" width="7" height="7"/><rect x="21" y="5" fill="#4f5555" width="7" height="7"/><rect x="29" y="5" fill="#4f5555" width="3" height="7"/><rect x="1" y="5" fill="#4f5555" width="3" height="7"/><rect x="25" y="29" fill="#4f5555" width="7" height="3"/><rect x="1" y="13" fill="#4f5555" width="7" height="7"/><rect x="9" y="13" fill="#4f5555" width="7" height="7"/><rect x="17" y="13" fill="#4f5555" width="7" height="7"/><rect x="25" y="13" fill="#4f5555" width="7" height="7"/></svg>
+                </b>
+              <b class='label'>home</b>
+            </a>
+          </li>
+          <li class='vertex body'>
+            <a href='/#body'>
+              <b class='icon bookcase'></b>
+              <b class='label'>body of work</b>
+            </a>
+          </li>
+          <li class='vertex happenings'>
+            <a href='/#happenings'>
+              <b class='icon calendar'>
+                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 16 16"><rect y="1" fill="#78F7D8" width="16" height="13"/><rect x="1.5" y="4" fill="#FFFFFF" width="1" height="1"/><rect x="3.5" y="4" fill="#FFFFFF" width="1" height="1"/><rect x="5.5" y="4" fill="#FFFFFF" width="1" height="1"/><rect x="7.5" y="4" fill="#FFFFFF" width="1" height="1"/><rect x="9.5" y="4" fill="#FFFFFF" width="1" height="1"/><rect x="11.5" y="4" fill="#FFFFFF" width="1" height="1"/><rect x="13.5" y="4" fill="#FFFFFF" width="1" height="1"/><rect x="1.5" y="6" fill="#FFFFFF" width="1" height="1"/><rect x="3.5" y="6" fill="#FFFFFF" width="1" height="1"/><rect x="5.5" y="6" fill="#FFFFFF" width="1" height="1"/><rect x="7.5" y="6" fill="#FFFFFF" width="1" height="1"/><rect x="9.5" y="6" fill="#FFFFFF" width="1" height="1"/><rect x="11.5" y="6" fill="#FFFFFF" width="1" height="1"/><rect x="13.5" y="6" fill="#FFFFFF" width="1" height="1"/><rect x="1.5" y="8" fill="#FFFFFF" width="1" height="1"/><rect x="3.5" y="8" fill="#FFFFFF" width="1" height="1"/><rect x="5.5" y="8" fill="#FFFFFF" width="1" height="1"/><rect x="7.5" y="8" fill="#FFFFFF" width="1" height="1"/><rect x="9.5" y="8" fill="#FFFFFF" width="1" height="1"/><rect x="11.5" y="8" fill="#FFFFFF" width="1" height="1"/><rect x="13.5" y="8" fill="#FFFFFF" width="1" height="1"/><rect x="1.5" y="10" fill="#FFFFFF" width="1" height="1"/><rect x="3.5" y="10" fill="#FFFFFF" width="1" height="1"/><rect x="5.5" y="10" fill="#FFFFFF" width="1" height="1"/><rect x="1.5" y="12" fill="#FFFFFF" width="1" height="1"/><rect x="3.5" y="12" fill="#FFFFFF" width="1" height="1"/><rect x="13.5" y="2" fill="#FFFFFF" width="1" height="1"/><rect x="7.5" y="10" fill="#FFFFFF" width="1" height="1"/><rect x="9.5" y="10" fill="#FFFFFF" width="1" height="1"/><rect x="11.5" y="10" fill="#FFFFFF" width="1" height="1"/><rect x="13.5" y="10" fill="#FFFFFF" width="1" height="1"/></svg>
+              </b>
+              <b class='label'>happenings</b>
+            </a>
+          </li>
+          <li class='god'>
+            <a>
+              <b class='icon god'>
+                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 16 16"><polyline fill="none" stroke="#000000" points="0.5,1 0.5,15.5 15.5,15.5 15.5,1.5 2.5,1.5 2.5,13.5 13.5,13.5 13.5,3.5 4.5,3.5 4.5,11.5 11.5,11.5 11.5,5.5 6.5,5.5 6.5,9.5 9.5,9.5 9.5,7.5 8,7.5 "/><polyline fill="none" stroke="#fffff" points="1.5,1 1.5,14.5 14.5,14.5 14.5,2.5 3.5,2.5 3.5,12.5 12.5,12.5 12.5,4.5 5.5,4.5 5.5,10.5 10.5,10.5 10.5,6.5 7.5,6.5 7.5,8.5 9,8.5 "/></svg>
+              </b>
+              <b class='label'>god</b>
+            </a>
+          </li>
+        </ul>
+
+        <ul class='graph_nav nav vertical'>
+          <li class='back'>
+            <a onclick='javascript: history.go(-1)'>
+              <b class='icon back over'>
+                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 16 16"><polyline fill="none" stroke="#0083c6" stroke-miterlimit="10" points="15.5,2.5 15.5,15.5 6.5,15.5 "/><rect x="5.5" y="0.542" fill="#0083c6" stroke="#0083c6" stroke-miterlimit="10" width="8" height="13"/><line fill="none" stroke="#0083c6" stroke-miterlimit="10" x1="6.499" y1="14.479" x2="5.5" y2="14.479"/><line fill="none" stroke="#FFFFFF" x1="7" y1="4.5" x2="12" y2="4.5"/></svg>
+                </b>
+              <b class='icon back out'>
+                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 16 16"><rect x="0.5" y="1.5" fill="#0083c6" stroke="#0083c6" stroke-miterlimit="10" width="6" height="13"/><rect x="8.5" y="1.5" fill="#0083c6" stroke="#0083c6" stroke-miterlimit="10" width="7" height="13"/><polyline fill="none" stroke="#FFFFFF" points="6,3.5 2,7.5 6,11.5"/><line fill="none" stroke="#FFFFFF" x1="2" y1="7.5" x2="7" y2="7.5"/><line fill="none" stroke="#FFFFFF" x1="8" y1="8.5" x2="13" y2="8.5"/></svg>
+                </b>
+              <b class='label'>back</b>
+            </a>
+          </li>
+        </ul>
+
+
       {% endif %}
-      {%- endblock -%}
-
+    {%- endblock -%}
 
     </div>
 
-    <div id="admin_panel">
-      {% block content %}{% endblock %}
+    <div id='display_column'>
+      <div class="account">
+        {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
+        {% block content %}{% endblock %}
+      </div>
     </div>
+
+    <script type='text/javascript'>
+      $(document).ready(function() {
+        App.flash();
+        App.subnav('.nav a.drop');
+      });
+    </script>
 
   </body>
 </html>

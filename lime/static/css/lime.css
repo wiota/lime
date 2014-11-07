@@ -9,6 +9,7 @@ Request:
 Form
   aluminum: #ebf4f4;
   lead: #cbdada;
+  magnesium: #4f5555;
 Action
   foam: #78F7D8;
   acid: #04e8e8;
@@ -44,25 +45,56 @@ shadow color  42,44,57
   }
 
 /* -------------------------------------------------------------------  */
+/* Path Panel */
+/* -------------------------------------------------------------------  */
+
+#path_panel {
+  /* navigation column - lime_base.css */
+  }
+
+
+/* -------------------------------------------------------------------  */
 /* Request Panel */
 /* -------------------------------------------------------------------  */
 
+#request_panel {
+  display:none;
+  background-color: #cfc;
+}
 
+/* -------------------------------------------------------------------  */
+/* Listing Panel */
+/* -------------------------------------------------------------------  */
+
+#listing_panel {
+  /* display column - lime_base.css */
+  }
+
+
+/* -------------------------------------------------------------------  */
+/* Action Panel */
+/* -------------------------------------------------------------------  */
+
+#action_panel {
+  background: #f6f7f7 url('https://s3.amazonaws.com/wiota/lime/4grid_light.png');
+  background-color: #fff;
+  z-index: 6;
+  overflow: auto;
+  margin: 0;
+  padding: 0 0% 0 2%;
+  position:absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 100%;
+
+  }
 
 /* -------------------------------------------------------------------  */
 /* Path Panel */
 /* -------------------------------------------------------------------  */
 
 
-.label {
-  display:block;
-  padding: 4% 5%;
-  margin-left: 20%;
-  font-weight: normal;
-  font-family: "Monaco","Lucida Console","Courier New", "monospace";
-  font-size: 14px;
-
-  }
 
 .path {
 
@@ -117,7 +149,7 @@ shadow color  42,44,57
 /* Listing Panel */
 /* -------------------------------------------------------------------  */
 
-#listing_panel .listing {
+.listing {
   position:fixed;
   top: 0;
   left: 0;
@@ -126,7 +158,6 @@ shadow color  42,44,57
   overflow: auto;
   max-width: 100%;
   padding: 0 10px 0 0;
-
 }
 
 /* Succset Container */
@@ -406,12 +437,9 @@ form.succset .file_upload input {
   }
 
 #action_panel .input#title {
-
   font-size: 34px;
   background-color: transparent;
   }
-
-
 
 #action_panel .god_attributes {
   position: fixed;

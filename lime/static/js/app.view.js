@@ -134,6 +134,7 @@ App.View.SuccsetListView['Vertex'] = Backbone.View.extend({
     var container = $('#listing_panel .listing');
     var windowHeight = $(window).height();
     var scrollLimit = this.$el.height() - windowHeight;
+    var list = this.$el;
 
     var scrollWindow = function(y){
       console.log(y);

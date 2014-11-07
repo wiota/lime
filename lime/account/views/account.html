@@ -1,30 +1,28 @@
 {% extends "account_base.html" %}
-{% block backlink %}
-<a href="/">&lArr; Back to Lime</a>
-{% endblock %}
-{% block head %}
-    <title>Lime - Account Details</title>
-    {{ super() }}
-{% endblock %}
+
 {% block content %}
-<h1>Account Details</h1>
+
 {% if cust.cards.total_count < 1 %}
-        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
-        <script type="text/javascript" src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.8.1/jquery.validate.min.js"></script>
-        <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
-        <script type="text/javascript" src='{{ url_for('static', filename='js/stripe.js') }}'></script>
-        <script type="text/javascript">
-            Stripe.setPublishableKey('{{ pubkey }}');
-        </script>
+    <script type="text/javascript" src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.8.1/jquery.validate.min.js"></script>
+    <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
+    <script type="text/javascript" src='{{ url_for('static', filename='js/stripe.js') }}'></script>
+    <script type="text/javascript">
+        Stripe.setPublishableKey('{{ pubkey }}');
+    </script>
 {% endif %}
-    </head>
-    <body>
+
+<b class='topcon'><img src='/icon/face.svg'></b>
+<h1>{{ user.email }}</h1>
+
+
+<!--
 Email address: {{ user.email }}<br/>
 <br/>
 Hostname: {{ host.hostname }}<br/>
 Title: {{ host.title }}<br/>
 Subtitle: {{ host.subtitle }}<br/>
 <br/>
+-->
 
 {% if cust.cards.total_count < 1 %}
         <h2>Add a new card</h2>

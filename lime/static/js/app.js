@@ -1,6 +1,28 @@
 var App = {
 };
 
+App.subnav = (function(){
+
+  var toggle = function(subnav){
+    subnav.fadeToggle(100);
+  }
+
+  var getSubnav = function(selector){
+    return $(selector).next('.subnav');
+  }
+
+  return function(selector){
+    var subnav = getSubnav(selector);
+    subnav.hide();
+    $(selector).on('click', function(){
+      toggleNav(this);
+    })
+  }
+
+})();
+
+// ---------------------------------------------------------------------
+
 App.god = (function(){
   var keyin = 0;
   var keycheck = [71,79,68,71,79,68,71,79,68];
@@ -28,11 +50,10 @@ App.god = (function(){
     }
   })
 
-
-
   return function(){return revealGod;}
 })();
 
+// ---------------------------------------------------------------------
 
 App.titleCleaner = {};
 App.titleCleaner.casePref = 'titlecase';
@@ -85,11 +106,11 @@ App.clsToClass = function(_cls){
   return _cls.toLowerCase().split('.').join(' ');
 }
 
+// ---------------------------------------------------------------------
 
-$(document).ready(function() {
-  //msg.init();
-
-  App.router = new App.Router();
-  Backbone.history.start();
-
-});
+App.flash = function(){
+  $('.admin_flashes').delay(500).fadeOut(1000, 'swing');
+  $('.admin_flashes').on('click', function(){
+    $(this).stop().slideUp(100);
+  })
+};

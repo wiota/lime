@@ -1,75 +1,77 @@
-{% extends "admin.html" %}
-{% block admin_content %}
-<h2>User: {{user.email}}</h2>
-{% if not user.confirmed %}
-  <span class="danger">(User not yet confirmed.)</span>
-{% elif not user.registered %}
-  <span class="danger">(User not yet registered.)</span>
-{% endif %}
-    <h3>Information</h3>
-    <ul>
-        <li>Email: <a href="mailto:{{user.email}}">{{user.email}}</a></li>
-        <li>User ID: <a href="https://partners.mongohq.com/app12544446-heroku-com/mongo/app12544446/collections/user/documents/o:{{user.id}}">{{user.id}}</a></li>
-        <li>Stripe ID: <a href="https://dashboard.stripe.com/test/customers/{{user.stripe_id}}">{{user.stripe_id}}</a></li>
-        <li>Confirmed: {{user.confirmed}}</li>
-        <li>Registered: {{user.registered}}</li>
-    </ul>
-    <h3>Host</h3>
-    <ul>
-        <li>Hostname: <a href="http://{{host.hostname}}">{{host.hostname}}</a></li>
-        <li>Bucketname: {{host.bucketname}}</li>
-        <li>Template name: {{host.template}}
-        <li>Title: {{host.title}}</li>
-        <li>Subtitle: {{host.subtitle}}</li>
-    </ul>
-    <h3>Pages - <a href="">Add a new custom page</a></h3>
-    <ul>
-    {% for page in host.custom_pages %}
-        <li>{{ page.title }} - <a href="http://{{ host.hostname }}/{{ page.slug }}/">http://{{ host.hostname }}/{{ page.slug }}/</a></li>
+{% extends "admin_base.html" %}
+{% block content %}
+  <div class='toolbar'>
+    <a href="./login/">Login as user</a>
+    {% if not user.confirmed or not user.registered %}
+        <a href="./invite/">Send invitation email</a>
+    {% endif %}
+  </div>
+  <h1 class='user'>{{user.email}}</h1>
+    {% if not user.confirmed %}
+      <span class="danger">(User not yet confirmed.)</span>
+    {% elif not user.registered %}
+      <span class="danger">(User not yet registered.)</span>
+    {% endif %}
+        <h3>Information</h3>
+        <ul>
+            <li>Email: <a href="mailto:{{user.email}}">{{user.email}}</a></li>
+            <li>User ID: <a href="https://partners.mongohq.com/app12544446-heroku-com/mongo/app12544446/collections/user/documents/o:{{user.id}}">{{user.id}}</a></li>
+            <li>Stripe ID: <a href="https://dashboard.stripe.com/test/customers/{{user.stripe_id}}">{{user.stripe_id}}</a></li>
+            <li>Confirmed: {{user.confirmed}}</li>
+            <li>Registered: {{user.registered}}</li>
+        </ul>
+        <h3>Host</h3>
+        <ul>
+            <li>Hostname: <a href="http://{{host.hostname}}">{{host.hostname}}</a></li>
+            <li>Bucketname: {{host.bucketname}}</li>
+            <li>Template name: {{host.template}}
+            <li>Title: {{host.title}}</li>
+            <li>Subtitle: {{host.subtitle}}</li>
+        </ul>
+        <h3>Pages - <a href="">Add a new custom page</a></h3>
+        <ul>
+        {% for page in host.custom_pages %}
+            <li>{{ page.title }} - <a href="http://{{ host.hostname }}/{{ page.slug }}/">http://{{ host.hostname }}/{{ page.slug }}/</a></li>
+        {% else %}
+            No custom pages.
+        {% endfor %}
+        </ul>
+
+    <h2>Plans</h2>
+    <h3>Enrolled</h3>
+    {% if cust.subscriptions.total_count < 1 %}
+        No plans.<br/>
     {% else %}
-        No custom pages.
-    {% endfor %}
-    </ul>
+        <ul>
+        {% for sub in cust.subscriptions.data %}
+            <li>{{ sub.plan.name }} ({{ "$%.2f"|format(sub.plan.amount/100) }} per {{ sub.plan.interval }}) - <a class="danger" href="./plan/{{sub.id}}/remove/">Remove</a></li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+    <h3>Available</h3>
+        <ul>
+        {% for plan in plans.data %}
+            <li>{{ plan.name }} ({{ "$%.2f"|format(plan.amount/100) }} per {{ plan.interval }}) - <a href="./plan/{{plan.id}}/add/">Add</a></li>
+        {% endfor %}
+        </ul>
 
-<h2>Plans</h2>
-<h3>Enrolled</h3>
-{% if cust.subscriptions.total_count < 1 %}
-    No plans.<br/>
-{% else %}
-    <ul>
-    {% for sub in cust.subscriptions.data %}
-        <li>{{ sub.plan.name }} ({{ "$%.2f"|format(sub.plan.amount/100) }} per {{ sub.plan.interval }}) - <a class="danger" href="./plan/{{sub.id}}/remove/">Remove</a></li>
-    {% endfor %}
-    </ul>
-{% endif %}
-<h3>Available</h3>
-    <ul>
-    {% for plan in plans.data %}
-        <li>{{ plan.name }} ({{ "$%.2f"|format(plan.amount/100) }} per {{ plan.interval }}) - <a href="./plan/{{plan.id}}/add/">Add</a></li>
-    {% endfor %}
-    </ul>
-
-<h2>Cards</h2>
-{% if cust.cards.total_count < 1 %}
-    No cards added.
-{% else %}
-    <ul>
-    {% for card in cust.cards.all()["data"] %}
-        <li>{{ card.brand }} ending in {{ card.last4}} expiring on {{ card.exp_month }}/{{ card.exp_year }}</li>
-    {% endfor %}
-    </ul>
-{% endif %}
+    <h2>Cards</h2>
+    {% if cust.cards.total_count < 1 %}
+        No cards added.
+    {% else %}
+        <ul>
+        {% for card in cust.cards.all()["data"] %}
+            <li>{{ card.brand }} ending in {{ card.last4}} expiring on {{ card.exp_month }}/{{ card.exp_year }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
 
 
-<h2>Actions</h2>
-    <ul>
-        <li><a href="./login/">Login as user</a></li>
-        <li><a href="./invite/">Send invitation email</a></li>
-        <li><a href="./delete/">Delete user</a></li>
-    </ul>
-  </ul>
-{% endblock %}
+    <h2>Actions</h2>
+        <ul>
+            <li><a href="./invite/">Send invitation email</a></li>
+            <li><a href="./delete/">Delete user</a></li>
+        </ul>
+      </ul>
+    {% endblock %}
 
-{% block admin_backlink %}
-  <a href="/admin/user/">&lArr; Back to user list</a>
-{% endblock %}

@@ -8,11 +8,14 @@
 
     <title>Lime</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
-    <link rel='stylesheet' href='{{ url_for('static', filename='css/lime_base.css') }}' type='text/css' media='all' />
-    <link rel='stylesheet' href='{{ url_for('static', filename='css/lime.css') }}' type='text/css' media='all' />
+    <link rel='stylesheet' href='{{ url_for('static', filename='css/lime_base.css') }}' type='text/css' media='all'>
+    <link rel='stylesheet' href='{{ url_for('static', filename='css/lime.css') }}' type='text/css' media='all'>
     <script src='{{ url_for('static', filename='js/lodash.min.js') }}'></script>
     <script src='{{ url_for('static', filename='js/jquery.min.js') }}'></script>
-    <script src='{{ url_for('static', filename='js/flash.js') }}'></script>
+    <script src='{{ url_for('static', filename='js/icon.js') }}'></script>
+    <script src='{{ url_for('static', filename='js/app.js') }}'></script>
+    <script src='{{ url_for('static', filename='js/backbone.js') }}'></script>
+    <script src='{{ url_for('static', filename='js/sortable.js') }}'></script>
 
     {% endblock %}
 
@@ -21,28 +24,6 @@
   </head>
 
   <body>
-    {%- block user -%}
-    {% if current_user.is_authenticated() %}
-      <div class="admin_user_menu">
-        <div class='admin_user'>
-          <div class='admin_user_nav'>
-            <ul>
-              <li><a href=" {{ url_for('account.account') }} ">Account</a></li>
-              <li><a href=" {{ url_for('root.logout') }} ">Logout</a></li>
-            </ul>
-          </div>
-
-          <div class='identification'>
-          {% if current_user.admin %}
-            <div class="circle" style="background: url(http://www.gravatar.com/avatar/{{current_user.email_hash}}?s=30?d=mm)"/></div>
-          {% endif %}
-            <div id="name">{{ current_user.email}}</div>
-          </div>
-        </div>
-      </div>
-    {% endif %}
-    {%- endblock -%}
-
 
     {% for message in get_flashed_messages() %}
     <div class='admin_flashes'>
@@ -56,6 +37,13 @@
     </div>
 
     {% block js_footer %}{% endblock %}
+
+    <script type='text/javascript'>
+      $(document).ready(function() {
+        App.flash();
+        App.subnav('.nav a.drop');
+      });
+    </script>
 
   </body>
 </html>
