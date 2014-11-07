@@ -181,6 +181,10 @@ textarea {
   margin: 0% 4% 0 0;
   }
 
+.nav .icon svg {
+  display:block;
+  }
+
 .nav .label {
   display:block;
   padding: 2% 0;
@@ -204,6 +208,13 @@ textarea {
   position:relative;
 }
 
+.account_nav li.admin .icon {
+  transition: all 1s ease;
+}
+
+.account_nav li.admin:hover .icon {
+  transform: rotate(270deg);
+}
 
 /* Lime Nav */
 
