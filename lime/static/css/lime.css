@@ -1,29 +1,3 @@
-/*
-Body:
-  terra cotta: #dd7700
-  apricot: #ff8800
-  orange cream: #ffa53f
-Request:
-  meltdown: #00db14,
-  jade: #82db8a
-Form
-  aluminum: #ebf4f4;
-  lead: #cbdada;
-  magnesium: #4f5555;
-Action
-  foam: #78F7D8;
-  acid: #04e8e8;
-shadow color  42,44,57
-*/
-
-.god {
-  display:none;
-}
-
-.godman .god {
-  display: block;
-}
-
 /* -------------------------------------------------------------------  */
 /* Apex Menu */
 /* -------------------------------------------------------------------  */

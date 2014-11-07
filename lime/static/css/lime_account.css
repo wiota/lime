@@ -2,6 +2,13 @@
 /* Lime Account/Admin page styles */
 /* -------------------------------------------------------------------  */
 
+.account .account_nav .drop {display:none;}
+.account .lime_nav .body, .account .lime_nav .happenings {display:none;}
+
+.account .subnav {
+  display:block;
+}
+
 #display_column .account {margin: 0 5%;}
 
 #display_column .account h2 {margin: 2% 0; font-size: 20px;}

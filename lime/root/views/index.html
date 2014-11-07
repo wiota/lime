@@ -241,12 +241,12 @@
 {% block content %}
   <div id='navigation_column'>
 
-    <ul class='account_nav nav vertical'>
+    <ul class='account_nav nav'>
       <li class='identification'>
         <a class='drop'>
           <b class='label'>{{current_user.email}}</b>
         </a>
-        <ul class='subnav drop'>
+        <ul class='subnav'>
           <li class='account'>
             <a href='{{ url_for('account.account') }}'>
               <b class='icon face'>
@@ -254,9 +254,6 @@
                 </b>
               <b class='label'>account settings</b>
             </a>
-            <div class='drop'>
-
-            </div>
           </li>
 
           <li class='logout'>
@@ -282,7 +279,7 @@
       </li>
     </ul>
 
-    <ul class='lime_nav nav vertical'>
+    <ul class='lime_nav nav'>
       <li class='home'>
         <a href=" {{ url_for('root.index') }} ">
           <b class='icon home'>
@@ -317,7 +314,7 @@
 
 
 
-    <ul class='graph_nav nav vertical'>
+    <ul class='graph_nav nav'>
       <li class='back'>
         <a onclick='javascript: history.go(-1)'>
           <b class='icon back over'>

@@ -3,17 +3,11 @@ var App = {
 
 App.subnav = (function(){
 
-  var toggle = function(subnav){
-    subnav.fadeToggle(100);
-  }
-
-  var getSubnav = function(selector){
-    return $(selector).next('.subnav');
+  var toggleNav = function(el){
+    $(el).next('.subnav').fadeToggle(100);
   }
 
   return function(selector){
-    var subnav = getSubnav(selector);
-    subnav.hide();
     $(selector).on('click', function(){
       toggleNav(this);
     })

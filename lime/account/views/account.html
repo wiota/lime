@@ -2,110 +2,100 @@
 
 {% block content %}
 
-{% if cust.cards.total_count < 1 %}
-    <script type="text/javascript" src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.8.1/jquery.validate.min.js"></script>
-    <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
-    <script type="text/javascript" src='{{ url_for('static', filename='js/stripe.js') }}'></script>
-    <script type="text/javascript">
-        Stripe.setPublishableKey('{{ pubkey }}');
-    </script>
-{% endif %}
+    {% if cust.cards.total_count < 1 %}
+        <script type="text/javascript" src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.8.1/jquery.validate.min.js"></script>
+        <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
+        <script type="text/javascript" src='{{ url_for('static', filename='js/stripe.js') }}'></script>
+        <script type="text/javascript">
+            Stripe.setPublishableKey('{{ pubkey }}');
+        </script>
+    {% endif %}
 
-<b class='topcon'><img src='/icon/face.svg'></b>
-<h1>{{ user.email }}</h1>
+    <b class='topcon'><img src='/icon/face.svg'></b>
+    <h1>{{ user.email }}</h1>
 
-
-<!--
-Email address: {{ user.email }}<br/>
-<br/>
-Hostname: {{ host.hostname }}<br/>
-Title: {{ host.title }}<br/>
-Subtitle: {{ host.subtitle }}<br/>
-<br/>
--->
-
-{% if cust.cards.total_count < 1 %}
-        <h2>Add a new card</h2>
-        <div class="help">(You need to add a credit card before your site can go live. <a href="https://stripe.com/">Securely processed by Stripe</a>.)</div>
-        <form action="./card/new/" method="post" id="stripe-form" style="display: none;">
-            <div class="form-row">
-                <label>Card number:</label>
-                <input type="text" maxlength="20" autocomplete="off" class="card-number stripe-sensitive required" />
-            </div>
-            <div class="form-row">
-                <label>CVC:</label>
-                <input type="text" maxlength="4" autocomplete="off" class="card-cvc stripe-sensitive required" />
-            </div>
-            <div class="form-row">
-                <label>Expiration:</label>
-                <div class="expiry-wrapper">
-                    <select class="card-expiry-month stripe-sensitive required">
-                    </select>
-                    <script type="text/javascript">
-                        var select = $(".card-expiry-month"),
-                            month = new Date().getMonth() + 1;
-                        for (var i = 1; i <= 12; i++) {
-                            select.append($("<option value='"+i+"' "+(month === i ? "selected" : "")+">"+i+"</option>"))
-                        }
-                    </script>
-                    <span> / </span>
-                    <select class="card-expiry-year stripe-sensitive required"></select>
-                    <script type="text/javascript">
-                        var select = $(".card-expiry-year"),
-                            year = new Date().getFullYear();
-
-                        for (var i = 0; i < 12; i++) {
-                            select.append($("<option value='"+(i + year)+"' "+(i === 0 ? "selected" : "")+">"+(i + year)+"</option>"))
-                        }
-                    </script>
-                    <button type="submit" name="submit-button">Submit</button>
+    {% if cust.cards.total_count < 1 %}
+            <h2>Add a new card</h2>
+            <div class="help">(You need to add a credit card before your site can go live. <a href="https://stripe.com/">Securely processed by Stripe</a>.)</div>
+            <form action="./card/new/" method="post" id="stripe-form" style="display: none;">
+                <div class="form-row">
+                    <label>Card number:</label>
+                    <input type="text" maxlength="20" autocomplete="off" class="card-number stripe-sensitive required" />
                 </div>
-            </div>
+                <div class="form-row">
+                    <label>CVC:</label>
+                    <input type="text" maxlength="4" autocomplete="off" class="card-cvc stripe-sensitive required" />
+                </div>
+                <div class="form-row">
+                    <label>Expiration:</label>
+                    <div class="expiry-wrapper">
+                        <select class="card-expiry-month stripe-sensitive required">
+                        </select>
+                        <script type="text/javascript">
+                            var select = $(".card-expiry-month"),
+                                month = new Date().getMonth() + 1;
+                            for (var i = 1; i <= 12; i++) {
+                                select.append($("<option value='"+i+"' "+(month === i ? "selected" : "")+">"+i+"</option>"))
+                            }
+                        </script>
+                        <span> / </span>
+                        <select class="card-expiry-year stripe-sensitive required"></select>
+                        <script type="text/javascript">
+                            var select = $(".card-expiry-year"),
+                                year = new Date().getFullYear();
 
-            <span class="payment-errors"></span>
-        </form>
-        <script>if (window.Stripe) $("#stripe-form").show()</script>
-        <noscript><p>JavaScript is required for the registration form.</p></noscript>
-        <br/>
-        <br/>
-{% else %}
-<h2>Payment</h2>
+                            for (var i = 0; i < 12; i++) {
+                                select.append($("<option value='"+(i + year)+"' "+(i === 0 ? "selected" : "")+">"+(i + year)+"</option>"))
+                            }
+                        </script>
+                        <button type="submit" name="submit-button">Submit</button>
+                    </div>
+                </div>
+
+                <span class="payment-errors"></span>
+            </form>
+            <script>if (window.Stripe) $("#stripe-form").show()</script>
+            <noscript><p>JavaScript is required for the registration form.</p></noscript>
+            <br/>
+            <br/>
+    {% else %}
+    <h2>Payment</h2>
+        <ul>
+        {% for card in cust.cards.all()["data"] %}
+            <li>{{ card.brand }} ending in {{ card.last4}} expiring on {{ card.exp_month }}/{{ card.exp_year }} - <a href="./card/delete/{{ card.id }}">Delete this card</a></li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if cust.subscriptions.data %}
+    <h2>Plans</h2>
     <ul>
-    {% for card in cust.cards.all()["data"] %}
-        <li>{{ card.brand }} ending in {{ card.last4}} expiring on {{ card.exp_month }}/{{ card.exp_year }} - <a href="./card/delete/{{ card.id }}">Delete this card</a></li>
+    {% for sub in cust.subscriptions.data %}
+        <li>{{ sub.plan.name }} ({{ sub.plan.amount|money }} per {{ sub.plan.interval }})</li>
+    {% else %}
+        You don't currently have any hosting plans.<br/>
     {% endfor %}
     </ul>
-{% endif %}
+    {% endif %}
 
-{% if cust.subscriptions.data %}
-<h2>Plans</h2>
-<ul>
-{% for sub in cust.subscriptions.data %}
-    <li>{{ sub.plan.name }} ({{ sub.plan.amount|money }} per {{ sub.plan.interval }})</li>
-{% else %}
-    You don't currently have any hosting plans.<br/>
-{% endfor %}
-</ul>
-{% endif %}
+    {% if invoices.data %}
+    <h2>Invoices</h2>
+    <h3>Unpaid</h3>
+    <ul>
+    {% for invoice in invoices.data if not invoice.paid %}
+        <li>{{ invoice.date|date }}: {{ invoice.total|money }} - <a href="{{ url_for("account.get_invoice", id=invoice.id) }}">View &amp; pay invoice</a></li>
+    {% else %}
+        All paid up!
+    {% endfor %}
+    </ul>
 
-{% if invoices.data %}
-<h2>Invoices</h2>
-<h3>Unpaid</h3>
-<ul>
-{% for invoice in invoices.data if not invoice.paid %}
-    <li>{{ invoice.date|date }}: {{ invoice.total|money }} - <a href="{{ url_for("account.get_invoice", id=invoice.id) }}">View &amp; pay invoice</a></li>
-{% else %}
-    All paid up!
-{% endfor %}
-</ul>
-
-<h3>Paid</h3>
-<ul>
-{% for invoice in invoices.data if invoice.paid %}
-    <li>{{ invoice.date|date }}: {{ invoice.total|money }} - <a href="{{ url_for("account.get_receipt", id=invoice.id) }}">View receipt</a></li>
-{% else %}
-    No invoices yet!
-{% endfor %}
-</ul>
-{% endif %}
+    <h3>Paid</h3>
+    <ul>
+    {% for invoice in invoices.data if invoice.paid %}
+        <li>{{ invoice.date|date }}: {{ invoice.total|money }} - <a href="{{ url_for("account.get_receipt", id=invoice.id) }}">View receipt</a></li>
+    {% else %}
+        No invoices yet!
+    {% endfor %}
+    </ul>
+    {% endif %}
 {% endblock %}
