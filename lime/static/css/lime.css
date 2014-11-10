@@ -88,16 +88,20 @@
 
   .summary .icon {
     width:18%;
+    float:left;
+    margin: 0 3% 3% 0;
     }
   .summary .title {
-    font-size: 140%;
+    font-size: 180%;
     }
+  .summary .meta {
+    clear: both;
+  }
 
   .summary .cover {width: 100%;}
   .summary .cover img {width: 100%;}
 
 .summary.body {
-  background: #f4f794;
   color: #000;
   }
 

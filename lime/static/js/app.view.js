@@ -362,7 +362,7 @@ App.View.SummaryView['Vertex'] = App.SummaryView = Backbone.View.extend({
 });
 
 App.View.SummaryView['Vertex.Apex.Body'] = App.PortfolioSummaryView = App.SummaryView.extend({
-  template:_.template($('#portfolio_summary').html())
+  template:_.template($('#body_summary').html())
 });
 
 App.View.SummaryView['Vertex.Apex.Happenings'] = App.PortfolioSummaryView = App.SummaryView.extend({
