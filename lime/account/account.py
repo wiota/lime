@@ -13,7 +13,7 @@ mod = Blueprint('account', __name__, static_folder='static', template_folder='vi
 @login_required
 def account():
     stripe.api_key = app.config['STRIPE_SECRET_KEY']
-    host = Host.objects.get(owner=current_user.id)
+    host = Host.by_current_user()
     cust = stripe.Customer.retrieve(current_user.stripe_id)
     invoices = stripe.Invoice.all(customer=current_user.stripe_id)
     pubkey = app.config['STRIPE_PUBLIC_KEY']

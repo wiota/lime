@@ -20,7 +20,7 @@ mod = Blueprint('root', __name__, template_folder='views')
 @mod.route('/run/')
 def run():
     from toolbox.models import Vertex, CustomVertexField
-    host = Host.objects.get(owner=current_user.id)
+    host = Host.by_current_user()
 
     bio = CustomVertexField()
     bio.name = "bio"

@@ -17,7 +17,7 @@ def sign_s3():
     # Load necessary information into the application:
     AWS_ACCESS_KEY = os.environ.get('AWS_ACCESS_KEY_ID')
     AWS_SECRET_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
-    S3_BUCKET = Host.objects.get(owner=current_user.id).bucketname
+    S3_BUCKET = Host.by_current_user().bucketname
 
     # Collect information on the file from the GET parameters of the request:
     object_name = urllib.quote_plus(request.args.get('s3_object_name'))

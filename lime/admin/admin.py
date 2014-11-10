@@ -56,7 +56,7 @@ def user():
 def individual_user(id):
     stripe.api_key = app.config['STRIPE_SECRET_KEY']
     user = User.objects.get(id=id)
-    host = Host.objects.get(owner=user)
+    host = Host.by_owner(user)
     cust = stripe.Customer.retrieve(user.stripe_id)
     plans = stripe.Plan.all()
     return render_template('individual_user.html', user=user, host=host, cust=cust, plans=plans)
@@ -111,8 +111,9 @@ def definitely_delete_user(id):
         except:
             pass
 
-        Host.objects(owner=user).delete()
-        Vertex.objects(owner=user).delete()
+        host = Host.by_owner(user)
+        Vertex.objects(host=host).delete()
+        host.delete()
         user.delete()
         flash("User '%s' successfully deleted" % (user.email))
         return redirect(url_for("admin.index"))
@@ -157,34 +158,42 @@ def create_user():
     if form.validate_on_submit():
         email_hash = md5.new(form.email.data.strip().lower()).hexdigest()
         user = User(email=form.email.data, email_hash=email_hash)
-        hostname = form.hostname.data
 
         # Create a stripe customer
         stripe.api_key = app.config['STRIPE_SECRET_KEY']
         customer = stripe.Customer.create(email=user.email)
         user.stripe_id = customer.id
 
-        # Create the Body apex
-        body = Body(owner=user.id)
-        body.save()
-
-        # Create the Happening apex
-        happenings = Happenings(owner=user.id)
-        happenings.save()
-
         user.save()
 
-        # Create the S3 stuff
-        conn = boto.connect_s3()
-        bucket_name = '%s_%s' % (os.environ["S3_BUCKET"], email_hash)
-        bucket = conn.create_bucket(bucket_name)
-        s3_conf = s3_config()
-        bucket.set_policy(s3_conf.get_policy(email_hash))
-        bucket.set_cors_xml(s3_conf.get_cors())
+        hostname = form.hostname.data
 
-        # Create the host
-        host = Host(hostname=hostname, template=hostname, bucketname=bucket_name, owner=user.id)
-        host.save()
+        try:
+            host = Host.objects.get(hostname=hostname)
+        except Host.DoesNotExist: # The host does not exist, create it
+            # Create the S3 stuff
+            conn = boto.connect_s3()
+            bucket_name = '%s_%s' % (os.environ["S3_BUCKET"], email_hash)
+            bucket = conn.create_bucket(bucket_name)
+            s3_conf = s3_config()
+            bucket.set_policy(s3_conf.get_policy(email_hash))
+            bucket.set_cors_xml(s3_conf.get_cors())
+
+            # Create the host
+            host = Host(hostname=hostname, template=hostname, bucketname=bucket_name, owners=[])
+            host.save()
+
+            # Create the Body apex
+            body = Body(host=host)
+            body.save()
+
+            # Create the Happening apex
+            happenings = Happenings(host=host)
+            happenings.save()
+
+
+        # Add the new user as an owner of the host
+        host.update(push__owners=user)
 
         if form.send_invite.data:
             send_invite(user)

@@ -25,14 +25,13 @@ Body endpoints
 @mod.route('/apex/body/', methods=['GET'])
 @login_required
 def body():
-    return Body.objects.get(owner=current_user.id).to_bson()
+    return Body.by_current_user().to_bson()
 
 
 @mod.route('/apex/body/succset/', methods=['PUT'])
 @login_required
 def put_body_succset():
-    Body.objects(
-        owner=current_user.id).update_one(
+    Body.by_current_user().update_one(
         set__succset=request.json['succset'])
     return jsonify(result="success"), 200  # TODO: Should be a 204
 
@@ -44,14 +43,14 @@ Happening endpoints
 @mod.route('/apex/happenings/', methods=['GET'])
 @login_required
 def happenings():
-    return Happenings.objects.get(owner=current_user.id).to_bson()
+    return Happenings.by_current_user().to_bson()
 
 
 @mod.route('/happening/', methods=['POST'])
 @login_required
 def post_happening():
     data = request.json
-    data['owner'] = current_user.id
+    data['host'] = Host.by_current_user().id
     happening = Happening(**data).save()
     return happening.to_bson(), 200
 
@@ -59,7 +58,7 @@ def post_happening():
 @mod.route('/happening/<id>/', methods=['PUT'])
 @login_required
 def put_happening(id):
-    doc = Happening.objects.get(owner=current_user.id, id=id)
+    doc = Happening.by_id(id)
 
     # TODO: This is a bad function
     data = {k: request.json[k] for k in doc.get_save_fields() if k in request.json.keys()}
@@ -90,7 +89,7 @@ Work endpoints
 @login_required
 def post_work():
     data = request.json
-    data['owner'] = current_user.id
+    data['host'] = Host.by_current_user()
     work = Work(**data).save()
     return work.to_bson(), 200
 
@@ -98,7 +97,7 @@ def post_work():
 @mod.route('/work/<id>/', methods=['PUT'])
 @login_required
 def put_work(id):
-    doc = Work.objects.get(owner=current_user.id, id=id)
+    doc = Work.by_id(id)
 
     # TODO: This is a bad function
     data = {k: request.json[k] for k in doc.get_save_fields() if k in request.json.keys()}
@@ -120,7 +119,7 @@ Tag endpoints
 @login_required
 def post_tag():
     data = request.json
-    data['owner'] = current_user.id
+    data['host'] = Host.by_current_user()
     tag = Tag(**data).save()
     return tag.to_bson(), 200
 
@@ -133,7 +132,7 @@ Category endpoints
 @login_required
 def post_category():
     data = request.json
-    data['owner'] = current_user.id
+    data['host'] = Host.by_current_user()
     category = Category(**data).save()
     return category.to_bson(), 200
 
@@ -141,7 +140,7 @@ def post_category():
 @mod.route('/category/<id>/', methods=['PUT'])
 @login_required
 def put_category(id):
-    doc = Category.objects.get(owner=current_user.id, id=id)
+    doc = Category.by_id(id)
 
     # TODO: This is a bad function
     data = {k: request.json[k] for k in doc.get_save_fields() if k in request.json.keys()}
@@ -162,15 +161,13 @@ Vertex endpoints
 @mod.route('/<vertex_type>/<id>/', methods=['GET'])
 @login_required
 def vertex_id(vertex_type, id):
-    return Vertex.objects.get(owner=current_user.id, id=id).to_bson()
+    return Vertex.by_id(id).to_bson()
 
 
 @mod.route('/<vertex_type>/<id>/succset/', methods=['PUT'])
 @login_required
 def put_succset(vertex_type, id):
-    Vertex.objects(
-        owner=current_user.id,
-        id=id).update_one(
+    Vertex.by_id(id).update_one(
         set__succset=request.json['succset'])
     return jsonify(result="success"), 200  # TODO: Should be a 204
 
@@ -190,7 +187,7 @@ Photo endpoints
 @login_required
 def post_photo():
     data = request.json
-    data['owner'] = current_user.id
+    data['host'] = Host.by_current_user()
     photo = Photo(**data).save()
     return photo.to_bson(expand=False), 200
 
@@ -203,15 +200,16 @@ Page endpoints
 @login_required
 def post_page():
     data = request.json
-    data['owner'] = current_user.id
+    data['host'] = Host.by_current_user()
     page = CustomPage(**data).save()
     return page.to_bson(), 200
 
 
+# TODO: This function probably isn't used and definitely doesn't work.
 @mod.route('/page/<id>/', methods=['PUT'])
 @login_required
 def put_page(id):
-    doc = CustomPage.objects.get(owner=current_user.id, id=id)
+    doc = CustomPage.by_id(id)
     data = {k: request.json[k] for k in doc.get_save_fields()}
     update_document(doc, data).save()
     return jsonify(result="success"), 200  # TODO: Should be a 204
@@ -226,10 +224,10 @@ Edge endpoints
 def add_edge():
     edges = request.json["edges"]
     for source_id, sink_id in zip(edges, edges[1:]):
-        source = Vertex.objects.get(id=source_id, owner=current_user.id)
+        source = Vertex.by_id(source_id)
         succset = [sink_id] + source.succset
         source.update(set__succset=succset)
-        sink = Vertex.objects.get(id=sink_id, owner=current_user.id)
+        sink = Vertex.by_id(sink_id)
         predset = [source_id] + sink.predset
         sink.update(set__predset=predset)
     return jsonify(result="success"), 200  # TODO: Should be a 204
@@ -240,8 +238,8 @@ def add_edge():
 def delete_edge():
     edges = request.json["edges"]
     for source_id, sink_id in zip(edges, edges[1:]):
-        source = Vertex.objects.get(id=source_id, owner=current_user.id)
+        source = Vertex.by_id(source_id)
         source.update(pull__succset=sink_id)
-        sink = Vertex.objects.get(id=sink_id, owner=current_user.id)
+        sink = Vertex.by_id(sink_id)
         sink.update(pull__predset=source_id)
     return jsonify(result="success"), 200  # TODO: Should be a 204
