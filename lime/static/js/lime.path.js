@@ -2,9 +2,9 @@
 // Path Views
 /* ------------------------------------------------------------------- */
 
-App.Path = {};
+LIME.Path = {};
 
-App.Path.PathPanel = Backbone.View.extend({
+LIME.Path.PathPanel = Backbone.View.extend({
   el: $('#path_panel'),
   path: [],
   template: _.template($('#path_panel_template').html()),
@@ -14,7 +14,6 @@ App.Path.PathPanel = Backbone.View.extend({
   },
 
   jsonLink: function(link){
-    console.log(link)
     $('li.god a').attr('href', link).attr('target', 'blank');
   },
 

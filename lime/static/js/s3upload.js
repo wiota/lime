@@ -2,28 +2,28 @@
 // CORS S3 Uploader
 /* ------------------------------------------------------------------- */
 
-App.Uploader = function(){
+LIME.Uploader = function(){
   this.initialize.apply(this, arguments);
 };
 
-App.Uploader.prototype.s3_sign_put_url = 'upload/sign_s3/';
+LIME.Uploader.prototype.s3_sign_put_url = 'upload/sign_s3/';
 
-App.Uploader.prototype.onFinishS3Put = function(public_url, file) {
+LIME.Uploader.prototype.onFinishS3Put = function(public_url, file) {
   this.trigger('complete', public_url);
   //return console.log('base.onFinishS3Put()', public_url, file);
 };
 
-App.Uploader.prototype.onProgress = function(percent, status, public_url, file) {
+LIME.Uploader.prototype.onProgress = function(percent, status, public_url, file) {
   this.percent = percent;
   this.trigger('progress', this.percent);
 };
 
-App.Uploader.prototype.onError = function(status, file) {
+LIME.Uploader.prototype.onError = function(status, file) {
   this.trigger('uploadError');
   console.log('base.onError()', status, file);
 };
 
-App.Uploader.prototype.initialize = function(options){
+LIME.Uploader.prototype.initialize = function(options){
   // initialized with only one file
   if (options == null) {
     options = {};
@@ -33,7 +33,7 @@ App.Uploader.prototype.initialize = function(options){
   this.percent = 0;
 };
 
-App.Uploader.prototype.uploadFile = function(file) {
+LIME.Uploader.prototype.uploadFile = function(file) {
   this.file = file;
   this.trigger('progress', 0);
   var error, this_s3upload;
@@ -51,7 +51,7 @@ App.Uploader.prototype.uploadFile = function(file) {
 
 };
 
-App.Uploader.prototype.abort = function() {
+LIME.Uploader.prototype.abort = function() {
   if(this.signXhr){
     this.signXhr.abort();
   }
@@ -61,7 +61,7 @@ App.Uploader.prototype.abort = function() {
 };
 
 // taken from s3 uploader
-App.Uploader.prototype.createCORSRequest = function(method, url) {
+LIME.Uploader.prototype.createCORSRequest = function(method, url) {
   var xhr = this.uploadXhr = new XMLHttpRequest();
   if (xhr.withCredentials != null) {
     xhr.open(method, url, true);
@@ -74,7 +74,7 @@ App.Uploader.prototype.createCORSRequest = function(method, url) {
   return xhr;
 };
 
-App.Uploader.prototype.executeOnSignedUrl = function(file, callback, opts) {
+LIME.Uploader.prototype.executeOnSignedUrl = function(file, callback, opts) {
   var name, this_s3upload, type;
   this_s3upload = this;
   var xhr = this.signXhr = new XMLHttpRequest();
@@ -98,7 +98,7 @@ App.Uploader.prototype.executeOnSignedUrl = function(file, callback, opts) {
   return xhr.send();
 };
 
-App.Uploader.prototype.uploadToS3 = function(file, url, public_url, opts) {
+LIME.Uploader.prototype.uploadToS3 = function(file, url, public_url, opts) {
   var this_s3upload, type, xhr;
   this_s3upload = this;
   type = opts && opts.type || file.type;
@@ -130,11 +130,11 @@ App.Uploader.prototype.uploadToS3 = function(file, url, public_url, opts) {
   return xhr.send(file);
 };
 
-App.Uploader.prototype.validate = function(file) {
+LIME.Uploader.prototype.validate = function(file) {
   return null;
 };
 
-App.Uploader.prototype.tester = function(){
+LIME.Uploader.prototype.tester = function(){
 
   this.trigger('progress', this.percent);
   this.percent += Math.random([0,10]);

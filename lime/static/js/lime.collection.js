@@ -2,14 +2,14 @@
 // Portphillio Admin Backbone Collections
 /* ------------------------------------------------------------------- */
 
-App.Collection = {};
+LIME.Collection = {};
 
 /* ------------------------------------------------------------------- */
 // Vertex Collection - Abstract class - do not instantiate!
 /* ------------------------------------------------------------------- */
 
-App.Collection['Vertex'] = Backbone.Collection.extend({
-  model: App['Vertex'],
+LIME.Collection['Vertex'] = Backbone.Collection.extend({
+  model: LIME['Vertex'],
   _cls: 'Vertex',
   formUrl: null,
   formSerialization: null,
@@ -93,32 +93,32 @@ App.Collection['Vertex'] = Backbone.Collection.extend({
 
 });
 
-App.Collection['Vertex.Category'] = App.Collection['Vertex'].extend({
-  model: App.Model['Vertex.Category'],
+LIME.Collection['Vertex.Category'] = LIME.Collection['Vertex'].extend({
+  model: LIME.Model['Vertex.Category'],
   url: "api/v1/category/",
   _cls: 'Vertex.Category'
 });
 
-App.Collection['Vertex.Work'] = App.Collection['Vertex'].extend({
-  model: App.Model['Vertex.Work'],
+LIME.Collection['Vertex.Work'] = LIME.Collection['Vertex'].extend({
+  model: LIME.Model['Vertex.Work'],
   url: "api/v1/work/",
   _cls: 'Vertex.Work'
 });
 
-App.Collection['Vertex.Medium.Photo'] = App.Collection['Vertex'].extend({
-  model: App.Model['Vertex.Medium.Photo'],
+LIME.Collection['Vertex.Medium.Photo'] = LIME.Collection['Vertex'].extend({
+  model: LIME.Model['Vertex.Medium.Photo'],
   url: "api/v1/photo/",
   _cls: 'Vertex.Medium.Photo'
 });
 
-App.Collection['Vertex.Happening'] = App.Collection['Vertex'].extend({
-  model: App.Model['Vertex.Happening'],
+LIME.Collection['Vertex.Happening'] = LIME.Collection['Vertex'].extend({
+  model: LIME.Model['Vertex.Happening'],
   url: "api/v1/happening/",
   _cls: 'Vertex.Happening'
 });
 
-App.Collection['Vertex.Apex.Body'] = App.Collection['Vertex'].extend({ // Unique - only contains one body - may be changed to start vertex
-  model: App.Model['Vertex.Apex.Body'],
+LIME.Collection['Vertex.Apex.Body'] = LIME.Collection['Vertex'].extend({ // Unique - only contains one body - may be changed to start vertex
+  model: LIME.Model['Vertex.Apex.Body'],
   _cls: 'Vertex.Apex.Body',
   body: null,
 
@@ -146,8 +146,8 @@ App.Collection['Vertex.Apex.Body'] = App.Collection['Vertex'].extend({ // Unique
   }
 });
 
-App.Collection['Vertex.Apex.Happenings'] = App.Collection['Vertex'].extend({
-  model: App.Model['Vertex.Apex.Happenings'],
+LIME.Collection['Vertex.Apex.Happenings'] = LIME.Collection['Vertex'].extend({
+  model: LIME.Model['Vertex.Apex.Happenings'],
   _cls: 'Vertex.Apex.Happenings',
   happenings: null,
 
@@ -179,11 +179,11 @@ App.Collection['Vertex.Apex.Happenings'] = App.Collection['Vertex'].extend({
 // Collection instances
 /* ------------------------------------------------------------------- */
 
-App.collection = {};
+LIME.collection = {};
 
-App.collection['Vertex.Apex.Body'] = new App.Collection['Vertex.Apex.Body']();
-App.collection['Vertex.Apex.Happenings'] = new App.Collection['Vertex.Apex.Happenings']();
-App.collection['Vertex.Category'] = new App.Collection['Vertex.Category']();
-App.collection['Vertex.Work'] = new App.Collection['Vertex.Work']();
-App.collection['Vertex.Medium.Photo'] = new App.Collection['Vertex.Medium.Photo']();
-App.collection['Vertex.Happening'] = new App.Collection['Vertex.Happening']();
+LIME.collection['Vertex.Apex.Body'] = new LIME.Collection['Vertex.Apex.Body']();
+LIME.collection['Vertex.Apex.Happenings'] = new LIME.Collection['Vertex.Apex.Happenings']();
+LIME.collection['Vertex.Category'] = new LIME.Collection['Vertex.Category']();
+LIME.collection['Vertex.Work'] = new LIME.Collection['Vertex.Work']();
+LIME.collection['Vertex.Medium.Photo'] = new LIME.Collection['Vertex.Medium.Photo']();
+LIME.collection['Vertex.Happening'] = new LIME.Collection['Vertex.Happening']();

@@ -3,7 +3,7 @@
 /* ------------------------------------------------------------------- */
 
 
-App.RequestApi = {
+LIME.RequestApi = {
 
   batchPhotosToVertex: function(files, nesting, model, predecessor){
     var requestChain = [];
@@ -19,8 +19,8 @@ App.RequestApi = {
 
     this.serial(requestChain);
 
-    // request.batchView = new App.Upload.batchProgressView({'className': 'batch'});
-    // App.actionPanel.$el.prepend(request.batchView.render().el);
+    // request.batchView = new LIME.Upload.batchProgressView({'className': 'batch'});
+    // LIME.actionPanel.$el.prepend(request.batchView.render().el);
   },
 
   graphRequest: function(vertices, edges){
@@ -79,13 +79,13 @@ App.RequestApi = {
     var edges = [];
 
     // content type should map to vertex types
-    var lowest = new App.Model['Vertex.Medium.Photo']({"href": "/image/"+file.name, 'resize_href': "/image/"+file.name});
+    var lowest = new LIME.Model['Vertex.Medium.Photo']({"href": "/image/"+file.name, 'resize_href': "/image/"+file.name});
     vertices.push(lowest);
 
     var highest = _.reduce(nesting, function(v1, nest){
       if(nesting == 'Vertex.Category'){var title = 'Category';}
-      else {var title = App.fileToName(file.name);}
-      var v2 = new App.Model[nest]({'title':title, 'cover':[{"href": "/image/"+file.name, 'resize_href': "/image/"+file.name}]});
+      else {var title = LIME.fileToName(file.name);}
+      var v2 = new LIME.Model[nest]({'title':title, 'cover':[{"href": "/image/"+file.name, 'resize_href': "/image/"+file.name}]});
       vertices.push(v2);
       edges.push([v2, v1]);
       return v2;
@@ -111,7 +111,7 @@ App.RequestApi = {
     // }
 
     // S3 uploader
-    var uploader = new App.Uploader();
+    var uploader = new LIME.Uploader();
     uploader.on('complete', function(href){
       request.trigger('complete', href);
     });
@@ -125,7 +125,7 @@ App.RequestApi = {
     var _cls = vertex.get('_cls')
 
     // client side
-    var collection = App.collection[_cls];
+    var collection = LIME.collection[_cls];
     collection.add(vertex);
 
     // options

@@ -2,7 +2,7 @@
 // Portphillio Admin Backbone Uploads
 /* ------------------------------------------------------------------- */
 
-App.Upload = {};
+LIME.Upload = {};
 
 // This section of the app is getting bloated. I need to break off
 // parts of it into actions which can be floated above the forms
@@ -15,7 +15,7 @@ App.Upload = {};
 // Batch Item Progress View
 /* ------------------------------------------------------------------- */
 
-App.Upload.batchItemProgressView = Backbone.View.extend({
+LIME.Upload.batchItemProgressView = Backbone.View.extend({
   percent: 0,
   label: null,
   tagName: 'div',
@@ -60,7 +60,7 @@ App.Upload.batchItemProgressView = Backbone.View.extend({
 // Upload Bar - Individual Upload Views
 /* ------------------------------------------------------------------- */
 
-App.Upload.batchItemView = Backbone.View.extend({
+LIME.Upload.batchItemView = Backbone.View.extend({
   percent: 0,
   label: null,
   tagName: 'div',
@@ -128,7 +128,7 @@ App.Upload.batchItemView = Backbone.View.extend({
 
   startUpload: function(){
     // S3 uploader
-    this.uploader = new App.Uploader();
+    this.uploader = new LIME.Uploader();
     this.listenTo(this.uploader, 'progress', this.update);
     this.listenTo(this.uploader, 'complete', this.success); // passes href through event
     this.listenTo(this.uploader, 'uploadError', this.error);
@@ -164,7 +164,7 @@ App.Upload.batchItemView = Backbone.View.extend({
 // Batch Progress View
 /* ------------------------------------------------------------------- */
 
-App.Upload.batchProgressView = Backbone.View.extend({
+LIME.Upload.batchProgressView = Backbone.View.extend({
   tagName: 'div',
   template: _.template($('#batch').html()),
 
@@ -187,7 +187,7 @@ App.Upload.batchProgressView = Backbone.View.extend({
   },
 
   addBatchItem: function(file){
-    var batchItem = new App.Upload.batchItemProgressView(file, this);
+    var batchItem = new LIME.Upload.batchItemProgressView(file, this);
     this.$batchItems.append(batchItem.render().el);
     //this.listenTo(batchItem, 'cancel', this.removeBatchItem);
     this.setBatchNumber();
@@ -204,7 +204,7 @@ App.Upload.batchProgressView = Backbone.View.extend({
 // Upload batch
 /* ------------------------------------------------------------------- */
 
-App.Upload.batchView = Backbone.View.extend({
+LIME.Upload.batchView = Backbone.View.extend({
   tagName: 'div',
   template: _.template($('#batch').html()),
 
@@ -252,7 +252,7 @@ App.Upload.batchView = Backbone.View.extend({
   },
 
   addBatchItem: function(file){
-    var batchItem = new App.Upload.batchItemView(file, this);
+    var batchItem = new LIME.Upload.batchItemView(file, this);
     this.$batchItems.append(batchItem.render().el);
     this.batchItems.push(batchItem);
     this.listenTo(batchItem, 'cancel', this.removeBatchItem);
@@ -298,13 +298,13 @@ App.Upload.batchView = Backbone.View.extend({
   // Need a try again?
   wrapUpload: function(href, batchItemView){
     // Clean name
-    batchItemView.setLabel(App.fileToName(batchItemView.file.name));
+    batchItemView.setLabel(LIME.fileToName(batchItemView.file.name));
 
     // Generate vertex-edge batch list
     var vertices = [];
     var edges = [];
 
-    var succModel = new App.Model['Vertex.Medium.Photo']({"href": href});
+    var succModel = new LIME.Model['Vertex.Medium.Photo']({"href": href});
     var predModel = null;
 
     _.each(this.nesting, function(nesting){
@@ -314,7 +314,7 @@ App.Upload.batchView = Backbone.View.extend({
         var title = batchItemView.label;
       }
       console.log(title);
-      predModel = new App.Model[nesting]({'title':title});
+      predModel = new LIME.Model[nesting]({'title':title});
       vertices.push(succModel);
       edges.push([predModel, succModel]);
       succModel = predModel;
@@ -331,7 +331,7 @@ App.Upload.batchView = Backbone.View.extend({
 
     // implement vertex-edge batch list
     // Verticies are created, edges are not
-    App.requestPanel.batchRequest(vertices, edges, batchItemView);
+    LIME.requestPanel.batchRequest(vertices, edges, batchItemView);
 
 
   }

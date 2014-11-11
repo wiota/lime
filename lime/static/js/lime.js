@@ -1,7 +1,7 @@
-var App = {
+var LIME = {
 };
 
-App.subnav = (function(){
+LIME.subnav = (function(){
 
   var toggleNav = function(el){
     $(el).next('.subnav').fadeToggle(100);
@@ -17,7 +17,7 @@ App.subnav = (function(){
 
 // ---------------------------------------------------------------------
 
-App.god = (function(){
+LIME.god = (function(){
   var keyin = 0;
   var keycheck = [71,79,68,71,79,68,71,79,68];
   var god = false;
@@ -49,11 +49,11 @@ App.god = (function(){
 
 // ---------------------------------------------------------------------
 
-App.titleCleaner = {};
-App.titleCleaner.casePref = 'titlecase';
-App.titleCleaner.spacePref = 'add';
+LIME.titleCleaner = {};
+LIME.titleCleaner.casePref = 'titlecase';
+LIME.titleCleaner.spacePref = 'add';
 
-App.titleCleaner.cases = {
+LIME.titleCleaner.cases = {
   'lower':function(string){
     return string.toLowerCase();
   },
@@ -75,7 +75,7 @@ App.titleCleaner.cases = {
   }
 }
 
-App.titleCleaner.spaces = {
+LIME.titleCleaner.spaces = {
   'add':function(string){
     return string.replace(/[-_.]/g, ' ');;
   },
@@ -84,25 +84,25 @@ App.titleCleaner.spaces = {
   }
 }
 
-App.titlePref = function(string){
-  return App.titleCleaner.cases[App.titleCleaner.casePref](
-    App.titleCleaner.spaces[App.titleCleaner.spacePref](string)
+LIME.titlePref = function(string){
+  return LIME.titleCleaner.cases[LIME.titleCleaner.casePref](
+    LIME.titleCleaner.spaces[LIME.titleCleaner.spacePref](string)
   );
 }
 
-App.fileToName = function(string){
+LIME.fileToName = function(string){
   var noEx = string.split('.');
   noEx.pop();
-  return App.titlePref(noEx.join('.'));
+  return LIME.titlePref(noEx.join('.'));
 }
 
-App.clsToClass = function(_cls){
+LIME.clsToClass = function(_cls){
   return _cls.toLowerCase().split('.').join(' ');
 }
 
 // ---------------------------------------------------------------------
 
-App.flash = function(){
+LIME.flash = function(){
   $('.admin_flashes').delay(500).fadeOut(1000, 'swing');
   $('.admin_flashes').on('click', function(){
     $(this).stop().slideUp(100);

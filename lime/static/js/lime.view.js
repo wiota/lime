@@ -2,7 +2,7 @@
 // Portphillio Admin Backbone Views
 /* ------------------------------------------------------------------- */
 
-App.View = {};
+LIME.View = {};
 
 /* ------------------------------------------------------------------- */
 // App Model Overrides
@@ -21,9 +21,9 @@ Backbone.View.prototype.close = function(){
 // Successor Item View
 /* ------------------------------------------------------------------- */
 
-App.View.SuccessorItemView = {};
+LIME.View.SuccessorItemView = {};
 
-App.View.SuccessorItemView['Vertex'] = App.SuccessorItemView = Backbone.View.extend({ // Abstract class - do not instantiate!
+LIME.View.SuccessorItemView['Vertex'] = LIME.SuccessorItemView = Backbone.View.extend({ // Abstract class - do not instantiate!
   tagName: 'li',
   className: 'successorItem',
   events:{
@@ -37,14 +37,14 @@ App.View.SuccessorItemView['Vertex'] = App.SuccessorItemView = Backbone.View.ext
   },
 
   delete: function(){
-    App.requestPanel.one([
+    LIME.requestPanel.one([
       {'func': 'removeEdgeRequest', 'args': [[this.predecessor, this.model]]},
     ]);
     //this.predecessor.removeEdge(this.model);
   },
 
   updateForm: function(){
-    App.actionPanel.loadVertexForm(this.model, this.predecessor);
+    LIME.actionPanel.loadVertexForm(this.model, this.predecessor);
   },
 
   render: function(){
@@ -63,32 +63,32 @@ App.View.SuccessorItemView['Vertex'] = App.SuccessorItemView = Backbone.View.ext
   }
 });
 
-App.View.SuccessorItemView['Vertex.Apex.Body'] = App.View.SuccessorItemView['Vertex'].extend({
+LIME.View.SuccessorItemView['Vertex.Apex.Body'] = LIME.View.SuccessorItemView['Vertex'].extend({
   className: 'body successorItem',
   template:_.template($('#body_in_set').html())
 });
 
-App.View.SuccessorItemView['Vertex.Happening'] = App.View.SuccessorItemView['Vertex'].extend({
+LIME.View.SuccessorItemView['Vertex.Happening'] = LIME.View.SuccessorItemView['Vertex'].extend({
   className: 'happening successorItem',
   template:_.template($('#happening_in_set').html())
 });
 
-App.View.SuccessorItemView['Vertex.Category'] = App.View.SuccessorItemView['Vertex'].extend({
+LIME.View.SuccessorItemView['Vertex.Category'] = LIME.View.SuccessorItemView['Vertex'].extend({
   className: 'category successorItem',
   template:_.template($('#category_in_set').html())
 });
 
-App.View.SuccessorItemView['Vertex.Work'] = App.View.SuccessorItemView['Vertex'].extend({
+LIME.View.SuccessorItemView['Vertex.Work'] = LIME.View.SuccessorItemView['Vertex'].extend({
   className: 'work successorItem',
   template:_.template($('#work_in_set').html())
 });
 
-App.View.SuccessorItemView['Vertex.Medium.Photo'] = App.View.SuccessorItemView['Vertex'].extend({
+LIME.View.SuccessorItemView['Vertex.Medium.Photo'] = LIME.View.SuccessorItemView['Vertex'].extend({
   className: 'photo successorItem',
   template:_.template($('#photo_in_set').html())
 });
 
-App.View.SuccessorItemView['empty'] = Backbone.View.extend({
+LIME.View.SuccessorItemView['empty'] = Backbone.View.extend({
   tagName: 'li',
   initialize: function(){
     this.$el.html('Empty');
@@ -101,9 +101,9 @@ App.View.SuccessorItemView['empty'] = Backbone.View.extend({
 /* ------------------------------------------------------------------- */
 // Render what if vertex has no successors?
 
-App.View.SuccsetListView = {};
+LIME.View.SuccsetListView = {};
 
-App.View.SuccsetListView['Vertex'] = Backbone.View.extend({
+LIME.View.SuccsetListView['Vertex'] = Backbone.View.extend({
   tagName: 'ol',
   className: 'succset_list',
   idName: 'succset_list',
@@ -246,7 +246,7 @@ App.View.SuccsetListView['Vertex'] = Backbone.View.extend({
     this.$el.empty();
 
     _.each(successors, function(successor, index){
-      var viewFactory = App.View.SuccessorItemView[successor._cls];
+      var viewFactory = LIME.View.SuccessorItemView[successor._cls];
       var successorItemView = new viewFactory({'model':successor, 'predecessor': this.model});
       this.$el.append(successorItemView.render().el);
       successorItemView.listenTo(successor, 'change', successorItemView.render);
@@ -262,9 +262,9 @@ App.View.SuccsetListView['Vertex'] = Backbone.View.extend({
 // Summaries
 /* ------------------------------------------------------------------- */
 
-App.View.SummaryView = {};
+LIME.View.SummaryView = {};
 
-App.View.SummaryView['Vertex'] = App.SummaryView = Backbone.View.extend({
+LIME.View.SummaryView['Vertex'] = LIME.SummaryView = Backbone.View.extend({
   tagName: 'div',
   template:_.template($('#default_summary').html()),
 
@@ -329,17 +329,17 @@ App.View.SummaryView['Vertex'] = App.SummaryView = Backbone.View.extend({
   },
 
   updateForm: function(){
-    App.actionPanel.loadVertexForm(this.model, null);
+    LIME.actionPanel.loadVertexForm(this.model, null);
   },
 
   addCategoryForm: function(){
-    var newCategory = new App.Model['Vertex.Category']();
-    App.actionPanel.loadVertexForm(newCategory, this.model);
+    var newCategory = new LIME.Model['Vertex.Category']();
+    LIME.actionPanel.loadVertexForm(newCategory, this.model);
   },
 
   addWorkForm: function(){
-    var newWork = new App.Model['Vertex.Work']();
-    App.actionPanel.loadVertexForm(newWork, this.model);
+    var newWork = new LIME.Model['Vertex.Work']();
+    LIME.actionPanel.loadVertexForm(newWork, this.model);
   },
 
   addPhotoForm: function(){
@@ -347,12 +347,12 @@ App.View.SummaryView['Vertex'] = App.SummaryView = Backbone.View.extend({
   },
 
   addHappeningForm: function(){
-    var newHappening = new App.Model['Vertex.Happening'];
-    App.actionPanel.loadVertexForm(newHappening, this.model);
+    var newHappening = new LIME.Model['Vertex.Happening'];
+    LIME.actionPanel.loadVertexForm(newHappening, this.model);
   },
 
   setCoverForm: function(){
-    App.actionPanel.loadCoverForm(this.model);
+    LIME.actionPanel.loadCoverForm(this.model);
   },
 
   saveSuccset: function(){
@@ -361,23 +361,23 @@ App.View.SummaryView['Vertex'] = App.SummaryView = Backbone.View.extend({
 
 });
 
-App.View.SummaryView['Vertex.Apex.Body'] = App.PortfolioSummaryView = App.SummaryView.extend({
+LIME.View.SummaryView['Vertex.Apex.Body'] = LIME.PortfolioSummaryView = LIME.SummaryView.extend({
   template:_.template($('#body_summary').html())
 });
 
-App.View.SummaryView['Vertex.Apex.Happenings'] = App.PortfolioSummaryView = App.SummaryView.extend({
+LIME.View.SummaryView['Vertex.Apex.Happenings'] = LIME.PortfolioSummaryView = LIME.SummaryView.extend({
   template:_.template($('#happenings_apex_summary').html())
 });
 
-App.View.SummaryView['Vertex.Category'] = App.CategorySummaryView = App.SummaryView.extend({
+LIME.View.SummaryView['Vertex.Category'] = LIME.CategorySummaryView = LIME.SummaryView.extend({
   template:_.template($('#category_summary').html())
 });
 
-App.View.SummaryView['Vertex.Work'] = App.WorkSummaryView = App.SummaryView.extend({
+LIME.View.SummaryView['Vertex.Work'] = LIME.WorkSummaryView = LIME.SummaryView.extend({
   template:_.template($('#work_summary').html())
 });
 
-App.View.SummaryView['Vertex.Happening'] = App.WorkSummaryView = App.SummaryView.extend({
+LIME.View.SummaryView['Vertex.Happening'] = LIME.WorkSummaryView = LIME.SummaryView.extend({
   template:_.template($('#happening_summary').html())
 });
 
@@ -385,9 +385,9 @@ App.View.SummaryView['Vertex.Happening'] = App.WorkSummaryView = App.SummaryView
 // Listings
 /* ------------------------------------------------------------------- */
 
-App.View.ListingView = {};
+LIME.View.ListingView = {};
 
-App.View.ListingView['Vertex'] = Backbone.View.extend({ // Akin to FormView
+LIME.View.ListingView['Vertex'] = Backbone.View.extend({ // Akin to FormView
   tagName: 'div',
   _cls: null,
   summary: null,
@@ -403,10 +403,10 @@ App.View.ListingView['Vertex'] = Backbone.View.extend({ // Akin to FormView
     var _cls = this.model.get('_cls');
 
     // child views
-    this.summary = new App.View.SummaryView[_cls]({model:this.model, className: App.clsToClass(_cls)+" summary"}),
+    this.summary = new LIME.View.SummaryView[_cls]({model:this.model, className: LIME.clsToClass(_cls)+" summary"}),
 
-    this.list = new App.View.SuccsetListView['Vertex']({model:this.model})
-    this.upload = new App.FormView['Succset']({
+    this.list = new LIME.View.SuccsetListView['Vertex']({model:this.model})
+    this.upload = new LIME.FormView['Succset']({
       'model': this.model,
       'photoNesting': this.model.photoNesting,
       'className': 'succset draggable form'
@@ -445,22 +445,22 @@ App.View.ListingView['Vertex'] = Backbone.View.extend({ // Akin to FormView
 
 });
 
-App.View.ListingView['Vertex.Apex.Happenings'] = App.View.ListingView['Vertex'].extend({});
+LIME.View.ListingView['Vertex.Apex.Happenings'] = LIME.View.ListingView['Vertex'].extend({});
 
-App.View.ListingView['Vertex.Apex.Body'] = App.View.ListingView['Vertex'].extend({});
+LIME.View.ListingView['Vertex.Apex.Body'] = LIME.View.ListingView['Vertex'].extend({});
 
-App.View.ListingView['Vertex.Happening'] = App.View.ListingView['Vertex'].extend({});
+LIME.View.ListingView['Vertex.Happening'] = LIME.View.ListingView['Vertex'].extend({});
 
-App.View.ListingView['Vertex.Category'] = App.View.ListingView['Vertex'].extend({});
+LIME.View.ListingView['Vertex.Category'] = LIME.View.ListingView['Vertex'].extend({});
 
-App.View.ListingView['Vertex.Work'] = App.View.ListingView['Vertex'].extend({});
+LIME.View.ListingView['Vertex.Work'] = LIME.View.ListingView['Vertex'].extend({});
 
 
 /* ------------------------------------------------------------------- */
 // Apex Menu
 /* ------------------------------------------------------------------- */
 
-App.View.HomeMenu = Backbone.View.extend({ // Akin to FormView
+LIME.View.HomeMenu = Backbone.View.extend({ // Akin to FormView
   tagName: 'ul',
   template: _.template($('#home_menu').html()),
   className: 'home_menu',
@@ -475,7 +475,7 @@ App.View.HomeMenu = Backbone.View.extend({ // Akin to FormView
 // This panel should be the startpoint for all listings
 /* ------------------------------------------------------------------- */
 
-App.ListingPanel = Backbone.View.extend({
+LIME.ListingPanel = Backbone.View.extend({
   el: $('#listing_panel'),
   view: null,
   listedModel: null,
@@ -484,14 +484,14 @@ App.ListingPanel = Backbone.View.extend({
   list: function(model){
     this.listedModel = model;
     var _cls = this.listedModel.get('_cls');
-    var className = App.clsToClass(_cls) + ' listing';
+    var className = LIME.clsToClass(_cls) + ' listing';
 
     // View
     if(this.view){
       this.view.close();
     }
 
-    this.view = new App.View.ListingView[_cls]({'model':this.listedModel, 'className': className});
+    this.view = new LIME.View.ListingView[_cls]({'model':this.listedModel, 'className': className});
     this.$el.html(this.view.el);
     this.view.render();
 
@@ -501,7 +501,7 @@ App.ListingPanel = Backbone.View.extend({
     if(this.view){
       this.view.close();
     }
-    this.view = new App.View.HomeMenu();
+    this.view = new LIME.View.HomeMenu();
     this.$el.html(this.view.el);
     this.view.render();
   }

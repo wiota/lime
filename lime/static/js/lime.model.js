@@ -2,7 +2,7 @@
 // Portphillio Admin Backbone Models
 /* ------------------------------------------------------------------- */
 
-App.Model = {};
+LIME.Model = {};
 
 /* ------------------------------------------------------------------- */
 // App Model Overrides
@@ -26,7 +26,7 @@ Backbone.Model.prototype.idAttribute = "_id";
 // Vertex - Abstract class - do not instantiate!
 /* ------------------------------------------------------------------- */
 
-App.Model['Vertex']= Backbone.Model.extend({
+LIME.Model['Vertex']= Backbone.Model.extend({
   referencedFields: ['succset', 'predset'],
 
   initialize: function(options){
@@ -88,7 +88,7 @@ App.Model['Vertex']= Backbone.Model.extend({
 
   deepenSuccess: function(model, response, options){
     msg.log("FETCH SUCCESS " + model.get("_id") + " " + model.get("title"),'lookup');
-    var collection = App.collection[model.get('_cls')];
+    var collection = LIME.collection[model.get('_cls')];
 
     collection.add(model);
 
@@ -104,8 +104,8 @@ App.Model['Vertex']= Backbone.Model.extend({
   reference: function(succset){
     var succsetReferences = [];
     _.each(succset, function(object){
-      var collection = App.collection[object._cls];
-      var modelFactory = App.Model[object._cls];
+      var collection = LIME.collection[object._cls];
+      var modelFactory = LIME.Model[object._cls];
       var model = collection.get(object['_id']) || new modelFactory(object, {'fetched': true, 'deep': false});
 
       collection.add(model); // if model already exists in collection, this request is ignored
@@ -317,7 +317,7 @@ App.Model['Vertex']= Backbone.Model.extend({
 // Category
 /* ------------------------------------------------------------------- */
 
-App.Model['Vertex.Category'] = App.Model['Vertex'].extend({
+LIME.Model['Vertex.Category'] = LIME.Model['Vertex'].extend({
   urlRoot: "api/v1/category/",
   _cls: "Vertex.Category",
   photoNesting: ['Vertex.Work']
@@ -327,7 +327,7 @@ App.Model['Vertex.Category'] = App.Model['Vertex'].extend({
 // Work
 /* ------------------------------------------------------------------- */
 
-App.Model['Vertex.Work'] = App.Model['Vertex'].extend({
+LIME.Model['Vertex.Work'] = LIME.Model['Vertex'].extend({
   urlRoot: "api/v1/work/",
   _cls: "Vertex.Work",
   photoNesting: []
@@ -337,7 +337,7 @@ App.Model['Vertex.Work'] = App.Model['Vertex'].extend({
 // Tag
 /* ------------------------------------------------------------------- */
 
-App.Model['Vertex.Tag'] = Backbone.Model.extend({
+LIME.Model['Vertex.Tag'] = Backbone.Model.extend({
   urlRoot: "api/v1/tag/",
   _cls: "Vertex.Tag",
   photoNesting: ['Vertex.Work']
@@ -347,7 +347,7 @@ App.Model['Vertex.Tag'] = Backbone.Model.extend({
 // Medium - Abstract class - do not instantiate!
 /* ------------------------------------------------------------------- */
 
-App.Model['Vertex.Medium'] = App.Model['Vertex'].extend({
+LIME.Model['Vertex.Medium'] = LIME.Model['Vertex'].extend({
   _cls: "Vertex.Medium",
 
   initialize: function(){
@@ -363,7 +363,7 @@ App.Model['Vertex.Medium'] = App.Model['Vertex'].extend({
 /* ------------------------------------------------------------------- */
 
 
-App.Model['Vertex.Medium.Photo'] = App.Model['Vertex.Medium'].extend({
+LIME.Model['Vertex.Medium.Photo'] = LIME.Model['Vertex.Medium'].extend({
   urlRoot: "api/v1/photo/",
   _cls: "Vertex.Medium.Photo"
 });
@@ -372,7 +372,7 @@ App.Model['Vertex.Medium.Photo'] = App.Model['Vertex.Medium'].extend({
 // Body
 /* ------------------------------------------------------------------- */
 
-App.Model['Vertex.Apex.Body'] = App.Model['Vertex'].extend({
+LIME.Model['Vertex.Apex.Body'] = LIME.Model['Vertex'].extend({
   urlRoot: "api/v1/apex/body/",
   _cls: "Vertex.Apex.Body",
   photoNesting: ['Vertex.Work'],
@@ -387,7 +387,7 @@ App.Model['Vertex.Apex.Body'] = App.Model['Vertex'].extend({
 // Happenings Apex
 /* ------------------------------------------------------------------- */
 
-App.Model['Vertex.Apex.Happenings'] = App.Model['Vertex'].extend({
+LIME.Model['Vertex.Apex.Happenings'] = LIME.Model['Vertex'].extend({
   urlRoot: "api/v1/apex/happenings/",
   _cls: "Vertex.Apex.Happenings",
   photoNesting: ['Vertex.Event'],
@@ -402,7 +402,7 @@ App.Model['Vertex.Apex.Happenings'] = App.Model['Vertex'].extend({
 // Happening
 /* ------------------------------------------------------------------- */
 
-App.Model['Vertex.Apex.Happening'] = App.Model['Vertex'].extend({
+LIME.Model['Vertex.Apex.Happening'] = LIME.Model['Vertex'].extend({
   urlRoot: "api/v1/apex/happening",
   _cls: "Vertex.Apex.Happening",
 
@@ -412,7 +412,7 @@ App.Model['Vertex.Apex.Happening'] = App.Model['Vertex'].extend({
 
 });
 
-App.Model['Vertex.Happening'] = App.Model['Vertex'].extend({
+LIME.Model['Vertex.Happening'] = LIME.Model['Vertex'].extend({
   urlRoot: "api/v1/happening",
   _cls: "Vertex.Happening"
 });

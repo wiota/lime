@@ -2,7 +2,7 @@
 // Portphillio Admin Backbone Router
 /* ------------------------------------------------------------------- */
 
-App.Router = Backbone.Router.extend({
+LIME.Router = Backbone.Router.extend({
 
   routes:{
 
@@ -17,63 +17,63 @@ App.Router = Backbone.Router.extend({
 
   initialize: function(){
     // Panel for Listings
-    App.requestPanel = new App.RequestPanel();
-    App.listingPanel = new App.ListingPanel();
-    App.actionPanel = new App.ActionPanel();
-    App.pathPanel = new App.Path.PathPanel();
+    LIME.requestPanel = new LIME.RequestPanel();
+    LIME.listingPanel = new LIME.ListingPanel();
+    LIME.actionPanel = new LIME.ActionPanel();
+    LIME.pathPanel = new LIME.Path.PathPanel();
 
-    App.pathPanel.render();
+    LIME.pathPanel.render();
 
-    App.icon = new Iconset();
-    App.icon.add("bookcase", '.bookcase.icon');
-    App.icon.refresh();
+    LIME.icon = new Iconset();
+    LIME.icon.add("bookcase", '.bookcase.icon');
+    LIME.icon.refresh();
     this.on('route', function(r,p){
-      App.icon.refresh();
-      App.actionPanel.closeForms();
+      LIME.icon.refresh();
+      LIME.actionPanel.closeForms();
     })
 
   },
 
   home: function() {
-    App.listingPanel.apexMenu();
-    App.pathPanel.jsonLink('#');
+    LIME.listingPanel.apexMenu();
+    LIME.pathPanel.jsonLink('#');
   },
 
   // Body of work
   getBody: function() {
-    var body = App.collection['Vertex.Apex.Body'].lookup();
-    App.listingPanel.list(body);
-    App.pathPanel.jsonLink('/api/v1/apex/body/');
+    var body = LIME.collection['Vertex.Apex.Body'].lookup();
+    LIME.listingPanel.list(body);
+    LIME.pathPanel.jsonLink('/api/v1/apex/body/');
   },
 
   // Category
 
   getCategory: function(id) {
-    var category = App.collection['Vertex.Category'].lookup(id);
-    App.listingPanel.list(category);
-    App.pathPanel.jsonLink('/api/v1/category/'+id);
+    var category = LIME.collection['Vertex.Category'].lookup(id);
+    LIME.listingPanel.list(category);
+    LIME.pathPanel.jsonLink('/api/v1/category/'+id);
   },
 
   // Work
 
   getWork: function(id){
-    var work = App.collection['Vertex.Work'].lookup(id);
-    App.listingPanel.list(work);
-    App.pathPanel.jsonLink('/api/v1/work/'+id);
+    var work = LIME.collection['Vertex.Work'].lookup(id);
+    LIME.listingPanel.list(work);
+    LIME.pathPanel.jsonLink('/api/v1/work/'+id);
   },
 
   // Happenings Apex
 
   getHappeningsApex: function(){
-    var happenings = App.collection['Vertex.Apex.Happenings'].lookup();
-    App.listingPanel.list(happenings);
-    App.pathPanel.jsonLink('/api/v1/happenings/');
+    var happenings = LIME.collection['Vertex.Apex.Happenings'].lookup();
+    LIME.listingPanel.list(happenings);
+    LIME.pathPanel.jsonLink('/api/v1/happenings/');
   },
 
   getHappening: function(id){
-    var happening = App.collection['Vertex.Happening'].lookup(id);
-    App.listingPanel.list(happening);
-    App.pathPanel.jsonLink('/api/v1/happening/'+id);
+    var happening = LIME.collection['Vertex.Happening'].lookup(id);
+    LIME.listingPanel.list(happening);
+    LIME.pathPanel.jsonLink('/api/v1/happening/'+id);
   }
 
  

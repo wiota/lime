@@ -354,22 +354,22 @@
 {% block js_footer %}
 
   <script type="text/javascript" src='{{ url_for('static', filename='js/s3upload.js') }}'></script>
-  <script src='{{ url_for('static', filename='js/app.msg.js') }}'></script>
-  <script src='{{ url_for('static', filename='js/app.model.js') }}'></script>
-  <script src='{{ url_for('static', filename='js/app.collection.js') }}'></script>
-  <script src='{{ url_for('static', filename='js/app.view.js') }}'></script>
-  <script src='{{ url_for('static', filename='js/app.form.js') }}'></script>
-  <script src='{{ url_for('static', filename='js/app.path.js') }}'></script>
-  <script src='{{ url_for('static', filename='js/app.upload.js') }}'></script>
-  <script src='{{ url_for('static', filename='js/app.router.js') }}'></script>
-  <script src='{{ url_for('static', filename='js/app.request.js') }}'></script>
-  <script src='{{ url_for('static', filename='js/app.requestapi.js') }}'></script>
+  <script type="text/javascript" src='{{ url_for('static', filename='js/msg.js') }}'></script>
+  <script type="text/javascript" src='{{ url_for('static', filename='js/lime.model.js') }}'></script>
+  <script type="text/javascript" src='{{ url_for('static', filename='js/lime.collection.js') }}'></script>
+  <script type="text/javascript" src='{{ url_for('static', filename='js/lime.view.js') }}'></script>
+  <script type="text/javascript" src='{{ url_for('static', filename='js/lime.form.js') }}'></script>
+  <script type="text/javascript" src='{{ url_for('static', filename='js/lime.path.js') }}'></script>
+  <script type="text/javascript" src='{{ url_for('static', filename='js/lime.upload.js') }}'></script>
+  <script type="text/javascript" src='{{ url_for('static', filename='js/lime.router.js') }}'></script>
+  <script type="text/javascript" src='{{ url_for('static', filename='js/lime.request.js') }}'></script>
+  <script type="text/javascript" src='{{ url_for('static', filename='js/lime.requestapi.js') }}'></script>
   <script type='text/javascript'>
     $(document).ready(function() {
-      App.subnav('.nav a.drop');
-      App.flash();
+      LIME.subnav('.nav a.drop');
+      LIME.flash();
 
-      App.router = new App.Router();
+      LIME.router = new LIME.Router();
       Backbone.history.start();
     });
   </script>

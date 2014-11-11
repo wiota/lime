@@ -2,7 +2,7 @@
 // Portphillio Admin Backbone Forms
 /* ------------------------------------------------------------------- */
 
-App.FormView = {};
+LIME.FormView = {};
 
 // This section of the app is getting bloated. I need to break off
 // parts of it into actions which can be floated above the forms
@@ -13,7 +13,7 @@ App.FormView = {};
 // Templates
 /* ------------------------------------------------------------------- */
 
-App.FormView.templates = {
+LIME.FormView.templates = {
   'text': _.template($('#text').html()),
   'textarea': _.template($('#textarea').html()),
   'button': _.template($('#button').html()),
@@ -26,11 +26,11 @@ App.FormView.templates = {
 // Serialized Fields triggers change event and passes change object
 /* ------------------------------------------------------------------- */
 
-App.FormView.SerialFieldsView = Backbone.View.extend({
+LIME.FormView.SerialFieldsView = Backbone.View.extend({
   tagName: 'fieldset',
   className: 'serial_fields',
   serialization: null,
-  templates: App.FormView.templates,
+  templates: LIME.FormView.templates,
 
   events: {
     'blur input':'focusEnd',
@@ -97,7 +97,7 @@ App.FormView.SerialFieldsView = Backbone.View.extend({
 // God attributes - features not available to casual users
 /* ------------------------------------------------------------------- */
 
-App.FormView.GodAttributes = Backbone.View.extend({
+LIME.FormView.GodAttributes = Backbone.View.extend({
   tagName: 'fieldset',
   className: 'god_attributes god',
   template: _.template($('#god_attributes').html()),
@@ -136,10 +136,10 @@ App.FormView.GodAttributes = Backbone.View.extend({
 // Upload Field - triggers change event and passes files to handlers
 /* ------------------------------------------------------------------- */
 
-App.FormView.FileUploadView = Backbone.View.extend({
+LIME.FormView.FileUploadView = Backbone.View.extend({
   tagName: 'fieldset',
   className: 'file_upload',
-  template: App.FormView.templates['file_upload'],
+  template: LIME.FormView.templates['file_upload'],
 
   events: {
     'changed .files': 'filesChange',
@@ -216,7 +216,7 @@ App.FormView.FileUploadView = Backbone.View.extend({
 // Saved
 /* ------------------------------------------------------------------- */
 
-App.FormView.SaveView = Backbone.View.extend({
+LIME.FormView.SaveView = Backbone.View.extend({
   tagName: 'div',
   className: 'save_status',
 
@@ -296,7 +296,7 @@ App.FormView.SaveView = Backbone.View.extend({
 // Vertex - Attribute form
 /* ------------------------------------------------------------------- */
 
-App.FormView['Vertex'] = Backbone.View.extend({
+LIME.FormView['Vertex'] = Backbone.View.extend({
 
   passableOptions: ['model', 'predecessor', 'collection'],
   tagName: 'form',
@@ -327,14 +327,14 @@ App.FormView['Vertex'] = Backbone.View.extend({
   },
 
   appendFileUpload: function(){
-    this.fileUpload = new App.FormView.FileUploadView(this.childOptions),
+    this.fileUpload = new LIME.FormView.FileUploadView(this.childOptions),
     this.$el.append(this.fileUpload.el);
     this.listenTo(this.fileUpload, 'change', this.filesChanged);
     this.children.push(this.fileUpload);
   },
 
   appendGodAttributes: function(){
-    this.godAttributes = new App.FormView.GodAttributes(this.childOptions)
+    this.godAttributes = new LIME.FormView.GodAttributes(this.childOptions)
     this.$el.append(this.godAttributes.el);
     this.listenTo(this.godAttributes, 'change', this.attributesChanged);
     this.children.push(this.godAttributes);
@@ -342,14 +342,14 @@ App.FormView['Vertex'] = Backbone.View.extend({
 
 
   appendAtrributeFields: function(){
-    this.attributeFields = new App.FormView.SerialFieldsView(this.childOptions)
+    this.attributeFields = new LIME.FormView.SerialFieldsView(this.childOptions)
     this.$el.append(this.attributeFields.el);
     this.listenTo(this.attributeFields, 'change', this.attributesChanged);
     this.children.push(this.attributeFields);
   },
 
   appendSaveView: function(){
-    this.saveView = new App.FormView.SaveView(this.childOptions);
+    this.saveView = new LIME.FormView.SaveView(this.childOptions);
     this.$el.append(this.saveView.el);
     this.listenTo(this.saveView, 'save', this.save)
     this.listenTo(this.saveView, 'close', this.collapse)
@@ -370,7 +370,7 @@ App.FormView['Vertex'] = Backbone.View.extend({
       this.save();
     }
     this.close();
-    App.actionPanel.rollUp();
+    LIME.actionPanel.rollUp();
   },
 
   // Events
@@ -380,7 +380,7 @@ App.FormView['Vertex'] = Backbone.View.extend({
     this.photoNesting;
     this.predecessor;
 
-    App.requestPanel.one([
+    LIME.requestPanel.one([
       {'func': 'batchPhotosToVertex', 'args': [files, this.photoNesting, this.model, this.predecessor]},
     ]);
 
@@ -414,7 +414,7 @@ App.FormView['Vertex'] = Backbone.View.extend({
     this.model.modified = false;
     // Lets use a different form for new models
     if(this.model.isNew()){
-      App.requestPanel.one([
+      LIME.requestPanel.one([
         {'func': 'graphRequest', 'args': [
           [this.model],
           [[this.predecessor, this.model]]
@@ -422,7 +422,7 @@ App.FormView['Vertex'] = Backbone.View.extend({
       ]);
       //this.collection.createAndAddTo(this.model, this.predecessor);
     } else {
-      App.requestPanel.one([
+      LIME.requestPanel.one([
         {'func': 'updateVertexRequest', 'args': [this.model]},
       ]);
       //this.model.saveAttributes();
@@ -439,7 +439,7 @@ App.FormView['Vertex'] = Backbone.View.extend({
       this.model.outOfSync();
     }
     this.close();
-    App.actionPanel.rollUp();
+    LIME.actionPanel.rollUp();
   }
 
 
@@ -449,7 +449,7 @@ App.FormView['Vertex'] = Backbone.View.extend({
 // Cover Photo Form
 /* ------------------------------------------------------------------- */
 
-App.FormView['Cover'] = Backbone.View.extend({
+LIME.FormView['Cover'] = Backbone.View.extend({
 
   passableOptions: ['model'],
   tagName: 'form',
@@ -468,7 +468,7 @@ App.FormView['Cover'] = Backbone.View.extend({
   },
 
   appendFileUpload: function(){
-    this.fileUpload = new App.FormView.FileUploadView(this.childOptions),
+    this.fileUpload = new LIME.FormView.FileUploadView(this.childOptions),
     this.$el.append(this.fileUpload.el);
     this.listenTo(this.fileUpload, 'change', this.filesChanged);
     this.children.push(this.fileUpload);
@@ -485,7 +485,7 @@ App.FormView['Cover'] = Backbone.View.extend({
       this.save();
     }
     this.close();
-    App.actionPanel.rollUp();
+    LIME.actionPanel.rollUp();
   },
 
   // Events
@@ -494,7 +494,7 @@ App.FormView['Cover'] = Backbone.View.extend({
 
     file = files[0];
     this.model;
-    App.requestPanel.serial([
+    LIME.requestPanel.serial([
       {'func': 'uploadCoverPhoto', 'args': [file, this.model]},
     ]);
 
@@ -507,7 +507,7 @@ App.FormView['Cover'] = Backbone.View.extend({
 /* ------------------------------------------------------------------- */
 
 
-App.FormView['Succset'] = Backbone.View.extend({
+LIME.FormView['Succset'] = Backbone.View.extend({
   passableOptions: ['model', 'uploadLabel'],
   tagName: 'form',
 
@@ -521,7 +521,7 @@ App.FormView['Succset'] = Backbone.View.extend({
   },
 
   appendFileUpload: function(){
-    this.fileUpload = new App.FormView.FileUploadView(this.childOptions),
+    this.fileUpload = new LIME.FormView.FileUploadView(this.childOptions),
     this.$el.append(this.fileUpload.el);
     this.listenTo(this.fileUpload, 'change', this.filesChanged);
     this.children.push(this.fileUpload);
@@ -538,7 +538,7 @@ App.FormView['Succset'] = Backbone.View.extend({
       this.save();
     }
     this.close();
-    App.actionPanel.rollUp();
+    LIME.actionPanel.rollUp();
   },
 
   // Events
@@ -549,7 +549,7 @@ App.FormView['Succset'] = Backbone.View.extend({
     this.photoNesting;
     this.predecessor;
 
-    App.requestPanel.one([
+    LIME.requestPanel.one([
       {'func': 'batchPhotosToVertex', 'args': [files, this.photoNesting, this.model, null]},
     ]);
 
@@ -568,7 +568,7 @@ App.FormView['Succset'] = Backbone.View.extend({
 // Templates
 /* ------------------------------------------------------------------- */
 
-App.ActionPanel = Backbone.View.extend({
+LIME.ActionPanel = Backbone.View.extend({
   el: $('#action_panel'),
   forms: [],
   batches: [],
@@ -593,7 +593,7 @@ App.ActionPanel = Backbone.View.extend({
   loadVertexForm: function(model, predecessor){
     this.closeForms();
     var _cls = model.get('_cls');
-    var className = App.clsToClass(_cls) + ' form';
+    var className = LIME.clsToClass(_cls) + ' form';
 
     if(_cls == 'Vertex.Work'){
       var photoNesting = [];
@@ -601,10 +601,10 @@ App.ActionPanel = Backbone.View.extend({
       var photoNesting = ['Vertex.Work'];
     }
 
-    var form = new App.FormView['Vertex']({
+    var form = new LIME.FormView['Vertex']({
       'predecessor': predecessor,
       'model': model,
-      'collection': App.collection[_cls],
+      'collection': LIME.collection[_cls],
       'photoNesting': photoNesting,
       'className': className
     });
@@ -621,7 +621,7 @@ App.ActionPanel = Backbone.View.extend({
     var _cls = model.get('_cls');
     var className = 'cover form';
 
-    var form = new App.FormView['Cover']({
+    var form = new LIME.FormView['Cover']({
       'model': model
     });
 
@@ -644,8 +644,8 @@ App.ActionPanel = Backbone.View.extend({
 
   /*
   batchToManyCategory: function(predecessor){
-    var form = new App.FormView['Vertex.Medium.Photo']({
-      'collection': App.collection['Vertex.Medium.Photo'],
+    var form = new LIME.FormView['Vertex.Medium.Photo']({
+      'collection': LIME.collection['Vertex.Medium.Photo'],
       'predecessor': predecessor,
       'nesting': ['Vertex.Work', 'Vertex.Category'],
       'className': 'many_categories file_upload',
@@ -658,8 +658,8 @@ App.ActionPanel = Backbone.View.extend({
   },
 
   batchToManyWork: function(predecessor){
-    var form = new App.FormView['Vertex.Medium.Photo']({
-      'collection': App.collection['Vertex.Medium.Photo'],
+    var form = new LIME.FormView['Vertex.Medium.Photo']({
+      'collection': LIME.collection['Vertex.Medium.Photo'],
       'predecessor': predecessor,
       'nesting': [],
       'className': 'many_works file_upload',
@@ -672,8 +672,8 @@ App.ActionPanel = Backbone.View.extend({
   },
 
   batchToManyPhoto: function(predecessor){
-    var form = new App.FormView['Vertex.Medium.Photo']({
-      'collection': App.collection['Vertex.Medium.Photo'],
+    var form = new LIME.FormView['Vertex.Medium.Photo']({
+      'collection': LIME.collection['Vertex.Medium.Photo'],
       'predecessor': predecessor,
       'nesting': [],
       'className': 'many_photos file_upload',
@@ -688,7 +688,6 @@ App.ActionPanel = Backbone.View.extend({
   */
 
   closeForms: function(){
-    console.log(this.forms);
     _.each(this.forms, function(form, index){
       form.close;
     });
@@ -699,8 +698,8 @@ App.ActionPanel = Backbone.View.extend({
   addBatch: function(files, predecessor, nesting){
     // hopefully get rid of this function
     var _cls = nesting[0] || 'Vertex.Medium.Photo';
-    var className = App.clsToClass(_cls) + ' batch';
-    var batch = new App.Upload.batchView({'className': className, 'files':files, 'predecessor':predecessor, 'nesting':nesting});
+    var className = LIME.clsToClass(_cls) + ' batch';
+    var batch = new LIME.Upload.batchView({'className': className, 'files':files, 'predecessor':predecessor, 'nesting':nesting});
     this.$el.prepend(batch.render().el);
     batch.upload();
     this.batches.push(batch);

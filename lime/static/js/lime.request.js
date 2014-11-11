@@ -2,9 +2,9 @@
 // Request Library
 /* ------------------------------------------------------------------- */
 
-App.RequestLibrary = {
+LIME.RequestLibrary = {
   request: function(instruction){
-    return new App.Request(instruction);
+    return new LIME.Request(instruction);
   },
 
   requests: function(instructions){
@@ -122,29 +122,29 @@ App.RequestLibrary = {
 // Request Function
 /* ------------------------------------------------------------------- */
 
-App.Request = Backbone.View.extend({
+LIME.Request = Backbone.View.extend({
 
   initialize: function(options){
 
     this.options = options || {};
     // Id this request
-    this.rid = App.requestPanel.getId();
+    this.rid = LIME.requestPanel.getId();
     this.labelRendered = false;
     this.sts = "created";
     // Keep track of it
     var request = this;
-    App.requestPanel.register(request);
+    LIME.requestPanel.register(request);
     this.sts = "registered";
     // Actions to take after events
-    App.requestPanel.listenTo(this, 'complete', function(){
+    LIME.requestPanel.listenTo(this, 'complete', function(){
       request.sts = "complete";
-      App.requestPanel.unregister(request);
+      LIME.requestPanel.unregister(request);
       request.sts = "unregistered";
     });
-    App.requestPanel.listenTo(this, 'error', function(){
+    LIME.requestPanel.listenTo(this, 'error', function(){
       request.sts = "error";
     });
-    App.requestPanel.listenTo(this, 'delay', function(){
+    LIME.requestPanel.listenTo(this, 'delay', function(){
       request.sts = "delay";
     });
     _.bindAll(this, 'callback', 'error');
@@ -154,7 +154,7 @@ App.Request = Backbone.View.extend({
     console.log('---- Executing ' + this.rid + " " + this.options.func + ' -------');
     this.sts = "executing";
     this.options.args = this.options.args.concat(_.toArray(arguments));
-    return App.RequestApi[this.options.func].apply(this, this.options.args);
+    return LIME.RequestApi[this.options.func].apply(this, this.options.args);
   },
 
   // default callbacks, can be overriden
@@ -179,7 +179,7 @@ App.Request = Backbone.View.extend({
 // Request Panel
 /* ------------------------------------------------------------------- */
 
-App.RequestPanel = Backbone.View.extend({
+LIME.RequestPanel = Backbone.View.extend({
   el: $('#request_panel'),
   requestsMade: 0,
   pendingRequests: [],
@@ -237,7 +237,7 @@ App.RequestPanel = Backbone.View.extend({
       return false;
     })
 */
-    //this.mountains = new App.MountainView();
+    //this.mountains = new LIME.MountainView();
     //this.$el.append(this.mountains.el);
 
   },
@@ -258,7 +258,7 @@ App.RequestPanel = Backbone.View.extend({
 
 })
 
-App.MountainView = Backbone.View.extend({
+LIME.MountainView = Backbone.View.extend({
 
   tagName: 'div',
   className: 'mountain_view',
@@ -328,5 +328,5 @@ App.MountainView = Backbone.View.extend({
 
 })
 
-_.extend(App.RequestPanel.prototype, App.RequestLibrary);
-_.extend(App.Request.prototype, App.RequestLibrary);
+_.extend(LIME.RequestPanel.prototype, LIME.RequestLibrary);
+_.extend(LIME.Request.prototype, LIME.RequestLibrary);
