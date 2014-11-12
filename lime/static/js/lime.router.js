@@ -35,6 +35,7 @@ LIME.Router = Backbone.Router.extend({
 
   home: function() {
     LIME.listingPanel.apexMenu();
+    LIME.pathPanel.nowhere();
     LIME.pathPanel.jsonLink('#');
   },
 

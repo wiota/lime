@@ -95,8 +95,6 @@ LIME.Model['Vertex']= Backbone.Model.extend({
     msg.log("FETCH SUCCESS " + model.get("_id") + " " + model.get("title"),'lookup');
     var collection = LIME.collection[model.get('_cls')];
 
-    console.log(response);
-
     collection.add(model);
 
     model.fetched = true;

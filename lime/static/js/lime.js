@@ -90,13 +90,25 @@ LIME.titlePref = function(string){
   );
 }
 
+// Tools --------------------------------------------------------------
+
 LIME.fileToName = function(string){
   var noEx = string.split('.');
   noEx.pop();
   return LIME.titlePref(noEx.join('.'));
 }
 
+// ---------------------------------------------------------------------
+
+LIME.clsToRoute = function(_cls){
+  // Bad function
+  return _cls.toLowerCase().split('.').pop();
+}
+
+// ---------------------------------------------------------------------
+
 LIME.clsToClass = function(_cls){
+  // Bad function
   return _cls.toLowerCase().split('.').join(' ');
 }
 
