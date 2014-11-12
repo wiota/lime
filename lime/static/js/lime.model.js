@@ -28,6 +28,9 @@ Backbone.Model.prototype.idAttribute = "_id";
 
 LIME.Model['Vertex']= Backbone.Model.extend({
   referencedFields: ['succset', 'predset'],
+  defaults: {
+    "title":  ""
+  },
 
   initialize: function(options){
     options = options || {};
@@ -36,6 +39,8 @@ LIME.Model['Vertex']= Backbone.Model.extend({
     this.modified = options.modified || false;
 
     this.on('sync', function(){this.modified = false;})
+
+    //console.log(this.toJSON());
 
     if(this.isNew()){
       this.set({'_cls': this._cls, 'title': this.get('title') || 'untitled'})
@@ -89,6 +94,8 @@ LIME.Model['Vertex']= Backbone.Model.extend({
   deepenSuccess: function(model, response, options){
     msg.log("FETCH SUCCESS " + model.get("_id") + " " + model.get("title"),'lookup');
     var collection = LIME.collection[model.get('_cls')];
+
+    console.log(response);
 
     collection.add(model);
 
@@ -376,9 +383,11 @@ LIME.Model['Vertex.Apex.Body'] = LIME.Model['Vertex'].extend({
   urlRoot: "api/v1/apex/body/",
   _cls: "Vertex.Apex.Body",
   photoNesting: ['Vertex.Work'],
-
   url: function(){
     return this.urlRoot;
+  },
+  defaults: {
+    "title":  "Body of Work"
   }
 
 });

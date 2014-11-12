@@ -22,7 +22,6 @@ LIME.Router = Backbone.Router.extend({
     LIME.actionPanel = new LIME.ActionPanel();
     LIME.pathPanel = new LIME.Path.PathPanel();
 
-    LIME.pathPanel.render();
 
     LIME.icon = new Iconset();
     LIME.icon.add("bookcase", '.bookcase.icon');
@@ -41,38 +40,41 @@ LIME.Router = Backbone.Router.extend({
 
   // Body of work
   getBody: function() {
-    var body = LIME.collection['Vertex.Apex.Body'].lookup();
-    LIME.listingPanel.list(body);
+    var vertex = LIME.collection['Vertex.Apex.Body'].lookup();
+    LIME.listingPanel.list(vertex);
+    LIME.pathPanel.list(vertex);
     LIME.pathPanel.jsonLink('/api/v1/apex/body/');
   },
 
   // Category
-
   getCategory: function(id) {
-    var category = LIME.collection['Vertex.Category'].lookup(id);
-    LIME.listingPanel.list(category);
+    var vertex = LIME.collection['Vertex.Category'].lookup(id);
+    LIME.listingPanel.list(vertex);
+    LIME.pathPanel.list(vertex);
     LIME.pathPanel.jsonLink('/api/v1/category/'+id);
   },
 
   // Work
-
   getWork: function(id){
-    var work = LIME.collection['Vertex.Work'].lookup(id);
-    LIME.listingPanel.list(work);
+    var vertex = LIME.collection['Vertex.Work'].lookup(id);
+    LIME.listingPanel.list(vertex);
+    LIME.pathPanel.list(vertex);
     LIME.pathPanel.jsonLink('/api/v1/work/'+id);
   },
 
   // Happenings Apex
 
   getHappeningsApex: function(){
-    var happenings = LIME.collection['Vertex.Apex.Happenings'].lookup();
-    LIME.listingPanel.list(happenings);
+    var vertex = LIME.collection['Vertex.Apex.Happenings'].lookup();
+    LIME.listingPanel.list(vertex);
+    LIME.pathPanel.list(vertex);
     LIME.pathPanel.jsonLink('/api/v1/happenings/');
   },
 
   getHappening: function(id){
-    var happening = LIME.collection['Vertex.Happening'].lookup(id);
-    LIME.listingPanel.list(happening);
+    var vertex = LIME.collection['Vertex.Happening'].lookup(id);
+    LIME.listingPanel.list(vertex);
+    LIME.pathPanel.list(vertex);
     LIME.pathPanel.jsonLink('/api/v1/happening/'+id);
   }
 

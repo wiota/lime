@@ -42,7 +42,11 @@ LIME.Collection['Vertex'] = Backbone.Collection.extend({
 
   getEmpty: function(id){
     // Title is blank to temporarily solve template problems
-    return new this.model({'_id': id, '_cls': this._cls, 'title': ''});
+    if(id){
+      return new this.model({'_id': id, '_cls': this._cls});
+    } else {
+      return new this.model({'_cls': this._cls});
+    }
   },
 
   hasForm: function(){

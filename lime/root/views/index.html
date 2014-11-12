@@ -54,13 +54,13 @@
   <!-- Path Panel -->
 
 <script type="text/template" id="path_panel_template">
-
-  <div class='listed_vertex'></div>
-
-
   <div class='path'>
 
   </div>
+</script>
+
+<script type="text/template" id="path_vertex_template">
+  <div class='vertex'><a href=''><%- title %></a></div>
 </script>
 
   <!-- Summary -->
@@ -77,7 +77,7 @@
 
   <script type="text/template" id="body_summary">
     <img class='icon bookcase' src='/icon/bookcase.svg'>
-    <div class='body_title title'>body of work</div>
+    <div class='body_title title'><%- title %></div>
     <div class='meta'>
       <div class='in_set_menu'>
         <a class='add_work'>add work</a>

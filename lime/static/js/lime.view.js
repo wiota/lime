@@ -21,9 +21,9 @@ Backbone.View.prototype.close = function(){
 // Successor Item View
 /* ------------------------------------------------------------------- */
 
-LIME.View.SuccessorItemView = {};
+LIME.View.SuccessorView = {};
 
-LIME.View.SuccessorItemView['Vertex'] = LIME.SuccessorItemView = Backbone.View.extend({ // Abstract class - do not instantiate!
+LIME.View.SuccessorView['Vertex'] = LIME.SuccessorView = Backbone.View.extend({ // Abstract class - do not instantiate!
   tagName: 'li',
   className: 'successorItem',
   events:{
@@ -63,32 +63,32 @@ LIME.View.SuccessorItemView['Vertex'] = LIME.SuccessorItemView = Backbone.View.e
   }
 });
 
-LIME.View.SuccessorItemView['Vertex.Apex.Body'] = LIME.View.SuccessorItemView['Vertex'].extend({
+LIME.View.SuccessorView['Vertex.Apex.Body'] = LIME.View.SuccessorView['Vertex'].extend({
   className: 'body successorItem',
   template:_.template($('#body_in_set').html())
 });
 
-LIME.View.SuccessorItemView['Vertex.Happening'] = LIME.View.SuccessorItemView['Vertex'].extend({
+LIME.View.SuccessorView['Vertex.Happening'] = LIME.View.SuccessorView['Vertex'].extend({
   className: 'happening successorItem',
   template:_.template($('#happening_in_set').html())
 });
 
-LIME.View.SuccessorItemView['Vertex.Category'] = LIME.View.SuccessorItemView['Vertex'].extend({
+LIME.View.SuccessorView['Vertex.Category'] = LIME.View.SuccessorView['Vertex'].extend({
   className: 'category successorItem',
   template:_.template($('#category_in_set').html())
 });
 
-LIME.View.SuccessorItemView['Vertex.Work'] = LIME.View.SuccessorItemView['Vertex'].extend({
+LIME.View.SuccessorView['Vertex.Work'] = LIME.View.SuccessorView['Vertex'].extend({
   className: 'work successorItem',
   template:_.template($('#work_in_set').html())
 });
 
-LIME.View.SuccessorItemView['Vertex.Medium.Photo'] = LIME.View.SuccessorItemView['Vertex'].extend({
+LIME.View.SuccessorView['Vertex.Medium.Photo'] = LIME.View.SuccessorView['Vertex'].extend({
   className: 'photo successorItem',
   template:_.template($('#photo_in_set').html())
 });
 
-LIME.View.SuccessorItemView['empty'] = Backbone.View.extend({
+LIME.View.SuccessorView['empty'] = Backbone.View.extend({
   tagName: 'li',
   initialize: function(){
     this.$el.html('Empty');
@@ -99,11 +99,10 @@ LIME.View.SuccessorItemView['empty'] = Backbone.View.extend({
 /* ------------------------------------------------------------------- */
 // Successor Set List
 /* ------------------------------------------------------------------- */
-// Render what if vertex has no successors?
 
-LIME.View.SuccsetListView = {};
+LIME.View.SuccsetView = {};
 
-LIME.View.SuccsetListView['Vertex'] = Backbone.View.extend({
+LIME.View.SuccsetView['Vertex'] = Backbone.View.extend({
   tagName: 'ol',
   className: 'succset_list',
   idName: 'succset_list',
@@ -246,7 +245,7 @@ LIME.View.SuccsetListView['Vertex'] = Backbone.View.extend({
     this.$el.empty();
 
     _.each(successors, function(successor, index){
-      var viewFactory = LIME.View.SuccessorItemView[successor._cls];
+      var viewFactory = LIME.View.SuccessorView[successor._cls];
       var successorItemView = new viewFactory({'model':successor, 'predecessor': this.model});
       this.$el.append(successorItemView.render().el);
       successorItemView.listenTo(successor, 'change', successorItemView.render);
@@ -387,7 +386,7 @@ LIME.View.SummaryView['Vertex.Happening'] = LIME.WorkSummaryView = LIME.SummaryV
 
 LIME.View.ListingView = {};
 
-LIME.View.ListingView['Vertex'] = Backbone.View.extend({ // Akin to FormView
+LIME.View.ListingView['Vertex'] = Backbone.View.extend({
   tagName: 'div',
   _cls: null,
   summary: null,
@@ -403,9 +402,9 @@ LIME.View.ListingView['Vertex'] = Backbone.View.extend({ // Akin to FormView
     var _cls = this.model.get('_cls');
 
     // child views
-    this.summary = new LIME.View.SummaryView[_cls]({model:this.model, className: LIME.clsToClass(_cls)+" summary"}),
+    //this.summary = new LIME.View.SummaryView[_cls]({model:this.model, className: LIME.clsToClass(_cls)+" summary"}),
 
-    this.list = new LIME.View.SuccsetListView['Vertex']({model:this.model})
+    this.list = new LIME.View.SuccsetView['Vertex']({model:this.model})
     this.upload = new LIME.FormView['Succset']({
       'model': this.model,
       'photoNesting': this.model.photoNesting,
@@ -413,7 +412,8 @@ LIME.View.ListingView['Vertex'] = Backbone.View.extend({ // Akin to FormView
     });
 
     this.$succset = $('<div class="succset container"></div>');
-    this.children = [this.summary, this.list, this.upload];
+    //this.children = [this.summary, this.list, this.upload];
+    this.children = [this.list, this.upload];
 
   },
 
@@ -423,11 +423,9 @@ LIME.View.ListingView['Vertex'] = Backbone.View.extend({ // Akin to FormView
   },
 
   appendElements: function(){
-    $('#path_panel').append(this.summary.el);
-    //this.$el.append(this.summary.el);
+    //$('#path_panel').append(this.summary.el);
     this.$el.append(this.list.el);
     this.$el.append(this.upload.el);
-    //this.$el.append(this.upload.el);
     this.upload.$el.hide();
   },
 
@@ -441,8 +439,6 @@ LIME.View.ListingView['Vertex'] = Backbone.View.extend({ // Akin to FormView
     console.log('disappear')
     this.upload.$el.hide();
   },
-
-
 });
 
 LIME.View.ListingView['Vertex.Apex.Happenings'] = LIME.View.ListingView['Vertex'].extend({});
@@ -460,7 +456,7 @@ LIME.View.ListingView['Vertex.Work'] = LIME.View.ListingView['Vertex'].extend({}
 // Apex Menu
 /* ------------------------------------------------------------------- */
 
-LIME.View.HomeMenu = Backbone.View.extend({ // Akin to FormView
+LIME.View.HomeMenu = Backbone.View.extend({
   tagName: 'ul',
   template: _.template($('#home_menu').html()),
   className: 'home_menu',
@@ -505,7 +501,4 @@ LIME.ListingPanel = Backbone.View.extend({
     this.$el.html(this.view.el);
     this.view.render();
   }
-
-
-
 });
