@@ -397,6 +397,11 @@ textarea {
   padding-bottom: 5%;
 }
 
+.madeby img {
+  width: 16px;
+  vertical-align: middle;
+}
+
 .fancyform a, .madeby a, .admin_ui a{
   color: #237ab1;
 }
