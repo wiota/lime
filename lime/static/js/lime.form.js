@@ -365,7 +365,6 @@ LIME.FormView['Vertex'] = Backbone.View.extend({
   },
 
   collapse: function(){
-    console.log('collapse');
     if(this.model.isModified()){
       this.save();
     }
@@ -632,13 +631,10 @@ LIME.ActionPanel = Backbone.View.extend({
   },
 
   rollUp: function(){
-    this.$el.css({'bottom': '0%'});
     this.$el.css({'bottom': '100%'}, 200);
   },
 
   rollDown: function(){
-    console.log('rolldown');
-    this.$el.css({'bottom': '100%'});
     this.$el.css({'bottom': '0'}, 200);
   },
 
