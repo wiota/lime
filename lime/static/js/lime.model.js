@@ -396,7 +396,7 @@ LIME.Model['Vertex.Apex.Body'] = LIME.Model['Vertex'].extend({
   _cls: "Vertex.Apex.Body",
   photoNesting: ['Vertex.Work'],
   defaults: {
-    "title":  "Body of Work"
+    "title":  "body of work"
   },
   url: function(){
     return this.apiVers + 'apex/body/';

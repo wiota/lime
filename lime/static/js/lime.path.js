@@ -5,7 +5,7 @@
 LIME.Path = {};
 
 LIME.Path.PathPanel = Backbone.View.extend({
-  el: $('#path_panel'),
+  el: $('#navigation_column'),
   path: [],
   walk: [],
   template: _.template($('#path_panel_template').html()),
@@ -16,19 +16,23 @@ LIME.Path.PathPanel = Backbone.View.extend({
   },
 
   render: function(){
-    this.$el.html(this.template({}));
+    var $path = this.$el.find('#path_panel')
+    var $history = this.$el.find('.graph_nav .back .path');
+
+
+    $path.html(this.template({}));
 
     if(this.path.length <= 0){
       return;
     }
 
     // path
-    var $path = this.$el.find('.path');
+    $history.html('');
     _.each(_.initial(this.path), function(vertex, iterator){
       var click = function (){
         LIME.pathPanel.retrace(iterator);
       }
-      $(this.vertexTemplate(vertex.toJSON())).appendTo($path).click(click);
+      $(this.vertexTemplate(vertex.toJSON())).appendTo($history).click(click);
     }, this);
 
     // summary
