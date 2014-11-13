@@ -31,8 +31,8 @@ def body():
 @mod.route('/apex/body/succset/', methods=['PUT'])
 @login_required
 def put_body_succset():
-    Body.by_current_user().update_one(
-        set__succset=request.json['succset'])
+    body = Body.by_current_user()
+    Body.objects.get(id=body.id).update(set__succset=request.json['succset'])
     return jsonify(result="success"), 200  # TODO: Should be a 204
 
 
@@ -167,8 +167,8 @@ def vertex_id(vertex_type, id):
 @mod.route('/<vertex_type>/<id>/succset/', methods=['PUT'])
 @login_required
 def put_succset(vertex_type, id):
-    Vertex.by_id(id).update_one(
-        set__succset=request.json['succset'])
+    vertex = Vertex.by_id(id)
+    Vertex.objects.get(id=vertex.id).update(set__succset=request.json['succset'])
     return jsonify(result="success"), 200  # TODO: Should be a 204
 
 
