@@ -592,7 +592,7 @@ LIME.ActionPanel = Backbone.View.extend({
   loadVertexForm: function(model, predecessor){
     this.closeForms();
     var _cls = model.get('_cls');
-    var className = LIME.clsToClass(_cls) + ' form';
+    var className = model.cssClass() + ' form';
 
     if(_cls == 'Vertex.Work'){
       var photoNesting = [];
@@ -638,68 +638,11 @@ LIME.ActionPanel = Backbone.View.extend({
     this.$el.css({'bottom': '0'}, 200);
   },
 
-  /*
-  batchToManyCategory: function(predecessor){
-    var form = new LIME.FormView['Vertex.Medium.Photo']({
-      'collection': LIME.collection['Vertex.Medium.Photo'],
-      'predecessor': predecessor,
-      'nesting': ['Vertex.Work', 'Vertex.Category'],
-      'className': 'many_categories file_upload',
-      'uploadLabel': "Many categories"
-    });
-
-    this.$el.append(form.el);
-    form.render();
-    this.forms.push(form);
-  },
-
-  batchToManyWork: function(predecessor){
-    var form = new LIME.FormView['Vertex.Medium.Photo']({
-      'collection': LIME.collection['Vertex.Medium.Photo'],
-      'predecessor': predecessor,
-      'nesting': [],
-      'className': 'many_works file_upload',
-      'uploadLabel': "Many works"
-    });
-
-    this.$el.append(form.el);
-    form.render();
-    this.forms.push(form);
-  },
-
-  batchToManyPhoto: function(predecessor){
-    var form = new LIME.FormView['Vertex.Medium.Photo']({
-      'collection': LIME.collection['Vertex.Medium.Photo'],
-      'predecessor': predecessor,
-      'nesting': [],
-      'className': 'many_photos file_upload',
-      'uploadLabel': "Many photos"
-    });
-
-    this.$el.append(form.el);
-    form.render();
-    this.forms.push(form);
-  },
-
-  */
-
   closeForms: function(){
     _.each(this.forms, function(form, index){
       form.close;
     });
     this.forms = [];
-  },
-
-  /*
-  addBatch: function(files, predecessor, nesting){
-    // hopefully get rid of this function
-    var _cls = nesting[0] || 'Vertex.Medium.Photo';
-    var className = LIME.clsToClass(_cls) + ' batch';
-    var batch = new LIME.Upload.batchView({'className': className, 'files':files, 'predecessor':predecessor, 'nesting':nesting});
-    this.$el.prepend(batch.render().el);
-    batch.upload();
-    this.batches.push(batch);
   }
-  */
 
 });

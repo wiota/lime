@@ -401,9 +401,6 @@ LIME.View.ListingView['Vertex'] = Backbone.View.extend({
   initialize: function(){
     var _cls = this.model.get('_cls');
 
-    // child views
-    //this.summary = new LIME.View.SummaryView[_cls]({model:this.model, className: LIME.clsToClass(_cls)+" summary"}),
-
     this.list = new LIME.View.SuccsetView['Vertex']({model:this.model})
     this.upload = new LIME.FormView['Succset']({
       'model': this.model,
@@ -412,7 +409,6 @@ LIME.View.ListingView['Vertex'] = Backbone.View.extend({
     });
 
     this.$succset = $('<div class="succset container"></div>');
-    //this.children = [this.summary, this.list, this.upload];
     this.children = [this.list, this.upload];
 
   },
@@ -423,7 +419,6 @@ LIME.View.ListingView['Vertex'] = Backbone.View.extend({
   },
 
   appendElements: function(){
-    //$('#path_panel').append(this.summary.el);
     this.$el.append(this.list.el);
     this.$el.append(this.upload.el);
     this.upload.$el.hide();
@@ -480,7 +475,7 @@ LIME.ListingPanel = Backbone.View.extend({
   list: function(model){
     this.listedModel = model;
     var _cls = this.listedModel.get('_cls');
-    var className = LIME.clsToClass(_cls) + ' listing';
+    var className = model.cssClass() + ' listing';
 
     // View
     if(this.view){
