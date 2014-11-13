@@ -298,10 +298,8 @@ LIME.View.SummaryView['Vertex'] = LIME.SummaryView = Backbone.View.extend({
 
   render: function(){
     if(!this.model.isFetched()){
-      msg.log("Rendering Summary Failed", 'render');
       return false;
     }
-    msg.log("Rendering Summary", 'render');
 
     // template
     this.$el.html(this.template(this.model.toJSON()));

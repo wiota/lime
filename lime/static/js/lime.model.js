@@ -71,8 +71,6 @@ LIME.Model['Vertex']= Backbone.Model.extend({
       // put changed attributes into array
       this.trigger('summaryChanged', {'attr':summary_attr});
     }
-
-    msg.log("CHANGE Model ['"+_.keys(attr).join("', '") + "']", 'model');
   },
 
   isFetched: function(){
@@ -96,7 +94,6 @@ LIME.Model['Vertex']= Backbone.Model.extend({
   },
 
   deepen: function(){
-    msg.log("GET "+ this.url(), 'lookup');
     this.fetch({
       success: this.deepenSuccess,
       error: this.deepenError
@@ -105,7 +102,6 @@ LIME.Model['Vertex']= Backbone.Model.extend({
   },
 
   deepenSuccess: function(model, response, options){
-    msg.log("FETCH SUCCESS " + model.get("_id") + " " + model.get("title"),'lookup');
     var collection = LIME.collection[model.get('_cls')];
 
     collection.add(model);
@@ -133,7 +129,6 @@ LIME.Model['Vertex']= Backbone.Model.extend({
   },
 
   outOfSync: function(){
-    msg.log(this._cls)
     // Calling photo function
     this.fetched = false;
     this.trigger('outofsync');

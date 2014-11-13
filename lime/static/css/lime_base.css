@@ -169,7 +169,7 @@ textarea {
   padding: 2% 0 2% 5%;
 }
 
-.nav li:hover {
+.nav li a:hover {
   text-decoration: underline;
 }
   .nav li .icon.over {

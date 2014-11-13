@@ -20,18 +20,12 @@ LIME.Collection['Vertex'] = Backbone.Collection.extend({
     this.formUrl = this.url + "form/";
   },
 
-  added: function(model, collection){
-    msg.log("ADD " + model.get('_id') + " " + model.get("title") + " to " + collection._cls,'model');
-  },
+  added: function(model, collection){},
 
   // This function returns a model instance and
   // initiates a deepen call on the model if necessary
   lookup: function(id){
     var vertex = this.get(id) || this.getEmpty(id);
-    msgExtra = "";
-    msgExtra += vertex.isFetched() ? "<b>FETCHED</b> " : "";
-    msgExtra += vertex.isDeep() ? "<b>DEEP</b>" : "";
-    msg.log("Lookup: " + id + " " + vertex.get('title') + " " + msgExtra, 'lookup');
 
     if(!vertex.isFetched() || !vertex.isDeep()){
       return vertex.deepen();
@@ -59,7 +53,6 @@ LIME.Collection['Vertex'] = Backbone.Collection.extend({
 
   // timeouts? What to do if form does not load?
   fetchForm: _.throttle(function(){
-    msg.log("Fetching Form " + this.formUrl);
     $.ajax({
       type: 'GET',
       url: this.formUrl,
@@ -128,10 +121,6 @@ LIME.Collection['Vertex.Apex.Body'] = LIME.Collection['Vertex'].extend({ // Uniq
 
   lookup: function(){
     var body = this.get() || this.getEmpty();
-    msgExtra = "";
-    msgExtra += body.isFetched() ? "<b>FETCHED</b> " : "";
-    msgExtra += body.isDeep() ? "<b>DEEP</b> " : "";
-    msg.log("Lookup: Body " + msgExtra, 'lookup');
 
     if(!body.isFetched()){
       return body.deepen();
@@ -142,7 +131,6 @@ LIME.Collection['Vertex.Apex.Body'] = LIME.Collection['Vertex'].extend({ // Uniq
 
   add: function(model){
     this.body = model;
-    msg.log("Added Body",'model');
   },
 
   get: function(){
@@ -157,10 +145,6 @@ LIME.Collection['Vertex.Apex.Happenings'] = LIME.Collection['Vertex'].extend({
 
   lookup: function(){
     var happenings = this.get() || this.getEmpty();
-    msgExtra = "";
-    msgExtra += happenings.isFetched() ? "<b>FETCHED</b> " : "";
-    msgExtra += happenings.isDeep() ? "<b>DEEP</b> " : "";
-    msg.log("Lookup: Happenings Apex " + msgExtra, 'lookup');
 
     if(!happenings.isFetched()){
       return happenings.deepen();
@@ -171,7 +155,6 @@ LIME.Collection['Vertex.Apex.Happenings'] = LIME.Collection['Vertex'].extend({
 
   add: function(model){
     this.happenings = model;
-    msg.log("Added Body",'model');
   },
 
   get: function(){
