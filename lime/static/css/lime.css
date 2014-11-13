@@ -70,8 +70,16 @@
 
 
 
-.path .vertex {
+.path .vertex.link a {
+  display:block;
+  cursor: pointer;
   padding: 1% 5%;
+  color: #0083c6;
+  text-decoration: underline;
+}
+
+.path .vertex.link:hover {
+
 }
 
 

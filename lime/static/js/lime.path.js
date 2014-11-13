@@ -69,6 +69,11 @@ LIME.Path.PathPanel = Backbone.View.extend({
 
     this.path.push(vertex);
     this.walk.push(vertex);
+
+    if(this.path[0].get('_cls') !== "Vertex.Apex.Body"){
+      var body = LIME.collection['Vertex.Apex.Body'].lookup();
+      this.path.unshift(body);
+    }
   },
 
   nowhere: function(){
