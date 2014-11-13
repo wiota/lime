@@ -26,7 +26,7 @@ LIME.Path.PathPanel = Backbone.View.extend({
     var $path = this.$el.find('.path');
     _.each(_.initial(this.path), function(vertex, iterator){
       var click = function (){
-        LIME.pathPanel.walkTo(iterator);
+        LIME.pathPanel.retrace(iterator);
       }
       $(this.vertexTemplate(vertex.toJSON())).appendTo($path).click(click);
     }, this);
@@ -34,11 +34,10 @@ LIME.Path.PathPanel = Backbone.View.extend({
     // summary
     var vertex = _.last(this.path);
     var _cls = vertex.get('_cls');
-    var className = LIME.clsToClass(_cls) + ' summary';
+    var className = vertex.cssClass() + ' summary';
     this.summary = new LIME.View.SummaryView[_cls]({'model':_.last(this.path), 'className': className});
     $path.append(this.summary.el);
     this.summary.render();
-
   },
 
   jsonLink: function(link){
@@ -48,24 +47,9 @@ LIME.Path.PathPanel = Backbone.View.extend({
   list: function(vertex){
 
     // Method 1
-    var last = this.path.length > 1 ? _.first(_.last(this.path, 2)) : {get:function(){return 'nothing';}};
-    //console.log();
+    //var last = this.path.length > 1 ? _.first(_.last(this.path, 2)) : {get:function(){return 'nothing';}};
+    this.mapWalk(vertex);
 
-    // Paths and Walks
-    if(vertex.get('_cls')==='Vertex.Apex.Body'){
-      this.path = [vertex];
-    } else if(vertex===last){
-      this.path.pop();
-    } else {
-      this.path.push(vertex); // simple path
-    }
-
-    this.walk.push(vertex);
-
-    //console.log(this.walk)
-    //console.log(this.path)
-
-    // View
 
     if(this.summary){
       this.summary.close();
@@ -73,6 +57,18 @@ LIME.Path.PathPanel = Backbone.View.extend({
 
     this.render();
 
+  },
+
+  mapWalk: function(vertex){
+    // Done after routing
+    var index = _.indexOf(this.path, vertex);
+
+    if(index >= 0){
+      this.path = _.first(this.path, index);
+    }
+
+    this.path.push(vertex);
+    this.walk.push(vertex);
   },
 
   nowhere: function(){
@@ -83,7 +79,8 @@ LIME.Path.PathPanel = Backbone.View.extend({
     this.render();
   },
 
-  walkTo: function(step){
+  retrace: function(step){
+    // Done before routing
     var vertex = this.path[step];
     this.path = _.first(this.path, step);
 
@@ -94,7 +91,7 @@ LIME.Path.PathPanel = Backbone.View.extend({
     if(vertex.get('_cls')==='Vertex.Apex.Body'){
       var route = "body";
     } else {
-      var route = LIME.clsToRoute(vertex.get('_cls')) + '/' + vertex.id;
+      var route = vertex.vertexType + '/' + vertex.id;
     }
 
     console.log(route);
