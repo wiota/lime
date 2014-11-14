@@ -22,20 +22,23 @@ LIME.RequestLibrary = {
     var context = this;
     var errors = [];
 
-    // callback immediately if no requests
-    if(!instructions || instructions.length == 0){return callback.apply(context, arguments)}
+    // Set up callback depending on request context
+    var callback = callback || this.callback || function(){
+      console.log('serial complete');
+      this.trigger('complete');
+    }
+
+    // callback immediately if no instructions
+    if(!instructions || instructions.length === 0){
+      console.log('no instructions');
+      return callback.apply(context, arguments)
+    }
 
     // map object notation to request object
     var requests = this.requests(instructions);
 
     // last request for chaining and callback
     var lastRequest = _.last(requests);
-
-    // Set up callback depending on request context
-    var callback = callback || this.callback || function(){
-      console.log('serial complete');
-      this.trigger('complete');
-    }
 
     var error = error || this.error || function(){
       console.log('serial error');
@@ -78,13 +81,16 @@ LIME.RequestLibrary = {
     // context for callback
     var context = this;
 
-    // callback immediately if no instructions
-    if(!instructions || instructions.length == 0){return callback.apply(context, arguments)}
-
     // Set up callback depending on request context
     var callback = callback || this.callback || function(){
       console.log('parallel complete');
       this.trigger('complete');
+    }
+
+    // callback immediately if no instructions
+    if(!instructions || instructions.length === 0){
+      console.log('no instructions');
+      return callback.apply(context, arguments)
     }
 
     var error = error || this.error || function(){
