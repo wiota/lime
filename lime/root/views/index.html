@@ -129,7 +129,7 @@
     <div class='cover'></div>
     <b class='title'>Body</b>
     <div class='in_set_menu'>
-      <a class='update'>update</a>
+      <!--<a class='update'>update</a>-->
       <a class='drag_handle'>&#8597;</a>
     </div>
   </script>
@@ -139,7 +139,7 @@
     <div class='cover'></div>
     <b class='title'><img class='icon book' src='/icon/book.svg?<%- Math.random() %>'><%- title %></b>
     <div class='in_set_menu'>
-      <a class='update'>update</a>
+      <!--<a class='update'>update</a>-->
       <a class='delete'>delete</a>
       <a class='drag_handle'>&#8597;</a>
     </div>
@@ -150,7 +150,7 @@
     <div class='cover'></div>
     <b class='title'><%- title %></b>
     <div class='in_set_menu'>
-      <a class='update'>update</a>
+      <!--<a class='update'>update</a>-->
       <a class='delete'>delete</a>
       <a class='drag_handle'>&#8597;</a>
     </div>
@@ -161,7 +161,7 @@
     <div class='cover'></div>
     <b class='title'><img class='icon calendar' src='/icon/calendar.svg'><%- title %></b>
     <div class='in_set_menu'>
-      <a class='update'>update</a>
+      <!--<a class='update'>update</a>-->
       <a class='delete'>delete</a>
       <a class='drag_handle'>&#8597;</a>
     </div>
@@ -176,15 +176,20 @@
     </div>
   </script>
 
+  <script type="text/template" id="empty_succset">
+    <div class='empty_succset'>
+      Empty
+    </div>
+  </script>
 
   <!-- Form templates -->
 
   <script type="text/template" id="text">
-    <label for='<%- id %>'><%- label %></label><input class='input' type='text' id='<%- id %>' value='<%- value %>' />
+    <label class='<%- id %>' for='<%- id %>'><%- label %></label><input class='input' type='text' id='<%- id %>' value='<%- value %>' />
   </script>
 
   <script type="text/template" id="textarea">
-    <label for='<%- id %>'><%- label %></label>
+    <label class='<%- id %>' for='<%- id %>'><%- label %></label>
     <textarea class='input textarea' id='<%- id %>'><%- value %></textarea>
   </script>
 
@@ -247,6 +252,7 @@
       <li class='identification'>
         <a class='drop'>
           <b class='label'>{{current_user.email}}</b>
+          <b class='opacity_taper'></b>
         </a>
         <ul class='subnav'>
           <li class='account'>
@@ -320,7 +326,7 @@
 
     <ul class='graph_nav nav'>
       <li class='back'>
-        <a onclick='javascript: history.go(-1)'>
+        <a class='' onclick='javascript: history.go(-1)'>
           <b class='icon back over'>
             <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 16 16"><polyline fill="none" stroke="#0083c6" stroke-miterlimit="10" points="15.5,2.5 15.5,15.5 6.5,15.5 "/><rect x="5.5" y="0.542" fill="#0083c6" stroke="#0083c6" stroke-miterlimit="10" width="8" height="13"/><line fill="none" stroke="#0083c6" stroke-miterlimit="10" x1="6.499" y1="14.479" x2="5.5" y2="14.479"/><line fill="none" stroke="#FFFFFF" x1="7" y1="4.5" x2="12" y2="4.5"/></svg>
             </b>

@@ -43,6 +43,12 @@
 /* -------------------------------------------------------------------  */
 
 #listing_panel {
+  z-index: 5;
+  position:absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
   /* display column - lime_base.css */
   }
 
@@ -52,18 +58,24 @@
 /* -------------------------------------------------------------------  */
 
 #action_panel {
-  background: #f6f7f7 url('https://s3.amazonaws.com/wiota/lime/4grid_light.png');
-  background-color: #fff;
+
+  background: url('https://s3.amazonaws.com/wiota/lime/bricks_lowc_limegrey.png') #fff;
   z-index: 6;
   overflow: auto;
   margin: 0;
-  padding: 0 0% 0 2%;
+  padding: 0 0% 0 4%;
   position:absolute;
   top: 0;
   right: 0;
   left: 0;
-  bottom: 100%;
+  bottom: 0;
+  transition: all .2s ease-in-out;
+  transform: translateX(-100%);
   }
+
+#action_panel.show {
+  transform: translateX(0%);
+}
 
 /* -------------------------------------------------------------------  */
 /* Path Panel */
@@ -85,7 +97,7 @@
 .summary {
   z-index: 120;
   position: relative;
-  background-color: #fff;
+  background-color: transparent;
   padding: 5%;
   margin: 0;
   }
@@ -113,7 +125,7 @@
     clear: both;
   }
 
-  .summary .cover {width: 100%;}
+  .summary .cover {width: 50%;}
   .summary .cover img {width: 100%;}
 
 .summary.body {
@@ -124,7 +136,7 @@
   }
 
 .summary.category {
-  background-color: #fff;
+  background-color: transparent;
   }
 
 .summary.happenings {
@@ -149,8 +161,8 @@
   bottom: 0;
   right: 0;
   overflow: auto;
-  max-width: 100%;
-  padding: 0 10px 0 0;
+  max-width: 80%;
+  padding: 0;
 }
 
 /* Succset Container */
@@ -158,6 +170,8 @@
 div.succset.container {
 
 }
+
+
 
 
 /* Sortable ------------------------------------- */
@@ -173,17 +187,18 @@ ol.succset_list {
   z-index: 110;
   width: 50%;
   margin: 0;
-  padding: .1% 0% 5%;
+  padding: 0 0% 5%;
   position:relative;
   }
 
 .succset_list li {
   position: relative;
-  padding: 3px 1%;
-  margin: 1.5%;
+  padding: 4px;
+  margin: 8px;
   min-height: 1em;
   font-size: 16px;
   overflow: auto;
+  border-bottom: 1px solid #e3e9ea;
   }
 
 
@@ -406,27 +421,38 @@ form.succset .file_upload input {
 /* Action Panel */
 /* -------------------------------------------------------------------  */
 
+#action_panel {
+  perspective: 5000px;
+  -webkit-perspective: 5000px;
+  -moz-perspective: 5000px;
+  -o-perspective: 5000px;
+}
+
+#action_panel .input:focus {
+  outline: none;
+  border-top: 1px dotted #d8e8e8;
+}
 
 #action_panel form {
-  margin: 0 0 .2% 0;
+  margin: 0;
   overflow: visible;
   }
 
 
 #action_panel label {
   font-size: 11px;
-  display:block;
-  padding: 1%;
-  margin: 1.5% 1.5% 0% 0;
   }
 
 #action_panel .input {
-  width: 93%;
-  padding: 1%;
-  margin: 0% 1.5% 1.5% 0;
-  font-size: 14px;
+  transition: all .3s ease;
   border-style:none;
-  background-color: #fff;
+  padding: 1% 0;
+  border-top: 1px solid #d8e8e8;
+  font-size: 16px;
+  }
+
+#action_panel label.title {
+  display:none;
   }
 
 #action_panel .input#title {
@@ -448,84 +474,76 @@ form.succset .file_upload input {
   margin: 2%;
 }
 
-#action_panel .save_status {
-  margin: 5% 0;
-  perspective: 500px;
-  -webkit-perspective: 500px;
-  -moz-perspective: 500px;
-  -o-perspective: 500px;
-}
-
 #action_panel .input.save {
-  cursor: pointer;
-  width: 150px;
-  padding: 1%;
-  /* margin: 1.5% 1.5% 1.5% 0%; */
+  border-style:none;
+  width: 250px;
   z-index: 500;
+  position:relative;
   font-family: "Monaco","Lucida Console","Courier New", "monospace";
-  font-size: 18px;
   font-weight: bold;
   text-align: center;
-  transition: background-color, transform .5s ease-in-out;
-  -webkit-transition: background-color, transform .5s ease-in-out;
-  -moz-transition: background-color, transform .5s ease-in-out;
-  -o-transition: background-color, transform .5s ease-in-out;
+  transform-origin: 0% 50%;
+  -webkit-transform-origin: 0% 50%;
+  -moz-transform-origin: 0% 50%;
+  -o-transform-origin: 0% 50%;
+  transition: all .4s ease-out;
+  -webkit-transition: all .4s ease-out;
+  -moz-transition: all .4s ease-out;
+  -o-transition: all .4s ease-out;
 }
 
 #action_panel .input.cancel,
 #action_panel .input.close {
   border-style:none;
   cursor: pointer;
-  width: 150px;
-  padding: 1%;
-  margin: 1.5% 1.5% 1.5% 0%;
-  z-index: 500;
+  width: 250px;
+  margin: 0 0 1.5% 0%;
+  position:relative;
+  z-index: 502;
   font-family: 'Helvetica', 'Arial', 'san-serif';
   font-family: "Monaco","Lucida Console","Courier New", "monospace";
-  font-size: 18px;
   font-weight: bold;
   text-align: center;
-  transition: background-color, transform .5s ease-in-out;
-  -webkit-transition: background-color, transform .5s ease-in-out;
-  -moz-transition: background-color, transform .5s ease-in-out;
-  -o-transition: background-color, transform .5s ease-in-out;
+  transition: transform .2s ease-in-out;
+  -webkit-transition: transform .2s ease-in-out;
+  -moz-transition: transform .2s ease-in-out;
+  -o-transition: transform .2s ease-in-out;
 
 }
 
 #action_panel .input.save {
-  position:absolute;
-  bottom: 0;
-  right: 0;
-  color: #fff;
-  background-color: #82db8a;
+  color: #82db8a;
+  background-color: #fff;
 }
 
-#action_panel .input.save.unsaved:hover {
-  background-color: #00db14;
+#action_panel .unsaved .input.save:hover {
+  background-color: #82db8a; color: #fff;
 }
 
-#action_panel .input.save.unpersisted {display:none;visibility: hidden;}
-#action_panel .input.save.unsaved {background-color: #82db8a;}
-#action_panel .input.save.saving {background-color: #00db14;cursor: wait;}
-#action_panel .input.save.saved {color: #b4c1c1; outline: 1px dotted #b4c1c1; background-color: #fff;cursor: auto;
-  transform:rotateY(180deg);
-  -webkit-transform:rotateY(180deg);
-  -moz-transform:rotateY(180deg);
-  -o-transform:rotateY(180deg);
+
+#action_panel .unsaved .input.save {background-color: #fff;}
+#action_panel .saving .input.save {background-color: #82db8a; color: #fff;cursor: wait;}
+#action_panel .saved .input.save,
+#action_panel .unpersisted .input.save {color: #fff; background-color: #b4c1c1;cursor: auto;
+  transform:translateX(0) rotateY(180deg);
+  -webkit-transform:translateX(0) rotateY(180deg);
+  -moz-transform:translateX(0) rotateY(180deg);
+  -o-transform:translateX(0) rotateY(180deg);
   }
+#action_panel .error .input.save {background-color: #f00; color: #fff;}
+
 
 #action_panel .input.cancel,
 #action_panel .input.close {
-  color: #333;
-  background-color: #ebf4f4;
+  color: #000;
+  background-color: #fff;
 }
 
 #action_panel .input.cancel:hover,
 #action_panel .input.close:hover {
-  background-color: #b4c1c1;
+  background-color: #82db8a;
+  color: #fff;
   }
-
-#action_panel .input.save.error {background-color: #f00;}
 
 
 /* File Upload */

@@ -241,8 +241,8 @@ LIME.View.SuccsetView['Vertex'] = Backbone.View.extend({
     // if model needs to be refetched for dereferenced succset
     if(!this.model.isDeep()){return false;}
 
-    successors = this.model.get('succset');
     this.$el.empty();
+    successors = this.model.get('succset');
 
     _.each(successors, function(successor, index){
       var viewFactory = LIME.View.SuccessorView[successor._cls];
@@ -390,6 +390,7 @@ LIME.View.ListingView['Vertex'] = Backbone.View.extend({
   summary: null,
   list: null,
   photoNesting: [],
+  emptyFlagTemplate: _.template($('#empty_succset').html()),
   events: {
     'dragover': 'outline',
     'dragleave .files_container': 'disappear',
@@ -412,6 +413,7 @@ LIME.View.ListingView['Vertex'] = Backbone.View.extend({
   },
 
   render: function(){
+
     _.each(this.children, function(c){c.render()}, this);
     this.appendElements();
   },
@@ -420,6 +422,11 @@ LIME.View.ListingView['Vertex'] = Backbone.View.extend({
     this.$el.append(this.list.el);
     this.$el.append(this.upload.el);
     this.upload.$el.hide();
+    console.log(this.model.get('succset'));
+    if(0 <= 0){
+      console.log('empty');
+      //this.emptyFlagTemplate
+    }
   },
 
   outline: function(e){

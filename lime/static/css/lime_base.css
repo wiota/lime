@@ -88,6 +88,10 @@ textarea {
   display: block;
 }
 
+.godman .man {
+  display: none;
+}
+
 
 /* -------------------------------------------------------------------  */
 /* Layout */
@@ -95,7 +99,8 @@ textarea {
 
 #navigation_column {
   z-index: 2;
-  width: 250px;
+  width: 249px;
+  border-right: 1px solid #f5f8f8;
   background-color: #fff;
   position:fixed;
   overflow: auto;
@@ -106,8 +111,6 @@ textarea {
 }
 
 #display_column {
-  background: #f6f7f7 url('https://s3.amazonaws.com/wiota/lime/4grid_light.png');
-  background: #f6f7f7 url('https://s3.amazonaws.com/wiota/lime/bricks_lowc_light.png');
   z-index: 4;
   margin: 0 0;
   padding: 0;
@@ -137,20 +140,21 @@ textarea {
 
 .nav {
   z-index: 1000;
-  padding: 1%;
+  padding: 0;
   margin: 0 0 8%;
   border-bottom: 1px solid #f5f8f8;
   overflow: auto;
-  width: 98%;
+  width: 100%;
   font-weight: normal;
   font-family: "Monaco","Lucida Console","Courier New", "monospace";
   letter-spacing: -1px;
   font-size: 14px;
   }
   .nav:hover {
-    -webkit-box-shadow: 0px 0px 120px 0px rgba(42, 44, 57, 0.30);
-    -moz-box-shadow:    0px 0px 120px 0px rgba(42, 44, 57, 0.30);
-    box-shadow:         0px 0px 120px 0px rgba(42, 44, 57, 0.30);
+    background-color: #fff;
+    -webkit-box-shadow: 0px 0px 120px 0px rgba(51,51,51, 0.10);
+    -moz-box-shadow:    0px 0px 120px 0px rgba(51,51,51, 0.10);
+    box-shadow:         0px 0px 120px 0px rgba(51,51,51, 0.10);
   }
 
 .nav b {
@@ -162,11 +166,12 @@ textarea {
   }
 
 .nav li {
+  position:relative;
   cursor: pointer;
   clear:left;
   width: 90%;
   margin: 0;
-  padding: 2% 0 2% 5%;
+  padding: 2% 5% 2% 5%;
 }
 
 .nav li a:hover {
@@ -200,6 +205,18 @@ textarea {
   padding: 2% 0;
   }
 
+.nav .opacity_taper {
+  position:absolute;
+  top:0;
+  bottom:0;
+  right:0;
+  width: 10%;
+  background-color: #fff;
+  background: linear-gradient(to right,  rgba(255,255,255,0) 0%,rgba(255,255,255,1) 80%);
+
+
+}
+
 .subnav li {
   padding: 2% 0;
 }
@@ -207,9 +224,9 @@ textarea {
 /* Account Nav */
 
 .account_nav:hover {
-    -webkit-box-shadow: 0px 0px 120px 0px rgba(42, 44, 57, 0.60);
-    -moz-box-shadow:    0px 0px 120px 0px rgba(42, 44, 57, 0.60);
-    box-shadow:         0px 0px 120px 0px rgba(42, 44, 57, 0.60);
+    -webkit-box-shadow: 0px 0px 120px 0px rgba(42,51,51, 0.10);
+    -moz-box-shadow:    0px 0px 120px 0px rgba(42,51,51, 0.10);
+    box-shadow:         0px 0px 120px 0px rgba(42,51,51, 0.10);
   }
 
 .account_nav li {
@@ -217,6 +234,8 @@ textarea {
   float:left;
   position:relative;
 }
+
+
 
 .account_nav li.admin .icon {
   transition: all 1s ease;

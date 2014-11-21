@@ -4,11 +4,6 @@
 
 LIME.FormView = {};
 
-// This section of the app is getting bloated. I need to break off
-// parts of it into actions which can be floated above the forms
-// themselves. Pending actions are also going to need to be
-// kept track of as well.
-
 /* ------------------------------------------------------------------- */
 // Templates
 /* ------------------------------------------------------------------- */
@@ -218,7 +213,7 @@ LIME.FormView.FileUploadView = Backbone.View.extend({
 
 LIME.FormView.SaveView = Backbone.View.extend({
   tagName: 'div',
-  className: 'save_status',
+  className: '',
 
   template: _.template($('#button').html()),
 
@@ -229,44 +224,44 @@ LIME.FormView.SaveView = Backbone.View.extend({
   },
 
   statusUnpersisted: function(){
-    this.$savebutton.attr('class', 'input save unpersisted');
+    this.$el.attr('class', 'unpersisted');
   },
 
   statusUnsaved: function(){
-    this.$savebutton.attr('class', 'input save unsaved');
-    this.$savebutton.val('Save Now');
+    this.$el.attr('class', 'unsaved');
+    this.$savebutton.val('save now');
+    this.$closebutton.val('save and close');
     this.$savebutton.attr('disabled', false);
     this.$savebutton.off();
     this.$savebutton.on('click', this.triggerSave);
   },
 
   statusSaving: function(){
-    this.$savebutton.attr('class', 'input save saving');
-    this.$savebutton.val('Saving');
+    this.$el.attr('class', 'saving');
+    this.$savebutton.val('saving');
     this.$savebutton.attr('disabled', true);
     this.$savebutton.off();
 
   },
 
   statusSaved: function(){
-    this.$savebutton.attr('class', 'input save saved');
-    this.$savebutton.val('Saved');
+    this.$el.attr('class', 'saved');
+    this.$savebutton.val('saved');
+    this.$closebutton.val('close');
     this.$savebutton.attr('disabled', true);
-    this.$savebutton.children('.conjugate').css({position:'relative', top: '20px'});
-    this.$savebutton.children('.conjugate').animate({position:'relative', top: '0px'});
     this.$savebutton.off();
 
   },
 
   statusError: function(){
-    this.$savebutton.attr('class', 'input save error');
-    this.$savebutton.val('Not Saved');
+    this.$el.attr('class', 'error');
+    this.$savebutton.val('not saved!');
     this.$savebutton.on('click', this.triggerSave);
 
   },
 
   render: function(message){
-    this.$savebutton = $(this.template({'label':'&nbsp;','cls': 'save'}));
+    this.$savebutton = $(this.template({'label':' ','cls': 'save'}));
     this.$closebutton = $(this.template({'label':'Close','cls': 'close'}));
 
     if(this.model.isNew()){
@@ -276,8 +271,8 @@ LIME.FormView.SaveView = Backbone.View.extend({
     }
 
     this.$el.html('');
-    this.$el.append(this.$savebutton);
     this.$el.append(this.$closebutton);
+    this.$el.append(this.$savebutton);
 
     this.$closebutton.on('click', this.triggerClose);
   },
@@ -315,22 +310,16 @@ LIME.FormView['Vertex'] = Backbone.View.extend({
     this.childOptions = _.pick(this.options, this.passableOptions);
 
     //this.appendFileUpload();
+    this.appendSaveView();
     this.appendGodAttributes();
     this.appendAtrributeFields();
-    this.appendSaveView();
+
 
     this.listenTo(this.model, 'sync', this.saveView.statusSaved);
     this.listenTo(this.model, 'error', this.saveView.statusError);
 
-    _.bindAll(this, 'close', 'collapse');
+    _.bindAll(this, 'collapse');
 
-  },
-
-  appendFileUpload: function(){
-    this.fileUpload = new LIME.FormView.FileUploadView(this.childOptions),
-    this.$el.append(this.fileUpload.el);
-    this.listenTo(this.fileUpload, 'change', this.filesChanged);
-    this.children.push(this.fileUpload);
   },
 
   appendGodAttributes: function(){
@@ -374,21 +363,10 @@ LIME.FormView['Vertex'] = Backbone.View.extend({
 
   // Events
 
-  filesChanged: function(files){
-    this.model;
-    this.photoNesting;
-    this.predecessor;
-
-    LIME.requestPanel.one([
-      {'func': 'batchPhotosToVertex', 'args': [files, this.photoNesting, this.model, this.predecessor]},
-    ]);
-
-  },
-
   attributesChanged: function(changeObject){
     this.saveView.statusUnsaved();
     this.model.set(changeObject);
-    this.savePeriodically();
+    //this.savePeriodically();
   },
 
   submit: function(evt){
@@ -461,6 +439,7 @@ LIME.FormView['Cover'] = Backbone.View.extend({
     this.children = [];
     this.childOptions = _.pick(this.options, this.passableOptions);
 
+    this.appendSaveView();
     this.appendFileUpload();
 
     _.bindAll(this, 'close', 'collapse');
@@ -473,8 +452,17 @@ LIME.FormView['Cover'] = Backbone.View.extend({
     this.children.push(this.fileUpload);
   },
 
+  appendSaveView: function(){
+    this.saveView = new LIME.FormView.SaveView(this.childOptions);
+    this.$el.append(this.saveView.el);
+    this.listenTo(this.saveView, 'save', this.save)
+    this.listenTo(this.saveView, 'close', this.collapse)
+    this.children.push(this.saveView);
+  },
+
   render: function(){
     this.fileUpload.render();
+    this.saveView.render();
     return this;
   },
 
@@ -569,49 +557,34 @@ LIME.FormView['Succset'] = Backbone.View.extend({
 
 LIME.ActionPanel = Backbone.View.extend({
   el: $('#action_panel'),
-  forms: [],
+  form: null,
   batches: [],
   model: null,
   predecessor: null,
 
   initialize: function(){
     this.$el.html('');
-
-    // Where should this go?
-    window.addEventListener('drop', function(e){
-      e.preventDefault();
-    })
-
-    window.addEventListener('dragover', function(e){
-      e.preventDefault();
-    })
-
-
   },
 
   loadVertexForm: function(model, predecessor){
+
     this.closeForms();
+    if(this.form && model === model){
+      this.form = null;
+      return false;
+    }
     var _cls = model.get('_cls');
     var className = model.cssClass() + ' form';
 
-    if(_cls == 'Vertex.Work'){
-      var photoNesting = [];
-    } else if (_cls == 'Vertex.Category'){
-      var photoNesting = ['Vertex.Work'];
-    }
-
-    var form = new LIME.FormView['Vertex']({
+    this.form = new LIME.FormView['Vertex']({
       'predecessor': predecessor,
       'model': model,
       'collection': LIME.collection[_cls],
-      'photoNesting': photoNesting,
       'className': className
     });
 
-
-    this.$el.append(form.el);
-    form.render();
-    this.forms.push(form);
+    this.$el.html(this.form.el);
+    this.form.render();
     this.rollDown();
   },
 
@@ -620,29 +593,30 @@ LIME.ActionPanel = Backbone.View.extend({
     var _cls = model.get('_cls');
     var className = 'cover form';
 
-    var form = new LIME.FormView['Cover']({
+    this.form = new LIME.FormView['Cover']({
       'model': model
     });
 
-    this.$el.append(form.el);
-    form.render();
-    this.forms.push(form);
+    this.$el.append(this.form.el);
+    this.form.render();
     this.rollDown();
   },
 
   rollUp: function(){
-    this.$el.css({'bottom': '100%'}, 200);
+    this.$el.removeClass('show');
+    //this.$el.css({'bottom': '100%'}, 200);
   },
 
   rollDown: function(){
-    this.$el.css({'bottom': '0'}, 200);
+    this.$el.addClass('show');
+    //this.$el.css({'bottom': '0'}, 200);
   },
 
   closeForms: function(){
-    _.each(this.forms, function(form, index){
-      form.close;
-    });
-    this.forms = [];
+    if(this.form){
+      this.form.collapse();
+      this.form = null;
+    }
   }
 
 });

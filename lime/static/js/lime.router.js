@@ -22,6 +22,16 @@ LIME.Router = Backbone.Router.extend({
     LIME.actionPanel = new LIME.ActionPanel();
     LIME.pathPanel = new LIME.Path.PathPanel();
 
+    // Where should this go?
+    window.addEventListener('drop', function(e){
+      e.preventDefault();
+    })
+
+    window.addEventListener('dragover', function(e){
+      e.preventDefault();
+    })
+
+
 
     LIME.icon = new Iconset();
     LIME.icon.add("bookcase", '.bookcase.icon');

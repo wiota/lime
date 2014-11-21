@@ -18,8 +18,10 @@ LIME.subnav = (function(){
 // ---------------------------------------------------------------------
 
 LIME.god = (function(){
-  var keyin = 0;
-  var keycheck = [71,79,68,71,79,68,71,79,68];
+  var god_keyin = 0;
+  var god_keycheck = [71,79,68,71,79,68,71,79,68];
+  var man_keyin = 0;
+  var man_keycheck = [77,65,78,77,65,78,77,65,78];
   var god = false;
 
   var revealGodButton = function(){
@@ -32,15 +34,37 @@ LIME.god = (function(){
     $('body').addClass('godman');
   }
 
+  var ephemeralManButton = function(){
+    $('.lime_nav .god').fadeOut();
+    ephemeralMan();
+  }
+
+  var ephemeralMan = function(){
+    console.log('MAN');
+    $('body').removeClass('godman');
+  }
+
   $(document).keyup(function(event){
-    if(event.which == keycheck[keyin]){
-      keyin++;
+    // god
+    console.log(event.which);
+    if(event.which == god_keycheck[god_keyin]){
+      god_keyin++;
     } else {
-      keyin = 0;
+      god_keyin = 0;
     }
-    if(keyin >= keycheck.length){
+    if(god_keyin >= god_keycheck.length){
       god = true;
       revealGodButton();
+    }
+    // man
+    if(event.which == man_keycheck[man_keyin]){
+      man_keyin++;
+    } else {
+      man_keyin = 0;
+    }
+    if(man_keyin >= man_keycheck.length){
+      man = true;
+      ephemeralManButton();
     }
   })
 
