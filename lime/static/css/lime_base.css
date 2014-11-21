@@ -237,11 +237,11 @@ textarea {
 
 
 
-.account_nav li.admin .icon {
+.account_nav li.admin .icon svg {
   transition: all 1s ease;
 }
 
-.account_nav li.admin:hover .icon {
+.account_nav li.admin:hover .icon svg {
   transform: rotate(270deg);
 }
 
