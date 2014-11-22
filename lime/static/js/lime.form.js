@@ -213,7 +213,7 @@ LIME.FormView.FileUploadView = Backbone.View.extend({
 
 LIME.FormView.SaveView = Backbone.View.extend({
   tagName: 'div',
-  className: '',
+  className: 'save_view',
 
   template: _.template($('#button').html()),
 
@@ -224,11 +224,11 @@ LIME.FormView.SaveView = Backbone.View.extend({
   },
 
   statusUnpersisted: function(){
-    this.$el.attr('class', 'unpersisted');
+    this.$el.attr('class', this.className + ' unpersisted');
   },
 
   statusUnsaved: function(){
-    this.$el.attr('class', 'unsaved');
+    this.$el.attr('class', this.className + ' unsaved');
     this.$savebutton.val('save now');
     this.$closebutton.val('save and close');
     this.$savebutton.attr('disabled', false);
@@ -237,7 +237,7 @@ LIME.FormView.SaveView = Backbone.View.extend({
   },
 
   statusSaving: function(){
-    this.$el.attr('class', 'saving');
+    this.$el.attr('class', this.className + ' saving');
     this.$savebutton.val('saving');
     this.$savebutton.attr('disabled', true);
     this.$savebutton.off();
@@ -245,7 +245,7 @@ LIME.FormView.SaveView = Backbone.View.extend({
   },
 
   statusSaved: function(){
-    this.$el.attr('class', 'saved');
+    this.$el.attr('class', this.className + ' saved');
     this.$savebutton.val('saved');
     this.$closebutton.val('close');
     this.$savebutton.attr('disabled', true);
@@ -254,7 +254,7 @@ LIME.FormView.SaveView = Backbone.View.extend({
   },
 
   statusError: function(){
-    this.$el.attr('class', 'error');
+    this.$el.attr('class', this.className + ' error');
     this.$savebutton.val('not saved!');
     this.$savebutton.on('click', this.triggerSave);
 

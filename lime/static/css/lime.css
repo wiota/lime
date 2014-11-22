@@ -473,15 +473,26 @@ form.succset .file_upload input {
 #action_panel .god_attributes input[type=checkbox] {
   margin: 2%;
 }
+#action_panel .save_view {
+  width: 500px;
+}
+
+#action_panel .input.save,
+#action_panel .input.cancel,
+#action_panel .input.close {
+  font-family: "Monaco","Lucida Console","Courier New", "monospace";
+  position:relative;
+  cursor: pointer;
+  border-style:none;
+  text-align: center;
+  padding: 1.5% 0;
+  margin: 0 0 1.5% 0%;
+  width: 250px;
+  }
 
 #action_panel .input.save {
-  border-style:none;
-  width: 250px;
   z-index: 500;
-  position:relative;
-  font-family: "Monaco","Lucida Console","Courier New", "monospace";
   font-weight: bold;
-  text-align: center;
   transform-origin: 0% 50%;
   -webkit-transform-origin: 0% 50%;
   -moz-transform-origin: 0% 50%;
@@ -494,11 +505,6 @@ form.succset .file_upload input {
 
 #action_panel .input.cancel,
 #action_panel .input.close {
-  border-style:none;
-  cursor: pointer;
-  width: 250px;
-  margin: 0 0 1.5% 0%;
-  position:relative;
   z-index: 502;
   font-family: 'Helvetica', 'Arial', 'san-serif';
   font-family: "Monaco","Lucida Console","Courier New", "monospace";
