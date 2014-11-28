@@ -22,6 +22,7 @@ newrelic==2.18.1.15
 passlib==1.6.2
 premailer==2.5.1
 pyactiveresource==1.0.1
+pymongo==2.7.2
 pytz==2013b
 requests==2.3.0
 stripe==1.18.0
