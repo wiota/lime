@@ -3,7 +3,6 @@ from flask import render_template, flash, url_for, redirect
 from flask import current_app as app
 from flask.ext.login import login_required
 from itsdangerous import URLSafeSerializer, BadSignature
-from toolbox.build_db import build_db, clear_db
 from flask.ext.login import login_required
 from flask.ext.login import current_user
 from toolbox.tools import admin_required
