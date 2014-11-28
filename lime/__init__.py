@@ -44,6 +44,9 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 app.config['STRIPE_SECRET_KEY'] = os.environ.get('STRIPE_SECRET_KEY')
 app.config['STRIPE_PUBLIC_KEY'] = os.environ.get('STRIPE_PUBLIC_KEY')
 
+# Heroku version
+app.config['HEROKU_RELEASE_NAME'] = os.environ.get('HEROKU_RELEASE_NAME')
+
 # Get the URL for the database from the environment
 MONGO_URL = os.environ.get('MONGOHQ_URL')
 
