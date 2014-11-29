@@ -69,7 +69,7 @@ def post_index():
 
 @mod.route('/image/<image_name>')
 def image(image_name):
-    return retrieve_image(image_name, current_user.email_hash)
+    return retrieve_image(image_name, Host.by_current_user().bucketname)
 
 @mod.route('/icon/<icon_name>', methods=['GET'])
 def icon(icon_name):
