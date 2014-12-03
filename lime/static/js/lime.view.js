@@ -115,15 +115,11 @@ LIME.View.SuccsetView['Vertex'] = Backbone.View.extend({
 
   initialize: function(){
     // Should be listening to add event and appending element
-    this.listenTo(this.model, 'change:succset', this.render);
-    if(!this.model.isDeep()){
-      this.listenToOnce(this.model, 'sync', this.render);
-    }
-
     this.children = [];
 
     _.bindAll(this, 'update');
     this.sortInit();
+    this.render();
   },
 
   startScrolling: function(event){
@@ -401,42 +397,52 @@ LIME.View.ListingView['Vertex'] = Backbone.View.extend({
     var _cls = this.model.get('_cls');
 
     this.list = new LIME.View.SuccsetView['Vertex']({model:this.model})
+
     this.upload = new LIME.FormView['Succset']({
       'model': this.model,
       'photoNesting': this.model.photoNesting,
       'className': 'succset draggable form'
     });
 
-    this.$succset = $('<div class="succset container"></div>');
+    this.$instruction = $(this.emptyFlagTemplate());
+
+    // If the model is not finished loading from the server
+    // rendering will throw an error
+    if(!this.model.isDeep()){
+      console.log('listening');
+      this.listenToOnce(this.model, 'sync', this.render);
+    } else {
+      console.log('render immediately');
+      this.render();
+    }
+
+    this.listenTo(this.model, 'change:succset', this.render);
     this.children = [this.list, this.upload];
-
-  },
-
-  render: function(){
-
-    _.each(this.children, function(c){c.render()}, this);
     this.appendElements();
   },
 
+  render: function(){
+    if(this.model.get('succset').length <= 0){
+      this.$instruction.show();
+    } else {
+      this.$instruction.hide();
+    }
+    _.each(this.children, function(c){c.render()}, this);
+  },
+
   appendElements: function(){
+    this.$el.append(this.$instruction);
     this.$el.append(this.list.el);
     this.$el.append(this.upload.el);
     this.upload.$el.hide();
-    console.log(this.model.get('succset'));
-    if(0 <= 0){
-      console.log('empty');
-      //this.emptyFlagTemplate
-    }
   },
 
   outline: function(e){
-    console.log('outline')
     this.upload.$el.show();
 
   },
 
   disappear: function(e){
-    console.log('disappear')
     this.upload.$el.hide();
   },
 });
@@ -489,7 +495,6 @@ LIME.ListingPanel = Backbone.View.extend({
 
     this.view = new LIME.View.ListingView[_cls]({'model':this.listedModel, 'className': className});
     this.$el.html(this.view.el);
-    this.view.render();
 
   },
 

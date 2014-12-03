@@ -100,6 +100,7 @@
   background-color: transparent;
   padding: 5%;
   margin: 0;
+  width: 90%;
   }
 
   .summary .icon {
@@ -120,6 +121,8 @@
     }
   .summary .title {
     font-size: 180%;
+    overflow: hidden;
+    text-overflow: ellipsis;
     }
   .summary .meta {
     clear: both;
@@ -136,7 +139,6 @@
   }
 
 .summary.category {
-  background-color: transparent;
   }
 
 .summary.happenings {
@@ -147,7 +149,6 @@
   background-color: #8779ef;
   }
 .summary.work {
-  background-color: #d8e8e8;
 }
 
 /* -------------------------------------------------------------------  */
@@ -165,14 +166,24 @@
   padding: 0;
 }
 
-/* Succset Container */
-
-div.succset.container {
-
+.empty_succset {
+  padding: 10px;
+  font-style: italic;
+  font-size: 140%;
 }
-
-
-
+  .empty_succset h2 {
+    font-weight: normal;
+    margin: 0 0 10px;
+    padding: 10px;
+  }
+  .empty_succset p {
+    margin: 0;
+    padding: 10px;
+  }
+  .empty_succset .drag {
+    border: 5px dotted #ccd5d5;
+    padding: 5px;
+  }
 
 /* Sortable ------------------------------------- */
 
@@ -193,7 +204,7 @@ ol.succset_list {
 
 .succset_list li {
   position: relative;
-  padding: 4px;
+  padding: 4px 0;
   margin: 8px;
   min-height: 1em;
   font-size: 16px;
@@ -201,14 +212,25 @@ ol.succset_list {
   border-bottom: 1px solid #e3e9ea;
   }
 
+  .succset_list li .title.icon .icon {
+    width: 16px;
+    height:16px;
+    margin-right: 4px;
+    }
 
+  .succset_list li .title.icon {
+    text-indent: 0px;
+    }
+  .succset_list li .title.icon .icon {
+
+    }
 
   .succset_list li.dragged {
     position:absolute;
     z-index: 30;
     }
 
-  .succset_list li .cover {width: 15%; float:left;margin: 0 2% 0 0;}
+  .succset_list li .cover {width: 15%; float:left; margin: 0 2% 0 0;}
   .succset_list li .cover img {width: 100%;}
 
 
@@ -238,17 +260,6 @@ ol.succset_list {
 .succset_list li.category {
   background-color: #fff;
   }
-  .succset_list li.category .icon {
-    width: 16px;
-    height:16px;
-    }
-  .succset_list li.category .title {
-    text-indent: 20px;
-    }
-  .succset_list li.category .icon {
-    position:absolute;
-    left:1%;
-    }
 
 
 .succset_list li.tag {}
@@ -259,17 +270,6 @@ ol.succset_list {
 .succset_list li.happening {
   background-color: #fff;
   }
-  .succset_list li.happening .icon {
-    width: 16px;
-    height:16px;
-    }
-  .succset_list li.happening .title {
-    text-indent: 20px;
-    }
-  .succset_list li.happening .icon {
-    position:absolute;
-    left:1%;
-    }
 
 
 .succset_list li.photo {
@@ -362,7 +362,7 @@ form.succset {
   right: 0;
   padding: 0%;
   margin: 0%;
-  background-color: rgba(255,255,255,0.5)
+  background-color: rgba(255,255,255,0.5);
 }
 
 form.succset .files_container {
@@ -379,6 +379,9 @@ form.succset .files_container {
 
 form.succset .over .files_container {
   border: 5px dotted #a3afaf;
+  -webkit-box-shadow: inset 0px 0px 18px 0px rgba(42, 44, 57, 0.5);
+  -moz-box-shadow: inset 0px 0px 18px 0px rgba(42, 44, 57, 0.5);
+  box-shadow: inset 0px 0px 18px 0px rgba(42, 44, 57, 0.5);
 }
 
 form.succset .vertex.photo.form .files {
@@ -568,7 +571,7 @@ form.succset .file_upload input {
   bottom: 0;
   right: 0;
   overflow:hidden;
-  border: 1px dashed #999;
+  border: 5px dotted #a3afaf;
   margin: 0 0 1.5%;
   padding: 1%;
 }
@@ -583,10 +586,10 @@ form.succset .file_upload input {
 }
 
 #action_panel .file_upload.over .files_container {
-  border-style: solid;
-  -webkit-box-shadow: inset 0px 0px 8px 0px rgba(42, 44, 57, 0.3);
-  -moz-box-shadow: inset 0px 0px 8px 0px rgba(42, 44, 57, 0.3);
-  box-shadow: inset 0px 0px 8px 0px rgba(42, 44, 57, 0.3);
+  border: 1px solid #a3afaf;
+  -webkit-box-shadow: inset 0px 0px 18px 0px rgba(42, 44, 57, 0.5);
+  -moz-box-shadow: inset 0px 0px 18px 0px rgba(42, 44, 57, 0.5);
+  box-shadow: inset 0px 0px 18px 0px rgba(42, 44, 57, 0.5);
 }
 
 #action_panel .files_container .message {

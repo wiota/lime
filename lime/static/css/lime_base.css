@@ -92,6 +92,18 @@ textarea {
   display: none;
 }
 
+/* Opacity Taper */
+
+.opacity_taper {
+  position:absolute;
+  top:0;
+  bottom:0;
+  right:0;
+  width: 10%;
+  background-color: #fff;
+  background: linear-gradient(to right,  rgba(255,255,255,0) 0%,rgba(255,255,255,1) 80%);
+}
+
 
 /* -------------------------------------------------------------------  */
 /* Layout */
@@ -203,19 +215,9 @@ textarea {
 .nav .label {
   display:block;
   padding: 2% 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
   }
-
-.nav .opacity_taper {
-  position:absolute;
-  top:0;
-  bottom:0;
-  right:0;
-  width: 10%;
-  background-color: #fff;
-  background: linear-gradient(to right,  rgba(255,255,255,0) 0%,rgba(255,255,255,1) 80%);
-
-
-}
 
 .subnav li {
   padding: 2% 0;
