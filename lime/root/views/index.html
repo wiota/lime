@@ -329,8 +329,6 @@
       </li>
     </ul>
 
-
-
     <ul class='graph_nav nav'>
       <li class='back'>
         <a class='' onclick='javascript: history.go(-1)'>
@@ -375,7 +373,7 @@
   <script type="text/javascript" src='{{ url_for('static', filename='js/lime.view.js') }}'></script>
   <script type="text/javascript" src='{{ url_for('static', filename='js/lime.form.js') }}'></script>
   <script type="text/javascript" src='{{ url_for('static', filename='js/lime.path.js') }}'></script>
-  <script type="text/javascript" src='{{ url_for('static', filename='js/lime.upload.js') }}'></script>
+  <!--<script type="text/javascript" src='{{ url_for('static', filename='js/lime.upload.js') }}'></script>-->
   <script type="text/javascript" src='{{ url_for('static', filename='js/lime.router.js') }}'></script>
   <script type="text/javascript" src='{{ url_for('static', filename='js/lime.request.js') }}'></script>
   <script type="text/javascript" src='{{ url_for('static', filename='js/lime.requestapi.js') }}'></script>
@@ -386,6 +384,8 @@
 
       LIME.router = new LIME.Router();
       Backbone.history.start();
+
+
     });
   </script>
 
