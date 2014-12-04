@@ -123,7 +123,7 @@ LIME.RequestApi = {
     // S3 uploader
     var uploader = new LIME.Uploader();
     uploader.on('complete', function(href){
-      console.log('complete '+ href + name)
+      //console.log('complete ' + name)
       request.trigger('complete', name);
     });
     uploader.on('uploadError', function(){

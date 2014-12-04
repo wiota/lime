@@ -207,7 +207,7 @@ LIME.Model['Vertex']= Backbone.Model.extend({
     options.success = function(resp){
       if(success) success(model, resp, options);
       model.trigger('sync', model, resp);
-      console.log('sync succset save on ' + model.get('_id'))
+      // console.log('sync succset save on ' + model.get('_id'))
     }
 
     options.error = function(resp){
@@ -217,7 +217,7 @@ LIME.Model['Vertex']= Backbone.Model.extend({
 
     options.url = 'api/v1/edge/';
     options.data = JSON.stringify({'edges': [this.get('_id'),successor.get('_id')]});
-    console.log(options.data);
+    // console.log(options.data);
     options.contentType = 'application/json';
     Backbone.sync('delete', this, options);
   },
@@ -234,7 +234,7 @@ LIME.Model['Vertex']= Backbone.Model.extend({
     options.success = function(resp){
       if(success) success(model, resp, options);
       model.trigger('sync', model, resp);
-      console.log('sync succset save on ' + model.get('_id'))
+      // console.log('sync succset save on ' + model.get('_id'))
     }
 
     options.error = function(resp){
@@ -244,7 +244,7 @@ LIME.Model['Vertex']= Backbone.Model.extend({
 
     options.url = 'api/v1/edge/';
     options.data = JSON.stringify({'edges': [this.get('_id'),successor.get('_id')]});
-    console.log(options.data);
+    // console.log(options.data);
     options.contentType = 'application/json';
     Backbone.sync('create', this, options);
   },

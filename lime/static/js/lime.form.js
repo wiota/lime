@@ -558,7 +558,7 @@ LIME.FormView['Succset'] = Backbone.View.extend({
   // Events
 
   filesChanged: function(files){
-    console.log('changed')
+    // console.log('changed')
     this.model;
     this.photoNesting;
     this.predecessor;

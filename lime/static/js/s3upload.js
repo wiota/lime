@@ -76,7 +76,6 @@ LIME.Uploader.prototype.createCORSRequest = function(method, url) {
 };
 
 LIME.Uploader.prototype.executeOnSignedUrl = function(file, callback, opts) {
-  console.log(opts);
   var name, this_s3upload, type;
   this_s3upload = this;
   var xhr = this.signXhr = new XMLHttpRequest();
