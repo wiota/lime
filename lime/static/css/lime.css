@@ -128,7 +128,7 @@
     clear: both;
   }
 
-  .summary .cover {width: 50%;}
+  .summary .cover {width: 100%;}
   .summary .cover img {width: 100%;}
 
 .summary.body {
@@ -162,14 +162,13 @@
   bottom: 0;
   right: 0;
   overflow: auto;
-  max-width: 80%;
   padding: 0;
 }
 
 .empty_succset {
   padding: 10px;
   font-style: italic;
-  font-size: 140%;
+  font-size: 110%;
 }
   .empty_succset h2 {
     font-weight: normal;
@@ -181,8 +180,8 @@
     padding: 10px;
   }
   .empty_succset .drag {
-    border: 5px dotted #ccd5d5;
-    padding: 5px;
+    border: 3px dotted #ccd5d5;
+    padding: 2px;
   }
 
 /* Sortable ------------------------------------- */
@@ -196,7 +195,7 @@ body.dragging, body.dragging * {
 
 ol.succset_list {
   z-index: 110;
-  width: 50%;
+  width: 100%;
   margin: 0;
   padding: 0 0% 5%;
   position:relative;
@@ -210,6 +209,10 @@ ol.succset_list {
   font-size: 16px;
   overflow: auto;
   border-bottom: 1px solid #e3e9ea;
+  }
+
+  .succset_list li .title {
+
   }
 
   .succset_list li .title.icon .icon {
@@ -230,7 +233,7 @@ ol.succset_list {
     z-index: 30;
     }
 
-  .succset_list li .cover {width: 15%; float:left; margin: 0 2% 0 0;}
+  .succset_list li .cover {width: 25%; margin: 0 2% 0 0;}
   .succset_list li .cover img {width: 100%;}
 
 
@@ -242,7 +245,6 @@ ol.succset_list {
   left: 0;
   right: 0;
   bottom: 0;
-  width: 100%;
 }
 
 .succset_list li b.title {
@@ -294,46 +296,39 @@ ol.succset_list {
   text-align: right;
 }
 
-.in_set_menu a {
-  display:inline-block;
+.summary a,
+.successorItem a {
   padding: 1% 3px;
   cursor: pointer;
   text-decoration: underline;
   font-weight: normal;
   font-size: 90%;
-  background-color: rgba(255,255,255,1);
   font-family: "Monaco","Lucida Console","Courier New", "monospace";
   }
 
-.summary .in_set_menu {
-  position:relative;
-  text-align: left;
-  display:block;
-}
-
-.summary:hover .in_set_menu {
-  display:block;
-}
-
-.summary .in_set_menu a {
+.summary a {
   display:block;
   margin: 3% 0;
   padding: 1% 3px;
-  }
-
-.succset_list li .in_set_menu a.drag_handle {
-  display:none;
-  z-index: 200;
-  padding: 0% 5px 2%;
-  text-align: center;
-  text-decoration: none;
-  color: #fff;
-  background-color: rgba(42,44,57,0.7);
-  cursor: move;
-  cursor: ns-resize;
 }
 
+.successorItem a {
+  display:inline-block;
+}
+
+.successorItem a.drag_handle {
+  display:none;
+  text-decoration: none;
+  font-size: 100%;
+}
+
+.summary .meta {
+  border-bottom: 1px solid #f5f8f8;
+}
+
+
 .delete {
+  background-color: rgba(255,255,255,0.7);
   color: #f00;
   }
 
@@ -480,9 +475,9 @@ form.succset .file_upload input {
   width: 500px;
 }
 
-#action_panel .input.save,
-#action_panel .input.cancel,
-#action_panel .input.close {
+/* Buttons */
+
+#action_panel .input.button {
   font-family: "Monaco","Lucida Console","Courier New", "monospace";
   position:relative;
   cursor: pointer;
@@ -529,7 +524,6 @@ form.succset .file_upload input {
   background-color: #82db8a; color: #fff;
 }
 
-
 #action_panel .unsaved .input.save {background-color: #fff;}
 #action_panel .saving .input.save {background-color: #82db8a; color: #fff;cursor: wait;}
 #action_panel .saved .input.save,
@@ -554,12 +548,28 @@ form.succset .file_upload input {
   color: #fff;
   }
 
+#action_panel .cover_display {
+  position: relative;
+  width: 250px;
+}
+
+#action_panel .cover_display img {
+  display:block;
+  max-width: 100%;
+}
+
+#action_panel .input.remove_cover {
+  display:block;
+  position:absolute;
+  top: 0;
+  right: 0;
+}
 
 /* File Upload */
 
 #action_panel .file_upload {
-  width: 95%;
-  padding: 1% 1% 30%;
+  width: 250px;
+  padding: 0% 0% 30%;
   margin: 0%;
   position:relative;
 }

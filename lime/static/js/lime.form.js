@@ -13,6 +13,7 @@ LIME.FormView.templates = {
   'textarea': _.template($('#textarea').html()),
   'button': _.template($('#button').html()),
   'file_upload': _.template($('#html5_file_upload').html()),
+  'cover_display': _.template($('#cover_display').html()),
   'datetime-local': function(){return false}
 
 };
@@ -430,7 +431,6 @@ LIME.FormView['Cover'] = Backbone.View.extend({
 
   passableOptions: ['model'],
   tagName: 'form',
-
   events: {},
 
   initialize: function(options){
@@ -439,10 +439,8 @@ LIME.FormView['Cover'] = Backbone.View.extend({
     this.children = [];
     this.childOptions = _.pick(this.options, this.passableOptions);
 
-    this.appendSaveView();
-    this.appendFileUpload();
-
-    _.bindAll(this, 'close', 'collapse');
+    this.listenTo(this.model, 'summaryChanged', this.render)
+    _.bindAll(this, 'close', 'collapse', 'noCover');
   },
 
   appendFileUpload: function(){
@@ -460,7 +458,31 @@ LIME.FormView['Cover'] = Backbone.View.extend({
     this.children.push(this.saveView);
   },
 
+  appendCover: function(covers){
+    console.log('covering');
+    this.$cover = $(LIME.FormView.templates['cover_display']());
+    this.$removebutton = $(LIME.FormView.templates['button']({'label':'remove cover','cls': 'remove_cover delete'}));
+    // add cover images
+    _.each(this.model.get('cover'), function(coverItem){
+      this.$cover.append("<img src='"+coverItem.href+"?w=500' alt='' />");
+    }, this);
+
+    // append
+    this.$cover.append(this.$removebutton);
+    this.$el.append(this.$cover);
+
+    // events
+    this.$removebutton.on('click', this.noCover);
+  },
+
   render: function(){
+    this.$el.html('')
+    this.appendSaveView();
+    this.appendFileUpload();
+    var cover = this.model.get('cover');
+    if(cover && cover.length > 0){
+      this.appendCover(cover);
+    }
     this.fileUpload.render();
     this.saveView.render();
     return this;
@@ -478,13 +500,18 @@ LIME.FormView['Cover'] = Backbone.View.extend({
   // Events
 
   filesChanged: function(files){
-
     file = files[0];
     this.model;
     LIME.requestPanel.serial([
       {'func': 'uploadCoverPhoto', 'args': [file, this.model]},
     ]);
+  },
 
+  noCover: function(){
+    console.log(this);
+    LIME.requestPanel.serial([
+      {'func': 'removeCover', 'args': [this.model]},
+    ]);
   }
 
 });

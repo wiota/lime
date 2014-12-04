@@ -308,8 +308,7 @@ LIME.View.SummaryView['Vertex'] = LIME.SummaryView = Backbone.View.extend({
     this.$cover = this.$el.find('.cover');
     _.each(this.model.get('cover'), function(coverItem){
       console.log(coverItem.href);
-      //this.$covers.append("<img src='"+coverItem.resize_href+"?w=500' alt='' />")
-      this.$cover.append("<img src='"+coverItem.href+"?w=500' alt='' />")
+      this.$cover.append("<img src='"+coverItem.href+"?w=500' alt='' />");
     }, this);
 
 
@@ -396,6 +395,7 @@ LIME.View.ListingView['Vertex'] = Backbone.View.extend({
   initialize: function(){
     var _cls = this.model.get('_cls');
 
+    // children
     this.list = new LIME.View.SuccsetView['Vertex']({model:this.model})
 
     this.upload = new LIME.FormView['Succset']({
@@ -405,6 +405,9 @@ LIME.View.ListingView['Vertex'] = Backbone.View.extend({
     });
 
     this.$instruction = $(this.emptyFlagTemplate());
+
+    this.children = [this.list, this.upload];
+    this.appendElements();
 
     // If the model is not finished loading from the server
     // rendering will throw an error
@@ -417,20 +420,21 @@ LIME.View.ListingView['Vertex'] = Backbone.View.extend({
     }
 
     this.listenTo(this.model, 'change:succset', this.render);
-    this.children = [this.list, this.upload];
-    this.appendElements();
+
   },
 
   render: function(){
     if(this.model.get('succset').length <= 0){
-      this.$instruction.show();
+      console.log('show');
+      this.$instruction.fadeIn();
     } else {
-      this.$instruction.hide();
+      this.$instruction.slideUp();
     }
     _.each(this.children, function(c){c.render()}, this);
   },
 
   appendElements: function(){
+    this.$instruction.hide();
     this.$el.append(this.$instruction);
     this.$el.append(this.list.el);
     this.$el.append(this.upload.el);

@@ -30,15 +30,25 @@ LIME.RequestApi = {
     ]);
   },
 
-  uploadCoverPhoto: function(file, model){
+  uploadCoverPhoto: function(file, vertex){
     this.serial([
       {'func': 'filePutRequest', 'args': [file]},
-      {'func': 'setCover', 'args': [model, file]}
+      {'func': 'setCover', 'args': [vertex, file]}
     ])
   },
 
   setCover: function(vertex, file, href){
     var coverObj = [{"href": "/image/"+file.name, 'resize_href': "/image/"+file.name}];
+    var options = {
+      success: this.callback,
+      error: this.error
+    }
+
+    vertex.setCover(coverObj, options);
+  },
+
+  removeCover: function(vertex){
+    var coverObj = [];
     var options = {
       success: this.callback,
       error: this.error
