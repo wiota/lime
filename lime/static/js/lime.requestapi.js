@@ -37,8 +37,8 @@ LIME.RequestApi = {
     ])
   },
 
-  setCover: function(vertex, file, href){
-    var coverObj = [{"href": "/image/"+file.name}];
+  setCover: function(vertex, file, name){
+    var coverObj = [{"href": "/image/"+name}];
     var options = {
       success: this.callback,
       error: this.error
@@ -79,23 +79,19 @@ LIME.RequestApi = {
 
   // Lower Level
 
-  wrapCover: function(href){
-    var coverObj = {"href": "/image/"+file.name};
-    this.serial([{'func':'createVertexRequest', 'args':[photo]}]);
-  },
 
-  wrapVertex: function(file, nesting, model, href){
+  wrapVertex: function(file, nesting, model, name){
     var vertices = [];
     var edges = [];
 
     // content type should map to vertex types
-    var lowest = new LIME.Model['Vertex.Medium.Photo']({"href": "/image/"+file.name});
+    var lowest = new LIME.Model['Vertex.Medium.Photo']({"href": "/image/"+name});
     vertices.push(lowest);
 
     var highest = _.reduce(nesting, function(v1, nest){
       if(nesting == 'Vertex.Category'){var title = 'Category';}
       else {var title = LIME.fileToName(file.name);}
-      var v2 = new LIME.Model[nest]({'title':title, 'cover':[{"href": "/image/"+file.name}]});
+      var v2 = new LIME.Model[nest]({'title':title, 'cover':[{"href": "/image/"+name}]});
       vertices.push(v2);
       edges.push([v2, v1]);
       return v2;
@@ -120,15 +116,20 @@ LIME.RequestApi = {
     //   return false;
     // }
 
+    var arr = file.name.split('.');
+    var ext = arr.pop();
+    var name = arr.join('.') + '_' + Date.now() + '.' + ext;
+
     // S3 uploader
     var uploader = new LIME.Uploader();
     uploader.on('complete', function(href){
-      request.trigger('complete', href);
+      console.log('complete '+ href + name)
+      request.trigger('complete', name);
     });
     uploader.on('uploadError', function(){
       request.trigger('error');
     });
-    uploader.uploadFile(file);
+    uploader.uploadFile(file, {"name": name});
   },
 
   createVertexRequest: function(vertex){

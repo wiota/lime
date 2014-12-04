@@ -33,8 +33,9 @@ LIME.Uploader.prototype.initialize = function(options){
   this.percent = 0;
 };
 
-LIME.Uploader.prototype.uploadFile = function(file) {
+LIME.Uploader.prototype.uploadFile = function(file, opts) {
   this.file = file;
+  var opts = opts || {}
   this.trigger('progress', 0);
   var error, this_s3upload;
   error = this.validate(this.file);
@@ -47,7 +48,7 @@ LIME.Uploader.prototype.uploadFile = function(file) {
   this_s3upload = this;
   return this.executeOnSignedUrl(this.file, function(signedURL, publicURL) {
     return this_s3upload.uploadToS3(this_s3upload.file, signedURL, publicURL);
-  });
+  }, opts);
 
 };
 
@@ -75,6 +76,7 @@ LIME.Uploader.prototype.createCORSRequest = function(method, url) {
 };
 
 LIME.Uploader.prototype.executeOnSignedUrl = function(file, callback, opts) {
+  console.log(opts);
   var name, this_s3upload, type;
   this_s3upload = this;
   var xhr = this.signXhr = new XMLHttpRequest();
