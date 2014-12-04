@@ -68,10 +68,11 @@
   <script type="text/template" id="happenings_apex_summary">
     <div class='happenings_title title'>happenings</div>
     <div class='meta'>
-      <div class='add_menu'>
-        <a class='add_happening'>add happening</a>
-        <a class='add_category'>add category</a>
-      </div>
+
+    </div>
+    <div class='add_menu'>
+      <a class='add_happening'>add happening</a>
+      <a class='add_category'>add category</a>
     </div>
   </script>
 
@@ -116,11 +117,11 @@
 
   <script type="text/template" id="happening_summary">
     <b class='icon calendar'><img src='/icon/calendar.svg'></b>
-    <div class='title'><a class='update'>update</a><%- title %></div>
+    <div class='title'><%- title %></div>
     <div class='meta'>
-      <div class='cover'></div>
-      <div class='add_menu'>
-      </div>
+      <a class='update'>update</a>
+      <a class='set_cover'>set cover</a>
+      <div class='cover set_cover'></div>
     </div>
   </script>
 
