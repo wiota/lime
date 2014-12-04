@@ -179,9 +179,24 @@
     margin: 0;
     padding: 10px;
   }
+
+  .empty_succset .drag,
+  .empty_succset .add {
+    display:inline-block;
+    margin: 0 0 5px;
+    width: 100px;
+  }
+
   .empty_succset .drag {
+    background-color: #f5f8f8;
     border: 3px dotted #ccd5d5;
     padding: 2px;
+  }
+
+  .empty_succset .add {
+    background-color: #d8bb00;
+    color: #fff;
+    padding: 5px;
   }
 
 /* Sortable ------------------------------------- */
@@ -326,6 +341,12 @@ ol.succset_list {
   border-bottom: 1px solid #f5f8f8;
 }
 
+.summary .add_menu a img {
+  float:left;
+  margin: 0 4px 0 0;
+  width: 16px;
+  height: 16px;
+}
 
 .delete {
   background-color: rgba(255,255,255,0.7);
