@@ -38,7 +38,7 @@ LIME.RequestApi = {
   },
 
   setCover: function(vertex, file, href){
-    var coverObj = [{"href": "/image/"+file.name, 'resize_href': "/image/"+file.name}];
+    var coverObj = [{"href": "/image/"+file.name}];
     var options = {
       success: this.callback,
       error: this.error
@@ -80,7 +80,7 @@ LIME.RequestApi = {
   // Lower Level
 
   wrapCover: function(href){
-    var coverObj = {"href": "/image/"+file.name, 'resize_href': "/image/"+file.name};
+    var coverObj = {"href": "/image/"+file.name};
     this.serial([{'func':'createVertexRequest', 'args':[photo]}]);
   },
 
@@ -89,13 +89,13 @@ LIME.RequestApi = {
     var edges = [];
 
     // content type should map to vertex types
-    var lowest = new LIME.Model['Vertex.Medium.Photo']({"href": "/image/"+file.name, 'resize_href': "/image/"+file.name});
+    var lowest = new LIME.Model['Vertex.Medium.Photo']({"href": "/image/"+file.name});
     vertices.push(lowest);
 
     var highest = _.reduce(nesting, function(v1, nest){
       if(nesting == 'Vertex.Category'){var title = 'Category';}
       else {var title = LIME.fileToName(file.name);}
-      var v2 = new LIME.Model[nest]({'title':title, 'cover':[{"href": "/image/"+file.name, 'resize_href': "/image/"+file.name}]});
+      var v2 = new LIME.Model[nest]({'title':title, 'cover':[{"href": "/image/"+file.name}]});
       vertices.push(v2);
       edges.push([v2, v1]);
       return v2;
