@@ -157,7 +157,7 @@ LIME.Request = Backbone.View.extend({
   },
 
   execute: function(){
-    console.log('---- Executing ' + this.rid + " " + this.options.func + ' -------');
+    // console.log('---- Executing ' + this.rid + " " + this.options.func + ' -------');
     this.sts = "executing";
     this.options.args = this.options.args.concat(_.toArray(arguments));
     return LIME.RequestApi[this.options.func].apply(this, this.options.args);
@@ -201,14 +201,14 @@ LIME.RequestPanel = Backbone.View.extend({
   },
 
   register: function(request){
-    console.log('---- Register ' + request.rid + " " + request.options.func + ' -------');
+    // console.log('---- Register ' + request.rid + " " + request.options.func + ' -------');
     //console.log(request.options.args);
     this.pendingRequests.push(request);
     this.render();
   },
 
   unregister: function(request){
-    console.log('---- Unregister ' + request.rid + ' -------');
+    // console.log('---- Unregister ' + request.rid + ' -------');
     // turn off for lines instead of mountains
     this.pendingRequests = _.without(this.pendingRequests, request);
     this.render();
