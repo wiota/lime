@@ -271,7 +271,7 @@ LIME.FormView.SaveView = Backbone.View.extend({
       this.statusSaved();
     }
 
-    this.$el.html('');
+    this.$el.empty();
     this.$el.append(this.$closebutton);
     this.$el.append(this.$savebutton);
 
