@@ -38,5 +38,5 @@ nosetests.xml
 .project
 .pydevproject
 
-# VIM
-.swp
+# vi
+*.swp
