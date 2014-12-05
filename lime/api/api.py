@@ -5,6 +5,7 @@ from toolbox.tools import update_document
 from toolbox.models import *
 from flask.ext.login import login_required
 from flask.ext.login import current_user
+from mongoexhaust import bsonify, wrapper
 
 
 mod = Blueprint('api', __name__, url_prefix='/api/v1')
@@ -141,9 +142,26 @@ def post_category():
 @login_required
 def put_category(id):
     doc = Category.by_id(id)
+    host = Host.by_current_user()
+
+    # TODO: This is a hack. The key 'Category' here should come from the
+    # <vertex_type> in the URL when we eventually condense these endpoints.
+    custom_vertex_keys = [x.name for x in host.custom_vertex_fields['Category']]
 
     # TODO: This is a bad function
+    # It gets the valid fields for a document and uses them to populate the
+    # data dictionary, since the MongoEngine model doesn't respond well when we
+    # give it fields it's not expecting.
     data = {k: request.json[k] for k in doc.get_save_fields() if k in request.json.keys()}
+
+    # TODO: Just making this worse...
+    # Extracts the custom fields from the request based on which keys are
+    # available for the host
+    data["customfields"]= [{
+        'key': k,
+        'value': request.json[k]} for k in custom_vertex_keys if k in request.json.keys()
+    ]
+
     update_document(doc, data).save()
 
     # TODO: This is a hack. get_save_fields should be reworked.
@@ -161,7 +179,23 @@ Vertex endpoints
 @mod.route('/<vertex_type>/<id>/', methods=['GET'])
 @login_required
 def vertex_id(vertex_type, id):
+    '''
+    This was originally:
+
     return Vertex.by_id(id).to_bson()
+
+    ...but now we need to bake in the potential custom fields for every vertex
+    type. This requires getting the vertex as a dict, extracting them from the
+    `customfields` field, setting them in the dict, removing the customfields
+    field, and then bsonify-ing the resulting dict. Perhaps not the best, but
+    it works for now until custom fields become more solid.
+
+    '''
+    v = Vertex.by_id(id).to_dict()
+    for x in v['customfields']:
+        v[x["key"]] = x["value"]
+    del v['customfields']
+    return bsonify(**wrapper(v))
 
 
 @mod.route('/<vertex_type>/<id>/succset/', methods=['PUT'])
