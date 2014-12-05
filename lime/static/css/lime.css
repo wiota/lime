@@ -475,6 +475,7 @@ form.succset .file_upload input {
   }
 
 #action_panel .input#title {
+  border-top: none;
   padding: 1% 0;
   font-size: 34px;
   background-color: transparent;
@@ -484,7 +485,6 @@ form.succset .file_upload input {
   position: fixed;
   top: 0;
   right: 0;
-  border: 1px dotted #78f7d8;
   padding: 2%;
   width: 10%;
   color: #f00;
