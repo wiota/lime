@@ -1,6 +1,10 @@
 var LIME = {
 };
 
+LIME.consoleTimer = (function(){
+  //setInterval(function(){console.log('---------------')},500);
+})();
+
 LIME.subnav = (function(){
 
   var toggleNav = function(el){
@@ -14,6 +18,22 @@ LIME.subnav = (function(){
   }
 
 })();
+
+// ---------------------------------------------------------------------
+
+LIME.imgfix = function(selector){
+  var $el = $(selector);
+  //console.log($el);
+  //$el.fadeOut();
+  $el.find('img').on('load', function(){
+    $(this).fadeIn();
+  });
+  $el.find('img').on('error', function(){
+    console.log('error');
+  });
+
+
+}
 
 // ---------------------------------------------------------------------
 
@@ -46,7 +66,7 @@ LIME.god = (function(){
 
   $(document).keyup(function(event){
     // god
-    console.log(event.which);
+    //console.log(event.which);
     if(event.which == god_keycheck[god_keyin]){
       god_keyin++;
     } else {

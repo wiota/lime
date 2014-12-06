@@ -286,10 +286,16 @@ LIME.View.SummaryView['Vertex'] = LIME.SummaryView = Backbone.View.extend({
     // creates difficulties because the model is not created yet
     // Another option would be to override the fetch function.
 
-    this.listenTo(this.model, 'sync', this.render);
     this.listenTo(this.model, 'summaryChanged', this.render)
-    this.listenTo(this.model, 'outofsync', this.flashOut);
-    this.listenTo(this.model, 'resynced', this.flash);
+    this.listenTo(this.model, 'sync', this.render);
+
+
+    //this.listenTo(this.model, 'outofsync', this.flashOut);
+    //this.listenTo(this.model, 'resynced', this.flash);
+
+    if(this.model.isFetched()){
+      this.render();
+    }
   },
 
   render: function(){
@@ -307,7 +313,6 @@ LIME.View.SummaryView['Vertex'] = LIME.SummaryView = Backbone.View.extend({
     // cover
     this.$cover = this.$el.find('.cover');
     _.each(this.model.get('cover'), function(coverItem){
-      console.log(coverItem.href);
       this.$cover.append("<img src='"+coverItem.href+"?w=500' alt='' />");
     }, this);
 
@@ -412,10 +417,8 @@ LIME.View.ListingView['Vertex'] = Backbone.View.extend({
     // If the model is not finished loading from the server
     // rendering will throw an error
     if(!this.model.isDeep()){
-      console.log('listening');
       this.listenToOnce(this.model, 'sync', this.render);
     } else {
-      console.log('render immediately');
       this.render();
     }
 
@@ -425,7 +428,6 @@ LIME.View.ListingView['Vertex'] = Backbone.View.extend({
 
   render: function(){
     if(this.model.get('succset').length <= 0){
-      console.log('show');
       this.$instruction.fadeIn();
     } else {
       this.$instruction.slideUp();

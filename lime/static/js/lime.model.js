@@ -22,6 +22,7 @@ Backbone.Model.prototype.url = function() {
 
 Backbone.Model.prototype.idAttribute = "_id";
 
+
 /* ------------------------------------------------------------------- */
 // Vertex - Abstract class - do not instantiate!
 /* ------------------------------------------------------------------- */
@@ -33,7 +34,7 @@ LIME.Model['Vertex']= Backbone.Model.extend({
     "title":  ""
   },
 
-  initialize: function(options){
+  initialize: function(attributes, options){
     options = options || {};
     this.fetched = options.fetched || false;
     this.deep = options.deep || false;
@@ -64,7 +65,7 @@ LIME.Model['Vertex']= Backbone.Model.extend({
     this.modified = true;
     var attr = model.changedAttributes()
     var summary_attr = _.omit(attr, 'succset');
-
+    //console.log('change triggered ' + _.reduce(summary_attr, function(a, b){return a + " " + b}, ''));
     if(!_.isEmpty(summary_attr)){
       // put changed attributes into array
       this.trigger('summaryChanged', {'attr':summary_attr});
@@ -101,12 +102,12 @@ LIME.Model['Vertex']= Backbone.Model.extend({
 
   deepenSuccess: function(model, response, options){
     var collection = LIME.collection[model.get('_cls')];
-
     collection.add(model);
 
     model.fetched = true;
     model.deep = true;
     model.modified = false;
+    //model.triggerEvents(model);
   },
 
   deepenError: function(model, response, options){

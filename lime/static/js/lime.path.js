@@ -41,7 +41,6 @@ LIME.Path.PathPanel = Backbone.View.extend({
     var className = vertex.cssClass() + ' summary';
     this.summary = new LIME.View.SummaryView[_cls]({'model':_.last(this.path), 'className': className});
     $path.append(this.summary.el);
-    this.summary.render();
   },
 
   jsonLink: function(link){
