@@ -1,11 +1,11 @@
 import sys
 from flask import Blueprint, request, jsonify
 from flask import current_app as app
-from toolbox.tools import update_document
+from toolbox.tools import update_document, make_response
 from toolbox.models import *
 from flask.ext.login import login_required
 from flask.ext.login import current_user
-from mongoexhaust import bsonify, wrapper
+from mongoexhaust import bsonify
 
 
 mod = Blueprint('api', __name__, url_prefix='/api/v1')
@@ -195,7 +195,7 @@ def vertex_id(vertex_type, id):
     for x in v['customfields']:
         v[x["key"]] = x["value"]
     del v['customfields']
-    return bsonify(**wrapper(v))
+    return bsonify(**make_response(v))
 
 
 @mod.route('/<vertex_type>/<id>/succset/', methods=['PUT'])
