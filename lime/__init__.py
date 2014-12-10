@@ -15,7 +15,7 @@ from lime.root import root
 from lime.upload import upload
 from lime.webhook import webhook
 from toolbox.models import User
-from toolbox.template_tools import format_date, format_money
+from toolbox.template_filters import format_date, format_money
 from toolbox.tools import AnonymousUser
 import traceback
 from pymongo.errors import AutoReconnect
