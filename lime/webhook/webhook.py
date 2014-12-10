@@ -9,7 +9,7 @@ from toolbox.models import User, Host
 from toolbox.emailer import StripeEmail, ReceiptEmail
 from time import strftime, localtime
 import stripe
-from toolbox.template_tools import format_date
+from toolbox.template_filters import format_date
 
 mod = Blueprint('webhook', __name__, template_folder='views', url_prefix='/webhook')
 
