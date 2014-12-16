@@ -212,7 +212,7 @@ ol.succset_list {
   z-index: 110;
   width: 100%;
   margin: 0;
-  padding: 0 0% 5%;
+  padding: 0 0 10%;
   position:relative;
   }
 
@@ -224,6 +224,14 @@ ol.succset_list {
   font-size: 16px;
   overflow: auto;
   border-bottom: 1px solid #e3e9ea;
+  background-color: #fff;
+  }
+
+  .succset_list li.dragged {
+    border-bottom: none;
+    -webkit-box-shadow: 0px 0px 120px 0px rgba(51,51,51, 0.10);
+    -moz-box-shadow:    0px 0px 120px 0px rgba(51,51,51, 0.10);
+    box-shadow:         0px 0px 120px 0px rgba(51,51,51, 0.10);
   }
 
   .succset_list li .title {
@@ -275,22 +283,18 @@ ol.succset_list {
   }
 
 .succset_list li.category {
-  background-color: #fff;
   }
 
 
 .succset_list li.tag {}
 .succset_list li.work {
-  background-color: #fff;
   }
 
 .succset_list li.happening {
-  background-color: #fff;
   }
 
 
 .succset_list li.photo {
-  background-color: #fff;
   padding: 0;
   }
 

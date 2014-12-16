@@ -120,6 +120,7 @@ LIME.View.SuccsetView['Vertex'] = Backbone.View.extend({
     _.bindAll(this, 'update');
     this.sortInit();
     this.render();
+    this.timer = null;
   },
 
   startScrolling: function(event){
@@ -128,11 +129,14 @@ LIME.View.SuccsetView['Vertex'] = Backbone.View.extend({
     var initialSpeed = 1;
     var container = $('#listing_panel .listing');
     var windowHeight = $(window).height();
-    var scrollLimit = this.$el.height() - windowHeight;
+    var scrollLimit = this.$el.outerHeight() - windowHeight;
     var list = this.$el;
 
+    if(event.which > 1){
+      return false;
+    }
+
     var scrollWindow = function(y){
-      console.log(y);
       var y = y;
       var h = windowHeight;
       var sb = borderExponent(y, h, tolerance)
@@ -155,22 +159,27 @@ LIME.View.SuccsetView['Vertex'] = Backbone.View.extend({
       }
     };
 
-    $(document).on('mousemove', function(event){
-      var sb = scrollWindow(event.pageY);
+    var t = this;
 
-      clearInterval(this.scrollTimer);
-      if(sb != 0){
-        this.scrollTimer = setInterval(function(){
-          list.trigger(event);;
-        }, 10)
+    this.$el.on('mousemove', function(event){
+        var sb = scrollWindow(event.pageY);
+
+        clearInterval(t.timer);
+
+        if(sb != 0){
+          // console.log(sb);
+          t.timer = setInterval(function(){
+
+            list.trigger(event);;
+          }, 100)
+        }
       }
-
-    })
+    )
   },
 
   stopScrolling: function(){
-    $(document).off('mousemove');
-    clearInterval(this.scrollTimer);
+    clearInterval(this.timer);
+    this.$el.off('mousemove');
   },
 
   sortInit: function(){
@@ -185,7 +194,6 @@ LIME.View.SuccsetView['Vertex'] = Backbone.View.extend({
       placeholder: $('<li class="placeholder"/>'),
 
       onDrag: function ($item, position, _super, event) {
-        console.log(position);
         position.left = 0;
         position.top -= yOff;
         $item.css(position)
@@ -199,8 +207,6 @@ LIME.View.SuccsetView['Vertex'] = Backbone.View.extend({
         xOff = event.offsetX;
         yOff = event.offsetY + marginTop;
 
-        console.log('------------------------');
-        console.log(yOff);
 
         // cache item dimensions
         var itemDim = {
