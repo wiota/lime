@@ -82,6 +82,17 @@ User endpoints
 def user():
     return User.objects.get(id=current_user.id).to_bson()
 
+
+'''
+Host endpoints
+'''
+
+@mod.route('/host/', methods=['GET'])
+@login_required
+def user():
+    return Host.objects.get(owners__in=[current_user.id]).to_bson()
+
+
 '''
 Work endpoints
 '''
