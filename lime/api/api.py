@@ -146,7 +146,9 @@ def put_category(id):
 
     # TODO: This is a hack. The key 'Category' here should come from the
     # <vertex_type> in the URL when we eventually condense these endpoints.
-    custom_vertex_keys = [x.name for x in host.custom_vertex_fields['Category']]
+    # Essentially returnsn an empty list if the type is not defined for the
+    # host, so nothing happens.
+    custom_vertex_keys = [x.name for x in host.custom_vertex_fields.get('Category', [])]
 
     # TODO: This is a bad function
     # It gets the valid fields for a document and uses them to populate the
