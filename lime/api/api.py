@@ -1,7 +1,7 @@
 import sys
 from flask import Blueprint, request, jsonify
 from flask import current_app as app
-from toolbox.tools import update_document, make_response
+from toolbox.tools import update_document, make_response, get_custom_vertex_fields
 from toolbox.models import *
 from flask.ext.login import login_required
 from flask.ext.login import current_user
@@ -11,12 +11,51 @@ from mongoexhaust import bsonify
 mod = Blueprint('api', __name__, url_prefix='/api/v1')
 
 def str_to_class(str):
+    '''
+    Converts a string (e.g., "category") to the corresponding class. This is
+    used to convert a request for a form at an endpoint to the correct class
+    to call to_form() on. This will eventually go away when we get rid of
+    predefined Vertex model types.
+    '''
     return reduce(getattr, str.split("."), sys.modules[__name__])
+
+def model_exists(str):
+    '''
+    Checks if a given string exists as a class in this scope.
+    '''
+    return reduce(hasattr, str.split("."), sys.modules[__name__])
 
 @mod.route('/<classname>/form/', methods=['GET'])
 @login_required
 def vertex_to_form(classname):
-    return str_to_class(classname.title())().to_form()
+    '''
+    Returns a form for a given classname. Eventually this will become a
+    vertex-type and the model_exists class can go away.
+    '''
+    # Check if the model exists. If it does, this is an old Model
+    if model_exists(classname.title()):
+        # Convert the string to a class and return the form
+        return str_to_class(classname.title())().to_form()
+    else:
+        # This is not an explicitly defined model. Make the form from
+        # it's custom fields.
+
+        # This is duplicated from toolbox.tools.document_to_form and should
+        # probably be gotten rid of.
+        type_dict = {
+            StringField.__name__: "text",
+            LongStringField.__name__: "textarea",
+            DateTimeField.__name__: "datetime-local",
+            URLField.__name__: "text"
+        }
+
+        return jsonify(make_response([
+            {
+                "name": cv.name,
+                "label": cv.verbose_name,
+                "required": cv.required,
+                "type": type_dict[cv.field_type]
+            } for cv in get_custom_vertex_fields(classname)]))
 
 
 '''
@@ -224,6 +263,17 @@ def put_succset(vertex_type, id):
 def delete_by_id(vertex_type, id):
     Vertex.objects.get(id=id).delete()
     return jsonify(result="success"), 200  # TODO: Should be a 204
+
+
+@mod.route('/<vertex_type>/', methods=['POST'])
+@login_required
+def post_vertex():
+    # TODO: Implement this
+    data = request.json
+    data['host'] = Host.by_current_user()
+    # vertex = Vertex(**data).save()
+    # return vertex.to_bson(), 200
+    return jsonify(result="todo"), 200
 
 
 '''
