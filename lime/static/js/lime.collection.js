@@ -35,45 +35,11 @@ LIME.Collection['Vertex'] = Backbone.Collection.extend({
   },
 
   getEmpty: function(id){
-    // Title is blank to temporarily solve template problems
     if(id){
       return new this.model({'_id': id, '_cls': this._cls});
     } else {
       return new this.model({'_cls': this._cls});
     }
-  },
-
-  hasForm: function(){
-    if(!this.formSerialization){
-      return false;
-    } else {
-      return true;
-    }
-  },
-
-  // timeouts? What to do if form does not load?
-  fetchForm: _.throttle(function(){
-    $.ajax({
-      type: 'GET',
-      url: this.formUrl,
-      // type of data we are expecting in return:
-      dataType: 'json',
-      timeout: 1000,
-      context: this,
-      success: function(data){
-        this.formSerialization = data;
-        this.trigger("hasForm");
-      },
-      error: function(){
-        console.log('Form get error');
-        this.fetchForm();
-      }
-
-    })
-  }, 1000),
-
-  lookupForm: function(){
-    this.fetchForm();
   },
 
   // should be replaced by edge/vertex list
@@ -113,6 +79,8 @@ LIME.Collection['Vertex.Happening'] = LIME.Collection['Vertex'].extend({
   url: "api/v1/happening/",
   _cls: 'Vertex.Happening'
 });
+
+// The Body and the Happenings might be better as two items in the succset of the Host
 
 LIME.Collection['Vertex.Apex.Body'] = LIME.Collection['Vertex'].extend({ // Unique - only contains one body - may be changed to start vertex
   model: LIME.Model['Vertex.Apex.Body'],
@@ -167,6 +135,9 @@ LIME.Collection['Vertex.Apex.Happenings'] = LIME.Collection['Vertex'].extend({
 /* ------------------------------------------------------------------- */
 
 LIME.collection = {};
+
+// Eventually will become collection for all vertices - customVertex
+LIME.collection['Vertex'] = new LIME.Collection['Vertex'];
 
 LIME.collection['Vertex.Apex.Body'] = new LIME.Collection['Vertex.Apex.Body']();
 LIME.collection['Vertex.Apex.Happenings'] = new LIME.Collection['Vertex.Apex.Happenings']();

@@ -22,9 +22,8 @@ Backbone.Model.prototype.url = function() {
 
 Backbone.Model.prototype.idAttribute = "_id";
 
-
 /* ------------------------------------------------------------------- */
-// Vertex - Abstract class - do not instantiate!
+// Vertex - Abstract class - to be transitioned to singular customVertex
 /* ------------------------------------------------------------------- */
 
 LIME.Model['Vertex']= Backbone.Model.extend({
@@ -35,10 +34,15 @@ LIME.Model['Vertex']= Backbone.Model.extend({
   },
 
   initialize: function(attributes, options){
+    attributes = attributes || {};
     options = options || {};
     this.fetched = options.fetched || false;
     this.deep = options.deep || false;
     this.modified = options.modified || false;
+
+    // Transition to customVertex:
+    // if(!attributes.vertexType){return false}
+    this.vertexType = attributes.vertexType || this.vertexType;
 
     this.on('sync', function(){this.modified = false;})
 
@@ -101,7 +105,7 @@ LIME.Model['Vertex']= Backbone.Model.extend({
   },
 
   deepenSuccess: function(model, response, options){
-    var collection = LIME.collection[model.get('_cls')];
+    var collection = LIME.collection[model.get('_cls')] || LIME.collection['Vertex'];
     collection.add(model);
 
     model.fetched = true;
@@ -324,6 +328,124 @@ LIME.Model['Vertex']= Backbone.Model.extend({
 
 });
 
+/* ------------------------------------------------------------------- */
+// Host
+/* ------------------------------------------------------------------- */
+
+LIME.Model.Host = LIME.Model['Vertex'].extend({
+  vertexType: 'host',
+  apiVers: 'api/v1/',
+  defaults: {},
+  // staticly defined translation between server vertex blueprint and front-end
+  typeDict: {
+    StringField: "text",
+    LongStringField: "textarea",
+    DateTimeField: "datetime-local",
+    URLField: "text"
+  },
+
+  initialize: function(){
+    this.vertexSchema = {};
+    this.deepen();
+  },
+
+  url: function(){
+    return this.apiVers + 'host/';
+  },
+
+  parse: function(response){
+    // handle result object wrapper
+    response = Backbone.Model.prototype.parse(response);
+
+    // iterate through vertex schema and add to vertexSchema property of host
+    // misnomer custom_vertex_fields -> vertex schema
+    _.each(response.custom_vertex_fields, _.bind(this.parseSingleVertexType, this))
+
+    // delete custom vertex types from response and return the rest
+    delete response.custom_vertex_fields;
+    return response;
+  },
+
+  parseSingleVertexType: function(fields, vertexType){
+    var vertexFieldSchema = this.vertexSchema[vertexType] = [];
+
+      // add fields to vertexFieldSchema
+    _.each(fields, function(field, fieldorder){
+      vertexFieldSchema[fieldorder] = {
+        'type': this.typeDict[field['field_type']],
+        'required': field['required'],
+        'label': field['verbose_name'],
+        'name': field['name'],
+        'order': fieldorder
+      }
+    }, this);
+
+    return vertexFieldSchema;
+  },
+
+  parseFromFormEndpoint: function(fields, vertexType){
+    var vertexFieldSchema = this.vertexSchema[vertexType] = [];
+
+      // add fields to vertexFieldSchema
+    _.each(fields, function(field, fieldorder){
+      vertexFieldSchema[fieldorder] = {
+        'type': field['type'],
+        'required': field['required'],
+        'label': field['label'],
+        'name': field['name'],
+        'order': fieldorder
+      }
+    }, this);
+
+    return vertexFieldSchema;
+  },
+
+  // This function should
+  isfieldSchemaAvailable: function(vertexType){
+    if(!this.vertexSchema[vertexType]){
+      return false;
+    } else {
+      return true;
+    }
+  },
+
+  // timeouts? What to do if form does not load?
+  // throttle function
+  fetchFieldSchema: _.throttle(function(vertexType, func){
+    console.log('requesting form');
+    $.ajax({
+      type: 'GET',
+      url: this.apiVers + vertexType + '/form',
+      dataType: 'json',
+      timeout: 1000,
+      context: this,
+      success: function(data){
+        func(this.parseFromFormEndpoint(data.result, vertexType))
+      },
+      error: function(){
+        console.log('Form get error');
+        // to be replace by retry and falloff code
+        this.fetchFieldSchema(vertexType, func);
+      }
+    })
+  }, 1000),
+
+  lookupForm: function(vertexType, func){
+    if(this.isfieldSchemaAvailable(vertexType)){
+      func(this.vertexSchema[vertexType]);
+    } else {
+      this.fetchFieldSchema(vertexType, func);
+    }
+  },
+
+})
+
+/* ------------------------------------------------------------------- */
+// Standard Types
+//
+// These types should remain standard
+/* ------------------------------------------------------------------- */
+
 
 /* ------------------------------------------------------------------- */
 // Category
@@ -401,6 +523,7 @@ LIME.Model['Vertex.Apex.Body'] = LIME.Model['Vertex'].extend({
 
 });
 
+
 /* ------------------------------------------------------------------- */
 // Happenings Apex
 /* ------------------------------------------------------------------- */
@@ -423,16 +546,8 @@ LIME.Model['Vertex.Apex.Happenings'] = LIME.Model['Vertex'].extend({
 // Happening
 /* ------------------------------------------------------------------- */
 
-LIME.Model['Vertex.Apex.Happening'] = LIME.Model['Vertex'].extend({
-  vertexType: 'happening',
-  _cls: "Vertex.Apex.Happening",
-  url: function(){
-    return this.urlRoot;
-  }
-
-});
-
 LIME.Model['Vertex.Happening'] = LIME.Model['Vertex'].extend({
+  vertexType: 'happening',
   urlRoot: "api/v1/happening",
   _cls: "Vertex.Happening"
 });

@@ -35,25 +35,31 @@ LIME.FormView.SerialFieldsView = Backbone.View.extend({
 
   initialize: function(){
     this.isRendered = false;
-    if(!this.collection.hasForm()){
-      this.collection.lookupForm();
-      this.listenToOnce(this.collection, 'hasForm', this.render);
-    }
+    this.vertexSchema = null;
+    LIME.host.lookupForm(this.model.vertexType, _.bind(this.setVertexSchema, this));
+  },
+
+  setVertexSchema: function(schema){
+    this.vertexSchema = schema;
+    this.render();
   },
 
   render: function(){
-    if(!this.collection.hasForm()){return false;}
-    // parse out RESULT
-    _.each(this.collection.formSerialization.result, function(field){
+    if(!this.vertexSchema){return false;}
+    this.$el.empty();
 
-      var hasExistingValue = this.model && this.model.get(field.name);
-      value = hasExistingValue || '';
+    _.each(this.vertexSchema, function(field){
+
       var templateFunction = this.templates[field.type];
+      var formData = {
+        'name':field.name,
+        'label':field.label,
+        'value': (this.model && this.model.get(field.name)) || ''
+      }
 
       // Pass key, field, and value to form input template function and append result
-      var formInput = $(templateFunction({'id':field.name, 'label':field.label, 'value': value}));
+      $(templateFunction(formData)).appendTo(this.$el);
 
-      formInput.appendTo(this.$el);
     }, this);
 
     this.focusStart();
@@ -209,7 +215,7 @@ LIME.FormView.FileUploadView = Backbone.View.extend({
 })
 
 /* ------------------------------------------------------------------- */
-// Saved
+// Save View
 /* ------------------------------------------------------------------- */
 
 LIME.FormView.SaveView = Backbone.View.extend({
@@ -315,6 +321,8 @@ LIME.FormView['Vertex'] = Backbone.View.extend({
     this.appendGodAttributes();
     this.appendAtrributeFields();
 
+    this.listenToOnce(this.attributeFields, 'rendered', this.saveView.render)
+    this.listenToOnce(this.attributeFields, 'rendered', this.godAttributes.render)
 
     this.listenTo(this.model, 'sync', this.saveView.statusSaved);
     this.listenTo(this.model, 'error', this.saveView.statusError);
@@ -602,11 +610,13 @@ LIME.ActionPanel = Backbone.View.extend({
     }
     var _cls = model.get('_cls');
     var className = model.cssClass() + ' form';
+    // allow for customVertex that will be put into a standard collection
+    var collection = LIME.collection[_cls] || LIME.collection
 
     this.form = new LIME.FormView['Vertex']({
       'predecessor': predecessor,
       'model': model,
-      'collection': LIME.collection[_cls],
+      'collection': collection,
       'className': className
     });
 

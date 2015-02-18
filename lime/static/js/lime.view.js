@@ -294,20 +294,24 @@ LIME.View.SummaryView['Vertex'] = LIME.SummaryView = Backbone.View.extend({
 
     this.listenTo(this.model, 'summaryChanged', this.render)
     this.listenTo(this.model, 'sync', this.render);
+    this.listenTo(LIME.host, 'sync', this.render)
 
+    _.bindAll('addVertexForm');
 
     //this.listenTo(this.model, 'outofsync', this.flashOut);
     //this.listenTo(this.model, 'resynced', this.flash);
 
-    if(this.model.isFetched()){
+    if(this.model.isFetched() && LIME.host.isFetched){
       this.render();
     }
   },
 
   render: function(){
-    if(!this.model.isFetched()){
+    if(!this.model.isFetched() || !LIME.host.isFetched){
       return false;
     }
+
+    var vertexSchema = LIME.host.vertexSchema;
 
     // template
     this.$el.html(this.template(this.model.toJSON()));
@@ -321,6 +325,18 @@ LIME.View.SummaryView['Vertex'] = LIME.SummaryView = Backbone.View.extend({
     _.each(this.model.get('cover'), function(coverItem){
       this.$cover.append("<img src='"+coverItem.href+"?w=500' alt='' />");
     }, this);
+
+    // add menu
+    this.$add_menu = this.$el.find('.add_menu');
+
+    _.each(vertexSchema, function(fields, vertexType){
+      var add = $("<a class='add_"+vertexType+"'><img src='/icon/"+vertexType+".svg'>add "+vertexType+"</a>");
+      var t = this;
+      add.click(function(){
+        t.addVertexForm(vertexType);
+      })
+      this.$add_menu.append(add);
+    }, this)
 
 
     this.delegateEvents();
@@ -352,6 +368,12 @@ LIME.View.SummaryView['Vertex'] = LIME.SummaryView = Backbone.View.extend({
   addHappeningForm: function(){
     var newHappening = new LIME.Model['Vertex.Happening'];
     LIME.actionPanel.loadVertexForm(newHappening, this.model);
+  },
+
+  // passable type for customVertex
+  addVertexForm: function(type){
+    var v = new LIME.Model['Vertex']({vertexType:type})
+    LIME.actionPanel.loadVertexForm(v, this.model);
   },
 
   setCoverForm: function(){

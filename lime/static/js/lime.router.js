@@ -31,8 +31,10 @@ LIME.Router = Backbone.Router.extend({
       e.preventDefault();
     })
 
+    //
+    LIME.host = new LIME.Model.Host();
 
-
+    // Icons
     LIME.icon = new Iconset();
     LIME.icon.add("bookcase", '.bookcase.icon');
     LIME.icon.refresh();
