@@ -8,7 +8,6 @@ LIME.typeSchema = {
         'type':{},
         'name':{},
         'label':{}
-
       }
     }
   }
