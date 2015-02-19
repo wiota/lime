@@ -133,8 +133,9 @@ LIME.RequestApi = {
   },
 
   createVertexRequest: function(vertex){
+    var request = this;
     var _cls = vertex.get('_cls')
-
+    console.log(_cls);
     // client side
     var collection = LIME.collection[_cls];
     collection.add(vertex);
@@ -143,7 +144,7 @@ LIME.RequestApi = {
     var options = {
       success: this.callback,
       error: function(){
-        this.trigger('error');
+        request.trigger('error');
         vertex.modified = true;
       }
     }
@@ -158,6 +159,8 @@ LIME.RequestApi = {
       success: this.callback,
       error: this.error
     }
+
+    console.log(edge);
 
     edge[0].addEdgeTo(edge[1], options);
   },

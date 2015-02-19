@@ -34,6 +34,7 @@ LIME.View.SuccessorView['Vertex'] = LIME.SuccessorView = Backbone.View.extend({ 
   initialize: function(options){
     this.predecessor = options.predecessor;
     this.$el.attr('id', "_id_"+this.model.id);
+    this.template = _.template($('#'+ this.model.vertexType +'_in_set').html());
   },
 
   delete: function(){
@@ -48,7 +49,6 @@ LIME.View.SuccessorView['Vertex'] = LIME.SuccessorView = Backbone.View.extend({ 
   },
 
   render: function(){
-    this.model.toJSON()
     this.$el.html(this.template(this.model.toJSON()));
     this.$cover = this.$el.children('.cover');
     _.each(this.model.get('cover'), function(coverItem){
@@ -248,7 +248,8 @@ LIME.View.SuccsetView['Vertex'] = Backbone.View.extend({
 
     _.each(successors, function(successor, index){
       var viewFactory = LIME.View.SuccessorView[successor._cls];
-      var successorItemView = new viewFactory({'model':successor, 'predecessor': this.model});
+      var options = {'model':successor, 'predecessor': this.model, 'className': successor.vertexType+ ' successorItem'}
+      var successorItemView = new viewFactory(options);
       this.$el.append(successorItemView.render().el);
       successorItemView.listenTo(successor, 'change', successorItemView.render);
       this.children.push(successorItemView);
@@ -296,6 +297,10 @@ LIME.View.SummaryView['Vertex'] = LIME.SummaryView = Backbone.View.extend({
     this.listenTo(this.model, 'sync', this.render);
     this.listenTo(LIME.host, 'sync', this.render)
 
+    LIME.host.lookupForm('happening', _.bind(this.render, this));
+    LIME.host.lookupForm('category', _.bind(this.render, this));
+    LIME.host.lookupForm('work', _.bind(this.render, this));
+
     _.bindAll('addVertexForm');
 
     //this.listenTo(this.model, 'outofsync', this.flashOut);
@@ -329,14 +334,22 @@ LIME.View.SummaryView['Vertex'] = LIME.SummaryView = Backbone.View.extend({
     // add menu
     this.$add_menu = this.$el.find('.add_menu');
 
-    _.each(vertexSchema, function(fields, vertexType){
-      var add = $("<a class='add_"+vertexType+"'><img src='/icon/"+vertexType+".svg'>add "+vertexType+"</a>");
-      var t = this;
-      add.click(function(){
-        t.addVertexForm(vertexType);
-      })
-      this.$add_menu.append(add);
-    }, this)
+    // For compatibility with existing happenings vertex
+    // No way to specify in vertexSchema (per host basis)
+    // or in vertex (per vertex basis) which types are
+    // allowed to be added to others
+
+    if(this.model.vertexType !== 'happenings'){
+      console.log('add the types! '+this.model.vertexType);
+      _.each(vertexSchema, function(fields, vertexType){
+        var add = $("<a class='add_"+vertexType+"'><img src='/icon/"+vertexType+".svg'>add "+vertexType+"</a>");
+        var t = this;
+        add.click(function(){
+          t.addVertexForm(vertexType);
+        })
+        this.$add_menu.append(add);
+      }, this)
+    }
 
 
     this.delegateEvents();
@@ -351,30 +364,41 @@ LIME.View.SummaryView['Vertex'] = LIME.SummaryView = Backbone.View.extend({
     LIME.actionPanel.loadVertexForm(this.model, null);
   },
 
+  // passable type for customVertex
+  addVertexForm: function(type){
+    var attr = {}
+    attr.vertexType = type;
+    //attr._cls = LIME.vertexTypeToCls(type);
+
+    var v = new LIME.Model['Vertex'](attr);
+    LIME.actionPanel.loadVertexForm(v, this.model);
+  },
+
+  // Old
+  /*
   addCategoryForm: function(){
     var newCategory = new LIME.Model['Vertex.Category']();
     LIME.actionPanel.loadVertexForm(newCategory, this.model);
   },
-
+  */
+  /*
   addWorkForm: function(){
     var newWork = new LIME.Model['Vertex.Work']();
     LIME.actionPanel.loadVertexForm(newWork, this.model);
   },
-
+  */
+  /*
   addPhotoForm: function(){
     console.log("No longer functional");
   },
-
+  */
+  /*
   addHappeningForm: function(){
     var newHappening = new LIME.Model['Vertex.Happening'];
     LIME.actionPanel.loadVertexForm(newHappening, this.model);
   },
+  */
 
-  // passable type for customVertex
-  addVertexForm: function(type){
-    var v = new LIME.Model['Vertex']({vertexType:type})
-    LIME.actionPanel.loadVertexForm(v, this.model);
-  },
 
   setCoverForm: function(){
     LIME.actionPanel.loadCoverForm(this.model);

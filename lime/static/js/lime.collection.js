@@ -97,6 +97,8 @@ LIME.Collection['Vertex.Apex.Body'] = LIME.Collection['Vertex'].extend({ // Uniq
     }
   },
 
+  // allows adding to replace singular collection
+  // should be tweaked when all are added to a single collection
   add: function(model){
     this.body = model;
   },
@@ -121,6 +123,8 @@ LIME.Collection['Vertex.Apex.Happenings'] = LIME.Collection['Vertex'].extend({
     }
   },
 
+  // allows adding to replace singular collection
+  // should be tweaked when all are added to a single collection
   add: function(model){
     this.happenings = model;
   },

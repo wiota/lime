@@ -29,6 +29,7 @@ Backbone.Model.prototype.idAttribute = "_id";
 LIME.Model['Vertex']= Backbone.Model.extend({
   referencedFields: ['succset', 'predset'],
   apiVers: 'api/v1/',
+  _cls: 'Vertex',
   defaults: {
     "title":  ""
   },
@@ -42,7 +43,12 @@ LIME.Model['Vertex']= Backbone.Model.extend({
 
     // Transition to customVertex:
     // if(!attributes.vertexType){return false}
+
+    // Ease transition by falling back to class variable
     this.vertexType = attributes.vertexType || this.vertexType;
+
+    // Log until transition is finished and cleaned up
+    console.log("Type transition " + this.vertexType + " " + this._cls);
 
     this.on('sync', function(){this.modified = false;})
 
@@ -176,6 +182,9 @@ LIME.Model['Vertex']= Backbone.Model.extend({
   /* ------------------------------------------------------------------- */
 
   addEdgeTo: function(successor, options){
+
+    console.log(this);
+
     // succset
     var succset = _.clone(this.get('succset'));
     succset.unshift(successor);
@@ -249,7 +258,7 @@ LIME.Model['Vertex']= Backbone.Model.extend({
 
     options.url = 'api/v1/edge/';
     options.data = JSON.stringify({'edges': [this.get('_id'),successor.get('_id')]});
-    // console.log(options.data);
+    console.log(options.data);
     options.contentType = 'application/json';
     Backbone.sync('create', this, options);
   },
@@ -345,8 +354,9 @@ LIME.Model.Host = LIME.Model['Vertex'].extend({
   },
 
   initialize: function(){
-    this.vertexSchema = {};
+    this.vertexSchema = {'category':{}};
     this.deepen();
+
   },
 
   url: function(){
@@ -402,6 +412,7 @@ LIME.Model.Host = LIME.Model['Vertex'].extend({
 
   // This function should
   isfieldSchemaAvailable: function(vertexType){
+    console.log(vertexType);
     if(!this.vertexSchema[vertexType]){
       return false;
     } else {
@@ -411,13 +422,12 @@ LIME.Model.Host = LIME.Model['Vertex'].extend({
 
   // timeouts? What to do if form does not load?
   // throttle function
-  fetchFieldSchema: _.throttle(function(vertexType, func){
-    console.log('requesting form');
+  fetchFieldSchema: (function(vertexType, func){
     $.ajax({
       type: 'GET',
       url: this.apiVers + vertexType + '/form',
       dataType: 'json',
-      timeout: 1000,
+      timeout: 3000,
       context: this,
       success: function(data){
         func(this.parseFromFormEndpoint(data.result, vertexType))
@@ -425,12 +435,14 @@ LIME.Model.Host = LIME.Model['Vertex'].extend({
       error: function(){
         console.log('Form get error');
         // to be replace by retry and falloff code
-        this.fetchFieldSchema(vertexType, func);
+        //this.fetchFieldSchema(vertexType, func);
       }
     })
-  }, 1000),
+  }),
 
   lookupForm: function(vertexType, func){
+    vertexType.toLowerCase();
+    func = func || function(){return true;}
     if(this.isfieldSchemaAvailable(vertexType)){
       func(this.vertexSchema[vertexType]);
     } else {

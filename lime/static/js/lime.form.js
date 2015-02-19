@@ -363,11 +363,12 @@ LIME.FormView['Vertex'] = Backbone.View.extend({
   },
 
   collapse: function(){
+    console.log('collapse');
     if(this.model.isModified()){
       this.save();
     }
+    this.trigger('collapse');
     this.close();
-    LIME.actionPanel.rollUp();
   },
 
   // Events
@@ -425,7 +426,7 @@ LIME.FormView['Vertex'] = Backbone.View.extend({
       this.model.outOfSync();
     }
     this.close();
-    LIME.actionPanel.rollUp();
+    LIME.actionPanel.closeForms();
   }
 
 
@@ -497,12 +498,12 @@ LIME.FormView['Cover'] = Backbone.View.extend({
   },
 
   collapse: function(){
-    console.log('collapse');
     if(this.model.isModified()){
       this.save();
     }
     this.close();
-    LIME.actionPanel.rollUp();
+    this.trigger('collapse');
+    //LIME.actionPanel.closeForms();
   },
 
   // Events
@@ -560,7 +561,7 @@ LIME.FormView['Succset'] = Backbone.View.extend({
       this.save();
     }
     this.close();
-    LIME.actionPanel.rollUp();
+    LIME.actionPanel.closeForms();
   },
 
   // Events
@@ -592,20 +593,26 @@ LIME.FormView['Succset'] = Backbone.View.extend({
 
 LIME.ActionPanel = Backbone.View.extend({
   el: $('#action_panel'),
-  form: null,
   batches: [],
   model: null,
   predecessor: null,
 
   initialize: function(){
     this.$el.html('');
+    this.form = null;
   },
 
-  loadVertexForm: function(model, predecessor){
+  // problems with this.form
+  // collapse rollup closeforms circle
+  // tried to repair and messed up
 
-    this.closeForms();
-    if(this.form && model === model){
-      this.form = null;
+  loadVertexForm: function(model, predecessor){
+    if(this.form && this.form.model === model){
+      console.log('Form loaded already and is what you just clicked');
+      this.form.collapse();
+      return false;
+    } else if(this.form){
+      console.log('Form loaded is blocking');
       return false;
     }
     var _cls = model.get('_cls');
@@ -619,6 +626,8 @@ LIME.ActionPanel = Backbone.View.extend({
       'collection': collection,
       'className': className
     });
+
+    this.listenTo(this.form, 'collapse', this.closeForms);
 
     this.$el.html(this.form.el);
     this.form.render();
@@ -641,19 +650,17 @@ LIME.ActionPanel = Backbone.View.extend({
 
   rollUp: function(){
     this.$el.removeClass('show');
-    //this.$el.css({'bottom': '100%'}, 200);
   },
 
   rollDown: function(){
     this.$el.addClass('show');
-    //this.$el.css({'bottom': '0'}, 200);
   },
 
   closeForms: function(){
     if(this.form){
-      this.form.collapse();
       this.form = null;
     }
+    this.rollUp();
   }
 
 });
