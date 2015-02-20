@@ -34,7 +34,7 @@ def vertex_to_form(classname):
     '''
     # Check if the model exists. If it does, this is an old Model
     if model_exists(classname.title()):
-        print classname.title();
+
         # Convert the string to a class and return the form
         return str_to_class(classname.title())().to_form()
     else:
