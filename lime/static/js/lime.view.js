@@ -34,7 +34,16 @@ LIME.View.SuccessorView['Vertex'] = LIME.SuccessorView = Backbone.View.extend({ 
   initialize: function(options){
     this.predecessor = options.predecessor;
     this.$el.attr('id', "_id_"+this.model.id);
-    this.template = _.template($('#'+ this.model.vertexType +'_in_set').html());
+    this.template = this.buildTemplate();
+  },
+
+  buildTemplate: function(){
+    if(defined = $('#'+ this.model.vertexType +'_in_set').html()){
+      return _.template(defined);
+    } else {
+      // _id, vertexType, and title
+      return _.template($('#vertex_in_set').html());
+    }
   },
 
   delete: function(){
