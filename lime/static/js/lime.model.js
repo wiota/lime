@@ -356,7 +356,7 @@ LIME.Model.Host = LIME.Model['Vertex'].extend({
   initialize: function(){
     // Creating vertexSchema properties is a hack to ensure
     // they appear at the top of the list in the interface.
-    this.vertexSchema = {'category':null, 'work', null};
+    this.vertexSchema = {'category':null, 'work': null};
     this.deepen();
 
   },
