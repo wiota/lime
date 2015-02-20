@@ -340,7 +340,6 @@ LIME.View.SummaryView['Vertex'] = LIME.SummaryView = Backbone.View.extend({
     // allowed to be added to others
 
     if(this.model.vertexType !== 'happenings'){
-      console.log('add the types! '+this.model.vertexType);
       _.each(vertexSchema, function(fields, vertexType){
         var add = $("<a class='add_"+vertexType+"'><img src='/icon/"+vertexType+".svg'>add "+vertexType+"</a>");
         var t = this;

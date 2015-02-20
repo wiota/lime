@@ -48,7 +48,7 @@ LIME.Model['Vertex']= Backbone.Model.extend({
     this.vertexType = attributes.vertexType || this.vertexType;
 
     // Log until transition is finished and cleaned up
-    console.log("Type transition " + this.vertexType + " " + this._cls);
+    console.log("New Model " + this.vertexType + " " + this._cls);
 
     this.on('sync', function(){this.modified = false;})
 
@@ -354,7 +354,9 @@ LIME.Model.Host = LIME.Model['Vertex'].extend({
   },
 
   initialize: function(){
-    this.vertexSchema = {'category':{}};
+    // Creating vertexSchema properties is a hack to ensure
+    // they appear at the top of the list in the interface.
+    this.vertexSchema = {'category':null, 'work', null};
     this.deepen();
 
   },
@@ -412,7 +414,6 @@ LIME.Model.Host = LIME.Model['Vertex'].extend({
 
   // This function should
   isfieldSchemaAvailable: function(vertexType){
-    console.log(vertexType);
     if(!this.vertexSchema[vertexType]){
       return false;
     } else {
@@ -422,10 +423,10 @@ LIME.Model.Host = LIME.Model['Vertex'].extend({
 
   // timeouts? What to do if form does not load?
   // throttle function
-  fetchFieldSchema: (function(vertexType, func){
+  fetchFieldSchema: function(vertexType, func){
     $.ajax({
       type: 'GET',
-      url: this.apiVers + vertexType + '/form',
+      url: this.apiVers + vertexType + '/form/',
       dataType: 'json',
       timeout: 3000,
       context: this,
@@ -433,12 +434,13 @@ LIME.Model.Host = LIME.Model['Vertex'].extend({
         func(this.parseFromFormEndpoint(data.result, vertexType))
       },
       error: function(){
-        console.log('Form get error');
         // to be replace by retry and falloff code
+        // can't use this old way because I can no longer
+        // throttle the function as it handles many vertexTypes
         //this.fetchFieldSchema(vertexType, func);
       }
     })
-  }),
+  },
 
   lookupForm: function(vertexType, func){
     vertexType.toLowerCase();
