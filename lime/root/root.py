@@ -21,7 +21,10 @@ mod = Blueprint('root', __name__, template_folder='views')
 def run():
     from toolbox.models import Vertex, CustomVertexField
     host = Host.by_current_user()
+    return host.to_bson()
 
+    # this is a dangerous function! its a destructive enpoint behind a GET
+    '''
     bio = CustomVertexField()
     bio.name = "bio"
     bio.field_type = "LongStringField"
@@ -38,6 +41,7 @@ def run():
 
     host.save()
     return host.to_bson()
+    '''
 
 @mod.route('/', methods=["GET"])
 @nocache
