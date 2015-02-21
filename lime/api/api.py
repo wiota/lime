@@ -184,9 +184,29 @@ Category endpoints
 @login_required
 def post_category():
     data = request.json
-    data['host'] = Host.by_current_user()
-    category = Category(**data).save()
-    return category.to_bson(), 200
+    host = Host.by_current_user()
+
+    # Need a hack of sorts here. Custom fields weren't saving when the
+    # request was a POST
+
+    # new class methods
+    common_fields = Vertex.get_common_fields()
+    typical_fields = Vertex.get_typical_fields(host, 'category');
+
+    # populate common fields from request
+    data = {k: request.json[k] for k in common_fields if k in request.json.keys()}
+
+    # populate typical fields from request
+    data["customfields"]= [{
+        'key': k,
+        'value': request.json[k]} for k in typical_fields if k in request.json.keys()
+    ]
+
+    # host
+    data['host'] = host
+
+    vertex = Vertex(**data).save()
+    return vertex.to_bson(), 200
 
 
 @mod.route('/category/<id>/', methods=['PUT'])
@@ -269,12 +289,22 @@ def delete_by_id(vertex_type, id):
 @mod.route('/<vertex_type>/', methods=['POST'])
 @login_required
 def post_vertex(vertex_type):
-    # TODO: Implement this
     data = request.json
-    data['host'] = Host.by_current_user()
-    # vertex = Vertex(**data).save()
-    # return vertex.to_bson(), 200
-    return jsonify(result="todo"), 200
+    host = Host.by_current_user()
+
+    # populate common fields from request
+    data = {k: request.json[k] for k in Vertex.get_common_fields() if k in request.json.keys()}
+
+    # populate typical fields from request
+    data["customfields"]= [{
+        'key': k,
+        'value': request.json[k]} for k in Vertex.get_typical_fields(host, vertex_type) if k in request.json.keys()
+    ]
+
+    data['host'] = host
+
+    vertex = Vertex(**data).save()
+    return vertex.to_bson(), 200
 
 
 '''
