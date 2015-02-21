@@ -501,8 +501,8 @@ LIME.FormView['Cover'] = Backbone.View.extend({
     if(this.model.isModified()){
       this.save();
     }
-    this.close();
     this.trigger('collapse');
+    this.close();
     //LIME.actionPanel.closeForms();
   },
 
@@ -607,14 +607,10 @@ LIME.ActionPanel = Backbone.View.extend({
   // tried to repair and messed up
 
   loadVertexForm: function(model, predecessor){
-    if(this.form && this.form.model === model){
-      console.log('Form loaded already and is what you just clicked');
+    if(this.form){
       this.form.collapse();
-      return false;
-    } else if(this.form){
-      console.log('Form loaded is blocking');
-      return false;
     }
+
     var _cls = model.get('_cls');
     var className = model.cssClass() + ' form';
     // allow for customVertex that will be put into a standard collection
@@ -635,13 +631,17 @@ LIME.ActionPanel = Backbone.View.extend({
   },
 
   loadCoverForm: function(model){
-    this.closeForms();
+    if(this.form){
+      this.form.collapse();
+    }
     var _cls = model.get('_cls');
     var className = 'cover form';
 
     this.form = new LIME.FormView['Cover']({
       'model': model
     });
+
+    this.listenTo(this.form, 'collapse', this.closeForms);
 
     this.$el.append(this.form.el);
     this.form.render();
