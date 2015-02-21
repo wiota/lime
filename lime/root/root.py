@@ -17,31 +17,6 @@ import stripe
 
 mod = Blueprint('root', __name__, template_folder='views')
 
-@mod.route('/run/')
-def run():
-    from toolbox.models import Vertex, CustomVertexField
-    host = Host.by_current_user()
-    return host.to_bson()
-
-    # this is a dangerous function! its a destructive enpoint behind a GET
-    '''
-    bio = CustomVertexField()
-    bio.name = "bio"
-    bio.field_type = "LongStringField"
-    bio.required = False
-    bio.verbose_name = "Biography"
-
-    web = CustomVertexField()
-    web.name = "website"
-    web.field_type = "StringField"
-    web.required = False
-    web.verbose_name = "Website"
-
-    host.custom_vertex_fields["Category"] = [bio, web]
-
-    host.save()
-    return host.to_bson()
-    '''
 
 @mod.route('/', methods=["GET"])
 @nocache
@@ -54,6 +29,7 @@ def index():
     form.email.data = request.args.get('email', '')
 
     return render_template("login.html", form=form, ref=request.args.get('next', None))
+
 
 @mod.route('/', methods=["POST"])
 @nocache
@@ -75,11 +51,13 @@ def post_index():
 def image(image_name):
     return retrieve_image(image_name, Host.by_current_user().bucketname)
 
+
 @mod.route('/icon/<icon_name>', methods=['GET'])
 def icon(icon_name):
     r = make_response(render_template("icons/" + icon_name, color=request.args.get('c', None)))
     r.mimetype = "image/svg+xml"
     return r
+
 
 @mod.route("/logout/")
 @nocache
