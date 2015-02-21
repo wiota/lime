@@ -30,6 +30,7 @@ LIME.Model['Vertex']= Backbone.Model.extend({
   referencedFields: ['succset', 'predset'],
   apiVers: 'api/v1/',
   _cls: 'Vertex',
+  vertexType: 'vertex',
   defaults: {
     "title":  ""
   },
@@ -45,10 +46,16 @@ LIME.Model['Vertex']= Backbone.Model.extend({
     // if(!attributes.vertexType){return false}
 
     // Ease transition by falling back to class variable
-    this.vertexType = attributes.vertexType || this.vertexType;
+    // API prefers under_score to camelCase
+    //
+    // Old verticies should not have their attributes set
+    // for them, we should mirror the vertex_type attribute
+    // with a vertexType independent of backbone's attribute
+    // mechanism
+    this.vertexType = attributes.vertex_type || this.vertexType;
 
     // Log until transition is finished and cleaned up
-    console.log("New Model " + this.vertexType + " " + this._cls);
+    console.log(this.cid + " " + this.vertexType + " vertex_type:"+attributes.vertex_type+" cls:" + this._cls);
 
     this.on('sync', function(){this.modified = false;})
 
@@ -182,8 +189,6 @@ LIME.Model['Vertex']= Backbone.Model.extend({
   /* ------------------------------------------------------------------- */
 
   addEdgeTo: function(successor, options){
-
-    console.log(this);
 
     // succset
     var succset = _.clone(this.get('succset'));

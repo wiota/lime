@@ -373,10 +373,10 @@ LIME.View.SummaryView['Vertex'] = LIME.SummaryView = Backbone.View.extend({
   },
 
   // passable type for customVertex
+  // All vertices are born here
   addVertexForm: function(type){
-    var attr = {}
-    attr.vertexType = type;
-    //attr._cls = LIME.vertexTypeToCls(type);
+    // API prefers under_score to camelCase
+    var attr = {'vertex_type': type}
 
     var v = new LIME.Model['Vertex'](attr);
     LIME.actionPanel.loadVertexForm(v, this.model);
