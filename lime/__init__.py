@@ -89,12 +89,11 @@ def load_user(userid):
     try:
         return User.objects.get(id=userid)
     except AutoReconnect:
-        # TODO: This is not a good thing to do
         flash("Cannot connect to DB.... sorry.")
-        return AnonymousUser()
     except User.DoesNotExist:
         flash("This user account no longer exists.")
-        return AnonymousUser()
+
+    return AnonymousUser()
 
 if not app.debug:
     @app.errorhandler(Exception)
