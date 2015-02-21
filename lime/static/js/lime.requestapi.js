@@ -123,7 +123,6 @@ LIME.RequestApi = {
     // S3 uploader
     var uploader = new LIME.Uploader();
     uploader.on('complete', function(href){
-      //console.log('complete ' + name)
       request.trigger('complete', name);
     });
     uploader.on('uploadError', function(){
@@ -135,7 +134,7 @@ LIME.RequestApi = {
   createVertexRequest: function(vertex){
     var request = this;
     var _cls = vertex.get('_cls')
-    console.log(_cls);
+
     // client side
     var collection = LIME.collection[_cls];
     collection.add(vertex);
@@ -159,8 +158,6 @@ LIME.RequestApi = {
       success: this.callback,
       error: this.error
     }
-
-    console.log(edge);
 
     edge[0].addEdgeTo(edge[1], options);
   },

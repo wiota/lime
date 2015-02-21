@@ -129,7 +129,6 @@ LIME.FormView.GodAttributes = Backbone.View.extend({
 
     var changeObject = {}
     changeObject[inputId] = value;
-    console.log(this);
     this.trigger('change', changeObject);
   }
 })
@@ -170,13 +169,11 @@ LIME.FormView.FileUploadView = Backbone.View.extend({
 
   dragover: function(event){
     this.$el.addClass('over');
-    console.log('over');
     //this.cancelEvent(event);
   },
 
   dragleave: function(event){
     this.$el.removeClass('over');
-    console.log('leave');
     //this.cancelEvent(event);
   },
 
@@ -194,7 +191,6 @@ LIME.FormView.FileUploadView = Backbone.View.extend({
   // form input
 
   filesChange: function(event){
-    console.log('change')
     this.change(this.$fileInput[0].files);
     this.cancelEvent(event);
   },
@@ -363,7 +359,6 @@ LIME.FormView['Vertex'] = Backbone.View.extend({
   },
 
   collapse: function(){
-    console.log('collapse');
     if(this.model.isModified()){
       this.save();
     }
@@ -381,14 +376,12 @@ LIME.FormView['Vertex'] = Backbone.View.extend({
 
   submit: function(evt){
     this.collapse();
-    console.log('Submit');
     return false;
   },
 
   keyCheck: function(evt){
     if(evt.which == 13){
       this.collapse();
-      console.log('Enter pressed');
       return false;
     }
   },
@@ -468,7 +461,6 @@ LIME.FormView['Cover'] = Backbone.View.extend({
   },
 
   appendCover: function(covers){
-    console.log('covering');
     this.$cover = $(LIME.FormView.templates['cover_display']());
     this.$removebutton = $(LIME.FormView.templates['button']({'label':'remove cover','cls': 'remove_cover delete'}));
     // add cover images
@@ -517,7 +509,6 @@ LIME.FormView['Cover'] = Backbone.View.extend({
   },
 
   noCover: function(){
-    console.log(this);
     LIME.requestPanel.serial([
       {'func': 'removeCover', 'args': [this.model]},
     ]);
@@ -556,7 +547,6 @@ LIME.FormView['Succset'] = Backbone.View.extend({
   },
 
   collapse: function(){
-    console.log('collapse');
     if(this.model.isModified()){
       this.save();
     }
@@ -567,7 +557,6 @@ LIME.FormView['Succset'] = Backbone.View.extend({
   // Events
 
   filesChanged: function(files){
-    // console.log('changed')
     this.model;
     this.photoNesting;
     this.predecessor;
