@@ -16,10 +16,12 @@ mod = Blueprint('webhook', __name__, template_folder='views', url_prefix='/webho
 
 @mod.route('/stripe/', methods=['POST'])
 def stripe_hook():
+    """ The endpoint which Stripe hits with every event. """
+
+    # This is event is in "livemode", and not testing, so send a StripeEmail
     if request.json["livemode"]:
         StripeEmail(request.json).send()
-    if app.debug:
-        print request.json
+
     stripe.api_key = app.config['STRIPE_SECRET_KEY']
     e = stripe.Event.retrieve(request.json["id"])
 
@@ -37,9 +39,13 @@ def stripe_hook():
             BillingEmail(user.email, invoice, e, link).send()
     elif e["type"] == "invoice.payment_succeeded" :
     '''
+
+    # This sends a receipt to the user when an invoice's payment succeeds
     if e["type"] == "invoice.payment_succeeded" :
         user = User.objects.get(stripe_id=e["data"]["object"]["customer"])
         invoice = stripe.Invoice.retrieve(e["data"]["object"]["id"])
         link = url_for("account.get_receipt", id=invoice.id, _external=True)
         ReceiptEmail(user.email, invoice, e, link).send()
+
+    # Always return a 200 to Stripe
     return '', 200
