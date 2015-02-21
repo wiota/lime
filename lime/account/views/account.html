@@ -83,7 +83,7 @@
     <h3>Unpaid</h3>
     <ul>
     {% for invoice in invoices.data if not invoice.paid %}
-        <li>{{ invoice.date|date }}: {{ invoice.total|money }} - <a href="{{ url_for("account.get_invoice", id=invoice.id) }}">View &amp; pay invoice</a></li>
+        <li>{{ invoice.date|date }}: {{ invoice.total|money }} - <a href="{{ url_for("account.get_invoice", invoice_id=invoice.id) }}">View &amp; pay invoice</a></li>
     {% else %}
         All paid up!
     {% endfor %}
@@ -92,7 +92,7 @@
     <h3>Paid</h3>
     <ul>
     {% for invoice in invoices.data if invoice.paid %}
-        <li>{{ invoice.date|date }}: {{ invoice.total|money }} - <a href="{{ url_for("account.get_receipt", id=invoice.id) }}">View receipt</a></li>
+        <li>{{ invoice.date|date }}: {{ invoice.total|money }} - <a href="{{ url_for("account.get_receipt", invoice_id=invoice.id) }}">View receipt</a></li>
     {% else %}
         No invoices yet!
     {% endfor %}

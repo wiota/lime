@@ -8,19 +8,27 @@ import stripe
 
 mod = Blueprint('account', __name__, static_folder='static', template_folder='views', static_url_path='/static/account', url_prefix='/account')
 
+
+def current_stripe_customer():
+    return stripe.Customer.retrieve(current_user.stripe_id)
+
+def get_stripe_invoice(invoice_id):
+    return stripe.Invoice.retrieve(invoice_id)
+
+def get_all_stripe_invoices():
+    return stripe.Invoice.all(customer=current_user.stripe_id)
+
+
 @mod.route('/')
 @login_required
 def account():
-    host = Host.by_current_user()
-    cust = stripe.Customer.retrieve(current_user.stripe_id)
-    invoices = stripe.Invoice.all(customer=current_user.stripe_id)
-    return render_template("account.html", user=current_user, host=host, cust=cust, pubkey=stripe.public_key, invoices=invoices)
+    return render_template("account.html", user=current_user, host=Host.by_current_user(), cust=current_stripe_customer(), pubkey=stripe.public_key, invoices=get_all_stripe_invoices())
 
 
 @mod.route('/card/new/', methods=['POST'])
 @login_required
 def new_card():
-    cust = stripe.Customer.retrieve(current_user.stripe_id)
+    cust = current_stripe_customer()
     cust.cards.create(card=request.form.get('stripeToken'))
     flash("Card successfully added.")
     return redirect(url_for("account.account"))
@@ -29,7 +37,7 @@ def new_card():
 @mod.route('/card/delete/<id>', methods=['GET'])
 @login_required
 def delete_card(id):
-    cust = stripe.Customer.retrieve(current_user.stripe_id)
+    cust = current_stripe_customer()
     try:
         cust.cards.retrieve(id).delete()
     except:
@@ -38,25 +46,23 @@ def delete_card(id):
     return redirect(url_for("account.account"))
 
 
-@mod.route('/invoice/<id>/', methods=['GET'])
+@mod.route('/invoice/<invoice_id>/', methods=['GET'])
 @login_required
-def get_invoice(id):
-    invoice = stripe.Invoice.retrieve(id)
-    return render_template("invoice.html", invoice=invoice)
+def get_invoice(invoice_id):
+    return render_template("invoice.html", invoice=get_stripe_invoice(invoice_id))
 
 
-@mod.route('/receipt/<id>/', methods=['GET'])
+@mod.route('/receipt/<invoice_id>/', methods=['GET'])
 @login_required
-def get_receipt(id):
-    invoice = stripe.Invoice.retrieve(id)
-    return render_template("receipt.html", invoice=invoice)
+def get_receipt(invoice_id):
+    return render_template("receipt.html", invoice=get_stripe_invoice(invoice_id))
 
 
-@mod.route('/invoice/<id>/pay/', methods=['GET'])
+@mod.route('/invoice/<invoice_id>/pay/', methods=['GET'])
 @login_required
-def pay_invoice(id):
-    invoice = stripe.Invoice.retrieve(id)
-    cust = stripe.Customer.retrieve(current_user.stripe_id)
+def pay_invoice(invoice_id):
+    invoice = get_stripe_invoice(invoice_id)
+    cust = current_stripe_customer()
 
     if cust.cards.total_count < 1 :
         flash("Please add a card first.")

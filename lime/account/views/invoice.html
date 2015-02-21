@@ -36,5 +36,5 @@ A new invoice has been created with the following charges:<br/>
   </tr></tfoot>
 </table>
 <br/>
-<a href="{{ url_for("account.pay_invoice", id=invoice.id) }}">Click here to pay this invoice now</a>.
+<a href="{{ url_for("account.pay_invoice", invoice_id=invoice.id) }}">Click here to pay this invoice now</a>.
 {% endblock %}

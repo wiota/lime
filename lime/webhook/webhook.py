@@ -34,7 +34,7 @@ def stripe_hook():
             # This is a manual invoice, close it so it can be paid later
             invoice.closed = True
             invoice.save()
-            link = url_for("account.get_invoice", id=invoice.id, _external=True)
+            link = url_for("account.get_invoice", invoice_id=invoice.id, _external=True)
             BillingEmail(user.email, invoice, e, link).send()
     elif e["type"] == "invoice.payment_succeeded" :
     '''
@@ -43,7 +43,7 @@ def stripe_hook():
     if e["type"] == "invoice.payment_succeeded" :
         user = User.objects.get(stripe_id=e["data"]["object"]["customer"])
         invoice = stripe.Invoice.retrieve(e["data"]["object"]["id"])
-        link = url_for("account.get_receipt", id=invoice.id, _external=True)
+        link = url_for("account.get_receipt", invoice_id=invoice.id, _external=True)
         ReceiptEmail(user.email, invoice, e, link).send()
 
     # Always return a 200 to Stripe
