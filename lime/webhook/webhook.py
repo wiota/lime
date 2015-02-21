@@ -22,7 +22,6 @@ def stripe_hook():
     if request.json["livemode"]:
         StripeEmail(request.json).send()
 
-    stripe.api_key = app.config['STRIPE_SECRET_KEY']
     e = stripe.Event.retrieve(request.json["id"])
 
     # This should catch manual invoices, but needs tweaking. Leaving this out

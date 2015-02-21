@@ -53,7 +53,6 @@ def user():
 @login_required
 @admin_required
 def individual_user(id):
-    stripe.api_key = app.config['STRIPE_SECRET_KEY']
     user = User.objects.get(id=id)
     host = Host.by_owner(user)
     cust = stripe.Customer.retrieve(user.stripe_id)
@@ -104,7 +103,6 @@ def definitely_delete_user(id):
 
         # Delete the Stripe customer
         try:
-            stripe.api_key = app.config['STRIPE_SECRET_KEY']
             customer = stripe.Customer.retrieve(user.stripe_id)
             customer.delete()
         except:
@@ -124,7 +122,6 @@ def definitely_delete_user(id):
 @login_required
 @admin_required
 def add_plan(user_id, plan_id):
-    stripe.api_key = app.config['STRIPE_SECRET_KEY']
     user = User.objects.get(id=user_id)
     cust = stripe.Customer.retrieve(user.stripe_id)
     if cust.cards.total_count > 0:
@@ -138,7 +135,6 @@ def add_plan(user_id, plan_id):
 @login_required
 @admin_required
 def remove_plan(user_id, sub_id):
-    stripe.api_key = app.config['STRIPE_SECRET_KEY']
     user = User.objects.get(id=user_id)
     cust = stripe.Customer.retrieve(user.stripe_id)
     cust.subscriptions.retrieve(sub_id).delete()
@@ -159,7 +155,6 @@ def create_user():
         user = User(email=form.email.data, email_hash=email_hash)
 
         # Create a stripe customer
-        stripe.api_key = app.config['STRIPE_SECRET_KEY']
         customer = stripe.Customer.create(email=user.email)
         user.stripe_id = customer.id
 

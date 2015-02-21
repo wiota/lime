@@ -19,6 +19,7 @@ from toolbox.template_filters import format_date, format_money
 from toolbox.tools import AnonymousUser
 import traceback
 from pymongo.errors import AutoReconnect
+import stripe
 
 # Create a starter app
 app = Flask(__name__)
@@ -41,8 +42,8 @@ app.jinja_env.filters["money"] = format_money
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 
 # Stripe API keys
-app.config['STRIPE_SECRET_KEY'] = os.environ.get('STRIPE_SECRET_KEY')
-app.config['STRIPE_PUBLIC_KEY'] = os.environ.get('STRIPE_PUBLIC_KEY')
+stripe.api_key = os.environ.get('STRIPE_SECRET_KEY')
+stripe.public_key = os.environ.get('STRIPE_PUBLIC_KEY')
 
 # Heroku version
 app.config['HEROKU_RELEASE_NAME'] = os.environ.get('HEROKU_RELEASE_NAME', 'dev')
