@@ -180,35 +180,6 @@ def post_tag():
 Category endpoints
 '''
 
-@mod.route('/category/', methods=['POST'])
-@login_required
-def post_category():
-    data = request.json
-    host = Host.by_current_user()
-
-    # Need a hack of sorts here. Custom fields weren't saving when the
-    # request was a POST
-
-    # new class methods
-    common_fields = Vertex.get_common_fields()
-    typical_fields = Vertex.get_typical_fields(host, 'category');
-
-    # populate common fields from request
-    data = {k: request.json[k] for k in common_fields if k in request.json.keys()}
-
-    # populate typical fields from request
-    data["customfields"]= [{
-        'key': k,
-        'value': request.json[k]} for k in typical_fields if k in request.json.keys()
-    ]
-
-    # host
-    data['host'] = host
-
-    vertex = Vertex(**data).save()
-    return vertex.to_bson(), 200
-
-
 @mod.route('/category/<id>/', methods=['PUT'])
 @login_required
 def put_category(id):
