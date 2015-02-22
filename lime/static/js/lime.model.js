@@ -49,17 +49,9 @@ LIME.Model.Vertex= Backbone.Model.extend({
     this.modified = options.modified || false;
 
     // Transition to customVertex:
-
-
     // if(!attributes.vertexType){return false}
 
-    // Ease transition by falling back to class variable
-    // API prefers under_score to camelCase
-    //
-    // Old verticies should not have their attributes set
-    // for them, we should mirror the vertex_type attribute
-    // with a vertexType independent of backbone's attribute
-    // mechanism
+    // Ease transition for now by falling back to class variable
     this.vertexType = attributes.vertex_type || this.cls_dict[this.get("_cls")];
 
     // Log until transition is finished and cleaned up
@@ -88,7 +80,6 @@ LIME.Model.Vertex= Backbone.Model.extend({
     var summary_attr = _.omit(attr, 'succset');
     //console.log('change triggered ' + _.reduce(summary_attr, function(a, b){return a + " " + b}, ''));
     if(!_.isEmpty(summary_attr)){
-      // put changed attributes into array
       this.trigger('summaryChanged', {'attr':summary_attr});
     }
   },
@@ -110,7 +101,6 @@ LIME.Model.Vertex= Backbone.Model.extend({
       response.result.succset = this.reference(response.result.succset);
       return response.result;
     }
-
   },
 
   deepen: function(){
@@ -144,19 +134,7 @@ LIME.Model.Vertex= Backbone.Model.extend({
       succsetReferences.push(model);
     });
     return succsetReferences;
-  },
-
-  outOfSync: function(){
-    // Calling photo function
-    this.fetched = false;
-    this.trigger('outofsync');
-    this.once('sync', this.resynced);
-    this.deepen();
-  },
-
-  resynced: function(){
-    this.trigger('resynced');
-  },
+  }
 
   /* ------------------------------------------------------------------- */
   // Attribute Functions
@@ -471,36 +449,6 @@ LIME.Model.Host = LIME.Model.Vertex.extend({
 LIME.Model.photoNesting = {
   'category': ['Vertex.Work']
 }
-
-/* ------------------------------------------------------------------- */
-// Category
-/* ------------------------------------------------------------------- */
-
-LIME.Model['Vertex.Category'] = LIME.Model.Vertex.extend({
-  vertexType: 'category',
-  _cls: "Vertex.Category",
-  photoNesting: ['Vertex.Work']
-});
-
-/* ------------------------------------------------------------------- */
-// Work
-/* ------------------------------------------------------------------- */
-
-LIME.Model['Vertex.Work'] = LIME.Model.Vertex.extend({
-  vertexType: 'work',
-  _cls: "Vertex.Work",
-  photoNesting: []
-});
-
-/* ------------------------------------------------------------------- */
-// Tag
-/* ------------------------------------------------------------------- */
-
-LIME.Model['Vertex.Tag'] = Backbone.Model.extend({
-  vertexType: 'tag',
-  _cls: "Vertex.Tag",
-  photoNesting: ['Vertex.Work']
-});
 
 /* ------------------------------------------------------------------- */
 // Medium - Abstract class - do not instantiate!

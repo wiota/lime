@@ -410,16 +410,7 @@ LIME.FormView['Vertex'] = Backbone.View.extend({
 
   savePeriodically: _.debounce(function(){
     this.save();
-  }, 1000),
-
-  cancel: function(){
-    if(!this.model.isNew() && this.model.isModified()){
-      this.model.outOfSync();
-    }
-    this.close();
-    LIME.actionPanel.closeForms();
-  }
-
+  }, 1000)
 
 });
 
