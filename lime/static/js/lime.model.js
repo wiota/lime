@@ -134,7 +134,7 @@ LIME.Model.Vertex= Backbone.Model.extend({
       succsetReferences.push(model);
     });
     return succsetReferences;
-  }
+  },
 
   /* ------------------------------------------------------------------- */
   // Attribute Functions
