@@ -87,15 +87,6 @@ def happenings():
     return Happenings.by_current_user().to_bson()
 
 
-@mod.route('/happening/', methods=['POST'])
-@login_required
-def post_happening():
-    data = request.json
-    data['host'] = Host.by_current_user().id
-    happening = Happening(**data).save()
-    return happening.to_bson(), 200
-
-
 @mod.route('/happening/<id>/', methods=['PUT'])
 @login_required
 def put_happening(id):
