@@ -270,7 +270,7 @@ LIME.View.SummaryView['Vertex'] = LIME.SummaryView = Backbone.View.extend({
     this.listenTo(this.model, 'sync', this.render);
     this.listenTo(LIME.host, 'sync', this.render)
 
-    _.bindAll('addVertexForm');
+    _.bindAll('newForm');
 
     // Must be after template is built, not sure why
     LIME.host.lookupForm('happening', _.bind(this.render, this));
@@ -283,13 +283,11 @@ LIME.View.SummaryView['Vertex'] = LIME.SummaryView = Backbone.View.extend({
   },
 
   buildTemplate: function(){
-    console.log("Template: "+ this.model.vertexType);
-    if(defined = $('#'+ this.model.vertexType +'_summary').html()){
-      console.log('own template for ');
-      return _.template(defined);
+    var typeSpecificTemplate = $('#'+ this.model.vertexType +'_summary');
+    if(typeSpecificTemplate.length){
+      return _.template(typeSpecificTemplate.html());
     } else {
-      console.log('default template for ');
-      // _id, vertexType, and title
+      // _id, vertex_type, and title required
       return _.template($('#vertex_summary').html());
     }
   },
@@ -318,16 +316,12 @@ LIME.View.SummaryView['Vertex'] = LIME.SummaryView = Backbone.View.extend({
     this.$add_menu = this.$el.find('.add_menu');
 
     // For compatibility with existing happenings vertex
-    // No way to specify in vertexSchema (per host basis)
-    // or in vertex (per vertex basis) which types are
-    // allowed to be added to others
-
     if(this.model.vertexType !== 'happenings'){
       _.each(vertexSchema, function(fields, vertexType){
         var add = $("<a class='add_"+vertexType+"'><img src='/icon/"+vertexType+".svg'>add "+vertexType+"</a>");
         var t = this;
         add.click(function(){
-          t.addVertexForm(vertexType);
+          t.newForm(vertexType);
         })
         this.$add_menu.append(add);
       }, this)
@@ -338,21 +332,13 @@ LIME.View.SummaryView['Vertex'] = LIME.SummaryView = Backbone.View.extend({
     return this;
   },
 
-  toggleMeta: function(){
-    //this.$meta.slideToggle();
-  },
-
   updateForm: function(){
     LIME.actionPanel.loadVertexForm(this.model, null);
   },
 
-  // passable type for customVertex
-  // All vertices are born here
-  addVertexForm: function(type){
-    // API prefers under_score to camelCase
-    var attr = {'vertex_type': type}
-
-    var v = new LIME.Model.Vertex(attr);
+  newForm: function(type){
+    // API uses underscored attribute names
+    var v = new LIME.Model.Vertex({'vertex_type': type});
     LIME.actionPanel.loadVertexForm(v, this.model);
   },
 
@@ -365,28 +351,6 @@ LIME.View.SummaryView['Vertex'] = LIME.SummaryView = Backbone.View.extend({
   }
 
 });
-
-/*
-LIME.View.SummaryView['Vertex.Apex.Body'] = LIME.PortfolioSummaryView = LIME.SummaryView.extend({
-  template:_.template($('#body_summary').html())
-});
-
-LIME.View.SummaryView['Vertex.Apex.Happenings'] = LIME.PortfolioSummaryView = LIME.SummaryView.extend({
-  template:_.template($('#happenings_apex_summary').html())
-});
-
-LIME.View.SummaryView['Vertex.Category'] = LIME.CategorySummaryView = LIME.SummaryView.extend({
-  template:_.template($('#category_summary').html())
-});
-
-LIME.View.SummaryView['Vertex.Work'] = LIME.WorkSummaryView = LIME.SummaryView.extend({
-  template:_.template($('#work_summary').html())
-});
-
-LIME.View.SummaryView['Vertex.Happening'] = LIME.WorkSummaryView = LIME.SummaryView.extend({
-  template:_.template($('#happening_summary').html())
-});
-*/
 
 /* ------------------------------------------------------------------- */
 // Listings
