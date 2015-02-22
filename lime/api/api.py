@@ -100,12 +100,11 @@ def post_happening():
 @login_required
 def put_happening(id):
     doc = Happening.by_id(id)
+    data = {k: request.json[k] for k in doc.get_aggregate_fields() if k in request.json.keys()}
 
-    # TODO: This is a bad function
-    data = {k: request.json[k] for k in doc.get_save_fields() if k in request.json.keys()}
     update_document(doc, data).save()
 
-    # TODO: This is a hack. get_save_fields should be reworked.
+    # TODO: This is a hack. get_aggregate_fields should be reworked.
     if 'cover' in request.json.keys():
         doc.reload()
         doc.update(set__cover=request.json['cover'])
@@ -150,30 +149,16 @@ def post_work():
 @login_required
 def put_work(id):
     doc = Work.by_id(id)
+    data = {k: request.json[k] for k in doc.get_aggregate_fields() if k in request.json.keys()}
 
-    # TODO: This is a bad function
-    data = {k: request.json[k] for k in doc.get_save_fields() if k in request.json.keys()}
     update_document(doc, data).save()
 
-    # TODO: This is a hack. get_save_fields should be reworked.
+    # TODO: This is a hack. get_aggregate_fields should be reworked.
     if 'cover' in request.json.keys():
         doc.reload()
         doc.update(set__cover=request.json['cover'])
 
     return jsonify(result="success"), 200  # TODO: Should be a 204
-
-
-'''
-Tag endpoints
-'''
-
-@mod.route('/tag/', methods=['POST'])
-@login_required
-def post_tag():
-    data = request.json
-    data['host'] = Host.by_current_user()
-    tag = Tag(**data).save()
-    return tag.to_bson(), 200
 
 
 '''
@@ -184,31 +169,11 @@ Category endpoints
 @login_required
 def put_category(id):
     doc = Category.by_id(id)
-    host = Host.by_current_user()
-
-    # TODO: This is a hack. The key 'Category' here should come from the
-    # <vertex_type> in the URL when we eventually condense these endpoints.
-    # Essentially returnsn an empty list if the type is not defined for the
-    # host, so nothing happens.
-    custom_vertex_keys = [x.name for x in host.custom_vertex_fields.get('Category', [])]
-
-    # TODO: This is a bad function
-    # It gets the valid fields for a document and uses them to populate the
-    # data dictionary, since the MongoEngine model doesn't respond well when we
-    # give it fields it's not expecting.
-    data = {k: request.json[k] for k in doc.get_save_fields() if k in request.json.keys()}
-
-    # TODO: Just making this worse...
-    # Extracts the custom fields from the request based on which keys are
-    # available for the host
-    data["customfields"]= [{
-        'key': k,
-        'value': request.json[k]} for k in custom_vertex_keys if k in request.json.keys()
-    ]
+    data = {k: request.json[k] for k in doc.get_aggregate_fields() if k in request.json.keys()}
 
     update_document(doc, data).save()
 
-    # TODO: This is a hack. get_save_fields should be reworked.
+    # TODO: This is a hack. get_aggregate_fields should be reworked.
     if 'cover' in request.json.keys():
         doc.reload()
         doc.update(set__cover=request.json['cover'])
@@ -223,23 +188,7 @@ Vertex endpoints
 @mod.route('/<vertex_type>/<id>/', methods=['GET'])
 @login_required
 def vertex_id(vertex_type, id):
-    '''
-    This was originally:
-
     return Vertex.by_id(id).to_bson()
-
-    ...but now we need to bake in the potential custom fields for every vertex
-    type. This requires getting the vertex as a dict, extracting them from the
-    `customfields` field, setting them in the dict, removing the customfields
-    field, and then bsonify-ing the resulting dict. Perhaps not the best, but
-    it works for now until custom fields become more solid.
-
-    '''
-    v = Vertex.by_id(id).to_dict()
-    for x in v['customfields']:
-        v[x["key"]] = x["value"]
-    del v['customfields']
-    return bsonify(**make_response(v))
 
 
 @mod.route('/<vertex_type>/<id>/succset/', methods=['PUT'])
@@ -260,22 +209,19 @@ def delete_by_id(vertex_type, id):
 @mod.route('/<vertex_type>/', methods=['POST'])
 @login_required
 def post_vertex(vertex_type):
-    data = request.json
-    host = Host.by_current_user()
+    doc = Vertex()
+    doc.vertex_type = vertex_type
+    doc.host = Host.by_current_user()
+    data = {k: request.json[k] for k in doc.get_aggregate_fields() if k in request.json.keys()}
 
-    # populate common fields from request
-    data = {k: request.json[k] for k in Vertex.get_common_fields() if k in request.json.keys()}
+    update_document(doc, data).save()
 
-    # populate typical fields from request
-    data["customfields"]= [{
-        'key': k,
-        'value': request.json[k]} for k in Vertex.get_typical_fields(host, vertex_type) if k in request.json.keys()
-    ]
+    # TODO: This is a hack. get_aggregate_fields should be reworked.
+    if 'cover' in request.json.keys():
+        doc.reload()
+        doc.update(set__cover=request.json['cover'])
 
-    data['host'] = host
-
-    vertex = Vertex(**data).save()
-    return vertex.to_bson(), 200
+    return doc.to_bson(), 200
 
 
 '''
@@ -289,29 +235,6 @@ def post_photo():
     data['host'] = Host.by_current_user()
     photo = Photo(**data).save()
     return photo.to_bson(expand=False), 200
-
-
-'''
-Page endpoints
-'''
-
-@mod.route('/page/', methods=['POST'])
-@login_required
-def post_page():
-    data = request.json
-    data['host'] = Host.by_current_user()
-    page = CustomPage(**data).save()
-    return page.to_bson(), 200
-
-
-# TODO: This function probably isn't used and definitely doesn't work.
-@mod.route('/page/<id>/', methods=['PUT'])
-@login_required
-def put_page(id):
-    doc = CustomPage.by_id(id)
-    data = {k: request.json[k] for k in doc.get_save_fields()}
-    update_document(doc, data).save()
-    return jsonify(result="success"), 200  # TODO: Should be a 204
 
 
 '''
