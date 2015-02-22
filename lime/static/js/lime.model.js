@@ -26,13 +26,19 @@ Backbone.Model.prototype.idAttribute = "_id";
 // Vertex - Abstract class - to be transitioned to singular customVertex
 /* ------------------------------------------------------------------- */
 
-LIME.Model['Vertex']= Backbone.Model.extend({
+LIME.Model.Vertex= Backbone.Model.extend({
   referencedFields: ['succset', 'predset'],
   apiVers: 'api/v1/',
-  _cls: 'Vertex',
   vertexType: 'vertex',
   defaults: {
     "title":  ""
+  },
+
+  cls_dict: {
+      "Vertex.Category":"category",
+      "Vertex.Work":"work",
+      "Vertex.Happening":"happening",
+      "Vertex.Medium.Photo":"photo"
   },
 
   initialize: function(attributes, options){
@@ -43,6 +49,8 @@ LIME.Model['Vertex']= Backbone.Model.extend({
     this.modified = options.modified || false;
 
     // Transition to customVertex:
+
+
     // if(!attributes.vertexType){return false}
 
     // Ease transition by falling back to class variable
@@ -52,15 +60,15 @@ LIME.Model['Vertex']= Backbone.Model.extend({
     // for them, we should mirror the vertex_type attribute
     // with a vertexType independent of backbone's attribute
     // mechanism
-    this.vertexType = attributes.vertex_type || this.vertexType;
+    this.vertexType = attributes.vertex_type || this.cls_dict[this.get("_cls")];
 
     // Log until transition is finished and cleaned up
-    console.log(this.cid + " " + this.vertexType + " vertex_type:"+attributes.vertex_type+" cls:" + this._cls);
+    console.log(this.cid + " " + this.vertexType + " vertex_type:"+attributes.vertex_type+" cls:" + this.get('_cls'));
 
     this.on('sync', function(){this.modified = false;})
 
     if(this.isNew()){
-      this.set({'_cls': this._cls, 'title': this.get('title') || 'untitled'})
+      this.set({'title': this.get('title') || 'untitled'})
       this.modified = false;
     }
     this.on('change', this.triggerEvents);
@@ -72,10 +80,6 @@ LIME.Model['Vertex']= Backbone.Model.extend({
 
   urlSuccset: function(){
     return this.url() + 'succset/';
-  },
-
-  cssClass: function(){
-    return 'vertex ' + this.vertexType
   },
 
   triggerEvents: function(model, options){
@@ -118,7 +122,7 @@ LIME.Model['Vertex']= Backbone.Model.extend({
   },
 
   deepenSuccess: function(model, response, options){
-    var collection = LIME.collection[model.get('_cls')] || LIME.collection['Vertex'];
+    var collection = LIME.collection.Vertex;
     collection.add(model);
 
     model.fetched = true;
@@ -134,11 +138,9 @@ LIME.Model['Vertex']= Backbone.Model.extend({
   reference: function(succset){
     var succsetReferences = [];
     _.each(succset, function(object){
-      var collection = LIME.collection[object._cls];
-      var modelFactory = LIME.Model[object._cls];
-      var model = collection.get(object['_id']) || new modelFactory(object, {'fetched': true, 'deep': false});
+      var model = LIME.collection.Vertex.get(object['_id']) || new LIME.Model.Vertex(object, {'fetched': true, 'deep': false});
 
-      collection.add(model); // if model already exists in collection, this request is ignored
+      LIME.collection.Vertex.add(model); // if model already exists in collection, this request is ignored
       succsetReferences.push(model);
     });
     return succsetReferences;
@@ -346,7 +348,7 @@ LIME.Model['Vertex']= Backbone.Model.extend({
 // Host
 /* ------------------------------------------------------------------- */
 
-LIME.Model.Host = LIME.Model['Vertex'].extend({
+LIME.Model.Host = LIME.Model.Vertex.extend({
   vertexType: 'host',
   apiVers: 'api/v1/',
   defaults: {},
@@ -358,9 +360,10 @@ LIME.Model.Host = LIME.Model['Vertex'].extend({
     URLField: "text"
   },
 
-  initialize: function(){
+  initialize: function(attributes, options){
     // Creating vertexSchema properties is a hack to ensure
     // they appear at the top of the list in the interface.
+    console.log(this.cid + " " + this.vertexType + " vertex_type:"+attributes.vertex_type+" cls:" + this._cls);
     this.vertexSchema = {'category':null, 'work': null};
     this.deepen();
 
@@ -465,12 +468,15 @@ LIME.Model.Host = LIME.Model['Vertex'].extend({
 // These types should remain standard
 /* ------------------------------------------------------------------- */
 
+LIME.Model.photoNesting = {
+  'category': ['Vertex.Work']
+}
 
 /* ------------------------------------------------------------------- */
 // Category
 /* ------------------------------------------------------------------- */
 
-LIME.Model['Vertex.Category'] = LIME.Model['Vertex'].extend({
+LIME.Model['Vertex.Category'] = LIME.Model.Vertex.extend({
   vertexType: 'category',
   _cls: "Vertex.Category",
   photoNesting: ['Vertex.Work']
@@ -480,7 +486,7 @@ LIME.Model['Vertex.Category'] = LIME.Model['Vertex'].extend({
 // Work
 /* ------------------------------------------------------------------- */
 
-LIME.Model['Vertex.Work'] = LIME.Model['Vertex'].extend({
+LIME.Model['Vertex.Work'] = LIME.Model.Vertex.extend({
   vertexType: 'work',
   _cls: "Vertex.Work",
   photoNesting: []
@@ -500,7 +506,7 @@ LIME.Model['Vertex.Tag'] = Backbone.Model.extend({
 // Medium - Abstract class - do not instantiate!
 /* ------------------------------------------------------------------- */
 
-LIME.Model['Vertex.Medium'] = LIME.Model['Vertex'].extend({
+LIME.Model['Vertex.Medium'] = LIME.Model.Vertex.extend({
   _cls: "Vertex.Medium",
 
   initialize: function(){
@@ -526,7 +532,7 @@ LIME.Model['Vertex.Medium.Photo'] = LIME.Model['Vertex.Medium'].extend({
 // Body
 /* ------------------------------------------------------------------- */
 
-LIME.Model['Vertex.Apex.Body'] = LIME.Model['Vertex'].extend({
+LIME.Model['Vertex.Apex.Body'] = LIME.Model.Vertex.extend({
   vertexType: 'body',
   _cls: "Vertex.Apex.Body",
   photoNesting: ['Vertex.Work'],
@@ -547,7 +553,7 @@ LIME.Model['Vertex.Apex.Body'] = LIME.Model['Vertex'].extend({
 // Happenings Apex
 /* ------------------------------------------------------------------- */
 
-LIME.Model['Vertex.Apex.Happenings'] = LIME.Model['Vertex'].extend({
+LIME.Model['Vertex.Apex.Happenings'] = LIME.Model.Vertex.extend({
   vertexType: 'happenings',
   urlRoot: "api/v1/apex/happenings/",
   _cls: "Vertex.Apex.Happenings",
@@ -565,7 +571,7 @@ LIME.Model['Vertex.Apex.Happenings'] = LIME.Model['Vertex'].extend({
 // Happening
 /* ------------------------------------------------------------------- */
 
-LIME.Model['Vertex.Happening'] = LIME.Model['Vertex'].extend({
+LIME.Model['Vertex.Happening'] = LIME.Model.Vertex.extend({
   vertexType: 'happening',
   urlRoot: "api/v1/happening",
   _cls: "Vertex.Happening"

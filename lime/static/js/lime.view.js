@@ -25,7 +25,6 @@ LIME.View.SuccessorView = {};
 
 LIME.View.SuccessorView['Vertex'] = LIME.SuccessorView = Backbone.View.extend({ // Abstract class - do not instantiate!
   tagName: 'li',
-  className: 'successorItem',
   events:{
     'click .delete':'delete',
     'click .update':'updateForm'
@@ -71,39 +70,6 @@ LIME.View.SuccessorView['Vertex'] = LIME.SuccessorView = Backbone.View.extend({ 
     return this;
   }
 });
-
-LIME.View.SuccessorView['Vertex.Apex.Body'] = LIME.View.SuccessorView['Vertex'].extend({
-  className: 'body successorItem',
-  template:_.template($('#body_in_set').html())
-});
-
-LIME.View.SuccessorView['Vertex.Happening'] = LIME.View.SuccessorView['Vertex'].extend({
-  className: 'happening successorItem',
-  template:_.template($('#happening_in_set').html())
-});
-
-LIME.View.SuccessorView['Vertex.Category'] = LIME.View.SuccessorView['Vertex'].extend({
-  className: 'category successorItem',
-  template:_.template($('#category_in_set').html())
-});
-
-LIME.View.SuccessorView['Vertex.Work'] = LIME.View.SuccessorView['Vertex'].extend({
-  className: 'work successorItem',
-  template:_.template($('#work_in_set').html())
-});
-
-LIME.View.SuccessorView['Vertex.Medium.Photo'] = LIME.View.SuccessorView['Vertex'].extend({
-  className: 'photo successorItem',
-  template:_.template($('#photo_in_set').html())
-});
-
-LIME.View.SuccessorView['empty'] = Backbone.View.extend({
-  tagName: 'li',
-  initialize: function(){
-    this.$el.html('Empty');
-  }
-});
-
 
 /* ------------------------------------------------------------------- */
 // Successor Set List
@@ -256,7 +222,7 @@ LIME.View.SuccsetView['Vertex'] = Backbone.View.extend({
     successors = this.model.get('succset');
 
     _.each(successors, function(successor, index){
-      var viewFactory = LIME.View.SuccessorView[successor._cls];
+      var viewFactory = LIME.View.SuccessorView['Vertex'];
       var options = {'model':successor, 'predecessor': this.model, 'className': successor.vertexType+ ' successorItem'}
       var successorItemView = new viewFactory(options);
       this.$el.append(successorItemView.render().el);
@@ -277,7 +243,6 @@ LIME.View.SummaryView = {};
 
 LIME.View.SummaryView['Vertex'] = LIME.SummaryView = Backbone.View.extend({
   tagName: 'div',
-  template:_.template($('#default_summary').html()),
 
   events:{
     'click .title':'toggleMeta',
@@ -291,7 +256,7 @@ LIME.View.SummaryView['Vertex'] = LIME.SummaryView = Backbone.View.extend({
   },
 
   initialize: function(){
-    this._cls = this.model.get('_cls');
+    this.template = this.buildTemplate();
 
     // set up sync handler to render anytime model is synced
     // Seems sloppy to set up a sync handler and a summary changed
@@ -301,22 +266,31 @@ LIME.View.SummaryView['Vertex'] = LIME.SummaryView = Backbone.View.extend({
     // possible option, put it in the parse function, however this
     // creates difficulties because the model is not created yet
     // Another option would be to override the fetch function.
-
     this.listenTo(this.model, 'summaryChanged', this.render)
     this.listenTo(this.model, 'sync', this.render);
     this.listenTo(LIME.host, 'sync', this.render)
 
+    _.bindAll('addVertexForm');
+
+    // Must be after template is built, not sure why
     LIME.host.lookupForm('happening', _.bind(this.render, this));
     LIME.host.lookupForm('category', _.bind(this.render, this));
     LIME.host.lookupForm('work', _.bind(this.render, this));
 
-    _.bindAll('addVertexForm');
-
-    //this.listenTo(this.model, 'outofsync', this.flashOut);
-    //this.listenTo(this.model, 'resynced', this.flash);
-
     if(this.model.isFetched() && LIME.host.isFetched){
       this.render();
+    }
+  },
+
+  buildTemplate: function(){
+    console.log("Template: "+ this.model.vertexType);
+    if(defined = $('#'+ this.model.vertexType +'_summary').html()){
+      console.log('own template for ');
+      return _.template(defined);
+    } else {
+      console.log('default template for ');
+      // _id, vertexType, and title
+      return _.template($('#vertex_summary').html());
     }
   },
 
@@ -378,35 +352,9 @@ LIME.View.SummaryView['Vertex'] = LIME.SummaryView = Backbone.View.extend({
     // API prefers under_score to camelCase
     var attr = {'vertex_type': type}
 
-    var v = new LIME.Model['Vertex'](attr);
+    var v = new LIME.Model.Vertex(attr);
     LIME.actionPanel.loadVertexForm(v, this.model);
   },
-
-  // Old
-  /*
-  addCategoryForm: function(){
-    var newCategory = new LIME.Model['Vertex.Category']();
-    LIME.actionPanel.loadVertexForm(newCategory, this.model);
-  },
-  */
-  /*
-  addWorkForm: function(){
-    var newWork = new LIME.Model['Vertex.Work']();
-    LIME.actionPanel.loadVertexForm(newWork, this.model);
-  },
-  */
-  /*
-  addPhotoForm: function(){
-    console.log("No longer functional");
-  },
-  */
-  /*
-  addHappeningForm: function(){
-    var newHappening = new LIME.Model['Vertex.Happening'];
-    LIME.actionPanel.loadVertexForm(newHappening, this.model);
-  },
-  */
-
 
   setCoverForm: function(){
     LIME.actionPanel.loadCoverForm(this.model);
@@ -418,6 +366,7 @@ LIME.View.SummaryView['Vertex'] = LIME.SummaryView = Backbone.View.extend({
 
 });
 
+/*
 LIME.View.SummaryView['Vertex.Apex.Body'] = LIME.PortfolioSummaryView = LIME.SummaryView.extend({
   template:_.template($('#body_summary').html())
 });
@@ -437,6 +386,7 @@ LIME.View.SummaryView['Vertex.Work'] = LIME.WorkSummaryView = LIME.SummaryView.e
 LIME.View.SummaryView['Vertex.Happening'] = LIME.WorkSummaryView = LIME.SummaryView.extend({
   template:_.template($('#happening_summary').html())
 });
+*/
 
 /* ------------------------------------------------------------------- */
 // Listings
@@ -446,7 +396,6 @@ LIME.View.ListingView = {};
 
 LIME.View.ListingView['Vertex'] = Backbone.View.extend({
   tagName: 'div',
-  _cls: null,
   summary: null,
   list: null,
   photoNesting: [],
@@ -458,7 +407,6 @@ LIME.View.ListingView['Vertex'] = Backbone.View.extend({
   },
 
   initialize: function(){
-    var _cls = this.model.get('_cls');
 
     // children
     this.list = new LIME.View.SuccsetView['Vertex']({model:this.model})
@@ -513,16 +461,6 @@ LIME.View.ListingView['Vertex'] = Backbone.View.extend({
   },
 });
 
-LIME.View.ListingView['Vertex.Apex.Happenings'] = LIME.View.ListingView['Vertex'].extend({});
-
-LIME.View.ListingView['Vertex.Apex.Body'] = LIME.View.ListingView['Vertex'].extend({});
-
-LIME.View.ListingView['Vertex.Happening'] = LIME.View.ListingView['Vertex'].extend({});
-
-LIME.View.ListingView['Vertex.Category'] = LIME.View.ListingView['Vertex'].extend({});
-
-LIME.View.ListingView['Vertex.Work'] = LIME.View.ListingView['Vertex'].extend({});
-
 
 /* ------------------------------------------------------------------- */
 // Apex Menu
@@ -550,18 +488,17 @@ LIME.ListingPanel = Backbone.View.extend({
   listStyle: 'list',
 
   list: function(model){
-    this.listedModel = model;
-    var _cls = this.listedModel.get('_cls');
-    var className = model.cssClass() + ' listing';
-
-    // View
     if(this.view){
       this.view.close();
     }
 
-    this.view = new LIME.View.ListingView[_cls]({'model':this.listedModel, 'className': className});
-    this.$el.html(this.view.el);
+    this.listedModel = model;
 
+    this.view = new LIME.View.ListingView['Vertex']({
+      'model':model,
+      'className': model.vertexType + ' vertex listing'
+    });
+    this.$el.html(this.view.el);
   },
 
   apexMenu: function(){

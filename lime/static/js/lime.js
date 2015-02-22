@@ -144,20 +144,6 @@ LIME.fileToName = function(string){
 
 // ---------------------------------------------------------------------
 
-LIME.clsToRoute = function(_cls){
-  // Bad function
-  return _cls.toLowerCase().split('.').pop();
-}
-
-// ---------------------------------------------------------------------
-
-LIME.clsToClass = function(_cls){
-  // Bad function
-  return _cls.toLowerCase().split('.').join(' ');
-}
-
-// ---------------------------------------------------------------------
-
 LIME.flash = function(){
   $('.admin_flashes').delay(500).fadeOut(1000, 'swing');
   $('.admin_flashes').on('click', function(){

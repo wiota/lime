@@ -9,23 +9,19 @@ LIME.Collection = {};
 /* ------------------------------------------------------------------- */
 
 LIME.Collection['Vertex'] = Backbone.Collection.extend({
-  model: LIME['Vertex'],
-  _cls: 'Vertex',
-  formUrl: null,
-  formSerialization: null,
+  model: LIME.Model.Vertex,
 
   initialize: function(){
     _.bindAll(this, 'added');
     this.on('add', this.added);
-    this.formUrl = this.url + "form/";
   },
 
   added: function(model, collection){},
 
   // This function returns a model instance and
   // initiates a deepen call on the model if necessary
-  lookup: function(id){
-    var vertex = this.get(id) || this.getEmpty(id);
+  lookup: function(id, vertexType){
+    var vertex = this.get(id) || this.getEmpty(id, vertexType);
 
     if(!vertex.isFetched() || !vertex.isDeep()){
       return vertex.deepen();
@@ -34,16 +30,14 @@ LIME.Collection['Vertex'] = Backbone.Collection.extend({
     }
   },
 
-  getEmpty: function(id){
-    if(id){
-      return new this.model({'_id': id, '_cls': this._cls});
-    } else {
-      return new this.model({'_cls': this._cls});
-    }
+  getEmpty: function(id, vertexType){
+    return new this.model({'_id': id, 'vertex_type': vertexType});
   },
 
   // should be replaced by edge/vertex list
   createAndAddTo: function(data, predecessor){
+    alert("Shouldn't be used!");
+    console.log("Shouldn't be used!");
     var model = this.create(data);
     model.once('sync', function(model, response, options){
       predecessor.addToSuccset(model)
@@ -54,30 +48,6 @@ LIME.Collection['Vertex'] = Backbone.Collection.extend({
     return model;
   }
 
-});
-
-LIME.Collection['Vertex.Category'] = LIME.Collection['Vertex'].extend({
-  model: LIME.Model['Vertex.Category'],
-  url: "api/v1/category/",
-  _cls: 'Vertex.Category'
-});
-
-LIME.Collection['Vertex.Work'] = LIME.Collection['Vertex'].extend({
-  model: LIME.Model['Vertex.Work'],
-  url: "api/v1/work/",
-  _cls: 'Vertex.Work'
-});
-
-LIME.Collection['Vertex.Medium.Photo'] = LIME.Collection['Vertex'].extend({
-  model: LIME.Model['Vertex.Medium.Photo'],
-  url: "api/v1/photo/",
-  _cls: 'Vertex.Medium.Photo'
-});
-
-LIME.Collection['Vertex.Happening'] = LIME.Collection['Vertex'].extend({
-  model: LIME.Model['Vertex.Happening'],
-  url: "api/v1/happening/",
-  _cls: 'Vertex.Happening'
 });
 
 // The Body and the Happenings might be better as two items in the succset of the Host
@@ -105,6 +75,10 @@ LIME.Collection['Vertex.Apex.Body'] = LIME.Collection['Vertex'].extend({ // Uniq
 
   get: function(){
     return this.body;
+  },
+
+  getEmpty: function(){
+    return new this.model({'vertex_type': 'body'});
   }
 });
 
@@ -131,6 +105,10 @@ LIME.Collection['Vertex.Apex.Happenings'] = LIME.Collection['Vertex'].extend({
 
   get: function(){
     return this.happenings;
+  },
+
+  getEmpty: function(){
+    return new this.model({'vertex_type': 'happenings'});
   }
 });
 
@@ -139,13 +117,7 @@ LIME.Collection['Vertex.Apex.Happenings'] = LIME.Collection['Vertex'].extend({
 /* ------------------------------------------------------------------- */
 
 LIME.collection = {};
-
-// Eventually will become collection for all vertices - customVertex
-LIME.collection['Vertex'] = new LIME.Collection['Vertex'];
-
+LIME.collection.Vertex = new LIME.Collection['Vertex'];
 LIME.collection['Vertex.Apex.Body'] = new LIME.Collection['Vertex.Apex.Body']();
 LIME.collection['Vertex.Apex.Happenings'] = new LIME.Collection['Vertex.Apex.Happenings']();
-LIME.collection['Vertex.Category'] = new LIME.Collection['Vertex.Category']();
-LIME.collection['Vertex.Work'] = new LIME.Collection['Vertex.Work']();
-LIME.collection['Vertex.Medium.Photo'] = new LIME.Collection['Vertex.Medium.Photo']();
-LIME.collection['Vertex.Happening'] = new LIME.Collection['Vertex.Happening']();
+

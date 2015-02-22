@@ -133,11 +133,9 @@ LIME.RequestApi = {
 
   createVertexRequest: function(vertex){
     var request = this;
-    var _cls = vertex.get('_cls')
 
     // client side
-    var collection = LIME.collection[_cls];
-    collection.add(vertex);
+    LIME.collection.Vertex.add(vertex);
 
     // options
     var options = {

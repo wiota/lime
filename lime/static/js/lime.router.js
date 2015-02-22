@@ -11,7 +11,8 @@ LIME.Router = Backbone.Router.extend({
   "category/:id":"getCategory",
   "work/:id":"getWork",
   "happenings":"getHappeningsApex",
-  "happening/:id":"getHappening"
+  "happening/:id":"getHappening",
+  ":vertexType/:id":"getVertex"
 
   },
 
@@ -32,7 +33,7 @@ LIME.Router = Backbone.Router.extend({
     })
 
     //
-    LIME.host = new LIME.Model.Host();
+    LIME.host = new LIME.Model.Host({'vertex_type':'host'});
 
     // Icons
     LIME.icon = new Iconset();
@@ -54,15 +55,25 @@ LIME.Router = Backbone.Router.extend({
 
   // Body of work
   getBody: function() {
+    console.log('got body');
     var vertex = LIME.collection['Vertex.Apex.Body'].lookup();
     LIME.listingPanel.list(vertex);
     LIME.pathPanel.list(vertex);
     LIME.pathPanel.jsonLink('/api/v1/apex/body/');
   },
 
+  // Vertex
+  getVertex: function(vertexType, id){
+    console.log('got vertex');
+    var vertex = LIME.collection.Vertex.lookup(id, vertexType);
+    LIME.listingPanel.list(vertex);
+    LIME.pathPanel.list(vertex);
+    LIME.pathPanel.jsonLink('/api/v1/'+vertexType+'/'+id);
+  },
+
   // Category
   getCategory: function(id) {
-    var vertex = LIME.collection['Vertex.Category'].lookup(id);
+    var vertex = LIME.collection.Vertex.lookup(id, 'category');
     LIME.listingPanel.list(vertex);
     LIME.pathPanel.list(vertex);
     LIME.pathPanel.jsonLink('/api/v1/category/'+id);
@@ -70,7 +81,7 @@ LIME.Router = Backbone.Router.extend({
 
   // Work
   getWork: function(id){
-    var vertex = LIME.collection['Vertex.Work'].lookup(id);
+    var vertex = LIME.collection.Vertex.lookup(id, 'work');
     LIME.listingPanel.list(vertex);
     LIME.pathPanel.list(vertex);
     LIME.pathPanel.jsonLink('/api/v1/work/'+id);
@@ -86,7 +97,7 @@ LIME.Router = Backbone.Router.extend({
   },
 
   getHappening: function(id){
-    var vertex = LIME.collection['Vertex.Happening'].lookup(id);
+    var vertex = LIME.collection.Vertex.lookup(id, 'happening');
     LIME.listingPanel.list(vertex);
     LIME.pathPanel.list(vertex);
     LIME.pathPanel.jsonLink('/api/v1/happening/'+id);

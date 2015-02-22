@@ -37,9 +37,11 @@ LIME.Path.PathPanel = Backbone.View.extend({
 
     // summary
     var vertex = _.last(this.path);
-    var _cls = vertex.get('_cls');
-    var className = vertex.cssClass() + ' summary';
-    this.summary = new LIME.View.SummaryView[_cls]({'model':_.last(this.path), 'className': className});
+    console.log("00 " +vertex.vertexType);
+    this.summary = new LIME.View.SummaryView['Vertex']({
+      'model':vertex,
+      'className': vertex.vertexType + ' vertex summary'
+    });
     $path.append(this.summary.el);
   },
 
@@ -73,7 +75,7 @@ LIME.Path.PathPanel = Backbone.View.extend({
     this.path.push(vertex);
     this.walk.push(vertex);
 
-    if(this.path[0].get('_cls') !== "Vertex.Apex.Body"){
+    if(this.path[0].vertexType !== "body"){
       var body = LIME.collection['Vertex.Apex.Body'].lookup();
       this.path.unshift(body);
     }

@@ -116,6 +116,27 @@
     </div>
   </script>
 
+  <script type="text/template" id="happenings_summary">
+    <b class='icon calendar'><img src='/icon/calendar.svg'></b>
+    <div class='title'><%- title %></div>
+    <div class='meta'>
+      <a class='update'>update</a>
+      <a class='set_cover'>set cover</a>
+      <div class='cover set_cover'></div>
+    </div>
+  </script>
+
+  <script type="text/template" id="vertex_summary">
+    <b class='icon <%- vertex_type %>'><img src='/icon/<%- vertex_type %>.svg'></b>
+    <div class='title'><%- title %></div>
+    <div class='meta'>
+      <a class='update'>update</a>
+      <a class='set_cover'>set cover</a>
+      <div class='cover set_cover'></div>
+    </div>
+    <div class='add_menu'><!-- typeSchema --></div>
+  </script>
+
   <!-- SuccsetItem -->
 
   <script type="text/template" id="body_in_set">
@@ -167,7 +188,7 @@
   </script>
 
   <script type="text/template" id="vertex_in_set">
-    <a class='in_set_link' href='#category/<%- _id %>'></a>
+    <a class='in_set_link' href='#<%- vertex_type %>/<%- _id %>'></a>
     <b class='title icon'><img class='icon <%- vertex_type %>' src='/icon/<%- vertex_type %>.svg'><%- title %></b>
     <div class='in_set_menu'>
       <a class='delete'>delete</a>

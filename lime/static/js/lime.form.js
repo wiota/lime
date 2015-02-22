@@ -296,7 +296,7 @@ LIME.FormView.SaveView = Backbone.View.extend({
 
 LIME.FormView['Vertex'] = Backbone.View.extend({
 
-  passableOptions: ['model', 'predecessor', 'collection'],
+  passableOptions: ['model', 'predecessor'],
   tagName: 'form',
 
   events: {
@@ -400,12 +400,10 @@ LIME.FormView['Vertex'] = Backbone.View.extend({
           [[this.predecessor, this.model]]
         ]},
       ]);
-      //this.collection.createAndAddTo(this.model, this.predecessor);
     } else {
       LIME.requestPanel.one([
         {'func': 'updateVertexRequest', 'args': [this.model]},
       ]);
-      //this.model.saveAttributes();
     }
     return false;
   },
@@ -600,16 +598,10 @@ LIME.ActionPanel = Backbone.View.extend({
       this.form.collapse();
     }
 
-    var _cls = model.get('_cls');
-    var className = model.cssClass() + ' form';
-    // allow for customVertex that will be put into a standard collection
-    var collection = LIME.collection[_cls] || LIME.collection
-
     this.form = new LIME.FormView['Vertex']({
       'predecessor': predecessor,
       'model': model,
-      'collection': collection,
-      'className': className
+      'className': model.vertexType + ' vertex form'
     });
 
     this.listenTo(this.form, 'collapse', this.closeForms);
@@ -623,10 +615,9 @@ LIME.ActionPanel = Backbone.View.extend({
     if(this.form){
       this.form.collapse();
     }
-    var _cls = model.get('_cls');
-    var className = 'cover form';
 
     this.form = new LIME.FormView['Cover']({
+      'className': 'cover form',
       'model': model
     });
 
