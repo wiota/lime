@@ -5,15 +5,10 @@
 LIME.Router = Backbone.Router.extend({
 
   routes:{
-
-  "":"home",
-  "body":"getBody",
-  "category/:id":"getCategory",
-  "work/:id":"getWork",
-  "happenings":"getHappeningsApex",
-  "happening/:id":"getHappening",
-  ":vertexType/:id":"getVertex"
-
+    "":"home",
+    "body":"getBody",
+    "happenings":"getHappeningsApex",
+    ":vertexType/:id":"getVertex"
   },
 
   initialize: function(){
@@ -71,37 +66,12 @@ LIME.Router = Backbone.Router.extend({
     LIME.pathPanel.jsonLink('/api/v1/'+vertexType+'/'+id);
   },
 
-  // Category
-  getCategory: function(id) {
-    var vertex = LIME.collection.Vertex.lookup(id, 'category');
-    LIME.listingPanel.list(vertex);
-    LIME.pathPanel.list(vertex);
-    LIME.pathPanel.jsonLink('/api/v1/category/'+id);
-  },
-
-  // Work
-  getWork: function(id){
-    var vertex = LIME.collection.Vertex.lookup(id, 'work');
-    LIME.listingPanel.list(vertex);
-    LIME.pathPanel.list(vertex);
-    LIME.pathPanel.jsonLink('/api/v1/work/'+id);
-  },
-
   // Happenings Apex
-
   getHappeningsApex: function(){
     var vertex = LIME.collection['Vertex.Apex.Happenings'].lookup();
     LIME.listingPanel.list(vertex);
     LIME.pathPanel.list(vertex);
     LIME.pathPanel.jsonLink('/api/v1/happenings/');
-  },
-
-  getHappening: function(id){
-    var vertex = LIME.collection.Vertex.lookup(id, 'happening');
-    LIME.listingPanel.list(vertex);
-    LIME.pathPanel.list(vertex);
-    LIME.pathPanel.jsonLink('/api/v1/happening/'+id);
   }
 
- 
 });
