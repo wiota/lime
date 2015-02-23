@@ -29,6 +29,13 @@ LIME.Router = Backbone.Router.extend({
 
     //
     LIME.host = new LIME.Model.Host({'vertex_type':'host'});
+    LIME.apex = {}
+    LIME.apex.body = new LIME.Model['Vertex.Apex.Body']({'vertex_type':'body'});
+    LIME.apex.happenings = new LIME.Model['Vertex.Apex.Happenings']({'vertex_type':'happenings'});
+
+    //
+    LIME.apex.body.deepen();
+    LIME.apex.happenings.deepen();
 
     // Icons
     LIME.icon = new Iconset();
@@ -51,7 +58,7 @@ LIME.Router = Backbone.Router.extend({
   // Body of work
   getBody: function() {
     console.log('got body');
-    var vertex = LIME.collection['Vertex.Apex.Body'].lookup();
+    var vertex = LIME.apex.body;
     LIME.listingPanel.list(vertex);
     LIME.pathPanel.list(vertex);
     LIME.pathPanel.jsonLink('/api/v1/apex/body/');
@@ -68,7 +75,7 @@ LIME.Router = Backbone.Router.extend({
 
   // Happenings Apex
   getHappeningsApex: function(){
-    var vertex = LIME.collection['Vertex.Apex.Happenings'].lookup();
+    var vertex = LIME.apex.happenings;
     LIME.listingPanel.list(vertex);
     LIME.pathPanel.list(vertex);
     LIME.pathPanel.jsonLink('/api/v1/happenings/');
