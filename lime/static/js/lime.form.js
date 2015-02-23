@@ -574,7 +574,7 @@ LIME.ActionPanel = Backbone.View.extend({
       'className': model.vertexType + ' vertex form'
     });
 
-    this.listenTo(this.form, 'collapse', this.closeActionPanel);
+    this.listenTo(this.form, 'collapse', this.collapseActionPanel);
 
     this.$el.html(this.form.el);
     this.form.render();
@@ -589,7 +589,7 @@ LIME.ActionPanel = Backbone.View.extend({
       'model': model
     });
 
-    this.listenTo(this.form, 'collapse', this.closeActionPanel);
+    this.listenTo(this.form, 'collapse', this.collapseActionPanel);
 
     this.$el.append(this.form.el);
     this.form.render();
