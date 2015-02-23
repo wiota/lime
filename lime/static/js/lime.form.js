@@ -25,7 +25,6 @@ LIME.FormView.templates = {
 LIME.FormView.SerialFieldsView = Backbone.View.extend({
   tagName: 'fieldset',
   className: 'serial_fields',
-  serialization: null,
   templates: LIME.FormView.templates,
 
   events: {
