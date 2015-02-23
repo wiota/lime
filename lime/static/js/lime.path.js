@@ -37,7 +37,6 @@ LIME.Path.PathPanel = Backbone.View.extend({
 
     // summary
     var vertex = _.last(this.path);
-    console.log("00 " +vertex.vertexType);
     this.summary = new LIME.View.SummaryView['Vertex']({
       'model':vertex,
       'className': vertex.vertexType + ' vertex summary'
