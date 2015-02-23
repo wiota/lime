@@ -87,22 +87,6 @@ def happenings():
     return Happenings.by_current_user().to_bson()
 
 
-@mod.route('/happening/<id>/', methods=['PUT'])
-@login_required
-def put_happening(id):
-    doc = Happening.by_id(id)
-    data = {k: request.json[k] for k in doc.get_aggregate_fields() if k in request.json.keys()}
-
-    update_document(doc, data).save()
-
-    # TODO: This is a hack. get_aggregate_fields should be reworked.
-    if 'cover' in request.json.keys():
-        doc.reload()
-        doc.update(set__cover=request.json['cover'])
-
-    return jsonify(result="success"), 200  # TODO: Should be a 204
-
-
 '''
 User endpoints
 '''
@@ -121,55 +105,6 @@ Host endpoints
 @login_required
 def user():
     return Host.objects.get(owners__in=[current_user.id]).to_bson()
-
-
-'''
-Work endpoints
-'''
-
-@mod.route('/work/', methods=['POST'])
-@login_required
-def post_work():
-    data = request.json
-    data['host'] = Host.by_current_user()
-    work = Work(**data).save()
-    return work.to_bson(), 200
-
-
-@mod.route('/work/<id>/', methods=['PUT'])
-@login_required
-def put_work(id):
-    doc = Work.by_id(id)
-    data = {k: request.json[k] for k in doc.get_aggregate_fields() if k in request.json.keys()}
-
-    update_document(doc, data).save()
-
-    # TODO: This is a hack. get_aggregate_fields should be reworked.
-    if 'cover' in request.json.keys():
-        doc.reload()
-        doc.update(set__cover=request.json['cover'])
-
-    return jsonify(result="success"), 200  # TODO: Should be a 204
-
-
-'''
-Category endpoints
-'''
-
-@mod.route('/category/<id>/', methods=['PUT'])
-@login_required
-def put_category(id):
-    doc = Category.by_id(id)
-    data = {k: request.json[k] for k in doc.get_aggregate_fields() if k in request.json.keys()}
-
-    update_document(doc, data).save()
-
-    # TODO: This is a hack. get_aggregate_fields should be reworked.
-    if 'cover' in request.json.keys():
-        doc.reload()
-        doc.update(set__cover=request.json['cover'])
-
-    return jsonify(result="success"), 200  # TODO: Should be a 204
 
 
 '''
@@ -215,6 +150,21 @@ def post_vertex(vertex_type):
     return doc.to_bson(), 200
 
 
+@mod.route('/<vertex_type>/<id>/', methods=['PUT'])
+@login_required
+def put_category(vertex_type, id):
+    doc = Vertex.by_id(id)
+    data = {k: request.json[k] for k in doc.get_aggregate_fields() if k in request.json.keys()}
+
+    update_document(doc, data).save()
+
+    # TODO: This is a hack. get_aggregate_fields should be reworked.
+    if 'cover' in request.json.keys():
+        doc.reload()
+        doc.update(set__cover=request.json['cover'])
+
+    return jsonify(result="success"), 200  # TODO: Should be a 204
+
 '''
 Photo endpoints
 '''
@@ -222,6 +172,8 @@ Photo endpoints
 @mod.route('/photo/', methods=['POST'])
 @login_required
 def post_photo():
+    # TODO: This should probably be removed and a POST to /<vertex_type> with a
+    # type of "photo" used instead.
     data = request.json
     data['host'] = Host.by_current_user()
     photo = Photo(**data).save()
