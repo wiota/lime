@@ -1,5 +1,35 @@
+// ---------------------------------------------------------------------
+// LIME base
+// ---------------------------------------------------------------------
+
 var LIME = {
 };
+
+LIME.start = function(){
+
+  // Where should this go?
+  window.addEventListener('drop', function(e){
+    e.preventDefault();
+  })
+
+  window.addEventListener('dragover', function(e){
+    e.preventDefault();
+  })
+
+  LIME.router = new LIME.Router();
+  LIME.host = new LIME.Model.Host({'vertex_type':'host'});
+
+  LIME.host.fetch({
+    success: function(){
+      Backbone.history.start();
+    }
+  })
+
+}
+
+// ---------------------------------------------------------------------
+// LIME clientside tools
+// ---------------------------------------------------------------------
 
 LIME.consoleTimer = (function(){
   //setInterval(function(){console.log('---------------')},500);

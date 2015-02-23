@@ -127,6 +127,11 @@
     <div class='add_menu'><!-- typeSchema --></div>
   </script>
 
+
+  <!-- addItem -->
+  <script type="text/template" id="vertex_add">
+  <a class='add_<%- vertex_type %>'><img src='/icon/<%- vertex_type %>.svg'>add <%- vertex_type %></a>
+
   <!-- SuccsetItem -->
 
   <script type="text/template" id="body_in_set">
@@ -392,11 +397,7 @@
     $(document).ready(function() {
       LIME.subnav('.nav a.drop');
       LIME.flash();
-
-      LIME.router = new LIME.Router();
-      Backbone.history.start();
-
-
+      LIME.start();
     });
   </script>
 

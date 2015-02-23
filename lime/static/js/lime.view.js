@@ -247,16 +247,12 @@ LIME.View.SummaryView['Vertex'] = LIME.SummaryView = Backbone.View.extend({
   events:{
     'click .title':'toggleMeta',
     'click .update':'updateForm',
-    'click .save_order':'saveSuccset',
-    'click .add_category':'addCategoryForm',
-    'click .add_work':'addWorkForm',
-    'click .add_photo':'addPhotoForm',
-    'click .add_happening':'addHappeningForm',
     'click .set_cover':'setCoverForm'
   },
 
   initialize: function(){
     this.template = this.buildTemplate();
+    this.addTemplate = _.template($('#vertex_add').html());
 
     // set up sync handler to render anytime model is synced
     // Seems sloppy to set up a sync handler and a summary changed
@@ -268,16 +264,11 @@ LIME.View.SummaryView['Vertex'] = LIME.SummaryView = Backbone.View.extend({
     // Another option would be to override the fetch function.
     this.listenTo(this.model, 'summaryChanged', this.render)
     this.listenTo(this.model, 'sync', this.render);
-    this.listenTo(LIME.host, 'sync', this.render)
+    this.listenTo(LIME.host, 'sync', this.render);
 
     _.bindAll('newForm');
 
-    // Must be after template is built, not sure why
-    LIME.host.lookupForm('happening', _.bind(this.render, this));
-    LIME.host.lookupForm('category', _.bind(this.render, this));
-    LIME.host.lookupForm('work', _.bind(this.render, this));
-
-    if(this.model.isFetched() && LIME.host.isFetched){
+    if(this.model.isFetched()){
       this.render();
     }
   },
@@ -293,7 +284,7 @@ LIME.View.SummaryView['Vertex'] = LIME.SummaryView = Backbone.View.extend({
   },
 
   render: function(){
-    if(!this.model.isFetched() || !LIME.host.isFetched){
+    if(!this.model.isFetched()){
       return false;
     }
 
@@ -315,14 +306,12 @@ LIME.View.SummaryView['Vertex'] = LIME.SummaryView = Backbone.View.extend({
     // add menu
     this.$add_menu = this.$el.find('.add_menu');
 
-    // For compatibility with existing happenings vertex
+    // Happenings check for backwards compatibility with existing
+    // happenings vertex. There should be a better solution for this
     if(this.model.vertexType !== 'happenings'){
       _.each(vertexSchema, function(fields, vertexType){
-        var add = $("<a class='add_"+vertexType+"'><img src='/icon/"+vertexType+".svg'>add "+vertexType+"</a>");
-        var t = this;
-        add.click(function(){
-          t.newForm(vertexType);
-        })
+        var add = $(this.addTemplate({'vertex_type': vertexType}))
+        $(add).click(_.bind(this.newForm, this, vertexType));
         this.$add_menu.append(add);
       }, this)
     }

@@ -34,20 +34,15 @@ LIME.FormView.SerialFieldsView = Backbone.View.extend({
 
   initialize: function(){
     this.isRendered = false;
-    this.vertexSchema = null;
-    LIME.host.lookupForm(this.model.vertexType, _.bind(this.setVertexSchema, this));
-  },
-
-  setVertexSchema: function(schema){
-    this.vertexSchema = schema;
+    this.fieldSchema = LIME.host.vertexSchema[this.model.vertexType];
     this.render();
   },
 
   render: function(){
-    if(!this.vertexSchema){return false;}
+    if(!this.fieldSchema){return false;}
     this.$el.empty();
 
-    _.each(this.vertexSchema, function(field){
+    _.each(this.fieldSchema, function(field){
 
       var templateFunction = this.templates[field.type];
       var formData = {

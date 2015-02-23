@@ -12,35 +12,26 @@ LIME.Router = Backbone.Router.extend({
   },
 
   initialize: function(){
-    // Panel for Listings
+    // LIME interface
     LIME.requestPanel = new LIME.RequestPanel();
     LIME.listingPanel = new LIME.ListingPanel();
     LIME.actionPanel = new LIME.ActionPanel();
     LIME.pathPanel = new LIME.Path.PathPanel();
 
-    // Where should this go?
-    window.addEventListener('drop', function(e){
-      e.preventDefault();
-    })
-
-    window.addEventListener('dragover', function(e){
-      e.preventDefault();
-    })
-
-    //
-    LIME.host = new LIME.Model.Host({'vertex_type':'host'});
+    // special vertices
     LIME.apex = {}
     LIME.apex.body = new LIME.Model['Vertex.Apex.Body']({'vertex_type':'body'});
     LIME.apex.happenings = new LIME.Model['Vertex.Apex.Happenings']({'vertex_type':'happenings'});
 
-    //
+    // fetch
     LIME.apex.body.deepen();
     LIME.apex.happenings.deepen();
 
-    // Icons
+    // icons
     LIME.icon = new Iconset();
     LIME.icon.add("bookcase", '.bookcase.icon');
     LIME.icon.refresh();
+
     this.on('route', function(r,p){
       LIME.icon.refresh();
       // possible bug here
