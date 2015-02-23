@@ -34,8 +34,7 @@ LIME.Router = Backbone.Router.extend({
 
     this.on('route', function(r,p){
       LIME.icon.refresh();
-      // possible bug here
-      LIME.actionPanel.closeForms();
+      LIME.actionPanel.closeForm();
     })
 
   },

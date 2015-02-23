@@ -478,7 +478,6 @@ LIME.FormView['Cover'] = Backbone.View.extend({
     }
     this.trigger('collapse');
     this.close();
-    //LIME.actionPanel.closeForms();
   },
 
   // Events
@@ -514,7 +513,7 @@ LIME.FormView['Succset'] = Backbone.View.extend({
     this.children = [];
     this.childOptions = _.pick(this.options, this.passableOptions);
     this.appendFileUpload();
-    _.bindAll(this, 'close', 'collapse');
+    _.bindAll(this, 'close');
   },
 
   appendFileUpload: function(){
@@ -527,14 +526,6 @@ LIME.FormView['Succset'] = Backbone.View.extend({
   render: function(){
     this.fileUpload.render();
     return this;
-  },
-
-  collapse: function(){
-    if(this.model.isModified()){
-      this.save();
-    }
-    this.close();
-    LIME.actionPanel.closeForms();
   },
 
   // Events
@@ -574,14 +565,8 @@ LIME.ActionPanel = Backbone.View.extend({
     this.form = null;
   },
 
-  // problems with this.form
-  // collapse rollup closeforms circle
-  // tried to repair and messed up
-
   loadVertexForm: function(model, predecessor){
-    if(this.form){
-      this.form.collapse();
-    }
+    this.closeForm();
 
     this.form = new LIME.FormView['Vertex']({
       'predecessor': predecessor,
@@ -589,7 +574,7 @@ LIME.ActionPanel = Backbone.View.extend({
       'className': model.vertexType + ' vertex form'
     });
 
-    this.listenTo(this.form, 'collapse', this.closeForms);
+    this.listenTo(this.form, 'collapse', this.closeActionPanel);
 
     this.$el.html(this.form.el);
     this.form.render();
@@ -597,20 +582,25 @@ LIME.ActionPanel = Backbone.View.extend({
   },
 
   loadCoverForm: function(model){
-    if(this.form){
-      this.form.collapse();
-    }
+    this.closeForm();
 
     this.form = new LIME.FormView['Cover']({
       'className': 'cover form',
       'model': model
     });
 
-    this.listenTo(this.form, 'collapse', this.closeForms);
+    this.listenTo(this.form, 'collapse', this.closeActionPanel);
 
     this.$el.append(this.form.el);
     this.form.render();
     this.rollDown();
+  },
+
+  collapseActionPanel: function(){
+    if(this.form){
+      this.form = null;
+    }
+    this.rollUp();
   },
 
   rollUp: function(){
@@ -621,11 +611,10 @@ LIME.ActionPanel = Backbone.View.extend({
     this.$el.addClass('show');
   },
 
-  closeForms: function(){
+  closeForm: function(){
     if(this.form){
-      this.form = null;
+      this.form.collapse();
     }
-    this.rollUp();
   }
 
 });
