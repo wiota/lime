@@ -15,7 +15,7 @@ from lime.root import root
 from lime.upload import upload
 from lime.webhook import webhook
 from toolbox.models import User
-from toolbox.template_filters import format_date, format_money
+from toolbox.template_filters import format_date, format_money, bust
 from toolbox.tools import AnonymousUser
 import traceback
 from pymongo.errors import AutoReconnect
@@ -37,6 +37,7 @@ app.jinja_env.trim_blocks = True
 # Jinja formatting functions
 app.jinja_env.filters["date"] = format_date
 app.jinja_env.filters["money"] = format_money
+app.jinja_env.filters["bust"] = bust
 
 # For CSRF usage
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')

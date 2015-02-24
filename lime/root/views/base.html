@@ -8,14 +8,14 @@
 
     <title>Lime</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
-    <link rel='stylesheet' href='{{ url_for('static', filename='css/lime_base.css') }}?v={{ config["HEROKU_RELEASE_NAME"] }}' type='text/css' media='all'>
-    <link rel='stylesheet' href='{{ url_for('static', filename='css/lime.css') }}?v={{ config["HEROKU_RELEASE_NAME"] }}' type='text/css' media='all'>
-    <script src='{{ url_for('static', filename='js/lodash.min.js') }}'></script>
-    <script src='{{ url_for('static', filename='js/jquery.min.js') }}'></script>
-    <script src='{{ url_for('static', filename='js/icon.js') }}'></script>
-    <script src='{{ url_for('static', filename='js/lime.js') }}'></script>
-    <script src='{{ url_for('static', filename='js/backbone.js') }}'></script>
-    <script src='{{ url_for('static', filename='js/sortable.js') }}'></script>
+    <link rel='stylesheet' href='{{ url_for('static', filename='css/lime_base.css')|bust }}' type='text/css' media='all'>
+    <link rel='stylesheet' href='{{ url_for('static', filename='css/lime.css')|bust }}' type='text/css' media='all'>
+    <script src='{{ url_for('static', filename='js/lodash.min.js')|bust }}'></script>
+    <script src='{{ url_for('static', filename='js/jquery.min.js')|bust }}'></script>
+    <script src='{{ url_for('static', filename='js/icon.js')|bust }}'></script>
+    <script src='{{ url_for('static', filename='js/lime.js')|bust }}'></script>
+    <script src='{{ url_for('static', filename='js/backbone.js')|bust }}'></script>
+    <script src='{{ url_for('static', filename='js/sortable.js')|bust }}'></script>
 
     {% endblock %}
 
