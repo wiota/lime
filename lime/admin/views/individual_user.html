@@ -15,7 +15,7 @@
         <h3>Information</h3>
         <ul>
             <li>Email: <a href="mailto:{{user.email}}">{{user.email}}</a></li>
-            <li>User ID: <a href="https://partners.mongohq.com/app12544446-heroku-com/mongo/app12544446/collections/user/documents/o:{{user.id}}">{{user.id}}</a></li>
+            <li>User ID: {{user.id}}</li>
             <li>Stripe ID: <a href="https://dashboard.stripe.com/test/customers/{{user.stripe_id}}">{{user.stripe_id}}</a></li>
             <li>Confirmed: {{user.confirmed}}</li>
             <li>Registered: {{user.registered}}</li>
@@ -23,6 +23,7 @@
         <h3>Host</h3>
         <ul>
             <li>Hostname: <a href="http://{{host.hostname}}">{{host.hostname}}</a></li>
+            <li>Host ID: {{host.id}}</li>
             <li>Bucketname: {{host.bucketname}}</li>
             <li>Template name: {{host.template}}
             <li>Title: {{host.title}}</li>
