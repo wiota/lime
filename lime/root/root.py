@@ -7,6 +7,7 @@ from toolbox.nocache import nocache
 from flask.ext.login import LoginManager
 from flask.ext.login import login_required, login_user, logout_user, current_user
 from itsdangerous import URLSafeSerializer, BadSignature
+from jinja2 import TemplateNotFound
 from .forms import *
 
 from flask import current_app as app
@@ -54,7 +55,11 @@ def image(image_name):
 
 @mod.route('/icon/<icon_name>', methods=['GET'])
 def icon(icon_name):
-    r = make_response(render_template("icons/" + icon_name, color=request.args.get('c', None)))
+    try:
+        template = render_template("icons/" + icon_name, color=request.args.get('c', None))
+    except TemplateNotFound:
+        template = render_template("icons/default_icon.svg", color=request.args.get('c', None))
+    r = make_response(template)
     r.mimetype = "image/svg+xml"
     return r
 
