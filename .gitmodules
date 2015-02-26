@@ -1,6 +1,6 @@
 [submodule "toolbox"]
 	path = toolbox
-	url = https://98fe09f356b5cde2ccdda573889f6ccafc6c41dc:x-oauth-basic@github.com/di/toolbox
+	url = https://github.com/wiota/toolbox.git
 [submodule "mongoexhaust"]
 	path = mongoexhaust
 	url = https://github.com/wiota/mongoexhaust.git
