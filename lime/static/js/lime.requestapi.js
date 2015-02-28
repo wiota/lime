@@ -85,9 +85,10 @@ LIME.RequestApi = {
     var edges = [];
 
     // content type should map to vertex types
-    var lowest = new LIME.Model['Vertex.Medium.Photo']({"href": "/image/"+name});
+    var lowest = new LIME.Model['Vertex.Medium.Photo']({"href": "/image/"+name, "vertex_type": "photo"});
     vertices.push(lowest);
 
+    /*
     var highest = _.reduce(nesting, function(v1, nest){
       if(nesting == 'Vertex.Category'){var title = 'Category';}
       else {var title = LIME.fileToName(file.name);}
@@ -96,8 +97,9 @@ LIME.RequestApi = {
       edges.push([v2, v1]);
       return v2;
     }, lowest);
+    */
 
-    edges.push([model, highest]);
+    edges.push([model, lowest]);
     this.serial([
       {'func': 'createVerticesRequest', 'args': [vertices]},
       {'func': 'createEdgesRequest', 'args': [edges]}
