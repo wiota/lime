@@ -431,58 +431,9 @@ LIME.Model['Vertex.Medium'] = LIME.Model.Vertex.extend({
 // Photo
 /* ------------------------------------------------------------------- */
 
-
 LIME.Model['Vertex.Medium.Photo'] = LIME.Model['Vertex.Medium'].extend({
   vertexType: 'photo',
   urlRoot: "api/v1/photo/",
   _cls: "Vertex.Medium.Photo"
 });
 
-/* ------------------------------------------------------------------- */
-// Body
-/* ------------------------------------------------------------------- */
-
-LIME.Model['Vertex.Apex.Body'] = LIME.Model.Vertex.extend({
-  vertexType: 'body',
-  _cls: "Vertex.Apex.Body",
-  photoNesting: ['Vertex.Work'],
-  defaults: {
-    "title":  "body of work"
-  },
-  url: function(){
-    return this.apiVers + 'apex/body/';
-  },
-  urlSuccset: function(){
-    return Backbone.Model.prototype.url.call(this) + 'succset/';
-  }
-
-});
-
-
-/* ------------------------------------------------------------------- */
-// Happenings Apex
-/* ------------------------------------------------------------------- */
-
-LIME.Model['Vertex.Apex.Happenings'] = LIME.Model.Vertex.extend({
-  vertexType: 'happenings',
-  urlRoot: "api/v1/apex/happenings/",
-  _cls: "Vertex.Apex.Happenings",
-  photoNesting: ['Vertex.Event'],
-  url: function(){
-    return this.apiVers + 'apex/happenings/';
-  },
-  urlSuccset: function(){
-    return Backbone.Model.prototype.url.call(this) + 'succset/';
-  }
-
-});
-
-/* ------------------------------------------------------------------- */
-// Happening
-/* ------------------------------------------------------------------- */
-
-LIME.Model['Vertex.Happening'] = LIME.Model.Vertex.extend({
-  vertexType: 'happening',
-  urlRoot: "api/v1/happening",
-  _cls: "Vertex.Happening"
-});

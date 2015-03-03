@@ -63,25 +63,29 @@ def vertex_to_form(classname):
 Body endpoints
 '''
 
-@mod.route('/apex/body/', methods=['GET'])
+@mod.route('/body/', methods=['GET'])
 @login_required
 def body():
     return Body.by_current_user().to_bson()
 
 
-@mod.route('/apex/body/succset/', methods=['PUT'])
-@login_required
-def put_body_succset():
-    body = Body.by_current_user()
-    Body.objects.get(id=body.id).update(set__succset=request.json['succset'])
-    return jsonify(result="success"), 200  # TODO: Should be a 204
+# Body and happenings apex do not need special succset endpoints
+# The id of the vertex can be passed. This will future proof in
+# the case that they become de-apexed in favor of a host apex.
+#
+# @mod.route('/body/succset/', methods=['PUT'])
+# @login_required
+# def put_body_succset():
+#     body = Body.by_current_user()
+#     Body.objects.get(id=body.id).update(set__succset=request.json['succset'])
+#     return jsonify(result="success"), 200  # TODO: Should be a 204
 
 
 '''
 Happening endpoints
 '''
 
-@mod.route('/apex/happenings/', methods=['GET'])
+@mod.route('/happenings/', methods=['GET'])
 @login_required
 def happenings():
     return Happenings.by_current_user().to_bson()

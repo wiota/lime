@@ -97,7 +97,7 @@ LIME.Path.PathPanel = Backbone.View.extend({
       console.log(vertex.get('title'));
     });
 
-    if(vertex.get('_cls')==='Vertex.Apex.Body'){
+    if(vertex.vertexType==='body'){
       var route = "body";
     } else {
       var route = vertex.vertexType + '/' + vertex.id;

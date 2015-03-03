@@ -20,8 +20,8 @@ LIME.Router = Backbone.Router.extend({
 
     // special vertices
     LIME.apex = {}
-    LIME.apex.body = new LIME.Model['Vertex.Apex.Body']({'vertex_type':'body'});
-    LIME.apex.happenings = new LIME.Model['Vertex.Apex.Happenings']({'vertex_type':'happenings'});
+    LIME.apex.body = new LIME.Model.Vertex({'vertex_type':'body'});
+    LIME.apex.happenings = new LIME.Model.Vertex({'vertex_type':'happenings'});
 
     // fetch
     LIME.apex.body.deepen();
