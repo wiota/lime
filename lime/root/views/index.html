@@ -205,6 +205,18 @@
     </div>
   </script>
 
+  <script type="text/template" id="dynamic_in_set">
+    <a class='in_set_link' href='#<%- vertex_type %>/<%- _id %>'></a>
+    <b class='title icon'><img class='icon <%- vertex_type %>' src='/icon/<%- vertex_type %>.svg'><%- title %></b>
+    <div class='attributes'>
+
+    </div>
+    <div class='in_set_menu'>
+      <a class='delete'>delete</a>
+      <a class='drag_handle'>&#8597;</a>
+    </div>
+  </script>
+
   <script type="text/template" id="empty_succset">
     <div class='empty_succset'>
       <h2>Nothing here yet.</h2>

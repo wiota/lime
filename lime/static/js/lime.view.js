@@ -38,10 +38,11 @@ LIME.View.SuccessorView['Vertex'] = LIME.SuccessorView = Backbone.View.extend({ 
 
   buildTemplate: function(){
     if(defined = $('#'+ this.model.vertexType +'_in_set').html()){
+      this.dynamicTemplate = false;
       return _.template(defined);
     } else {
-      // _id, vertexType, and title
-      return _.template($('#vertex_in_set').html());
+      this.dynamicTemplate = true;
+      return _.template($('#dynamic_in_set').html());
     }
   },
 
@@ -56,11 +57,27 @@ LIME.View.SuccessorView['Vertex'] = LIME.SuccessorView = Backbone.View.extend({ 
     LIME.actionPanel.loadVertexForm(this.model, this.predecessor);
   },
 
-  render: function(){
+  render_static: function(){
     this.$el.html(this.template(this.model.toJSON()));
+  },
+
+  render_dynamic: function(){
+    this.$el.html(this.template(this.model.toJSON()));
+    this.$attributes = this.$el.children('.attributes');
+    _.each(this.model.attributes, function(attribute){
+      this.$attributes.append("<b class='attribute'>"+attribute+"</b>");
+    }, this);
+
+  },
+
+  render: function(){
+    if(this.dynamicTemplate){
+      this.render_dynamic();
+    } else {
+      this.render_static();
+    }
     this.$cover = this.$el.children('.cover');
     _.each(this.model.get('cover'), function(coverItem){
-      // use template
       this.$cover.append("<img src='"+coverItem.href+"?w=500' alt='' />")
     }, this);
     this.delegateEvents();
@@ -98,6 +115,7 @@ LIME.View.SuccsetView['Vertex'] = Backbone.View.extend({
     this.timer = null;
   },
 
+  // fix bug here
   startScrolling: function(event){
     var tolerance = 100;
     var exponent = 40;

@@ -269,6 +269,11 @@ ol.succset_list {
   bottom: 0;
 }
 
+.succset_list li .attributes b {
+  display:block;
+  font-weight: normal;
+}
+
 .succset_list li b.title {
   font-weight: normal;
   display:block;
