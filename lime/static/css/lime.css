@@ -206,8 +206,11 @@ body.dragging, body.dragging * {
 
 
 /* Child List (one for each vertex) ------------------------------------- */
+/* Must implement different view types */
 
-ol.succset_list {
+
+
+.succset_list.oldview {
   z-index: 110;
   width: 100%;
   margin: 0;
@@ -215,7 +218,7 @@ ol.succset_list {
   position:relative;
   }
 
-.succset_list li {
+.succset_list.oldview li {
   position: relative;
   padding: 4px 0;
   margin: 8px;
@@ -226,41 +229,41 @@ ol.succset_list {
   background-color: #fff;
   }
 
-  .succset_list li.dragged {
+  .succset_list.oldview li.dragged {
     border-bottom: none;
     -webkit-box-shadow: 0px 0px 120px 0px rgba(51,51,51, 0.10);
     -moz-box-shadow:    0px 0px 120px 0px rgba(51,51,51, 0.10);
     box-shadow:         0px 0px 120px 0px rgba(51,51,51, 0.10);
   }
 
-  .succset_list li .title {
+  .succset_list.oldview li .title {
 
   }
 
-  .succset_list li .title.icon .icon {
+  .succset_list.oldview li .title.icon .icon {
     width: 16px;
     height:16px;
     margin-right: 4px;
     }
 
-  .succset_list li .title.icon {
+  .succset_list.oldview li .title.icon {
     text-indent: 0px;
     }
-  .succset_list li .title.icon .icon {
+  .succset_list.oldview li .title.icon .icon {
 
     }
 
-  .succset_list li.dragged {
+  .succset_list.oldview li.dragged {
     position:absolute;
     z-index: 30;
     }
 
-  .succset_list li .cover {width: 25%; margin: 0 2% 0 0;}
-  .succset_list li .cover img {width: 100%;}
+  .succset_list.oldview li .cover {width: 25%; margin: 0 2% 0 0;}
+  .succset_list.oldview li .cover img {width: 100%;}
 
 
 
-.succset_list li a.in_set_link {
+.succset_list.oldview li a.in_set_link {
   display:block;
   position:absolute;
   top: 0;
@@ -269,46 +272,46 @@ ol.succset_list {
   bottom: 0;
 }
 
-.succset_list li .attributes b {
+.succset_list.oldview li .attributes b {
   display:block;
   font-weight: normal;
 }
 
-.succset_list li b.title {
+.succset_list.oldview li b.title {
   font-weight: normal;
   display:block;
 }
 
-.succset_list li:hover b.title {
+.succset_list.oldview li:hover b.title {
   }
 
-.succset_list li.body {
+.succset_list.oldview li.body {
   background-color: #ff8800;
   }
 
-.succset_list li.category {
+.succset_list.oldview li.category {
   }
 
 
-.succset_list li.tag {}
-.succset_list li.work {
+.succset_list.oldview li.tag {}
+.succset_list.oldview li.work {
   }
 
-.succset_list li.happening {
+.succset_list.oldview li.happening {
   }
 
 
-.succset_list li.photo {
+.succset_list.oldview li.photo {
   padding: 0;
   }
 
 
-.succset_list li.photo img {
+.succset_list.oldview li.photo img {
   display:block;
   max-width: 40%;
   }
 
-.succset_list li.video {}
+.succset_list.oldview li.video {}
 
 /* In Set Menus ------------------------------------- */
 

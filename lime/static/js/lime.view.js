@@ -62,12 +62,15 @@ LIME.View.SuccessorView['Vertex'] = LIME.SuccessorView = Backbone.View.extend({ 
   },
 
   render_dynamic: function(){
+    var schema = LIME.host.vertexSchema[this.model.vertexType];
     this.$el.html(this.template(this.model.toJSON()));
     this.$attributes = this.$el.children('.attributes');
-    _.each(this.model.attributes, function(attribute){
-      this.$attributes.append("<b class='attribute'>"+attribute+"</b>");
-    }, this);
 
+    _.each(schema, function(field){
+      if(_.has(this.model.attributes, field.name)){
+        this.$attributes.append("<b class='attribute'>"+this.model.attributes[field.name]+"</b>");
+      }
+    }, this)
   },
 
   render: function(){
@@ -96,7 +99,7 @@ LIME.View.SuccsetView = {};
 
 LIME.View.SuccsetView['Vertex'] = Backbone.View.extend({
   tagName: 'ol',
-  className: 'succset_list',
+  className: 'succset_list oldview',
   idName: 'succset_list',
   sortFunction: null,
 
