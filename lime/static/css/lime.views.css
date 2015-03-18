@@ -4,21 +4,13 @@ body.dragging, body.dragging * {
   cursor: move !important;
 }
 
-/* Child List (one for each vertex) ------------------------------------- */
-
 .succset_list.oldview {
   z-index: 110;
   width: 100%;
   margin: 0;
   padding: 0 0 10%;
   position:relative;
-  }
-  .succset_list.oldview li.dragged {
-    position:absolute;
-    z-index: 30;
-    border-bottom: none;
-    background-color: transparent;
-  }
+}
 
 .succset_list.oldview li {
   position: relative;
@@ -28,13 +20,33 @@ body.dragging, body.dragging * {
   font-size: 16px;
   border-bottom: 1px solid #e3e9ea;
   background-color: #fff;
+}
+
+  .succset_list.oldview li.dragged {
+    position:absolute;
+    z-index: 30;
+    border-bottom: none;
+    background-color: transparent;
   }
+
+.succset_list.oldview li a.in_set_link {
+  display:block;
+  position:absolute;
+  z-index: 20;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+  /* Cover */
 
   .succset_list.oldview li.with_cover .cover {
     width: 25%;
     margin: 0 10px 10px 0;
   }
-  .succset_list.oldview li .cover img {
+
+  .succset_list.oldview li.with_cover .cover img {
     width: 100%;
     display: block;
 
@@ -68,7 +80,7 @@ body.dragging, body.dragging * {
       10px 10px 0 rgba(220, 220, 220, 1.0);
   }
 
-  .succset_list.oldview li.dragged.with_cover .cover img {
+  .succset_list.oldview li.with_cover.dragged .cover img {
     width: 100%;
     display: block;
 
@@ -105,19 +117,9 @@ body.dragging, body.dragging * {
       10px 10px 25px 0px rgba(100,100,100, .3);
   }
 
-.succset_list.oldview li a.in_set_link {
-  display:block;
-  position:absolute;
-  z-index: 20;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-}
-
 .succset_list.oldview li .attributes {
   width: 25%;
-  background-color: transparent;
+  background-color: #fff;
   -webkit-transition: all .1s;
   -moz-transition: all .1s;
   transition: all .1s;
@@ -157,10 +159,10 @@ body.dragging, body.dragging * {
   padding: 4px;
   line-height: 1.3em;
 }
+
   .succset_list.oldview li.with_cover .attributes b {
     background-color: #fff;
   }
-
 
 .succset_list.oldview li .attributes .icon {
   width: 16px;
@@ -168,7 +170,8 @@ body.dragging, body.dragging * {
   padding: 4px 0;
   margin-right: 4px;
   float:left;
-  }
+}
+
   .succset_list.oldview li.with_cover .icon {
     padding: 4px;
     background-color: rgba(255,255,255,1);
@@ -184,23 +187,7 @@ body.dragging, body.dragging * {
   .succset_list.oldview li:hover b.title {
   }
 
-.succset_list.oldview li.body {
-  background-color: #ff8800;
-  }
-
 .succset_list.oldview li.category {
-  }
-
-
-.succset_list.oldview li.tag {}
-.succset_list.oldview li.work {
-  }
-
-.succset_list.oldview li.happening {
-  }
-
-
-.succset_list.oldview li.photo {
   }
 
 
@@ -209,7 +196,6 @@ body.dragging, body.dragging * {
   max-width: 100%;
   }
 
-.succset_list.oldview li.video {}
 
 /* In Set Menus ------------------------------------- */
 

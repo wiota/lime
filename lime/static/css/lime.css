@@ -82,17 +82,11 @@
 /* -------------------------------------------------------------------  */
 
 
-
 .path .vertex.link a {
   display:block;
   cursor: pointer;
   padding: 2% 0 2% 16%;
 }
-
-
-
-/* Summary (one for each vertex) */
-
 
 .summary {
   z-index: 120;
