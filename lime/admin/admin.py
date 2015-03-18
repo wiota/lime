@@ -195,23 +195,3 @@ def create_user():
         flash("Successfully created user.")
         return redirect(url_for("admin.individual_user", id=user.id))
     return render_template("create_user.html", form=form, ref=ref)
-
-
-@mod.route('/build_db/')
-@login_required
-def rebuild():
-    ''' This is a temporary endpoint, only for the testuser! '''
-    if current_user.email == "test@test.com":
-        build_db(current_user)
-        return "Success."
-    return "Not allowed."
-
-
-@mod.route('/clear_db/')
-@login_required
-def clear():
-    ''' This is a temporary endpoint, only for the testuser! '''
-    if current_user.email == "test@test.com":
-        clear_db(current_user)
-        return "Success."
-    return "Not allowed."
