@@ -63,12 +63,18 @@ LIME.View.SuccessorView['Vertex'] = LIME.SuccessorView = Backbone.View.extend({ 
 
   render_dynamic: function(){
     var schema = LIME.host.vertexSchema[this.model.vertexType];
+    var first = true;
     this.$el.html(this.template(this.model.toJSON()));
     this.$attributes = this.$el.children('.attributes');
 
     _.each(schema, function(field){
       if(_.has(this.model.attributes, field.name)){
-        this.$attributes.append("<b class='attribute'>"+this.model.attributes[field.name]+"</b>");
+        if(first){
+          first = false;
+          this.$attributes.append("<b class='attribute primary'>"+this.model.attributes[field.name]+"</b>");
+        } else {
+          this.$attributes.append("<b class='attribute'>"+this.model.attributes[field.name]+"</b>");
+        }
       }
     }, this)
   },
@@ -80,9 +86,17 @@ LIME.View.SuccessorView['Vertex'] = LIME.SuccessorView = Backbone.View.extend({ 
       this.render_static();
     }
     this.$cover = this.$el.children('.cover');
-    _.each(this.model.get('cover'), function(coverItem){
-      this.$cover.append("<img src='"+coverItem.href+"?w=500' alt='' />")
-    }, this);
+
+    var ca = this.model.get('cover');
+    if(ca.length){
+      this.$el.addClass('with_cover');
+      _.each(ca, function(coverItem){
+        this.$cover.append("<img src='"+coverItem.href+"?w=500' alt='' />")
+      }, this);
+    } else {
+      this.$el.addClass('without_cover');
+    }
+
     this.delegateEvents();
     if(!this.model.get('deletable')){
       this.$el.find('.delete').hide();

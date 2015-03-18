@@ -1,0 +1,271 @@
+/* Sortable ------------------------------------- */
+
+body.dragging, body.dragging * {
+  cursor: move !important;
+}
+
+/* Child List (one for each vertex) ------------------------------------- */
+
+.succset_list.oldview {
+  z-index: 110;
+  width: 100%;
+  margin: 0;
+  padding: 0 0 10%;
+  position:relative;
+  }
+
+.succset_list.oldview li {
+  position: relative;
+  margin: 8px;
+  padding: 0 0 8px;
+  min-height: 1em;
+  font-size: 16px;
+  border-bottom: 1px solid #e3e9ea;
+  background-color: #fff;
+  }
+
+  .succset_list.oldview li.dragged {
+    position:absolute;
+    z-index: 30;
+    border-bottom: none;
+    background-color: transparent;
+  }
+
+    .succset_list.oldview li.dragged .in_set_menu {
+      display:none;
+    }
+
+    .succset_list.oldview li.dragged.without_cover .attributes {
+      -webkit-box-shadow: 5px 5px 10px 0px rgba(100,100,100, .5);
+      -moz-box-shadow:    5px 5px 10px 0px rgba(100,100,100, .5);
+      box-shadow:         5px 5px 10px 0px rgba(100,100,100, .5);
+    }
+
+  .succset_list.oldview li.with_cover .cover {
+    width: 25%;
+    margin: 0 10px 10px 0;
+  }
+  .succset_list.oldview li .cover img {
+    width: 100%;
+    display: block;
+    -webkit-transition: all .4s;
+    -moz-transition: all .4s;
+    transition: all .4s;
+    -webkit-box-shadow:
+      1px 1px   0 rgba(100, 100, 100, 1.0),
+      3px 3px   0 rgba(255, 255, 255, 1.0),
+      4px 4px   0 rgba(180, 180, 180, 1.0),
+      6px 6px   0 rgba(233, 233, 233, 1.0),
+      7px 7px   0 rgba(200, 200, 200, 1.0),
+      9px 9px   0 rgba(220, 220, 220, 1.0),
+      10px 10px 0 rgba(220, 220, 220, 1.0);
+    -moz-box-shadow:
+      1px 1px   0 rgba(100, 100, 100, 1.0),
+      3px 3px   0 rgba(255, 255, 255, 1.0),
+      4px 4px   0 rgba(180, 180, 180, 1.0),
+      6px 6px   0 rgba(233, 233, 233, 1.0),
+      7px 7px   0 rgba(200, 200, 200, 1.0),
+      9px 9px   0 rgba(220, 220, 220, 1.0),
+      10px 10px 0 rgba(220, 220, 220, 1.0);
+    box-shadow:
+      1px 1px   0 rgba(100, 100, 100, 1.0),
+      3px 3px   0 rgba(255, 255, 255, 1.0),
+      4px 4px   0 rgba(180, 180, 180, 1.0),
+      6px 6px   0 rgba(233, 233, 233, 1.0),
+      7px 7px   0 rgba(200, 200, 200, 1.0),
+      9px 9px   0 rgba(220, 220, 220, 1.0),
+      10px 10px 0 rgba(220, 220, 220, 1.0);
+  }
+
+  .succset_list.oldview li.dragged.with_cover .cover img {
+    width: 100%;
+    display: block;
+
+    -webkit-transform: translate(-7px, -7px);
+    -moz-transform: translate(-7px, -7px);
+    transform: translate(-7px, -7px);
+
+    -webkit-box-shadow:
+      1px 1px   0 rgba(100, 100, 100, 1.0),
+      4px 4px   0 rgba(255, 255, 255, 1.0),
+      5px 5px   0 rgba(180, 180, 180, 1.0),
+      8px 8px   0 rgba(233, 233, 233, 1.0),
+      9px 9px   0 rgba(200, 200, 200, 1.0),
+      12px 12px 0 rgba(220, 220, 220, 1.0),
+      13px 13px 0 rgba(220, 220, 220, 1.0),
+      20px 20px 15px 0px rgba(100,100,100, .1);
+    -moz-box-shadow:
+      1px 1px   0 rgba(100, 100, 100, 1.0),
+      4px 4px   0 rgba(255, 255, 255, 1.0),
+      5px 5px   0 rgba(180, 180, 180, 1.0),
+      8px 8px   0 rgba(233, 233, 233, 1.0),
+      9px 9px   0 rgba(200, 200, 200, 1.0),
+      12px 12px 0 rgba(220, 220, 220, 1.0),
+      13px 13px 0 rgba(220, 220, 220, 1.0),
+      20px 20px 15px 0px rgba(100,100,100, .1);
+    box-shadow:
+      1px 1px   0 rgba(100, 100, 100, 1.0),
+      4px 4px   0 rgba(255, 255, 255, 1.0),
+      5px 5px   0 rgba(180, 180, 180, 1.0),
+      8px 8px   0 rgba(233, 233, 233, 1.0),
+      9px 9px   0 rgba(200, 200, 200, 1.0),
+      12px 12px 0 rgba(220, 220, 220, 1.0),
+      13px 13px 0 rgba(220, 220, 220, 1.0),
+      20px 20px 15px 0px rgba(100,100,100, .1);
+  }
+
+.succset_list.oldview li a.in_set_link {
+  display:block;
+  position:absolute;
+  z-index: 20;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.succset_list.oldview li .attributes {
+  width: 25%;
+  background-color: #eee;
+}
+
+.succset_list.oldview li.with_cover .attributes {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  bottom: 18px;
+  right: 0px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  margin: 1%;
+  padding: 0;
+  width: 23%;
+  color: #000;
+  background-color: transparent;
+}
+
+.succset_list.oldview li .attributes b {
+  display:block;
+  font-size: 10px;
+  font-weight: normal;
+  padding: 4px;
+  line-height: 1.3em;
+}
+  .succset_list.oldview li.with_cover .attributes b {
+    background-color: #fff;
+  }
+
+
+.succset_list.oldview li .attributes .icon {
+  width: 16px;
+  height:16px;
+  padding: 4px 0;
+  margin-right: 4px;
+  float:left;
+  }
+  .succset_list.oldview li.with_cover .icon {
+    padding: 4px;
+    background-color: rgba(255,255,255,1);
+  }
+
+.succset_list.oldview li b.title,
+.succset_list.oldview li b.primary {
+  font-size: 16px;
+  font-weight: normal;
+  display:block;
+}
+
+  .succset_list.oldview li:hover b.title {
+  }
+
+.succset_list.oldview li.body {
+  background-color: #ff8800;
+  }
+
+.succset_list.oldview li.category {
+  }
+
+
+.succset_list.oldview li.tag {}
+.succset_list.oldview li.work {
+  }
+
+.succset_list.oldview li.happening {
+  }
+
+
+.succset_list.oldview li.photo {
+  }
+
+
+.succset_list.oldview li.photo img {
+  display:block;
+  max-width: 100%;
+  }
+
+.succset_list.oldview li.video {}
+
+/* In Set Menus ------------------------------------- */
+
+.in_set_menu {
+  position:absolute;
+  top:0;
+  right: 0;
+  text-align: right;
+}
+
+.summary a,
+.successorItem a {
+  padding: 1% 3px;
+  cursor: pointer;
+  text-decoration: underline;
+  font-weight: normal;
+  font-size: 90%;
+  font-family: "Monaco","Lucida Console","Courier New", "monospace";
+  }
+
+.summary a {
+  display:block;
+  margin: 3% 0;
+  padding: 1% 3px;
+}
+
+.successorItem a {
+  display:inline-block;
+}
+
+.successorItem a.drag_handle {
+  display:none;
+  text-decoration: none;
+  font-size: 100%;
+}
+
+.summary .meta {
+  border-bottom: 1px solid #f5f8f8;
+}
+
+.summary .add_menu a img {
+  float:left;
+  margin: 0 4px 0 0;
+  width: 16px;
+  height: 16px;
+}
+
+.delete {
+  background-color: rgba(255,255,255,0.7);
+  color: #f00;
+  }
+
+.delete:hover {
+  background-color: #f00;
+  color: #fff;
+  }
+
+.update {
+  color: #78F7D8;
+  }
+
+.update:hover {
+  background-color: #78F7D8;
+  color: #fff;
+  }

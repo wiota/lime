@@ -78,7 +78,7 @@
 
   <script type="text/template" id="body_summary">
     <b class='icon bookcase'><img src='/icon/bookcase.svg'></b>
-    <div class='body_title title'><%- title %></div>
+    <div class='body_title title'>body of work</div>
     <div class='meta'>
 
     </div>
@@ -131,86 +131,129 @@
   <!-- addItem -->
   <script type="text/template" id="vertex_add">
   <a class='add_<%- vertex_type %>'><img src='/icon/<%- vertex_type %>.svg'>add <%- vertex_type %></a>
+  </script>
 
-  <!-- SuccsetItem -->
+  <!-- SuccsetItem  -->
 
+  <!-- Link  -->
+  <!-- Cover  -->
+  <!-- Schematic Fields  -->
+  <!-- Menu  -->
+
+  <!-- Body  -->
   <script type="text/template" id="body_in_set">
-    <a class='in_set_link' href='#'></a>
+    <a class='in_set_link' href='#body/<%- _id %>'></a>
+
     <div class='cover'></div>
-    <b class='title'>Body</b>
+
+    <div class='attributes'>
+      <img class='icon book' src='/icon/body.svg'>
+      <b class='title'>Body</b>
+    </div>
+
     <div class='in_set_menu'>
       <a class='drag_handle'>&#8597;</a>
     </div>
   </script>
 
+  <!-- Category  -->
   <script type="text/template" id="category_in_set">
     <a class='in_set_link' href='#category/<%- _id %>'></a>
+
     <div class='cover'></div>
-    <b class='title icon'><img class='icon book' src='/icon/book.svg?<%- Math.random() %>'><%- title %></b>
+
+    <div class='attributes'>
+      <img class='icon book' src='/icon/book.svg?<%- Math.random() %>'>
+      <b class='title'><%- title %></b>
+    </div>
+
     <div class='in_set_menu'>
       <a class='delete'>delete</a>
       <a class='drag_handle'>&#8597;</a>
     </div>
   </script>
 
-  <script type="text/template" id="work_in_set">
+  <!-- Work  -->
+  <script type="text/template" id="work_in_set_disabled">
     <a class='in_set_link' href='#work/<%- _id %>'></a>
+
     <div class='cover'></div>
-    <b class='title icon'><img class='icon tree' src='/icon/tree.svg'><%- title %></b>
+
+    <div class='attributes'>
+      <img class='icon tree' src='/icon/tree.svg'>
+      <b class='title'><%- title %></b>
+    </div>
+
     <div class='in_set_menu'>
       <a class='delete'>delete</a>
       <a class='drag_handle'>&#8597;</a>
     </div>
   </script>
 
+  <!-- Happening  -->
   <script type="text/template" id="happening_in_set">
     <a class='in_set_link' href='#happening/<%- _id %>'></a>
+
     <div class='cover'></div>
-    <b class='title icon'><img class='icon calendar' src='/icon/calendar.svg'><%- title %></b>
+
+    <div class='attributes'>
+      <img class='icon calendar' src='/icon/calendar.svg'>
+      <b class='title'><%- title %></b>
+    </div>
+
     <div class='in_set_menu'>
       <a class='delete'>delete</a>
       <a class='drag_handle'>&#8597;</a>
     </div>
   </script>
 
+  <!-- Photo  -->
   <script type="text/template" id="photo_in_set">
-    <a class='in_set_link' href='<%- href %>'></a>
-    <img src="<%- href %>?w=500" alt="" />
+    <a class='in_set_link' target='_blank' href='<%- href %>'></a>
+
+    <!-- no cover -->
+
+    <div class='attributes'>
+      <img src="<%- href %>?w=500" alt="" />
+    </div>
+
     <div class='in_set_menu'>
       <a class='delete'>delete</a>
       <a class='drag_handle'>&#8597;</a>
     </div>
   </script>
 
+  <!-- Youtube  -->
   <script type="text/template" id="youtube_in_set">
     <a class='in_set_link' target='_blank' href='https://www.youtube.com/watch?v=<%- vid %>'></a>
-    <div class='thumb'>
+
+    <div class='attributes'>
+      <img class='icon tree' src='/icon/default_icon.svg'>
+      <b class='title'>Youtube id <%- vid %></b>
+    </div>
+
+    <div class='cover'>
       <img src='https://img.youtube.com/vi/<%- vid %>/1.jpg'>
       <img src='https://img.youtube.com/vi/<%- vid %>/2.jpg'>
       <img src='https://img.youtube.com/vi/<%- vid %>/3.jpg'>
     </div>
-    <b class='title icon'><img class='icon tree' src='/icon/default_icon.svg'>Youtube id <%- vid %></b>
+
     <div class='in_set_menu'>
       <a class='delete'>delete</a>
       <a class='drag_handle'>&#8597;</a>
     </div>
   </script>
 
-  <script type="text/template" id="vertex_in_set">
-    <a class='in_set_link' href='#<%- vertex_type %>/<%- _id %>'></a>
-    <b class='title icon'><img class='icon <%- vertex_type %>' src='/icon/<%- vertex_type %>.svg'><%- title %></b>
-    <div class='in_set_menu'>
-      <a class='delete'>delete</a>
-      <a class='drag_handle'>&#8597;</a>
-    </div>
-  </script>
-
+  <!-- Dynamic  -->
   <script type="text/template" id="dynamic_in_set">
     <a class='in_set_link' href='#<%- vertex_type %>/<%- _id %>'></a>
-    <b class='title icon'><img class='icon <%- vertex_type %>' src='/icon/<%- vertex_type %>.svg'></b>
-    <div class='attributes'>
 
+    <div class='cover'></div>
+
+    <div class='attributes'>
+      <img class='icon <%- vertex_type %>' src='/icon/<%- vertex_type %>.svg'>
     </div>
+
     <div class='in_set_menu'>
       <a class='delete'>delete</a>
       <a class='drag_handle'>&#8597;</a>
