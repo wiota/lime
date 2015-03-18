@@ -193,7 +193,7 @@ def create_user():
             send_invite(user)
         else:
             flash("Successfully created user.")
-        return redirect(url_for("admin.create_user"))
+        return redirect(url_for("admin.individual_user", id=user.id))
     return render_template("create_user.html", form=form, ref=ref)
 
 
