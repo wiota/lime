@@ -117,7 +117,7 @@ body.dragging, body.dragging * {
 
 .succset_list.oldview li .attributes {
   width: 25%;
-  background-color: #eee;
+  background-color: transparent;
   -webkit-transition: all .1s;
   -moz-transition: all .1s;
   transition: all .1s;
