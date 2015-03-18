@@ -178,11 +178,11 @@ def create_user():
             host.save()
 
             # Create the Body apex
-            body = Body(host=host)
+            body = Body(host=host, title=hostname)
             body.save()
 
             # Create the Happening apex
-            happenings = Happenings(host=host)
+            happenings = Happenings(host=host, title=hostname)
             happenings.save()
 
 
