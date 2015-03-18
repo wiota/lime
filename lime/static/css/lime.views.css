@@ -13,6 +13,12 @@ body.dragging, body.dragging * {
   padding: 0 0 10%;
   position:relative;
   }
+  .succset_list.oldview li.dragged {
+    position:absolute;
+    z-index: 30;
+    border-bottom: none;
+    background-color: transparent;
+  }
 
 .succset_list.oldview li {
   position: relative;
@@ -24,23 +30,6 @@ body.dragging, body.dragging * {
   background-color: #fff;
   }
 
-  .succset_list.oldview li.dragged {
-    position:absolute;
-    z-index: 30;
-    border-bottom: none;
-    background-color: transparent;
-  }
-
-    .succset_list.oldview li.dragged .in_set_menu {
-      display:none;
-    }
-
-    .succset_list.oldview li.dragged.without_cover .attributes {
-      -webkit-box-shadow: 5px 5px 10px 0px rgba(100,100,100, .5);
-      -moz-box-shadow:    5px 5px 10px 0px rgba(100,100,100, .5);
-      box-shadow:         5px 5px 10px 0px rgba(100,100,100, .5);
-    }
-
   .succset_list.oldview li.with_cover .cover {
     width: 25%;
     margin: 0 10px 10px 0;
@@ -48,9 +37,11 @@ body.dragging, body.dragging * {
   .succset_list.oldview li .cover img {
     width: 100%;
     display: block;
-    -webkit-transition: all .4s;
-    -moz-transition: all .4s;
-    transition: all .4s;
+
+    -webkit-transition: all .3s ease, -webkit-transform .1s ease;
+    -moz-transition: all .3s ease, -moz-transform .1s ease;
+    transition: all .3s ease, transform .1s ease;
+
     -webkit-box-shadow:
       1px 1px   0 rgba(100, 100, 100, 1.0),
       3px 3px   0 rgba(255, 255, 255, 1.0),
@@ -81,37 +72,37 @@ body.dragging, body.dragging * {
     width: 100%;
     display: block;
 
-    -webkit-transform: translate(-7px, -7px);
-    -moz-transform: translate(-7px, -7px);
-    transform: translate(-7px, -7px);
+    -webkit-transform: translate(7px, -7px);
+    -moz-transform: translate(7px, -7px);
+    transform: translate(7px, -7px);
 
     -webkit-box-shadow:
       1px 1px   0 rgba(100, 100, 100, 1.0),
-      4px 4px   0 rgba(255, 255, 255, 1.0),
-      5px 5px   0 rgba(180, 180, 180, 1.0),
-      8px 8px   0 rgba(233, 233, 233, 1.0),
-      9px 9px   0 rgba(200, 200, 200, 1.0),
-      12px 12px 0 rgba(220, 220, 220, 1.0),
-      13px 13px 0 rgba(220, 220, 220, 1.0),
-      20px 20px 15px 0px rgba(100,100,100, .1);
+      5px 5px   0 rgba(255, 255, 255, 1.0),
+      6px 6px   0 rgba(180, 180, 180, 1.0),
+      10px 10px   0 rgba(233, 233, 233, 1.0),
+      11px 11px   0 rgba(200, 200, 200, 1.0),
+      14px 14px 0 rgba(220, 220, 220, 1.0),
+      15px 15px 0 rgba(220, 220, 220, 1.0),
+      10px 10px 25px 0px rgba(100,100,100, .3);
     -moz-box-shadow:
       1px 1px   0 rgba(100, 100, 100, 1.0),
-      4px 4px   0 rgba(255, 255, 255, 1.0),
-      5px 5px   0 rgba(180, 180, 180, 1.0),
-      8px 8px   0 rgba(233, 233, 233, 1.0),
-      9px 9px   0 rgba(200, 200, 200, 1.0),
-      12px 12px 0 rgba(220, 220, 220, 1.0),
-      13px 13px 0 rgba(220, 220, 220, 1.0),
-      20px 20px 15px 0px rgba(100,100,100, .1);
+      5px 5px   0 rgba(255, 255, 255, 1.0),
+      6px 6px   0 rgba(180, 180, 180, 1.0),
+      10px 10px   0 rgba(233, 233, 233, 1.0),
+      11px 11px   0 rgba(200, 200, 200, 1.0),
+      14px 14px 0 rgba(220, 220, 220, 1.0),
+      15px 15px 0 rgba(220, 220, 220, 1.0),
+      10px 10px 25px 0px rgba(100,100,100, .3);
     box-shadow:
       1px 1px   0 rgba(100, 100, 100, 1.0),
-      4px 4px   0 rgba(255, 255, 255, 1.0),
-      5px 5px   0 rgba(180, 180, 180, 1.0),
-      8px 8px   0 rgba(233, 233, 233, 1.0),
-      9px 9px   0 rgba(200, 200, 200, 1.0),
-      12px 12px 0 rgba(220, 220, 220, 1.0),
-      13px 13px 0 rgba(220, 220, 220, 1.0),
-      20px 20px 15px 0px rgba(100,100,100, .1);
+      5px 5px   0 rgba(255, 255, 255, 1.0),
+      6px 6px   0 rgba(180, 180, 180, 1.0),
+      10px 10px   0 rgba(233, 233, 233, 1.0),
+      11px 11px   0 rgba(200, 200, 200, 1.0),
+      14px 14px 0 rgba(220, 220, 220, 1.0),
+      15px 15px 0 rgba(220, 220, 220, 1.0),
+      10px 10px 25px 0px rgba(100,100,100, .3);
   }
 
 .succset_list.oldview li a.in_set_link {
@@ -127,22 +118,37 @@ body.dragging, body.dragging * {
 .succset_list.oldview li .attributes {
   width: 25%;
   background-color: #eee;
+  -webkit-transition: all .1s;
+  -moz-transition: all .1s;
+  transition: all .1s;
 }
 
-.succset_list.oldview li.with_cover .attributes {
-  position: absolute;
-  top: 0px;
-  left: 0px;
-  bottom: 18px;
-  right: 0px;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  margin: 1%;
-  padding: 0;
-  width: 23%;
-  color: #000;
-  background-color: transparent;
-}
+  .succset_list.oldview li.with_cover .attributes {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    bottom: 18px;
+    right: 0px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    margin: 1%;
+    padding: 0;
+    width: 23%;
+    color: #000;
+    background-color: transparent;
+  }
+
+  .succset_list.oldview li.dragged .attributes {
+    -webkit-transform: translate(7px, -7px);
+    -moz-transform: translate(7px, -7px);
+    transform: translate(7px, -7px);
+  }
+
+  .succset_list.oldview li.dragged.without_cover .attributes {
+    -webkit-box-shadow: 5px 5px 15px 0px rgba(100,100,100, .3);
+    -moz-box-shadow:    5px 5px 15px 0px rgba(100,100,100, .3);
+    box-shadow:         5px 5px 15px 0px rgba(100,100,100, .3);
+  }
 
 .succset_list.oldview li .attributes b {
   display:block;
@@ -213,6 +219,9 @@ body.dragging, body.dragging * {
   right: 0;
   text-align: right;
 }
+  .succset_list.oldview li.dragged .in_set_menu {
+    display:none;
+  }
 
 .summary a,
 .successorItem a {
