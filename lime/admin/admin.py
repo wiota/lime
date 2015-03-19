@@ -109,9 +109,15 @@ def definitely_delete_user(id):
             pass
 
         host = Host.by_owner(user)
-        Vertex.objects(host=host).delete()
-        host.delete()
+        host.update(pull__owners=user)
+        host.reload()
+
+        if not host.owners:
+            Vertex.objects(host=host).delete()
+            host.delete()
+
         user.delete()
+
         flash("User '%s' successfully deleted" % (user.email))
         return redirect(url_for("admin.index"))
     flash("Email address is incorrect!")
