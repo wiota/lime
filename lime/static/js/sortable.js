@@ -246,6 +246,16 @@
         return
       }
 
+      // Margins
+      var marginTop = Number(this.item.css('margin-top').replace('px', ''));
+      var marginLeft = Number(this.item.css('margin-left').replace('px', ''));
+
+      // Grab Offset
+      this.item.grabOffset = {
+        left: event.offsetX + marginLeft,
+        top: event.offsetY + marginTop
+      }
+
       this.setPointer(e)
       this.toggleListeners('on')
 
@@ -254,7 +264,7 @@
     },
     drag: function  (e) {
       if(!this.dragging){
-        if(!this.distanceMet(e) || !this.delayMet)
+        if(!this.distanceMet(e) && !this.delayMet)
           return
 
         this.options.onDragStart(this.item, this.itemContainer, groupDefaults.onDragStart, e)

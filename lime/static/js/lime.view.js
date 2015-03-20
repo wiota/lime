@@ -211,7 +211,6 @@ LIME.View.SuccsetView['Vertex'] = Backbone.View.extend({
         clearInterval(t.timer);
 
         if(sb != 0){
-          // console.log(sb);
           t.timer = setInterval(function(){
 
             list.trigger(event);;
@@ -228,29 +227,20 @@ LIME.View.SuccsetView['Vertex'] = Backbone.View.extend({
 
   sortInit: function(){
     var view = this;
-    var xOff = 0;
-    var yOff = 0;
 
     var sortable_opt = {
-      distance: 0,
-      delay: 100,
+      distance: 10,
+      delay: 200,
       tolerance: 0,
       placeholder: $('<li class="placeholder"/>'),
 
       onDrag: function ($item, position, _super, event) {
-        position.left = 0;
-        position.top -= yOff;
+        position.left -= $item.grabOffset.left;
+        position.top -= $item.grabOffset.top;
         $item.css(position)
       },
 
       onDragStart: function ($item, container, _super, event) {
-        // margin top
-        var marginTop = Number($item.css('margin-top').replace('px', ''));
-
-        // mouse grab offset
-        xOff = event.offsetX;
-        yOff = event.offsetY + marginTop;
-
 
         // cache item dimensions
         var itemDim = {
@@ -512,7 +502,6 @@ LIME.ListingPanel = Backbone.View.extend({
 
   initialize: function(){
     this.listMenu = new LIME.ListingMenu();
-    console.log(this.listMenu.el)
   },
 
   list: function(model){
