@@ -18,6 +18,40 @@ Backbone.View.prototype.close = function(){
 }
 
 /* ------------------------------------------------------------------- */
+// Listing Menus
+/* ------------------------------------------------------------------- */
+
+LIME.ListingMenu = Backbone.View.extend({
+  tagName: 'div',
+  className: 'listing_menu',
+  template: _.template($('#listing_menu').html()),
+  events:{
+    'click .delete':'toggleDelete'
+  },
+
+  initialize: function(){
+    this.lockStatus = "Locked";
+  },
+
+  toggleDelete: function(){
+    LIME.listingPanel.toggleClass('deletable');
+    if(this.lockStatus === "Locked"){
+      this.lockStatus = "Unlocked";
+    } else if(this.lockStatus === "Unlocked"){
+      this.lockStatus = "Locked";
+    }
+    this.render();
+  },
+
+  render: function(){
+    this.$el.html(this.template({'lockStatus':this.lockStatus}));
+    this.delegateEvents();
+    return this;
+  }
+
+})
+
+/* ------------------------------------------------------------------- */
 // Successor Item View
 /* ------------------------------------------------------------------- */
 
@@ -405,6 +439,7 @@ LIME.View.ListingView['Vertex'] = Backbone.View.extend({
       'className': 'succset draggable form'
     });
 
+    // This should become add menu
     this.$instruction = $(this.emptyFlagTemplate());
 
     this.children = [this.list, this.upload];
@@ -475,6 +510,11 @@ LIME.ListingPanel = Backbone.View.extend({
   listedModel: null,
   listStyle: 'list',
 
+  initialize: function(){
+    this.listMenu = new LIME.ListingMenu();
+    console.log(this.listMenu.el)
+  },
+
   list: function(model){
     if(this.view){
       this.view.close();
@@ -487,6 +527,11 @@ LIME.ListingPanel = Backbone.View.extend({
       'className': model.vertexType + ' vertex listing'
     });
     this.$el.html(this.view.el);
+    this.$el.append(this.listMenu.render().el);
+  },
+
+  toggleClass: function(cls){
+    this.$el.toggleClass(cls)
   },
 
   apexMenu: function(){
