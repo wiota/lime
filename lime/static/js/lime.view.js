@@ -25,16 +25,44 @@ LIME.ListingMenu = Backbone.View.extend({
   tagName: 'div',
   className: 'listing_menu',
   template: _.template($('#listing_menu').html()),
+  selectedClass: 'selected',
   events:{
-    'click .delete':'toggleDelete'
+
   },
 
   initialize: function(){
-    this.lockStatus = "Locked";
+    this.menus = [];
+  },
+
+  initMenus: function(){
+    var lists = this.$el.find('ul');
+    _.each(lists, function(el){
+      this.initMenu(el)
+    }, this);
+    return lists;
+  },
+
+  initMenu: function(ul){
+    var $ul = $(ul);
+    var $children = $ul.children();
+    _.each($children, function(li){
+      var $li = $(li);
+      $li.on('click', _.bind(this.select, this, $li, $ul));
+    }, this);
+    this.select($children.first(), $ul)
+  },
+
+  select: function(li, ul){
+    console.log(ul._select);
+    if(ul._select){
+      ul._select.removeClass(this.selectedClass);
+    }
+    ul._select = li;
+    li.addClass(this.selectedClass);
   },
 
   toggleDelete: function(){
-    LIME.listingPanel.toggleClass('deletable');
+    LIME.listingPanel.toggleClass('editmode');
     if(this.lockStatus === "Locked"){
       this.lockStatus = "Unlocked";
     } else if(this.lockStatus === "Unlocked"){
@@ -44,7 +72,8 @@ LIME.ListingMenu = Backbone.View.extend({
   },
 
   render: function(){
-    this.$el.html(this.template({'lockStatus':this.lockStatus}));
+    this.$el.html(this.template());
+    this.lists = this.initMenus();
     this.delegateEvents();
     return this;
   }

@@ -1,3 +1,30 @@
+/* Listing Menu ------------------------------------- */
+
+.listing_menu {
+  -webkit-transition: all .1s;
+  -moz-transition: all .1s;
+  transition: all .1s;
+}
+
+.listing_menu li {
+  display:inline-block;
+  visibility: hidden;
+  width: 0;
+}
+
+.listing_menu li.selected {
+  background: #ccc;
+  visibility: visible;
+  width:auto;
+}
+
+.listing_menu ul:hover li {
+  visibility: visible;
+  width:auto;
+}
+
+
+
 /* Sortable ------------------------------------- */
 
 body.dragging, body.dragging * {
@@ -206,6 +233,7 @@ body.dragging, body.dragging * {
   right: 0;
   text-align: right;
   padding: 1%;
+  z-index: 21;
 }
 
   .in_set_menu a {
@@ -237,7 +265,7 @@ body.dragging, body.dragging * {
   color: #000;
   background-color: #f5e135;
 }
-.deletable .listing_menu a.delete {
+.editmode .listing_menu a.delete {
   background-color: #f00;
   color: #fff;
 }
@@ -289,7 +317,7 @@ li .delete {
   opacity: 0;
 }
 
-.deletable li .delete {
+.editmode li .delete {
   visibility:visible;
   opacity: 1;
 }
