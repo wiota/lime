@@ -1,28 +1,62 @@
-/* Listing Menu ------------------------------------- */
+/* Listing Menus ------------------------------------- */
 
 .listing_menu {
+  position:fixed;
+  margin: 10px 0;
+  top:0;
+  right: 0;
+  z-index: 200;
+}
+
+.listing_menu ul {
+  overflow: auto;
+  clear:both;
+}
+
+.listing_menu li {
+  display:inline-block;
+  float:right;
+  visibility: hidden;
+  overflow: hidden;
+  background-color: #ddd;
+  width: 0px;
   -webkit-transition: all .1s;
   -moz-transition: all .1s;
   transition: all .1s;
 }
 
-.listing_menu li {
-  display:inline-block;
-  visibility: hidden;
-  width: 0;
-}
-
 .listing_menu li.selected {
   background: #ccc;
   visibility: visible;
-  width:auto;
+  width:100px;
 }
 
 .listing_menu ul:hover li {
   visibility: visible;
-  width:auto;
+  width:100px;
 }
 
+.listing_menu a {
+  display:block;
+  text-align: center;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.listing_menu .add_mode {
+  background-color: #31c8fd;
+  color: #fff;
+}
+
+.listing_menu .remove_mode {
+  background-color: #f00;
+  color: #fff;
+}
+
+.listing_menu .reorder_mode {
+  color: #000;
+  background-color: #f5e135;
+}
 
 
 /* Sortable ------------------------------------- */
@@ -243,32 +277,6 @@ body.dragging, body.dragging * {
   .succset_list.oldview li.dragged .in_set_menu {
     display:none;
   }
-
-/* Listing Menus ------------------------------------- */
-
-.listing_menu {
-  background-color: #fff;
-  text-align: center;
-  position:fixed;
-  top:0;
-  right: 0;
-  z-index: 200;
-}
-
-.listing_menu a {
-  display: inline-block;
-  padding: 10px;
-  cursor: pointer;
-}
-
-.listing_menu a.delete {
-  color: #000;
-  background-color: #f5e135;
-}
-.editmode .listing_menu a.delete {
-  background-color: #f00;
-  color: #fff;
-}
 
 
 /* Summary - needs cleaning up ------------------------------------- */
