@@ -18,69 +18,6 @@ Backbone.View.prototype.close = function(){
 }
 
 /* ------------------------------------------------------------------- */
-// Listing Menus
-/* ------------------------------------------------------------------- */
-
-LIME.ListingMenu = Backbone.View.extend({
-  tagName: 'div',
-  className: 'listing_menu',
-  template: _.template($('#listing_menu').html()),
-  selectedClass: 'selected',
-  events:{
-
-  },
-
-  initialize: function(){
-    this.menus = [];
-  },
-
-  initMenus: function(){
-    var lists = this.$el.find('ul');
-    _.each(lists, function(el){
-      this.initMenu(el)
-    }, this);
-    return lists;
-  },
-
-  initMenu: function(ul){
-    var $ul = $(ul);
-    var $children = $ul.children();
-    _.each($children, function(li){
-      var $li = $(li);
-      $li.on('click', _.bind(this.select, this, $li, $ul));
-    }, this);
-    this.select($children.first(), $ul)
-  },
-
-  select: function(li, ul){
-    console.log(ul._select);
-    if(ul._select){
-      ul._select.removeClass(this.selectedClass);
-    }
-    ul._select = li;
-    li.addClass(this.selectedClass);
-  },
-
-  toggleDelete: function(){
-    LIME.listingPanel.toggleClass('editmode');
-    if(this.lockStatus === "Locked"){
-      this.lockStatus = "Unlocked";
-    } else if(this.lockStatus === "Unlocked"){
-      this.lockStatus = "Locked";
-    }
-    this.render();
-  },
-
-  render: function(){
-    this.$el.html(this.template());
-    this.lists = this.initMenus();
-    this.delegateEvents();
-    return this;
-  }
-
-})
-
-/* ------------------------------------------------------------------- */
 // Successor Item View
 /* ------------------------------------------------------------------- */
 
@@ -529,8 +466,53 @@ LIME.ListingPanel = Backbone.View.extend({
   listedModel: null,
   listStyle: 'list',
 
+  editModes: [
+    ['add_mode', 'Add'],
+    ['reorder_mode', 'Reorder'],
+    ['remove_mode', 'Remove']
+  ],
+
+  viewStyles: [
+    ['list_view', 'List'],
+    ['grid_view', 'Grid'],
+    ['relate_view', 'Relate']
+    //['move_view', 'Move']
+  ],
+
   initialize: function(){
-    this.listMenu = new LIME.ListingMenu();
+    this.menus = {}
+    this.menus.viewStyle = new LIME.menu({className: 'view_style', schema: this.viewStyles});
+    this.menus.editMode = new LIME.menu({className: 'edit_mode', schema: this.editModes});
+
+    this.listenTo(this.menus.viewStyle, 'select', this.switchViewStyle);
+    this.listenTo(this.menus.editMode, 'select', this.switchEditMode);
+
+    this.renderMenu();
+  },
+
+  switchViewStyle: function(to, from){
+    this.switchClass(to,from)
+  },
+
+  switchEditMode: function(to, from){
+    this.switchClass(to,from)
+  },
+
+  switchClass: function(to, from){
+    console.log(to, from);
+    this.$el.addClass(to)
+    this.$el.removeClass(from)
+  },
+
+  renderMenu: function(){
+    var old = $('.listing_menu');
+    if(old){
+      old.remove();
+    }
+    this.$menu = $("<div class='listing_menu'></div>").appendTo(this.$el);
+    _.each(this.menus, function(menu){
+      this.$menu.append(menu.render().el);
+    }, this)
   },
 
   list: function(model){
@@ -544,12 +526,8 @@ LIME.ListingPanel = Backbone.View.extend({
       'model':model,
       'className': model.vertexType + ' vertex listing'
     });
-    this.$el.html(this.view.el);
-    this.$el.append(this.listMenu.render().el);
-  },
-
-  toggleClass: function(cls){
-    this.$el.toggleClass(cls)
+    // wait for the view to render itself
+    this.$el.append(this.view.el);
   },
 
   apexMenu: function(){
@@ -557,7 +535,6 @@ LIME.ListingPanel = Backbone.View.extend({
       this.view.close();
     }
     this.view = new LIME.View.HomeMenu();
-    this.$el.html(this.view.el);
-    this.view.render();
+    this.$el.append(this.view.render().el);
   }
 });
