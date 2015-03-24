@@ -355,17 +355,19 @@ body.dragging, body.dragging * {
 }
 
 .successorItem a.drag_handle {
+  display:none;
   visibility:hidden;
   opacity: 0;
 }
 
-.reorder_mode .successorItem a.drag_handle {
+.reorder_mode.off .successorItem a.drag_handle {
   color: #000;
   background-color: #f5e135;
   font-size: 26px;
   text-decoration: none;
   visibility:visible;
   opacity: 1;
+  display: block;
 }
 
 .summary .meta {
@@ -383,11 +385,17 @@ li .delete {
   -webkit-transition: all .2s;
   -moz-transition: all .2s;
   transition: all .2s;
+  width:0;
+  padding-left:0;
+  padding-right:0;
   visibility:hidden;
   opacity: 0;
 }
 
 .remove_mode li .delete {
+  width:50px;
+  padding-left:10px;
+  padding-right:10px;
   visibility:visible;
   opacity: 1;
 }
