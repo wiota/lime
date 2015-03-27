@@ -469,7 +469,7 @@ LIME.ListingPanel = Backbone.View.extend({
 
   editModes: [
     ['add_mode', 'Add'],
-    ['reorder_mode', 'Reorder'],
+    //['reorder_mode', 'Reorder'],
     ['remove_mode', 'Remove']
   ],
 
@@ -482,11 +482,12 @@ LIME.ListingPanel = Backbone.View.extend({
 
   initialize: function(){
     this.menus = {}
-    this.menus.viewStyle = new LIME.menu({className: 'view_style', schema: this.viewStyles});
+    //this.menus.viewStyle = new LIME.menu({className: 'view_style', schema: this.viewStyles});
     this.menus.editMode = new LIME.menu({className: 'edit_mode', schema: this.editModes});
 
-    this.listenTo(this.menus.viewStyle, 'select', this.switchViewStyle);
+    //this.listenTo(this.menus.viewStyle, 'select', this.switchViewStyle);
     this.listenTo(this.menus.editMode, 'select', this.switchEditMode);
+    this.$el.addClass('list_view');
 
     this.renderMenu();
   },
