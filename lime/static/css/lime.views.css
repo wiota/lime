@@ -1,20 +1,32 @@
 /* Listing Menus ------------------------------------- */
 
-.listing_menu {
+.horizontal.listing_menu {
   position:fixed;
-  margin: 10px 0;
+  margin: 0;
   top:0;
   right: 0px;
+  width: 100%;
   z-index: 200;
 }
 
-.listing_menu ul {
+.horizontal.listing_menu ul {
   clear:both;
-  padding: 10px 0;
+  height: 50px;
+  width: 100%;
   background-color: transparent;
 }
 
-.listing_menu li {
+.horizontal.listing_menu ul.view_style {
+  position: absolute;
+  top: 0px;
+}
+
+.horizontal.listing_menu ul.edit_mode {
+  position: absolute;
+  top: 60px;
+}
+
+.horizontal.listing_menu li {
   display:inline-block;
   float:right;
   visibility: hidden;
@@ -26,7 +38,7 @@
   transition: all .2s;
 }
 
-.listing_menu a {
+.horizontal.listing_menu a {
   display:block;
   text-align: center;
   padding: 15px 10px;
@@ -36,47 +48,138 @@
   transition: all .2s;
 }
 
-.listing_menu li.selected {
+.horizontal.listing_menu li.selected {
   visibility: visible;
-  width:90px;
+  width:10%;
 }
 
-.listing_menu .selected a {
+.horizontal.listing_menu .selected a {
   background: #555;
   color: #fff;
 }
 
-.listing_menu ul:hover li {
+.horizontal.listing_menu ul:hover li {
   visibility: visible;
-  width:90px;
+  width:10%;
 }
 
-.listing_menu ul:hover li.selected {
-  -webkit-transform: translate(0, 5px);
-  -moz-transform: translate(0, 5px);
-  transform: translate(0, 5px);
+.horizontal.listing_menu ul:hover li.selected {
+  -webkit-transform: translate(-5px, 0);
+  -moz-transform: translate(-5px, 0);
+  transform: translate(-5px, 0);
   -webkit-box-shadow: 5px 5px 15px 0px rgba(100,100,100, .3);
   -moz-box-shadow:    5px 5px 15px 0px rgba(100,100,100, .3);
   box-shadow:         5px 5px 15px 0px rgba(100,100,100, .3);
 }
 
-.listing_menu ul:hover li.selected a {
-
-}
 
 
-
-.listing_menu .add_mode a {
+.horizontal.listing_menu .add_mode a {
   background-color: #31c8fd;
   color: #fff;
 }
 
-.listing_menu .remove_mode a {
+.horizontal.listing_menu .remove_mode a {
   background-color: #f00;
   color: #fff;
 }
 
-.listing_menu .reorder_mode a {
+.horizontal.listing_menu .reorder_mode a {
+  color: #000;
+  background-color: #f5e135;
+}
+
+/* Vertical ------------------------------------- */
+
+.vertical.listing_menu {
+  position:fixed;
+  margin: 0;
+  top:0;
+  right: 0px;
+  width: 100%;
+  z-index: 200;
+}
+
+.vertical.listing_menu ul {
+  clear:both;
+  width: 10%;
+  right: 0;
+  background-color: #fff;
+}
+
+.vertical.listing_menu ul:hover {
+  width: 20%;
+  padding-right: 10%;
+}
+
+.vertical.listing_menu ul.view_style {
+  position: absolute;
+  top: 0px;
+}
+
+.vertical.listing_menu ul.edit_mode {
+  position: absolute;
+  top: 60px;
+}
+
+.vertical.listing_menu li {
+  display:block;
+  visibility: hidden;
+  overflow: hidden;
+  background-color: #ddd;
+  height: 0px;
+  -webkit-transition: all .2s;
+  -moz-transition: all .2s;
+  transition: all .2s;
+}
+
+.vertical.listing_menu a {
+  display:block;
+  text-align: left;
+  padding: 15px 10px;
+  cursor: pointer;
+  -webkit-transition: all .2s;
+  -moz-transition: all .2s;
+  transition: all .2s;
+}
+
+.vertical.listing_menu li.selected {
+  visibility: visible;
+  height:45px;
+}
+
+.vertical.listing_menu .selected a {
+  background: #555;
+  color: #fff;
+}
+
+.vertical.listing_menu ul:hover li {
+  visibility: visible;
+  height:45px;
+}
+
+.vertical.listing_menu ul:hover li.selected {
+  -webkit-transform: translate(-5px, 0);
+  -moz-transform: translate(-5px, 0);
+  transform: translate(-5px, 0);
+  -webkit-box-shadow: 5px 5px 15px 0px rgba(100,100,100, .3);
+  -moz-box-shadow:    5px 5px 15px 0px rgba(100,100,100, .3);
+  box-shadow:         5px 5px 15px 0px rgba(100,100,100, .3);
+}
+
+
+
+.vertical.listing_menu .add_mode a {
+  background-color: #31c8fd;
+  color: #fff;
+}
+
+.vertical.listing_menu .remove_mode a {
+  background-color: #f00;
+  color: #fff;
+}
+
+.vertical.listing_menu .reorder_mode a {
   color: #000;
   background-color: #f5e135;
 }
@@ -299,9 +402,10 @@ body.dragging, body.dragging * {
 
 .grid_view .succset_list li {
   width: 10%;
+  height: 0;
+  padding: 0 0 10%;
   float:left;
   margin: 8px;
-  padding: 0 0 8px;
   font-size: 16px;
   border-bottom: 1px solid #e3e9ea;
   background-color: #fff;

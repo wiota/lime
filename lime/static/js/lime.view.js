@@ -476,16 +476,16 @@ LIME.ListingPanel = Backbone.View.extend({
   viewStyles: [
     ['list_view', 'List'],
     ['grid_view', 'Grid'],
-    ['relate_view', 'Relate']
+    //['relate_view', 'Relate']
     //['move_view', 'Move']
   ],
 
   initialize: function(){
     this.menus = {}
-    //this.menus.viewStyle = new LIME.menu({className: 'view_style', schema: this.viewStyles});
+    this.menus.viewStyle = new LIME.menu({className: 'view_style', schema: this.viewStyles});
     this.menus.editMode = new LIME.menu({className: 'edit_mode', schema: this.editModes});
 
-    //this.listenTo(this.menus.viewStyle, 'select', this.switchViewStyle);
+    this.listenTo(this.menus.viewStyle, 'select', this.switchViewStyle);
     this.listenTo(this.menus.editMode, 'select', this.switchEditMode);
     this.$el.addClass('list_view');
 
@@ -511,7 +511,7 @@ LIME.ListingPanel = Backbone.View.extend({
     if(old){
       old.remove();
     }
-    this.$menu = $("<div class='listing_menu'></div>").appendTo(this.$el);
+    this.$menu = $("<div class='listing_menu vertical'></div>").appendTo(this.$el);
     _.each(this.menus, function(menu){
       this.$menu.append(menu.render().el);
     }, this)
