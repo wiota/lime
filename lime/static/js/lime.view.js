@@ -385,7 +385,6 @@ LIME.View.ListingView['Vertex'] = Backbone.View.extend({
   },
 
   initialize: function(){
-
     // children
     this.list = new LIME.View.SuccsetView['Vertex']({model:this.model})
 
@@ -401,25 +400,24 @@ LIME.View.ListingView['Vertex'] = Backbone.View.extend({
     this.children = [this.list, this.upload];
     this.appendElements();
 
-    // If the model is not finished loading from the server
-    // rendering will throw an error
-    if(!this.model.isDeep()){
-      this.listenToOnce(this.model, 'sync', this.render);
-    } else {
-      this.render();
-    }
+    // Depth checking is done by Listing Panel before rendering
+    this.render();
 
+    // Listen to changes in the succset and rerender
+    // Could be more granular
     this.listenTo(this.model, 'change:succset', this.render);
 
   },
 
   render: function(){
+    // Should be done with CSS, not jQuery
     if(this.model.get('succset').length <= 0){
       this.$instruction.fadeIn();
     } else {
       this.$instruction.slideUp();
     }
     _.each(this.children, function(c){c.render()}, this);
+    return this;
   },
 
   appendElements: function(){
@@ -468,9 +466,9 @@ LIME.ListingPanel = Backbone.View.extend({
   listStyle: 'list',
 
   editModes: [
-    ['add_mode', 'Add'],
+    ['add_mode', 'Safe'],
     //['reorder_mode', 'Reorder'],
-    ['remove_mode', 'Remove']
+    ['remove_mode', 'Edit']
   ],
 
   viewStyles: [
@@ -481,9 +479,21 @@ LIME.ListingPanel = Backbone.View.extend({
   ],
 
   initialize: function(){
+
+    // Different listing views
+    this.listing;
+    this.reference;
+    this.library;
+
+    // Keep track of models in Listing Panel
+    this.model = null;
+    this.refmodel = null;
+
     this.menus = {}
-    this.menus.viewStyle = new LIME.menu({className: 'view_style', schema: this.viewStyles});
-    this.menus.editMode = new LIME.menu({className: 'edit_mode', schema: this.editModes});
+    this.menus.viewStyle = new LIME.menu({className: 'view_style active', schema: this.viewStyles, label: "View"});
+    this.menus.editMode = new LIME.menu({className: 'edit_mode active', schema: this.editModes, label: "Mode"});
+
+    this.addMenu = new LIME.addMenu({className: 'add_menu active'})
 
     this.listenTo(this.menus.viewStyle, 'select', this.switchViewStyle);
     this.listenTo(this.menus.editMode, 'select', this.switchEditMode);
@@ -501,7 +511,6 @@ LIME.ListingPanel = Backbone.View.extend({
   },
 
   switchClass: function(to, from){
-    console.log(to, from);
     this.$el.addClass(to)
     this.$el.removeClass(from)
   },
@@ -515,28 +524,47 @@ LIME.ListingPanel = Backbone.View.extend({
     _.each(this.menus, function(menu){
       this.$menu.append(menu.render().el);
     }, this)
+
+    this.$menu.append(this.addMenu.el);
+  },
+
+  renderListing: function(){
+    // only render if deep
+    if(this.model===null){
+      return false;
+    }
+
+    // remove old listing
+    if(this.listing){
+      this.listing.close();
+    }
+
+    // new listing
+    this.listing = new LIME.View.ListingView['Vertex']({
+      'model':this.model,
+      'className': this.model.vertexType + ' vertex listing'
+    });
+
+    this.$el.append(this.listing.render().el);
+    this.addMenu.render(this.model)
   },
 
   list: function(model){
-    if(this.view){
-      this.view.close();
+    this.model = model;
+
+    if(!this.model.isDeep()){
+      this.listenToOnce(this.model, 'sync', this.renderListing);
+    } else {
+      this.renderListing();
     }
 
-    this.listedModel = model;
-
-    this.view = new LIME.View.ListingView['Vertex']({
-      'model':model,
-      'className': model.vertexType + ' vertex listing'
-    });
-    // wait for the view to render itself
-    this.$el.append(this.view.el);
   },
 
   apexMenu: function(){
-    if(this.view){
-      this.view.close();
+    if(this.listing){
+      this.listing.close();
     }
-    this.view = new LIME.View.HomeMenu();
-    this.$el.append(this.view.render().el);
+    this.listing = new LIME.View.HomeMenu();
+    this.$el.append(this.listing.render().el);
   }
 });

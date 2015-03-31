@@ -70,3 +70,27 @@ LIME.menu = Backbone.View.extend({
   }
 })
 
+LIME.addMenu = Backbone.View.extend({
+  initialize: function(){
+    this.addTemplate = _.template($('#vertex_add').html());
+  },
+
+  render: function(model){
+    var vertexType = model.vertexType;
+    var vertexSchema = LIME.host.vertexSchema;
+
+    if(vertexType === 'happenings'){
+
+    } else {
+
+      _.each(vertexSchema, function(fields, vertexType){
+        console.log(fields);
+        //var add = $(this.addTemplate({'vertex_type': vertexType}))
+        //$(add).click(_.bind(this.newForm, this, vertexType));
+        //this.$el.append(add);
+      }, this)
+
+    }
+    return this;
+  }
+})
