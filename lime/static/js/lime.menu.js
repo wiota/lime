@@ -3,13 +3,16 @@
 /* ------------------------------------------------------------------- */
 
 LIME.menu = Backbone.View.extend({
-  tagName: 'ul',
-  className: 'listing_menu',
+  tagName: 'div',
   selectedClass: 'selected',
+  openClass: 'open',
 
   initialize: function(options){
     options = options || {};
+    this.label = options.label || "+";
+
     this.itemSchema = options.schema || [];
+    this.vb = options.visibilitySwitch || null;
     this.items = [];
     this._selected = null;
   },
@@ -24,8 +27,8 @@ LIME.menu = Backbone.View.extend({
       listItem.cls = item[0];
       listItem.label = item[1];
 
-      listItem.$el = $("<li class='"+listItem.cls+"'><a>"+listItem.label+"</a></li>");
-      listItem.$el.appendTo(this.$el);
+      listItem.$el = $("<li><a class='"+listItem.cls+"'>"+listItem.label+"</a></li>");
+      listItem.$el.appendTo(this.$ul);
       listItem.$el.on('click', _.bind(this.select, this, listItem));
     }, this);
     this.select(this.byIndex[0])
@@ -33,9 +36,21 @@ LIME.menu = Backbone.View.extend({
 
   render: function(){
     this.$el.empty();
+    this.$a = $('<a class="switch">'+this.label+'</a>').appendTo(this.$el);
+    this.$ul = $('<ul></ul>').appendTo(this.$el);
+    //this.$a.on('click', _.bind(this.open, this));
+    this.$el.on('mouseenter mouseleave', _.bind(this.open, this))
     this.renderMenu();
     this.delegateEvents();
     return this;
+  },
+
+  open: function(){
+    if(this.$el.hasClass(this.openClass)){
+      this.$el.removeClass(this.openClass);
+    } else {
+      this.$el.addClass(this.openClass);
+    }
   },
 
   select: function(item){
@@ -46,10 +61,12 @@ LIME.menu = Backbone.View.extend({
       }
       this._selected.$el.removeClass(this.selectedClass);
       deselect = this._selected.cls;
+      this.$a.removeClass(this._selected.cls)
     }
     this._selected = item;
     item.$el.addClass(this.selectedClass);
+    this.$a.addClass(item.cls)
     this.trigger('select', item.cls, deselect);
   }
-
 })
+

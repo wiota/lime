@@ -1,94 +1,11 @@
+#listing_panel {
+  perspective: 5000px;
+  -webkit-perspective: 5000px;
+  -moz-perspective: 5000px;
+  -o-perspective: 5000px;
+}
+
 /* Listing Menus ------------------------------------- */
-
-.horizontal.listing_menu {
-  position:fixed;
-  margin: 0;
-  top:0;
-  right: 0px;
-  width: 100%;
-  z-index: 200;
-}
-
-.horizontal.listing_menu ul {
-  clear:both;
-  height: 50px;
-  width: 100%;
-  background-color: transparent;
-}
-
-.horizontal.listing_menu ul.view_style {
-  position: absolute;
-  top: 0px;
-}
-
-.horizontal.listing_menu ul.edit_mode {
-  position: absolute;
-  top: 60px;
-}
-
-.horizontal.listing_menu li {
-  display:inline-block;
-  float:right;
-  visibility: hidden;
-  overflow: hidden;
-  background-color: #ddd;
-  width: 0px;
-  -webkit-transition: all .2s;
-  -moz-transition: all .2s;
-  transition: all .2s;
-}
-
-.horizontal.listing_menu a {
-  display:block;
-  text-align: center;
-  padding: 15px 10px;
-  cursor: pointer;
-  -webkit-transition: all .2s;
-  -moz-transition: all .2s;
-  transition: all .2s;
-}
-
-.horizontal.listing_menu li.selected {
-  visibility: visible;
-  width:10%;
-}
-
-.horizontal.listing_menu .selected a {
-  background: #555;
-  color: #fff;
-}
-
-.horizontal.listing_menu ul:hover li {
-  visibility: visible;
-  width:10%;
-}
-
-.horizontal.listing_menu ul:hover li.selected {
-  -webkit-transform: translate(-5px, 0);
-  -moz-transform: translate(-5px, 0);
-  transform: translate(-5px, 0);
-  -webkit-box-shadow: 5px 5px 15px 0px rgba(100,100,100, .3);
-  -moz-box-shadow:    5px 5px 15px 0px rgba(100,100,100, .3);
-  box-shadow:         5px 5px 15px 0px rgba(100,100,100, .3);
-}
-
-
-
-.horizontal.listing_menu .add_mode a {
-  background-color: #31c8fd;
-  color: #fff;
-}
-
-.horizontal.listing_menu .remove_mode a {
-  background-color: #f00;
-  color: #fff;
-}
-
-.horizontal.listing_menu .reorder_mode a {
-  color: #000;
-  background-color: #f5e135;
-}
-
 /* Vertical ------------------------------------- */
 
 .vertical.listing_menu {
@@ -96,56 +13,76 @@
   margin: 0;
   top:0;
   right: 0px;
-  width: 100%;
   z-index: 200;
 }
 
+.vertical.listing_menu .active {
+  position: relative;
+}
+
+.vertical.listing_menu a.switch {
+  display: block;
+  width: 48px;
+  height: 18px;
+  padding: 15px 0;
+  background-color: #ccc;
+}
+
+.vertical.listing_menu:hover a.switch {
+  opacity: .3;
+}
+
+.vertical.listing_menu .open a.switch {
+  opacity: 1;
+  -webkit-box-shadow: 5px 5px 15px 0px rgba(100,100,100, .3);
+  -moz-box-shadow:    5px 5px 15px 0px rgba(100,100,100, .3);
+  box-shadow:         5px 5px 15px 0px rgba(100,100,100, .3);
+}
+
+
 .vertical.listing_menu ul {
-  clear:both;
-  width: 10%;
-  right: 0;
-  background-color: #fff;
-}
-
-.vertical.listing_menu ul:hover {
-  width: 20%;
-  padding-right: 10%;
-}
-
-.vertical.listing_menu ul.view_style {
-  position: absolute;
-  top: 0px;
-}
-
-.vertical.listing_menu ul.edit_mode {
-  position: absolute;
-  top: 60px;
-}
-
-.vertical.listing_menu li {
-  display:block;
   visibility: hidden;
   overflow: hidden;
-  background-color: #ddd;
-  height: 0px;
+  background-color: #fff;
+  position: absolute;
+  top:0;
+  opacity: 0;
+  width: 200px;
+  right: 48px;
+  pointer-events:none;
   -webkit-transition: all .2s;
   -moz-transition: all .2s;
   transition: all .2s;
+  transform-origin: 100% 50%;
+  -webkit-transform-origin: 100% 50%;
+  -moz-transform-origin: 100% 50%;
+  transform:translateX(0) rotateY(-180deg);
+  -webkit-transform:translateX(0) rotateY(-180deg);
+  -moz-transform:translateX(0) rotateY(-180deg);
+}
+
+.vertical.listing_menu .open ul {
+  pointer-events:auto;
+  opacity: 1;
+  visibility: visible;
+  transform:translateX(0) rotateY(0deg);
+  -webkit-transform:translateX(0) rotateY(0deg);
+  -moz-transform:translateX(0) rotateY(0deg);
+}
+
+.vertical.listing_menu li {
+  background-color: #ddd;
 }
 
 .vertical.listing_menu a {
   display:block;
-  text-align: left;
-  padding: 15px 10px;
+  text-align: center;
+  height: 18px;
+  padding: 15px 0;
   cursor: pointer;
   -webkit-transition: all .2s;
   -moz-transition: all .2s;
   transition: all .2s;
-}
-
-.vertical.listing_menu li.selected {
-  visibility: visible;
-  height:45px;
 }
 
 .vertical.listing_menu .selected a {
@@ -155,13 +92,9 @@
 
 .vertical.listing_menu ul:hover li {
   visibility: visible;
-  height:45px;
 }
 
-.vertical.listing_menu ul:hover li.selected {
-  -webkit-transform: translate(-5px, 0);
-  -moz-transform: translate(-5px, 0);
-  transform: translate(-5px, 0);
+.vertical.listing_menu ul li.selected {
   -webkit-box-shadow: 5px 5px 15px 0px rgba(100,100,100, .3);
   -moz-box-shadow:    5px 5px 15px 0px rgba(100,100,100, .3);
   box-shadow:         5px 5px 15px 0px rgba(100,100,100, .3);
@@ -169,17 +102,17 @@
 
 
 
-.vertical.listing_menu .add_mode a {
+.vertical.listing_menu  a.add_mode {
   background-color: #31c8fd;
   color: #fff;
 }
 
-.vertical.listing_menu .remove_mode a {
+.vertical.listing_menu  a.remove_mode {
   background-color: #f00;
   color: #fff;
 }
 
-.vertical.listing_menu .reorder_mode a {
+.vertical.listing_menu  a.reorder_mode {
   color: #000;
   background-color: #f5e135;
 }
@@ -203,7 +136,6 @@ body.dragging, body.dragging * {
 
 .succset_list li {
   position: relative;
-  min-height: 1em;
 }
 
   .succset_list li.dragged {
@@ -389,6 +321,7 @@ body.dragging, body.dragging * {
   font-size: 16px;
   border-bottom: 1px solid #e3e9ea;
   background-color: #fff;
+  min-height: 1em;
 }
 
   .list_view .succset_list li.dragged {
@@ -401,14 +334,15 @@ body.dragging, body.dragging * {
 .grid_view .succset_list {}
 
 .grid_view .succset_list li {
-  width: 10%;
+  width: 20%;
   height: 0;
-  padding: 0 0 10%;
+  padding: 0 0 20%;
   float:left;
-  margin: 8px;
+  margin: 8px 0 0 8px;
   font-size: 16px;
-  border-bottom: 1px solid #e3e9ea;
+  border: 1px solid #e3e9ea;
   background-color: #fff;
+  overflow: hidden;
 }
 
   .grid_view .succset_list li.dragged {
@@ -416,6 +350,19 @@ body.dragging, body.dragging * {
     background-color: transparent;
   }
 
+.grid_view .succset_list li.photo img {
+  display:block;
+  max-width: 100%;
+  max-height: 100%;
+  }
+
+  .grid_view .succset_list li .attributes .icon {
+  width: 16px;
+  height:16px;
+  padding: 4px;
+  margin-right: 4px;
+  float:none;
+}
 
 /* In Set Menus ------------------------------------- */
 
