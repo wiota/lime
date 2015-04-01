@@ -151,7 +151,7 @@ LIME.titleCleaner.cases = {
 
 LIME.titleCleaner.spaces = {
   'add':function(string){
-    return string.replace(/[-_.]/g, ' ');;
+    return string.replace(/[-_.]/g, ' ');
   },
   'default':function(string){
     return string;
