@@ -99,6 +99,7 @@ LIME.Model.Vertex= Backbone.Model.extend({
   parse: function(response){
     if(response.result){
       response.result.succset = this.reference(response.result.succset);
+      this.vertexType = response.result.vertex_type;
       return response.result;
     }
   },
