@@ -463,15 +463,16 @@ LIME.ListingPanel = Backbone.View.extend({
   el: $('#listing_panel'),
   view: null,
   listedModel: null,
-  listStyle: 'list',
+  listMode: null,
+  viewMode: null,
 
-  editModes: [
+  modes: [
     ['add_mode', 'Safe'],
     //['reorder_mode', 'Reorder'],
     ['remove_mode', 'Edit']
   ],
 
-  viewStyles: [
+  layouts: [
     ['list_view', 'List'],
     ['grid_view', 'Grid'],
     //['relate_view', 'Relate']
@@ -480,34 +481,25 @@ LIME.ListingPanel = Backbone.View.extend({
 
   initialize: function(){
 
-    // Different listing views
+    // Intial view config
+    this.mode = this.modes[0];
+    this.layout = this.layouts[0];
+
+    // Listing
     this.listing;
-    this.reference;
-    this.library;
 
-    // Keep track of models in Listing Panel
-    this.model = null;
-    this.refmodel = null;
+    // Model
+    this.model;
 
-    this.menus = {}
-    this.menus.viewStyle = new LIME.menu({className: 'view_style active', schema: this.viewStyles, label: "View"});
-    this.menus.editMode = new LIME.menu({className: 'edit_mode active', schema: this.editModes, label: "Mode"});
-
-    this.addMenu = new LIME.addMenu({className: 'add_menu active'})
-
-    this.listenTo(this.menus.viewStyle, 'select', this.switchViewStyle);
-    this.listenTo(this.menus.editMode, 'select', this.switchEditMode);
-    this.$el.addClass('list_view');
-
-    this.renderMenu();
+    this.render();
   },
 
   switchViewStyle: function(to, from){
-    this.switchClass(to,from)
+    this.switchClass(to,from);
   },
 
   switchEditMode: function(to, from){
-    this.switchClass(to,from)
+    this.switchClass(to,from);
   },
 
   switchClass: function(to, from){
@@ -515,17 +507,58 @@ LIME.ListingPanel = Backbone.View.extend({
     this.$el.removeClass(from)
   },
 
-  renderMenu: function(){
-    var old = $('.listing_menu');
-    if(old){
-      old.remove();
-    }
-    this.$menu = $("<div class='listing_menu vertical'></div>").appendTo(this.$el);
-    _.each(this.menus, function(menu){
-      this.$menu.append(menu.render().el);
-    }, this)
+  newForm: function(type){
+    // API uses underscored attribute names
+    var v = new LIME.Model.Vertex({'vertex_type': type});
+    LIME.actionPanel.loadVertexForm(v, this.model);
+  },
 
-    this.$menu.append(this.addMenu.el);
+  render: function(){
+    this.$menu = $("<div class='listing_menu vertical'></div>").appendTo(this.$el);
+    return this;
+  },
+
+  renderMenus: function(){
+    var vertexType = this.model.vertexType;
+    var vertexSchema = LIME.host.vertexSchema;
+    var addList = [];
+
+    if(vertexType === 'happenings'){
+      addList;
+    } else {
+      _.each(vertexSchema, function(fields, vertexType){
+        addList.push([vertexType, "add "+vertexType.replace(/[-_.]/g, ' ')])
+      }, this)
+    }
+
+    this.layoutsMenu = new LIME.menu({
+      className: 'view_style active',
+      schema: this.layouts,
+      initial: this.layout,
+      label: "View"
+    });
+
+    this.modeMenu = new LIME.menu({
+      className: 'edit_mode active',
+      schema: this.modes,
+      initial: this.mode,
+      label: "Mode"
+    });
+
+    this.addMenu = new LIME.menu({
+      className: 'add_menu active',
+      schema: addList,
+      label: "Add"
+    });
+
+    this.listenTo(this.layoutsMenu, 'select', this.switchViewStyle);
+    this.listenTo(this.modeMenu, 'select', this.switchEditMode);
+    this.listenTo(this.addMenu, 'select', this.newForm);
+
+    this.$menu.empty();
+    this.$menu.append(this.layoutsMenu.render().el);
+    this.$menu.append(this.modeMenu.render().el);
+    this.$menu.append(this.addMenu.render().el);
   },
 
   renderListing: function(){
@@ -541,7 +574,7 @@ LIME.ListingPanel = Backbone.View.extend({
     });
 
     this.$el.append(this.listing.render().el);
-    this.addMenu.render(this.model)
+    this.renderMenus();
   },
 
   list: function(model){
