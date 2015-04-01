@@ -335,7 +335,7 @@ LIME.View.SummaryView['Vertex'] = LIME.SummaryView = Backbone.View.extend({
     // happenings vertex. There should be a better solution for this
     if(this.model.vertexType !== 'happenings'){
       _.each(vertexSchema, function(fields, vertexType){
-        var add = $(this.addTemplate({'vertex_type': vertexType}))
+        var add = $(this.addTemplate({'vertex_type': vertexType, 'vertex_label': vertexType.replace(/[-_.]/g, ' ')}))
         $(add).click(_.bind(this.newForm, this, vertexType));
         this.$add_menu.append(add);
       }, this)
@@ -534,11 +534,6 @@ LIME.ListingPanel = Backbone.View.extend({
       return false;
     }
 
-    // remove old listing
-    if(this.listing){
-      this.listing.close();
-    }
-
     // new listing
     this.listing = new LIME.View.ListingView['Vertex']({
       'model':this.model,
@@ -551,6 +546,11 @@ LIME.ListingPanel = Backbone.View.extend({
 
   list: function(model){
     this.model = model;
+
+    // remove old listing
+    if(this.listing){
+      this.listing.close();
+    }
 
     if(!this.model.isDeep()){
       this.listenToOnce(this.model, 'sync', this.renderListing);
