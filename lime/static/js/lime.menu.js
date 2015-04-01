@@ -9,10 +9,12 @@ LIME.menu = Backbone.View.extend({
 
   initialize: function(options){
     options = options || {};
+    this.exclusive = options.exclusive || "true";
+    this.initial = options.initial || false;
     this.label = options.label || "+";
-
     this.itemSchema = options.schema || [];
     this.vb = options.visibilitySwitch || null;
+
     this.items = [];
     this._selected = null;
   },
@@ -29,9 +31,11 @@ LIME.menu = Backbone.View.extend({
 
       listItem.$el = $("<li><a class='"+listItem.cls+"'>"+listItem.label+"</a></li>");
       listItem.$el.appendTo(this.$ul);
-      listItem.$el.on('click', _.bind(this.select, this, listItem));
+      listItem.$el.on('click', _.bind(this.select, this, listItem.cls));
     }, this);
-    this.select(this.byIndex[0])
+    if(this.initial && _.indexOf(this.itemSchema, this.initial)>=0){
+      this.select(this.initial[0]);
+    }
   },
 
   render: function(){
@@ -53,7 +57,8 @@ LIME.menu = Backbone.View.extend({
     }
   },
 
-  select: function(item){
+  select: function(cls){
+    var item = this.byCls[cls];
     var deselect = null;
     if(this._selected){
       if(this._selected === item){
@@ -67,30 +72,5 @@ LIME.menu = Backbone.View.extend({
     item.$el.addClass(this.selectedClass);
     this.$a.addClass(item.cls)
     this.trigger('select', item.cls, deselect);
-  }
-})
-
-LIME.addMenu = Backbone.View.extend({
-  initialize: function(){
-    this.addTemplate = _.template($('#vertex_add').html());
-  },
-
-  render: function(model){
-    var vertexType = model.vertexType;
-    var vertexSchema = LIME.host.vertexSchema;
-
-    if(vertexType === 'happenings'){
-
-    } else {
-
-      _.each(vertexSchema, function(fields, vertexType){
-        console.log(fields);
-        //var add = $(this.addTemplate({'vertex_type': vertexType}))
-        //$(add).click(_.bind(this.newForm, this, vertexType));
-        //this.$el.append(add);
-      }, this)
-
-    }
-    return this;
   }
 })
