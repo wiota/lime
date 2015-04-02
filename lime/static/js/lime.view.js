@@ -514,7 +514,8 @@ LIME.ListingPanel = Backbone.View.extend({
   },
 
   render: function(){
-    this.$menu = $("<div class='listing_menu vertical'></div>").appendTo(this.$el);
+    this.$viewMenu = $("<div class='view_menu'></div>").appendTo(this.$el);
+    this.$actionMenu = $("<div class='action_menu'></div>").appendTo(this.$el);
     return this;
   },
 
@@ -532,21 +533,21 @@ LIME.ListingPanel = Backbone.View.extend({
     }
 
     this.layoutsMenu = new LIME.menu({
-      className: 'view_style active',
+      className: 'layout menu',
       schema: this.layouts,
       initial: this.layout,
       label: "View"
     });
 
     this.modeMenu = new LIME.menu({
-      className: 'edit_mode active',
+      className: 'mode menu',
       schema: this.modes,
       initial: this.mode,
       label: "Mode"
     });
 
     this.addMenu = new LIME.menu({
-      className: 'add_menu active',
+      className: 'add_menu menu',
       schema: addList,
       label: "Add"
     });
@@ -559,7 +560,7 @@ LIME.ListingPanel = Backbone.View.extend({
     ]
     pSI = pS[0];
     this.panelMenu = new LIME.menu({
-      className: 'column_width active',
+      className: 'column_width menu',
       schema: pS,
       initial: pSI,
       label: "TEST"
@@ -571,12 +572,14 @@ LIME.ListingPanel = Backbone.View.extend({
     // Testing
     this.listenTo(this.panelMenu, 'select', _.bind(LIME.panel.shift, LIME.panel));
 
-    this.$menu.empty();
-    this.$menu.append(this.layoutsMenu.render().el);
-    this.$menu.append(this.modeMenu.render().el);
-    this.$menu.append(this.addMenu.render().el);
+    this.$viewMenu.empty();
+    this.$viewMenu.append(this.layoutsMenu.render().el);
+    this.$viewMenu.append(this.modeMenu.render().el);
+
+    this.$actionMenu.empty();
+    this.$actionMenu.append(this.addMenu.render().el);
     // Testing
-    this.$menu.append(this.panelMenu.render().el);
+    this.$actionMenu.append(this.panelMenu.render().el);
   },
 
   renderListing: function(){

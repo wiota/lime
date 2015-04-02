@@ -1,26 +1,148 @@
+/* -------------------------------------------------------------------  */
+/* Listing Panel */
+/* -------------------------------------------------------------------  */
+
 #listing_panel {
   perspective: 5000px;
   -webkit-perspective: 5000px;
   -moz-perspective: 5000px;
   -o-perspective: 5000px;
+  overflow: hidden;
 }
 
-/* Listing Menus ------------------------------------- */
-/* Vertical ------------------------------------- */
+/* Menus ------------------------------------- */
 
-.vertical.listing_menu {
-  position:fixed;
+.menu {
+  font-family: "Monaco","Lucida Console","Courier New", "monospace";
+}
+
+.menu.open a.switch {
+  opacity: 1;
+  -webkit-box-shadow: 5px 5px 15px 0px rgba(100,100,100, .3);
+  -moz-box-shadow:    5px 5px 15px 0px rgba(100,100,100, .3);
+  box-shadow:         5px 5px 15px 0px rgba(100,100,100, .3);
+}
+
+/* View ------------------------------------- */
+
+.view_menu {
+  position: absolute;
   margin: 0;
   top:0;
-  right: 0px;
+  left: 0;
+  width: 100%;
   z-index: 200;
 }
 
-.vertical.listing_menu .active {
+.view_menu .menu {
   position: relative;
+  display:inline-block;
+  width: 25%;
+  margin-left: 1%;
 }
 
-.vertical.listing_menu a.switch {
+.view_menu a.switch {
+  display: inline-block;
+  width: 80%;
+  padding: 7px 10% 8px;
+}
+
+.view_menu ul {
+  visibility: hidden;
+  overflow: hidden;
+  background-color: #fff;
+  position: absolute;
+  top:100%;
+  opacity: 0;
+  width: 100%;
+  left: 0;
+  pointer-events:none;
+  -webkit-transition: all .2s;
+  -moz-transition: all .2s;
+  transition: all .2s;
+  transform-origin: 50% 0%;
+  -webkit-transform-origin: 50% 0%;
+  -moz-transform-origin: 50% 0%;
+  transform:translateX(0) rotateX(-180deg);
+  -webkit-transform:translateX(0) rotateX(-180deg);
+  -moz-transform:translateX(0) rotateX(-180deg);
+}
+
+.view_menu .open ul {
+  pointer-events:auto;
+  opacity: 1;
+  visibility: visible;
+  transform:translateX(0) rotateX(0deg);
+  -webkit-transform:translateX(0) rotateX(0deg);
+  -moz-transform:translateX(0) rotateX(0deg);
+}
+
+.view_menu li {
+  background-color: #ddd;
+}
+
+.view_menu a {
+  display:block;
+  text-align: left;
+  width: 80%;
+  padding: 7px 10% 8px;
+  cursor: pointer;
+  -webkit-transition: all .2s;
+  -moz-transition: all .2s;
+  transition: all .2s;
+}
+
+.view_menu .selected a {
+  background: #555;
+  color: #fff;
+}
+
+.view_menu ul:hover li {
+  visibility: visible;
+}
+
+.view_menu ul li.selected {
+  -webkit-box-shadow: 5px 5px 15px 0px rgba(100,100,100, .3);
+  -moz-box-shadow:    5px 5px 15px 0px rgba(100,100,100, .3);
+  box-shadow:         5px 5px 15px 0px rgba(100,100,100, .3);
+}
+
+  .view_menu .layout a {
+    color: #fff;
+    background-color: #3abef3;
+  }
+
+  .view_menu .layout .selected a {
+    color: #fff;
+    background-color: #0c93c9;
+  }
+
+  .view_menu .mode a {
+    color: #fff;
+    background-color: #2b85c3;
+  }
+
+  .view_menu .mode .selected a {
+    color: #fff;
+    background-color: #236c9f;
+  }
+
+/* Action Menu ------------- */
+
+.action_menu {
+  position: absolute;
+  margin: 0;
+  top:0;
+  right: 0;
+  z-index: 200;
+}
+
+.action_menu .menu {
+  position: relative;
+  display:block;
+}
+
+.action_menu a.switch {
   display: block;
   width: 48px;
   height: 18px;
@@ -28,11 +150,11 @@
   background-color: #ccc;
 }
 
-.vertical.listing_menu:hover a.switch {
+.action_menu:hover a.switch {
   opacity: .3;
 }
 
-.vertical.listing_menu .open a.switch {
+.action_menu .open a.switch {
   opacity: 1;
   -webkit-box-shadow: 5px 5px 15px 0px rgba(100,100,100, .3);
   -moz-box-shadow:    5px 5px 15px 0px rgba(100,100,100, .3);
@@ -40,7 +162,7 @@
 }
 
 
-.vertical.listing_menu ul {
+.action_menu ul {
   visibility: hidden;
   overflow: hidden;
   background-color: #fff;
@@ -61,7 +183,7 @@
   -moz-transform:translateX(0) rotateY(-180deg);
 }
 
-.vertical.listing_menu .open ul {
+.action_menu .open ul {
   pointer-events:auto;
   opacity: 1;
   visibility: visible;
@@ -70,11 +192,11 @@
   -moz-transform:translateX(0) rotateY(0deg);
 }
 
-.vertical.listing_menu li {
+.action_menu li {
   background-color: #ddd;
 }
 
-.vertical.listing_menu a {
+.action_menu a {
   display:block;
   text-align: center;
   height: 18px;
@@ -85,16 +207,16 @@
   transition: all .2s;
 }
 
-.vertical.listing_menu .selected a {
+.action_menu .selected a {
   background: #555;
   color: #fff;
 }
 
-.vertical.listing_menu ul:hover li {
+.action_menu ul:hover li {
   visibility: visible;
 }
 
-.vertical.listing_menu ul li.selected {
+.action_menu ul li.selected {
   -webkit-box-shadow: 5px 5px 15px 0px rgba(100,100,100, .3);
   -moz-box-shadow:    5px 5px 15px 0px rgba(100,100,100, .3);
   box-shadow:         5px 5px 15px 0px rgba(100,100,100, .3);
@@ -102,17 +224,17 @@
 
 
 
-.vertical.listing_menu  a.add_mode {
+.action_menu  a.add_mode {
   background-color: #31c8fd;
   color: #fff;
 }
 
-.vertical.listing_menu  a.remove_mode {
+.action_menu  a.remove_mode {
   background-color: #f00;
   color: #fff;
 }
 
-.vertical.listing_menu  a.reorder_mode {
+.action_menu  a.reorder_mode {
   color: #000;
   background-color: #f5e135;
 }
@@ -126,11 +248,58 @@ body.dragging, body.dragging * {
 
 /* All View ------------------------------------- */
 
+.listing {
+  position:absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  overflow: auto;
+  padding: 0;
+}
+
+/* Empty ------------------------------------- */
+
+.empty_succset {
+  padding: 10px;
+  font-style: italic;
+  font-size: 110%;
+}
+  .empty_succset h2 {
+    font-weight: normal;
+    margin: 0 0 10px;
+    padding: 10px;
+  }
+  .empty_succset p {
+    margin: 0;
+    padding: 10px;
+  }
+
+  .empty_succset .drag,
+  .empty_succset .add {
+    display:inline-block;
+    margin: 0 0 5px;
+    width: 100px;
+  }
+
+  .empty_succset .drag {
+    background-color: #f5f8f8;
+    border: 3px dotted #ccd5d5;
+    padding: 2px;
+  }
+
+  .empty_succset .add {
+    background-color: #d8bb00;
+    color: #fff;
+    padding: 5px;
+  }
+
+
 .succset_list {
   z-index: 110;
   width: 100%;
   margin: 0;
-  padding: 0 0 100px;
+  padding: 33px 0 100px;
   position:relative;
 }
 

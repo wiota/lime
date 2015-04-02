@@ -6,6 +6,7 @@ LIME.menu = Backbone.View.extend({
   tagName: 'div',
   selectedClass: 'selected',
   openClass: 'open',
+  template: _.template($('#menu_item').html()),
 
   initialize: function(options){
     options = options || {};
@@ -29,7 +30,8 @@ LIME.menu = Backbone.View.extend({
       listItem.cls = item[0];
       listItem.label = item[1];
 
-      listItem.$el = $("<li><a class='"+listItem.cls+"'>"+listItem.label+"</a></li>");
+      //listItem.$el = $("<li><a class='"+listItem.cls+"'><b class='icon '></b><b class='label'>"+listItem.label+"</b></a></li>");
+      listItem.$el = $(this.template(listItem));
       listItem.$el.appendTo(this.$ul);
       listItem.$el.on('click', _.bind(this.select, this, listItem.cls));
     }, this);
