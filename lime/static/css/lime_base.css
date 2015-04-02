@@ -156,7 +156,7 @@ textarea {
 .nav {
   z-index: 1000;
   padding: 0;
-  margin: 0 0 8%;
+  margin: 0 0 20px;
   border-bottom: 1px solid #f5f8f8;
   overflow: auto;
   width: 100%;
@@ -184,14 +184,20 @@ textarea {
   position:relative;
   cursor: pointer;
   clear:left;
-  width: 90%;
+  width: 100%;
   margin: 0;
-  padding: 2% 5% 2% 5%;
+  padding: 0;
+}
+
+.nav li a {
+  display:block;
+  padding: 2px 5%;
 }
 
 .nav li a:hover {
   text-decoration: underline;
 }
+  /* Icon Rollover */
   .nav li .icon.over {
     display:none;
     }
@@ -205,10 +211,10 @@ textarea {
 .nav .icon {
   display:block;
   float:left;
-  width: 12%;
-  height: 0;
-  padding: 0 0 12% 0;
-  margin: 0% 4% 0 0;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  margin: 2px 9px 0 0;
   }
 
 .nav .icon svg {
@@ -217,14 +223,10 @@ textarea {
 
 .nav .label {
   display:block;
-  padding: 2% 0;
+  padding: 5px 0;
   overflow: hidden;
   text-overflow: ellipsis;
   }
-
-.subnav li {
-  padding: 2% 0;
-}
 
 /* Account Nav */
 
@@ -280,7 +282,7 @@ textarea {
   cursor: pointer;
   width: 90%;
   margin: 0;
-  padding: 5% 5% 2%;
+  padding: 0;
   clear:left;
 }
 
