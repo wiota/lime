@@ -1,5 +1,5 @@
 /* ------------------------------------------------------------------- */
-// Portphillio Admin Backbone Views
+// LIME Listings
 /* ------------------------------------------------------------------- */
 
 LIME.View = {};
@@ -551,14 +551,32 @@ LIME.ListingPanel = Backbone.View.extend({
       label: "Add"
     });
 
+    // For testing
+    pS = [
+      ['standard', 'Standard'],
+      ['wide', 'Wide'],
+      ['narrow', 'Narrow']
+    ]
+    pSI = pS[0];
+    this.panelMenu = new LIME.menu({
+      className: 'column_width active',
+      schema: pS,
+      initial: pSI,
+      label: "TEST"
+    });
+
     this.listenTo(this.layoutsMenu, 'select', this.switchViewStyle);
     this.listenTo(this.modeMenu, 'select', this.switchEditMode);
     this.listenTo(this.addMenu, 'select', this.newForm);
+    // Testing
+    this.listenTo(this.panelMenu, 'select', _.bind(LIME.panel.shift, LIME.panel));
 
     this.$menu.empty();
     this.$menu.append(this.layoutsMenu.render().el);
     this.$menu.append(this.modeMenu.render().el);
     this.$menu.append(this.addMenu.render().el);
+    // Testing
+    this.$menu.append(this.panelMenu.render().el);
   },
 
   renderListing: function(){

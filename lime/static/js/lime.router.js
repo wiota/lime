@@ -13,6 +13,14 @@ LIME.Router = Backbone.Router.extend({
 
   initialize: function(){
     // LIME interface
+    LIME.panel = new LIME.Panel({
+      panels: ['#navigation_column', '#display_column']
+    });
+
+    LIME.panel.addPreset('standard', [0, 250]);
+    LIME.panel.addPreset('wide', [0, 450]);
+    LIME.panel.addPreset('narrow', [0, 100]);
+
     LIME.requestPanel = new LIME.RequestPanel();
     LIME.listingPanel = new LIME.ListingPanel();
     LIME.actionPanel = new LIME.ActionPanel();

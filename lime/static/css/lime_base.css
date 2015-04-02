@@ -121,6 +121,7 @@ textarea {
   left: 0;
   bottom: 0;
   padding: 0;
+  transition: all .2s ease-in-out;
 }
 
 #display_column {
@@ -137,6 +138,7 @@ textarea {
   -webkit-perspective: 1000px;
   -moz-perspective: 1000px;
   -o-perspective: 1000px;
+  transition: all .2s ease-in-out;
 
 }
 
