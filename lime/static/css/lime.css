@@ -148,54 +148,6 @@
 .summary.work {
 }
 
-/* -------------------------------------------------------------------  */
-/* Listing Panel */
-/* -------------------------------------------------------------------  */
-
-.listing {
-  position:absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  overflow: auto;
-  padding: 0;
-}
-
-.empty_succset {
-  padding: 10px;
-  font-style: italic;
-  font-size: 110%;
-}
-  .empty_succset h2 {
-    font-weight: normal;
-    margin: 0 0 10px;
-    padding: 10px;
-  }
-  .empty_succset p {
-    margin: 0;
-    padding: 10px;
-  }
-
-  .empty_succset .drag,
-  .empty_succset .add {
-    display:inline-block;
-    margin: 0 0 5px;
-    width: 100px;
-  }
-
-  .empty_succset .drag {
-    background-color: #f5f8f8;
-    border: 3px dotted #ccd5d5;
-    padding: 2px;
-  }
-
-  .empty_succset .add {
-    background-color: #d8bb00;
-    color: #fff;
-    padding: 5px;
-  }
-
 
 /* Succset form ------------------------------------- */
 
