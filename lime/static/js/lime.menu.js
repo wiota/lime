@@ -6,15 +6,16 @@ LIME.menu = Backbone.View.extend({
   tagName: 'div',
   selectedClass: 'selected',
   openClass: 'open',
-  template: _.template($('#menu_item').html()),
+  switchTemplate: _.template($('#menu_switch').html()),
+  itemTemplate: _.template($('#menu_item').html()),
 
   initialize: function(options){
     options = options || {};
     this.exclusive = options.exclusive || "true";
     this.initial = options.initial || false;
     this.label = options.label || "+";
+    this.cls = options.cls || "menu";
     this.itemSchema = options.schema || [];
-    this.vb = options.visibilitySwitch || null;
 
     this.items = [];
     this._selected = null;
@@ -25,13 +26,12 @@ LIME.menu = Backbone.View.extend({
     this.byCls = {};
 
     _.each(this.itemSchema, function(item, index){
-      // scheme may change
+      // array passed in to ensure order
       var listItem = this.byCls[item[0]] = this.byIndex[index] = {};
       listItem.cls = item[0];
       listItem.label = item[1];
 
-      //listItem.$el = $("<li><a class='"+listItem.cls+"'><b class='icon '></b><b class='label'>"+listItem.label+"</b></a></li>");
-      listItem.$el = $(this.template(listItem));
+      listItem.$el = $(this.itemTemplate(listItem));
       listItem.$el.appendTo(this.$ul);
       listItem.$el.on('click', _.bind(this.select, this, listItem.cls));
     }, this);
@@ -42,10 +42,11 @@ LIME.menu = Backbone.View.extend({
 
   render: function(){
     this.$el.empty();
-    this.$a = $('<a class="switch">'+this.label+'</a>').appendTo(this.$el);
-    this.$ul = $('<ul></ul>').appendTo(this.$el);
+    this.$a = $(this.switchTemplate(this)).appendTo(this.$el);
+    this.$el.on('mouseenter mouseleave', _.bind(this.open, this));
+    // need touch interface
     //this.$a.on('click', _.bind(this.open, this));
-    this.$el.on('mouseenter mouseleave', _.bind(this.open, this))
+    this.$ul = $('<ul></ul>').appendTo(this.$el);
     this.renderMenu();
     this.delegateEvents();
     return this;
