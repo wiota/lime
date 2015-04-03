@@ -23,6 +23,15 @@
   box-shadow:         5px 5px 15px 0px rgba(100,100,100, .3);
 }
 
+.menu .icon {
+  display:block;
+  float:left;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  margin: 2px 9px 0 0;
+}
+
 /* View ------------------------------------- */
 
 .view_menu {
@@ -36,96 +45,101 @@
 
 .view_menu .menu {
   position: relative;
-  display:inline-block;
+  display:block;
+  float:left;
   width: 25%;
   margin-left: 1%;
 }
 
 .view_menu a.switch {
-  display: inline-block;
+  display: none;
   width: 80%;
   padding: 7px 10% 8px;
 }
 
 .view_menu ul {
-  visibility: hidden;
-  overflow: hidden;
-  background-color: #fff;
-  position: absolute;
-  top:100%;
-  opacity: 0;
-  width: 100%;
-  left: 0;
-  pointer-events:none;
-  -webkit-transition: all .2s;
-  -moz-transition: all .2s;
-  transition: all .2s;
-  transform-origin: 50% 0%;
-  -webkit-transform-origin: 50% 0%;
-  -moz-transform-origin: 50% 0%;
-  transform:translateX(0) rotateX(-180deg);
-  -webkit-transform:translateX(0) rotateX(-180deg);
-  -moz-transform:translateX(0) rotateX(-180deg);
-}
-
-.view_menu .open ul {
-  pointer-events:auto;
   opacity: 1;
-  visibility: visible;
-  transform:translateX(0) rotateX(0deg);
-  -webkit-transform:translateX(0) rotateX(0deg);
-  -moz-transform:translateX(0) rotateX(0deg);
+  width: 100%;
+  background-color: #fff;
 }
 
-.view_menu li {
-  background-color: #ddd;
-}
-
-.view_menu a {
+.view_menu li a {
   display:block;
   text-align: left;
   width: 80%;
-  padding: 7px 10% 8px;
+  padding: 0 10%;
   cursor: pointer;
   -webkit-transition: all .2s;
   -moz-transition: all .2s;
   transition: all .2s;
+  height: 0;
+  overflow: hidden;
 }
 
-.view_menu .selected a {
-  background: #555;
-  color: #fff;
-}
-
-.view_menu ul:hover li {
+.view_menu li.selected a {
+  padding: 7px 10% 8px;
   visibility: visible;
+  height: 19px;
 }
 
-.view_menu ul li.selected {
+.view_menu ul:hover li a {
+  padding: 7px 10% 8px;
+  visibility: visible;
+  height: 19px;
+}
+
+.view_menu ul:hover li.selected a {
   -webkit-box-shadow: 5px 5px 15px 0px rgba(100,100,100, .3);
   -moz-box-shadow:    5px 5px 15px 0px rgba(100,100,100, .3);
   box-shadow:         5px 5px 15px 0px rgba(100,100,100, .3);
 }
 
-  .view_menu .layout a {
-    color: #fff;
-    background-color: #3abef3;
-  }
+.view_menu ul li.selected {
 
-  .view_menu .layout .selected a {
-    color: #fff;
-    background-color: #0c93c9;
-  }
+}
 
-  .view_menu .mode a {
-    color: #fff;
-    background-color: #2b85c3;
-  }
+/* Layout Menu Colors ------------- */
 
-  .view_menu .mode .selected a {
-    color: #fff;
-    background-color: #236c9f;
-  }
+.view_menu .layout a {
+  color: #222;
+  background-color: #dadada;
+}
+
+.view_menu .layout ul:hover .selected a {
+  color: #222;
+  background-color: #eaeaea;
+}
+
+
+
+/* Mode Menu Colors ------------- */
+
+.view_menu .mode .icon {
+  display:none;
+}
+
+.view_menu .mode a.add_mode {
+  color: #fff;
+  background-color: #3abef3;
+}
+
+.view_menu .mode a.sort_mode {
+  color: #222;
+  background-color: #f5d035;
+  /*background-color: #0ee0e7;*/
+}
+
+.view_menu .mode a.order_mode {
+  color: #222;
+  background-color: #ffffff;
+}
+
+.view_menu .mode a.remove_mode {
+  color: #fff;
+  background-color: #f00;
+}
+
+
 
 /* Action Menu ------------- */
 
@@ -139,15 +153,27 @@
 
 .action_menu .menu {
   position: relative;
-  display:block;
 }
 
 .action_menu a.switch {
   display: block;
-  width: 48px;
-  height: 18px;
+  width: 66px;
+  height: 36px;
   padding: 15px 0;
   background-color: #ccc;
+}
+
+
+.action_menu a.switch .label {
+  display:none;
+}
+
+.action_menu a.switch .icon {
+  float:none;
+  display:block;
+  width: 36px;
+  height: 36px;
+  margin: auto;
 }
 
 .action_menu:hover a.switch {
@@ -167,14 +193,15 @@
   overflow: hidden;
   background-color: #fff;
   position: absolute;
-  top:0;
+  top:100%;
+  right: 0;
   opacity: 0;
   width: 200px;
-  right: 48px;
+  padding: 10%;
   pointer-events:none;
-  -webkit-transition: all .2s;
-  -moz-transition: all .2s;
-  transition: all .2s;
+  -webkit-transition: all .4s ease-out;
+  -moz-transition: all .4s ease-out;
+  transition: all .4s ease-out;
   transform-origin: 100% 50%;
   -webkit-transform-origin: 100% 50%;
   -moz-transform-origin: 100% 50%;
@@ -190,21 +217,27 @@
   transform:translateX(0) rotateY(0deg);
   -webkit-transform:translateX(0) rotateY(0deg);
   -moz-transform:translateX(0) rotateY(0deg);
+  -webkit-box-shadow: 5px 5px 15px 0px rgba(100,100,100, .3);
+  -moz-box-shadow:    5px 5px 15px 0px rgba(100,100,100, .3);
+  box-shadow:         5px 5px 15px 0px rgba(100,100,100, .3);
 }
 
 .action_menu li {
-  background-color: #ddd;
+  background-color: #fff;
 }
 
 .action_menu a {
   display:block;
-  text-align: center;
   height: 18px;
-  padding: 15px 0;
+  padding: 7px 5%;
   cursor: pointer;
   -webkit-transition: all .2s;
   -moz-transition: all .2s;
   transition: all .2s;
+}
+
+.action_menu a:hover {
+  text-decoration: underline;
 }
 
 .action_menu .selected a {
@@ -222,23 +255,32 @@
   box-shadow:         5px 5px 15px 0px rgba(100,100,100, .3);
 }
 
+.action_menu .add a.switch{
+  visibility: hidden;
+  -webkit-transition: all .4s ease-out;
+  -moz-transition: all .4s ease-out;
+  transition: all .4s ease-out;
+  transform-origin: 100% 50%;
+  -webkit-transform-origin: 100% 50%;
+  -moz-transform-origin: 100% 50%;
+  transform:translateX(0) rotateY(-180deg);
+  -webkit-transform:translateX(0) rotateY(-180deg);
+  -moz-transform:translateX(0) rotateY(-180deg);
+}
 
+.add_mode .action_menu .add a.switch{
+  visibility: visible;
+  pointer-events:auto;
+  transform:translateX(0) rotateY(0deg);
+  -webkit-transform:translateX(0) rotateY(0deg);
+  -moz-transform:translateX(0) rotateY(0deg);
+}
 
-.action_menu  a.add_mode {
-  background-color: #31c8fd;
+.action_menu .add a.switch {
   color: #fff;
+  background-color: #3abef3;
+  text-align: center;
 }
-
-.action_menu  a.remove_mode {
-  background-color: #f00;
-  color: #fff;
-}
-
-.action_menu  a.reorder_mode {
-  color: #000;
-  background-color: #f5e135;
-}
-
 
 /* Sortable ------------------------------------- */
 
@@ -485,8 +527,8 @@ body.dragging, body.dragging * {
 
 .list_view .succset_list li {
   width: 25%;
-  margin: 8px;
-  padding: 0 0 8px;
+  margin: 1%;
+  padding: 0 0 1%;
   font-size: 16px;
   border-bottom: 1px solid #e3e9ea;
   background-color: #fff;
@@ -503,13 +545,12 @@ body.dragging, body.dragging * {
 .grid_view .succset_list {}
 
 .grid_view .succset_list li {
-  width: 20%;
+  width: 23.75%;
   height: 0;
   padding: 0 0 20%;
   float:left;
-  margin: 8px 0 0 8px;
+  margin: 1% 0 0 1%;
   font-size: 16px;
-  border: 1px solid #e3e9ea;
   background-color: #fff;
   overflow: hidden;
 }

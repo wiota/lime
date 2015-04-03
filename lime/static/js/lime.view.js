@@ -467,9 +467,10 @@ LIME.ListingPanel = Backbone.View.extend({
   viewMode: null,
 
   modes: [
-    ['add_mode', 'Safe'],
-    //['reorder_mode', 'Reorder'],
-    ['remove_mode', 'Edit']
+    ['add_mode', 'Add/Post'],
+    ['sort_mode', 'Sort/Filter'],
+    ['order_mode', 'Order/Sequence'],
+    ['remove_mode', 'Edit/Cut']
   ],
 
   layouts: [
@@ -547,9 +548,10 @@ LIME.ListingPanel = Backbone.View.extend({
     });
 
     this.addMenu = new LIME.menu({
-      className: 'add_menu menu',
+      className: 'add menu',
       schema: addList,
-      label: "Add"
+      label: "Add",
+      cls: "add"
     });
 
     // For testing
@@ -560,7 +562,7 @@ LIME.ListingPanel = Backbone.View.extend({
     ]
     pSI = pS[0];
     this.panelMenu = new LIME.menu({
-      className: 'column_width menu',
+      className: 'column_width menu god',
       schema: pS,
       initial: pSI,
       label: "TEST"
