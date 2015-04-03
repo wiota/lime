@@ -197,8 +197,10 @@ LIME.View.SuccsetView['Vertex'] = Backbone.View.extend({
     var sortable_opt = {
       distance: 10,
       delay: 200,
-      tolerance: 0,
+      // can't figure out what tolerance does
+      tolerance: -1000,
       placeholder: $('<li class="placeholder"/>'),
+      vertical: false,
 
       onDrag: function ($item, position, _super, event) {
         position.left -= $item.grabOffset.left;
@@ -468,8 +470,8 @@ LIME.ListingPanel = Backbone.View.extend({
 
   modes: [
     ['add_mode', 'Add/Post'],
-    ['sort_mode', 'Sort/Filter'],
-    ['order_mode', 'Order/Sequence'],
+    //['sort_mode', 'Sort/Filter'],
+    //['order_mode', 'Order/Sequence'],
     ['remove_mode', 'Edit/Cut']
   ],
 
@@ -565,7 +567,8 @@ LIME.ListingPanel = Backbone.View.extend({
       className: 'column_width menu god',
       schema: pS,
       initial: pSI,
-      label: "TEST"
+      label: "GOD",
+      cls: "god"
     });
 
     this.listenTo(this.layoutsMenu, 'select', this.switchViewStyle);
