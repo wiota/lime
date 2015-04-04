@@ -578,13 +578,19 @@ LIME.ListingPanel = Backbone.View.extend({
     this.listenTo(this.panelMenu, 'select', _.bind(LIME.panel.shift, LIME.panel));
 
     this.$viewMenu.empty();
+
     this.$viewMenu.append(this.layoutsMenu.render().el);
     this.$viewMenu.append(this.modeMenu.render().el);
 
-    this.$actionMenu.empty();
+
     this.$actionMenu.append(this.addMenu.render().el);
     // Testing
     this.$actionMenu.append(this.panelMenu.render().el);
+  },
+
+  clearMenus: function(){
+    this.$viewMenu.empty();
+    this.$actionMenu.empty();
   },
 
   renderListing: function(){
@@ -625,5 +631,6 @@ LIME.ListingPanel = Backbone.View.extend({
     }
     this.listing = new LIME.View.HomeMenu();
     this.$el.append(this.listing.render().el);
+    this.clearMenus();
   }
 });

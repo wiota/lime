@@ -303,13 +303,33 @@ body.dragging, body.dragging * {
   bottom: 0;
   right: 0;
   overflow: auto;
-  padding: 0;
+  padding: 66px 0 100px;
 }
+
+/* Apex Menu -----------------------------------  */
+
+.home_menu {
+  padding: 1%;
+  font-size: 60px;
+}
+
+.home_menu li {
+  clear:left;
+}
+  .home_menu li .icon {
+    display:block;
+    float:left;
+    width: 10%;
+    height: 0;
+    padding: 0 0 10%;
+    margin: 0% 3% 0% 0%;
+  }
+
 
 /* Empty ------------------------------------- */
 
 .empty_succset {
-  padding: 10px;
+  padding: 0;
   font-style: italic;
   font-size: 110%;
 }
@@ -328,6 +348,7 @@ body.dragging, body.dragging * {
     display:inline-block;
     margin: 0 0 5px;
     width: 100px;
+    text-align: right;
   }
 
   .empty_succset .drag {
@@ -337,8 +358,9 @@ body.dragging, body.dragging * {
   }
 
   .empty_succset .add {
-    background-color: #d8bb00;
+    background-color: #3abef3;
     color: #fff;
+    height: 100px;
     padding: 5px;
   }
 
@@ -347,7 +369,7 @@ body.dragging, body.dragging * {
   z-index: 110;
   width: 100%;
   margin: 0;
-  padding: 66px 0 100px;
+  padding: 0;
   position:relative;
 }
 
