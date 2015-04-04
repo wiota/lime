@@ -497,7 +497,7 @@ LIME.ListingPanel = Backbone.View.extend({
     this.render();
   },
 
-  switchViewStyle: function(to, from){
+  switchLayout: function(to, from){
     this.switchClass(to,from);
   },
 
@@ -571,13 +571,13 @@ LIME.ListingPanel = Backbone.View.extend({
       cls: "god"
     });
 
-    this.listenTo(this.layoutsMenu, 'select', this.switchViewStyle);
+    this.listenTo(this.layoutsMenu, 'select', this.switchLayout);
     this.listenTo(this.modeMenu, 'select', this.switchEditMode);
     this.listenTo(this.addMenu, 'select', this.newForm);
     // Testing
     this.listenTo(this.panelMenu, 'select', _.bind(LIME.panel.shift, LIME.panel));
 
-    this.$viewMenu.empty();
+    this.clearMenus();
 
     this.$viewMenu.append(this.layoutsMenu.render().el);
     this.$viewMenu.append(this.modeMenu.render().el);
