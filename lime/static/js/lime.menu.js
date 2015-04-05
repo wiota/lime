@@ -21,6 +21,15 @@ LIME.menu = Backbone.View.extend({
     this._selected = null;
   },
 
+  indexOfCls: function(cls){
+    for (var i = 0, l = this.itemSchema.length; i < l; i++) {
+      if (this.itemSchema[i][0] === cls) {
+        return i;
+      }
+    }
+    return -1;
+  },
+
   renderMenu: function(){
     this.byIndex = [];
     this.byCls = {};
@@ -35,8 +44,8 @@ LIME.menu = Backbone.View.extend({
       listItem.$el.appendTo(this.$ul);
       listItem.$el.on('click', _.bind(this.select, this, listItem.cls));
     }, this);
-    if(this.initial && _.indexOf(this.itemSchema, this.initial)>=0){
-      this.select(this.initial[0]);
+    if(this.initial && this.indexOfCls(this.initial)>=0){
+      this.select(this.initial);
     }
   },
 

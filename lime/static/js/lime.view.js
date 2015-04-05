@@ -485,8 +485,8 @@ LIME.ListingPanel = Backbone.View.extend({
   initialize: function(){
 
     // Intial view config
-    this.mode = this.modes[0];
-    this.layout = this.layouts[0];
+    this.mode = 'add_mode';
+    this.layout = 'list_view';
 
     // Listing
     this.listing;
@@ -498,10 +498,12 @@ LIME.ListingPanel = Backbone.View.extend({
   },
 
   switchLayout: function(to, from){
+    this.layout = to;
     this.switchClass(to,from);
   },
 
   switchEditMode: function(to, from){
+    this.mode = to;
     this.switchClass(to,from);
   },
 
