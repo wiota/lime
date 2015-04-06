@@ -21,7 +21,7 @@ shadow color  42,44,57
 
 /* -------------------------------------------------------------------  */
 
-body {margin:0; padding: 0; font-size: 90%; font-family: 'Helvetica', 'Arial', 'san-serif';}
+body {margin:0; padding: 0; font-size: 100%; font-family: 'Helvetica', 'Arial', 'san-serif';}
 ul, ol {margin: 0; padding:0;list-style-type: none;}
 a {text-decoration: none; color: #000;}
 p {line-height: 1.5em;}
@@ -161,9 +161,8 @@ textarea {
   overflow: auto;
   width: 100%;
   font-weight: normal;
-  font-family: "Monaco","Lucida Console","Courier New", "monospace";
-  letter-spacing: -1px;
-  font-size: 14px;
+  font-family: "Inconsolata","Monaco","Lucida Console","Courier New", "monospace";
+  font-size: 16px;
   }
   .nav:hover {
     background-color: #fff;
@@ -175,6 +174,10 @@ textarea {
 .nav b {
   font-weight: normal;
   }
+
+.identification {
+  letter-spacing: -1px;
+}
 
 .subnav {
   display:none;
@@ -339,7 +342,7 @@ textarea {
 }
 
 .fancyform input#submit {
-  font-family: "Monaco","Lucida Console","Courier New", "monospace";
+  font-family: "Inconsolata","Monaco","Lucida Console","Courier New", "monospace";
   position: relative;
   vertical-align: top;
   width: 97%;

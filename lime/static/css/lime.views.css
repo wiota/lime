@@ -13,7 +13,7 @@
 /* Menus ------------------------------------- */
 
 .menu {
-  font-family: "Monaco","Lucida Console","Courier New", "monospace";
+  font-family: "Inconsolata","Monaco","Lucida Console","Courier New", "monospace";
 }
 
 .menu.open a.switch {
@@ -49,6 +49,9 @@
   float:left;
   width: 25%;
   margin-left: 1%;
+}
+
+.view_menu .menu b {
 }
 
 .view_menu a.switch {
@@ -630,7 +633,7 @@ body.dragging, body.dragging * {
   text-decoration: underline;
   font-weight: normal;
   font-size: 90%;
-  font-family: "Monaco","Lucida Console","Courier New", "monospace";
+  font-family: "Inconsolata","Monaco","Lucida Console","Courier New", "monospace";
   }
 
 .summary a {
