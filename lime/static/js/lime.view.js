@@ -310,6 +310,23 @@ LIME.View.SummaryView['Vertex'] = LIME.SummaryView = Backbone.View.extend({
     }
   },
 
+  render_meta: function(){
+    var schema = LIME.host.vertexSchema[this.model.vertexType];
+    var first = true;
+
+    _.each(schema, function(field){
+      console.log(field)
+      if(_.has(this.model.attributes, field.name)){
+        if(first){
+          first = false;
+          this.$meta.append("<b class='attribute primary'>"+this.model.attributes[field.name]+"</b>");
+        } else {
+          this.$meta.append("<b class='attribute'>"+this.model.attributes[field.name]+"</b>");
+        }
+      }
+    }, this)
+  },
+
   render: function(){
     if(!this.model.isFetched()){
       return false;
@@ -322,7 +339,7 @@ LIME.View.SummaryView['Vertex'] = LIME.SummaryView = Backbone.View.extend({
 
     // meta
     this.$meta = this.$el.children('.meta');
-    //this.$meta.hide();
+    this.render_meta();
 
     // cover
     this.$cover = this.$el.find('.cover');
