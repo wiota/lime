@@ -8,6 +8,7 @@
 
     <title>Lime - {{ current_user.email }}</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link href='http://fonts.googleapis.com/css?family=Inconsolata:400,700' rel='stylesheet' type='text/css'>
     <link rel='stylesheet' href='{{ url_for('static', filename='css/lime_base.css') }}?v={{ config["HEROKU_RELEASE_NAME"] }}' type='text/css' media='all' />
     <link rel='stylesheet' href='{{ url_for('static', filename='css/lime_account.css') }}?v={{ config["HEROKU_RELEASE_NAME"] }}' type='text/css' media='all' />
 
@@ -23,8 +24,6 @@
       <div class='flash'>{{ message }}</div>
     </div>
     {% endfor %}
-
-    <div id='navigation_column'>
 
     {%- block user -%}
       {% if not current_user.is_anonymous() %}
@@ -123,8 +122,6 @@
 
       {% endif %}
     {%- endblock -%}
-
-    </div>
 
     <div id='display_column'>
       <div class="account">

@@ -2,6 +2,9 @@
 /* Lime Account/Admin page styles */
 /* -------------------------------------------------------------------  */
 
+.account #display_column {
+    line-height: 1.5em;
+}
 
 .account .lime_nav .body, .account .lime_nav .happenings {display:none;}
 
