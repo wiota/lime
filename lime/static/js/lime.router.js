@@ -59,7 +59,7 @@ LIME.Router = Backbone.Router.extend({
     var vertex = LIME.apex.body;
     LIME.listingPanel.list(vertex);
     LIME.pathPanel.list(vertex);
-    LIME.pathPanel.jsonLink('/api/v1/apex/body/');
+    LIME.pathPanel.jsonLink('/api/v1/body/');
   },
 
   // Vertex
