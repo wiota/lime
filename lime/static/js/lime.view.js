@@ -5,10 +5,9 @@
 LIME.View = {};
 
 /* ------------------------------------------------------------------- */
-// App Model Overrides
+// Extend all views with close method
 /* ------------------------------------------------------------------- */
 
-// Close Function to clean up views
 Backbone.View.prototype.close = function(){
   if(this.children){_.invoke(this.children, 'close')};
   this.children = null;
@@ -18,13 +17,10 @@ Backbone.View.prototype.close = function(){
 }
 
 /* ------------------------------------------------------------------- */
-// Successor Item View
+// Vertex View
 /* ------------------------------------------------------------------- */
 
-LIME.View.SuccessorView = {};
-
-LIME.View.SuccessorView['Vertex'] = LIME.SuccessorView = Backbone.View.extend({ // Abstract class - do not instantiate!
-  tagName: 'li',
+LIME.View.Vertex = Backbone.View.extend({
   events:{
     'click .delete':'delete',
     'click .update':'updateForm'
@@ -249,8 +245,13 @@ LIME.View.SuccsetView['Vertex'] = Backbone.View.extend({
     successors = this.model.get('succset');
 
     _.each(successors, function(successor, index){
-      var viewFactory = LIME.View.SuccessorView['Vertex'];
-      var options = {'model':successor, 'predecessor': this.model, 'className': successor.vertexType+ ' successorItem'}
+      var viewFactory = LIME.View.Vertex;
+      var options = {
+        'model':successor,
+        'predecessor': this.model,
+        'className': successor.vertexType+ ' successorItem',
+        'tagName': 'li'
+      }
       var successorItemView = new viewFactory(options);
       this.$el.append(successorItemView.render().el);
       successorItemView.listenTo(successor, 'change', successorItemView.render);
