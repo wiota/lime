@@ -18,7 +18,8 @@ Backbone.View.prototype.close = function(){
 
 /* ------------------------------------------------------------------- */
 // Vertex View
-// What is custom to this view? Posted seconds ago
+// What is custom to this view?
+// Information Heirarchy = Field order
 // View queries data
 /* ------------------------------------------------------------------- */
 
@@ -38,7 +39,7 @@ LIME.View.Vertex = Backbone.View.extend({
       this.template = _.template(defined);
     } else {
       this.dynamicTemplate = true;
-      this.template = _.template($('#dynamic_in_set').html());
+      this.template = _.template($('#vertex_template').html());
     }
   },
 

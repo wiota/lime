@@ -3,9 +3,9 @@
 
 {% block backbone_templates %}
 
+  <!-- Menus and Nav - - - - - - - - - - - - - - - - - - - - -->
 
-  <!-- Home Page Menu -->
-
+  <!-- Home Page Menu - Replace with host root vertex -->
   <script type="text/template" id="home_menu">
     <li class='body'>
       <a href='#body'><b class='icon bookcase'></b>body of work</a>
@@ -52,19 +52,100 @@
   </script>
 
   <!-- Path Panel -->
-
   <script type="text/template" id="path_panel_template">
-    <div class='path'>
-
-    </div>
+    <div class='path'></div>
   </script>
 
   <script type="text/template" id="path_vertex_template">
     <div class='vertex link'><a><%- title %></a></div>
   </script>
 
-  <!-- Summary -->
+  <!-- Add Menu -->
+  <script type="text/template" id="vertex_add">
+  <a class='add_<%- vertex_type %>'><img src='/icon/<%- vertex_type %>.svg'>add <%- vertex_label %></a>
+  </script>
 
+  <!-- View Menus -->
+  <script type="text/template" id="menu_item">
+    <li><a class='<%- cls %>'><b class='icon <%- cls %>'><img src='/icon/<%- cls %>.svg'></b><b class='label'><%- label %></b></a></li>
+  </script>
+
+  <script type="text/template" id="menu_switch">
+    <a class='switch <%- cls %>'><b class='icon <%- cls %>'><img src='/icon/<%- cls %>.svg'></b><b class='label'><%- label %></b></a>
+  </script>
+
+
+
+  <!-- Vertices and Sets - - - - - - - - - - - - - - - - - - - -  -->
+
+  <!-- Empty Set -->
+  <script type="text/template" id="empty_succset">
+    <div class='empty_succset'>
+      <h2>Nothing here yet.</h2>
+      <p><span class='drag'>drag</span> images here to add works or <br />
+      <span class='add'>add</span> other items</p>
+    </div>
+  </script>
+
+  <!-- Vertex - default vertex view, used for both in set and summary -->
+  <script type="text/template" id="vertex_template">
+    <a class='in_set_link' href='#<%- vertex_type %>/<%- _id %>'></a>
+
+    <div class='cover'></div>
+
+    <div class='attributes'>
+      <img class='icon <%- vertex_type %>' src='/icon/<%- vertex_type %>.svg'>
+    </div>
+
+    <div class='in_set_menu'>
+      <a class='delete'>delete</a>
+      <a class='drag_handle'>&#8597;</a>
+    </div>
+  </script>
+
+
+  <!-- Form templates - - - - - - - - - - - - - - - - - - - - -->
+
+  <script type="text/template" id="text">
+    <label class='<%- name %>' for='<%- name %>'><%- label %></label><input class='input' type='text' id='<%- name %>' value='<%- value %>' />
+  </script>
+
+  <script type="text/template" id="textarea">
+    <label class='<%- name %>' for='<%- name %>'><%- label %></label>
+    <textarea class='input textarea' id='<%- name %>'><%- value %></textarea>
+  </script>
+
+  <script type="text/template" id="button">
+    <input class='input button <%- cls %>' type='button' value='<%- label %>' />
+  </script>
+
+  <script type="text/template" id="file_upload">
+    <div class='files_container'>
+      <i class='message'>Drop files here</i>
+      <input type="file" multiple="multiple" name="files[]" class="files"/>
+    </div>
+  </script>
+
+  <script type="text/template" id="html5_file_upload">
+    <input type="file" multiple="multiple" name="files[]" class="files"/>
+    <div class='files_container'>
+      <i class='message'><%- label %></i>
+    </div>
+  </script>
+
+  <script type="text/template" id="cover_display">
+    <div class='cover_display'></div>
+  </script>
+
+  <script type="text/template" id="god_attributes">
+    <img class='icon god' src='/icon/god.svg'>
+    <label for='deletable'><input id="deletable" type="checkbox" name="deletable" value="true" <%- deletable %> /> Deletable</label>
+  </script>
+
+
+  <!-- deprecated templates  - - - - - - - - - - - - - - - - - - - -  -->
+
+  <!-- Summaries -->
   <script type="text/template" id="happenings_summary">
     <div class='happenings_title title'>happenings</div>
     <div class='meta'>
@@ -125,12 +206,6 @@
       <div class='cover set_cover'></div>
     </div>
     <div class='add_menu'><!-- typeSchema --></div>
-  </script>
-
-
-  <!-- addItem -->
-  <script type="text/template" id="vertex_add">
-  <a class='add_<%- vertex_type %>'><img src='/icon/<%- vertex_type %>.svg'>add <%- vertex_label %></a>
   </script>
 
   <!-- SuccsetItem  -->
@@ -244,79 +319,9 @@
     </div>
   </script>
 
-  <!-- Dynamic  -->
-  <script type="text/template" id="dynamic_in_set">
-    <a class='in_set_link' href='#<%- vertex_type %>/<%- _id %>'></a>
 
-    <div class='cover'></div>
 
-    <div class='attributes'>
-      <img class='icon <%- vertex_type %>' src='/icon/<%- vertex_type %>.svg'>
-    </div>
 
-    <div class='in_set_menu'>
-      <a class='delete'>delete</a>
-      <a class='drag_handle'>&#8597;</a>
-    </div>
-  </script>
-
-  <script type="text/template" id="empty_succset">
-    <div class='empty_succset'>
-      <h2>Nothing here yet.</h2>
-      <p><span class='drag'>drag</span> images here to add works or <br />
-      <span class='add'>add</span> other items</p>
-    </div>
-  </script>
-
-  <script type="text/template" id="menu_item">
-    <li><a class='<%- cls %>'><b class='icon <%- cls %>'><img src='/icon/<%- cls %>.svg'></b><b class='label'><%- label %></b></a></li>
-  </script>
-  <script type="text/template" id="menu_switch">
-    <a class='switch <%- cls %>'><b class='icon <%- cls %>'><img src='/icon/<%- cls %>.svg'></b><b class='label'><%- label %></b></a>
-  </script>
-
-  <!-- Form templates -->
-
-  <script type="text/template" id="text">
-    <label class='<%- name %>' for='<%- name %>'><%- label %></label><input class='input' type='text' id='<%- name %>' value='<%- value %>' />
-  </script>
-
-  <script type="text/template" id="textarea">
-    <label class='<%- name %>' for='<%- name %>'><%- label %></label>
-    <textarea class='input textarea' id='<%- name %>'><%- value %></textarea>
-  </script>
-
-  <script type="text/template" id="button">
-    <input class='input button <%- cls %>' type='button' value='<%- label %>' />
-  </script>
-
-  <script type="text/template" id="file_upload">
-    <div class='files_container'>
-      <i class='message'>Drop files here</i>
-      <input type="file" multiple="multiple" name="files[]" class="files"/>
-    </div>
-  </script>
-
-  <script type="text/template" id="html5_file_upload">
-    <input type="file" multiple="multiple" name="files[]" class="files"/>
-    <div class='files_container'>
-      <i class='message'><%- label %></i>
-    </div>
-  </script>
-
-  <script type="text/template" id="cover_display">
-    <div class='cover_display'>
-
-    </div>
-  </script>
-
-  <script type="text/template" id="god_attributes">
-    <b class='icon god'>
-    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 16 16"><polyline fill="none" stroke="#000000" points="0.5,1 0.5,15.5 15.5,15.5 15.5,1.5 2.5,1.5 2.5,13.5 13.5,13.5 13.5,3.5 4.5,3.5 4.5,11.5 11.5,11.5 11.5,5.5 6.5,5.5 6.5,9.5 9.5,9.5 9.5,7.5 8,7.5 "/><polyline fill="none" stroke="#fffff" points="1.5,1 1.5,14.5 14.5,14.5 14.5,2.5 3.5,2.5 3.5,12.5 12.5,12.5 12.5,4.5 5.5,4.5 5.5,10.5 10.5,10.5 10.5,6.5 7.5,6.5 7.5,8.5 9,8.5 "/></svg>
-    </b>
-    <label for='deletable'><input id="deletable" type="checkbox" name="deletable" value="true" <%- deletable %> /> Deletable</label>
-
-  </script>
 
   <script type="text/template" id="batch">
     <div class='in_batch_menu'>
@@ -330,16 +335,6 @@
     <a class='cancel'>X</a>
     <i class='label'><%- label %></i>
   </script>
-
-  <!-- Action templates -->
-  <script type="text/template" id="new_work">
-    <a class='new_work'>new work</a>
-  </script>
-
-  <script type="text/template" id="new_category">
-    <a class='new_category'>new category</a>
-  </script>
-
 
 
 {% endblock %}
