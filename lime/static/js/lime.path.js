@@ -37,11 +37,16 @@ LIME.Path.PathPanel = Backbone.View.extend({
 
     // summary
     var vertex = _.last(this.path);
-    this.summary = new LIME.View.SummaryView['Vertex']({
+    this.summary = new LIME.View.Vertex({
       'model':vertex,
-      'className': vertex.vertexType + ' vertex summary'
+      'className': vertex.vertexType + ' vertex summary',
+      'tagName':'div'
     });
     $path.append(this.summary.el);
+
+    if(vertex.isDeep()){
+      this.summary.render();
+    };
   },
 
   jsonLink: function(link){

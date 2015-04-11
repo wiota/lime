@@ -18,30 +18,31 @@ Backbone.View.prototype.close = function(){
 
 /* ------------------------------------------------------------------- */
 // Vertex View
+// What is custom to this view? Posted seconds ago
+// View queries data
 /* ------------------------------------------------------------------- */
 
 LIME.View.Vertex = Backbone.View.extend({
   events:{
     'click .delete':'delete',
-    'click .update':'updateForm'
+    'click .update':'updateForm',
+    'click .title':'toggleMeta',
+    'click .set_cover':'setCoverForm'
   },
 
   initialize: function(options){
     this.predecessor = options.predecessor;
     this.$el.attr('id', "_id_"+this.model.id);
-    this.template = this.buildTemplate();
-  },
-
-  buildTemplate: function(){
     if(defined = $('#'+ this.model.vertexType +'_in_set').html()){
       this.dynamicTemplate = false;
-      return _.template(defined);
+      this.template = _.template(defined);
     } else {
       this.dynamicTemplate = true;
-      return _.template($('#dynamic_in_set').html());
+      this.template = _.template($('#dynamic_in_set').html());
     }
   },
 
+  // This should update the model and the model should initiate the request to the server
   delete: function(){
     LIME.requestPanel.one([
       {'func': 'removeEdgeRequest', 'args': [[this.predecessor, this.model]]},
@@ -103,6 +104,7 @@ LIME.View.Vertex = Backbone.View.extend({
 
 /* ------------------------------------------------------------------- */
 // Successor Set List
+// Logic for sorting and displaying views
 /* ------------------------------------------------------------------- */
 
 LIME.View.SuccsetView = {};
@@ -627,6 +629,7 @@ LIME.ListingPanel = Backbone.View.extend({
 
     this.$el.append(this.listing.render().el);
     this.renderMenus();
+    LIME.pathPanel.render();
   },
 
   list: function(model){
