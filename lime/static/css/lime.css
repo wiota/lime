@@ -79,30 +79,38 @@
   width: 90%;
   }
 
-  .summary .icon {
-    width:18%;
-    height: 0;
-    padding: 0 0 18%;
-    position:relative;
+  .summary .attributes .icon {
+    width: 32px;
+    height:32px;
+    padding: 4px 0;
+    margin-right: 8px;
     float:left;
-    margin: 0 3% 3% 0;
     }
-    .summary .icon img,
-    .summary .icon svg {
-      position: absolute;
-      top:0;
-      left:0;
-      height: 100%;
-      width: 100%;
+    .summary.with_cover .attributes .icon{
+      padding: 4px;
+      background-color: rgba(255,255,255,1);
     }
-  .summary .title {
+
+
+  .summary .attributes .attribute {
+    display:block;
+  }
+
+  .summary .attributes .primary {
     font-size: 180%;
     overflow: hidden;
     text-overflow: ellipsis;
     }
-  .summary .meta {
+
+  .summary .ui {
     clear: both;
-  }
+    }
+    .summary .ui a.delete {
+      display:none;
+    }
+    .summary .ui a.drag_handle {
+      display:none;
+      }
 
   .summary .cover {width: 100%;}
   .summary .cover img {width: 100%;}

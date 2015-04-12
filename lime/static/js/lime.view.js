@@ -31,17 +31,34 @@ LIME.View.Vertex = Backbone.View.extend({
     'click .set_cover':'setCoverForm'
   },
 
+  defaultTemplate: _.template($('#vertex_template').html()),
+
   initialize: function(options){
-    this.predecessor = options.predecessor;
+
+    // ui
+      // get
+      // return
+      // update
+
+    // care of
+    this.predecessor = options.predecessor || false;
+
+    // id
     this.$el.attr('id', "_id_"+this.model.id);
-    if(defined = $('#'+ this.model.vertexType +'_in_set').html()){
-      this.dynamicTemplate = false;
-      this.template = _.template(defined);
+
+    // customTemplate templates (for leaves)
+    this.$tmp = $('#'+ this.model.vertexType+'_in_set');
+    this.customTemplate = (this.$tmp.length > 0);
+
+    // set template function
+    if(this.customTemplate){
+      this.template = _.template(this.$tmp.html());
     } else {
-      this.dynamicTemplate = true;
-      this.template = _.template($('#vertex_template').html());
+      this.template = this.defaultTemplate;
     }
   },
+
+
 
   // This should update the model and the model should initiate the request to the server
   delete: function(){
@@ -55,36 +72,25 @@ LIME.View.Vertex = Backbone.View.extend({
     LIME.actionPanel.loadVertexForm(this.model, this.predecessor);
   },
 
-  render_static: function(){
-    this.$el.html(this.template(this.model.toJSON()));
-  },
-
-  render_dynamic: function(){
-    var schema = LIME.host.vertexSchema[this.model.vertexType];
-    var first = true;
-    this.$el.html(this.template(this.model.toJSON()));
-    this.$attributes = this.$el.children('.attributes');
-
-    _.each(schema, function(field){
+  renderAttributes: function(){
+    var clsList = ['primary','secondary','tertiary']
+    _.each(LIME.host.vertexSchema[this.model.vertexType], function(field, key){
       if(_.has(this.model.attributes, field.name)){
-        if(first){
-          first = false;
-          this.$attributes.append("<b class='attribute primary'>"+this.model.attributes[field.name]+"</b>");
-        } else {
-          this.$attributes.append("<b class='attribute'>"+this.model.attributes[field.name]+"</b>");
-        }
+        this.$attributes.append("<b class='attribute "+(clsList[key])+"'>"+this.model.attributes[field.name]+"</b>");
       }
     }, this)
   },
 
   render: function(){
-    if(this.dynamicTemplate){
-      this.render_dynamic();
-    } else {
-      this.render_static();
-    }
+    this.$el.html(this.template(this.model.toJSON()));
+    this.$attributes = this.$el.children('.attributes');
     this.$cover = this.$el.children('.cover');
 
+    if(!this.customTemplate){
+      this.renderAttributes();
+    }
+
+    // render cover
     var ca = this.model.get('cover');
     if(ca.length){
       this.$el.addClass('with_cover');
@@ -95,10 +101,13 @@ LIME.View.Vertex = Backbone.View.extend({
       this.$el.addClass('without_cover');
     }
 
+
     this.delegateEvents();
+    // disallow delete
     if(!this.model.get('deletable')){
       this.$el.find('.delete').hide();
     }
+
     return this;
   }
 });

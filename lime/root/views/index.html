@@ -89,15 +89,14 @@
 
   <!-- Vertex - default vertex view, used for both in set and summary -->
   <script type="text/template" id="vertex_template">
-    <a class='in_set_link' href='#<%- vertex_type %>/<%- _id %>'></a>
-
     <div class='cover'></div>
 
     <div class='attributes'>
       <img class='icon <%- vertex_type %>' src='/icon/<%- vertex_type %>.svg'>
     </div>
 
-    <div class='in_set_menu'>
+    <div class='ui'>
+      <a class='get_link' href='#<%- vertex_type %>/<%- _id %>'></a>
       <a class='delete'>delete</a>
       <a class='drag_handle'>&#8597;</a>
     </div>
@@ -146,7 +145,7 @@
   <!-- deprecated templates  - - - - - - - - - - - - - - - - - - - -  -->
 
   <!-- Summaries -->
-  <script type="text/template" id="happenings_summary">
+  <script type="text/template" id="happenings_summary_deprecated">
     <div class='happenings_title title'>happenings</div>
     <div class='meta'>
 
@@ -157,7 +156,7 @@
     </div>
   </script>
 
-  <script type="text/template" id="body_summary">
+  <script type="text/template" id="body_summary_deprecated">
     <b class='icon bookcase'><img src='/icon/bookcase.svg'></b>
     <div class='body_title title'>body of work</div>
     <div class='meta'>
@@ -166,7 +165,7 @@
     <div class='add_menu'><!-- typeSchema --></div>
   </script>
 
-  <script type="text/template" id="category_summary">
+  <script type="text/template" id="category_summary_deprecated">
     <b class='icon book'><img src='/icon/book.svg?c=d8bb00'></b>
     <div class='category_title title'><%- title %></div>
     <div class='meta'>
@@ -176,7 +175,7 @@
     <div class='add_menu'><!-- typeSchema --></div>
   </script>
 
-  <script type="text/template" id="work_summary">
+  <script type="text/template" id="work_summary_deprecated">
     <b class='icon tree'><img src='/icon/tree.svg'></b>
     <div class='work_title title'><%- title %></div>
     <div class='meta'>
@@ -187,7 +186,7 @@
     <div class='add_menu'><!-- typeSchema --></div>
   </script>
 
-  <script type="text/template" id="happening_summary">
+  <script type="text/template" id="happening_summary_deprecated">
     <b class='icon calendar'><img src='/icon/calendar.svg'></b>
     <div class='title'><%- title %></div>
     <div class='meta'>
@@ -197,7 +196,7 @@
     </div>
   </script>
 
-  <script type="text/template" id="vertex_summary">
+  <script type="text/template" id="vertex_summary_deprecated">
     <b class='icon <%- vertex_type %>'><img src='/icon/<%- vertex_type %>.svg'></b>
     <div class='title'><%- title %></div>
     <div class='meta'>
@@ -217,24 +216,21 @@
 
   <!-- Body  -->
   <script type="text/template" id="body_in_set">
-    <a class='in_set_link' href='#body/<%- _id %>'></a>
-
     <div class='cover'></div>
 
     <div class='attributes'>
-      <img class='icon book' src='/icon/body.svg'>
+      <img class='icon' src='/icon/body.svg'>
       <b class='title'>Body</b>
     </div>
 
-    <div class='in_set_menu'>
+    <div class='ui'>
+      <a class='get_link' href='#body/<%- _id %>'></a>
       <a class='drag_handle'>&#8597;</a>
     </div>
   </script>
 
   <!-- Category  -->
-  <script type="text/template" id="category_in_set">
-    <a class='in_set_link' href='#category/<%- _id %>'></a>
-
+  <script type="text/template" id="category_in_set_deprecated">
     <div class='cover'></div>
 
     <div class='attributes'>
@@ -242,15 +238,15 @@
       <b class='title'><%- title %></b>
     </div>
 
-    <div class='in_set_menu'>
+    <div class='ui'>
+      <a class='get_link' href='#category/<%- _id %>'></a>
       <a class='delete'>delete</a>
       <a class='drag_handle'>&#8597;</a>
     </div>
   </script>
 
   <!-- Work  -->
-  <script type="text/template" id="work_in_set_disabled">
-    <a class='in_set_link' href='#work/<%- _id %>'></a>
+  <script type="text/template" id="work_in_set_deprecated">
 
     <div class='cover'></div>
 
@@ -259,24 +255,25 @@
       <b class='title'><%- title %></b>
     </div>
 
-    <div class='in_set_menu'>
+    <div class='ui'>
+      <a class='get_link' href='#work/<%- _id %>'></a>
       <a class='delete'>delete</a>
       <a class='drag_handle'>&#8597;</a>
     </div>
   </script>
 
   <!-- Happening  -->
-  <script type="text/template" id="happening_in_set">
-    <a class='in_set_link' href='#happening/<%- _id %>'></a>
+  <script type="text/template" id="happening_in_set_deprecated">
 
     <div class='cover'></div>
 
     <div class='attributes'>
+      <a class='get_link' href='#happening/<%- _id %>'></a>
       <img class='icon calendar' src='/icon/calendar.svg'>
       <b class='title'><%- title %></b>
     </div>
 
-    <div class='in_set_menu'>
+    <div class='ui'>
       <a class='delete'>delete</a>
       <a class='drag_handle'>&#8597;</a>
     </div>
@@ -284,7 +281,6 @@
 
   <!-- Photo  -->
   <script type="text/template" id="photo_in_set">
-    <a class='in_set_link' target='_blank' href='<%- href %>'></a>
 
     <!-- no cover -->
 
@@ -292,7 +288,8 @@
       <img src="<%- href %>?w=500" alt="" />
     </div>
 
-    <div class='in_set_menu'>
+    <div class='ui'>
+      <a class='get_link' target='_blank' href='<%- href %>'></a>
       <a class='delete'>delete</a>
       <a class='drag_handle'>&#8597;</a>
     </div>
@@ -300,12 +297,6 @@
 
   <!-- Youtube  -->
   <script type="text/template" id="youtube_in_set">
-    <a class='in_set_link' target='_blank' href='https://www.youtube.com/watch?v=<%- vid %>'></a>
-
-    <div class='attributes'>
-      <img class='icon tree' src='/icon/default_icon.svg'>
-      <b class='title'>Youtube id <%- vid %></b>
-    </div>
 
     <div class='cover'>
       <img src='https://img.youtube.com/vi/<%- vid %>/1.jpg'>
@@ -313,16 +304,20 @@
       <img src='https://img.youtube.com/vi/<%- vid %>/3.jpg'>
     </div>
 
-    <div class='in_set_menu'>
+    <div class='attributes'>
+      <img class='icon tree' src='/icon/default_icon.svg'>
+      <b class='title'>Youtube id <%- vid %></b>
+    </div>
+
+    <div class='ui'>
+      <a class='get_link' target='_blank' href='https://www.youtube.com/watch?v=<%- vid %>'></a>
       <a class='delete'>delete</a>
       <a class='drag_handle'>&#8597;</a>
     </div>
   </script>
 
 
-
-
-
+<!-- left over from progress bar -->
   <script type="text/template" id="batch">
     <div class='in_batch_menu'>
       <i class='batch_count'><%- batch_count %></i>

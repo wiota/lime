@@ -385,16 +385,6 @@ body.dragging, body.dragging * {
     z-index: 30;
   }
 
-.succset_list li a.in_set_link {
-  display:block;
-  position:absolute;
-  z-index: 20;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-}
-
   /* Cover */
 
   .succset_list li.with_cover .cover {
@@ -605,25 +595,58 @@ body.dragging, body.dragging * {
   float:none;
 }
 
-/* In Set Menus ------------------------------------- */
+/* Vertex UI ------------------------------------- */
 
-.in_set_menu {
+.succset_list .ui {
   position:absolute;
   top:0;
   right: 0;
-  text-align: right;
-  padding: 1%;
+  bottom: 0;
+  left: 0;
   z-index: 21;
 }
 
-  .in_set_menu a {
+  .succset_list .ui a {
+    text-align: center;
     display: inline-block;
     padding: 5px;
   }
-  .succset_list li.dragged .in_set_menu {
+  .succset_list li.dragged .ui {
     display:none;
   }
 
+
+.succset_list li a.get_link {
+  display:block;
+  position:absolute;
+  z-index: 20;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.succset_list li a.delete {
+  -webkit-transition: all .2s;
+  -moz-transition: all .2s;
+  transition: all .2s;
+  position:absolute;
+  top:0;
+  right: 0;
+  width:0;
+  padding-left:0;
+  padding-right:0;
+  visibility:hidden;
+  opacity: 0;
+}
+
+.remove_mode .succset_list li a.delete {
+  width:50px;
+  padding-left:5px;
+  padding-right:5px;
+  visibility:visible;
+  opacity: 1;
+}
 
 /* Summary - needs cleaning up ------------------------------------- */
 
@@ -640,6 +663,17 @@ body.dragging, body.dragging * {
   display:block;
   margin: 3% 0;
   padding: 1% 3px;
+}
+
+.summary .meta {
+  border-bottom: 1px solid #f5f8f8;
+}
+
+.summary .add_menu a img {
+  float:left;
+  margin: 0 4px 0 0;
+  width: 16px;
+  height: 16px;
 }
 
 .successorItem a {
@@ -662,35 +696,8 @@ body.dragging, body.dragging * {
   display: block;
 }
 
-.summary .meta {
-  border-bottom: 1px solid #f5f8f8;
-}
 
-.summary .add_menu a img {
-  float:left;
-  margin: 0 4px 0 0;
-  width: 16px;
-  height: 16px;
-}
-
-li .delete {
-  -webkit-transition: all .2s;
-  -moz-transition: all .2s;
-  transition: all .2s;
-  width:0;
-  padding-left:0;
-  padding-right:0;
-  visibility:hidden;
-  opacity: 0;
-}
-
-.remove_mode li .delete {
-  width:50px;
-  padding-left:5px;
-  padding-right:5px;
-  visibility:visible;
-  opacity: 1;
-}
+/* Menu styles */
 
 .delete {
   background-color: #f00;
