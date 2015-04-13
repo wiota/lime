@@ -27,6 +27,7 @@ LIME.View.Vertex = Backbone.View.extend({
   events:{
     'click .delete':'delete',
     'click .update':'updateForm',
+    // 'click .ui': 'updateForm', // causes cover form button to fail
     'click .title':'toggleMeta',
     'click .set_cover':'setCoverForm'
   },
@@ -56,6 +57,8 @@ LIME.View.Vertex = Backbone.View.extend({
     } else {
       this.template = this.defaultTemplate;
     }
+
+    this.listenTo(this.model, 'summaryChanged', this.render)
   },
 
 
@@ -70,6 +73,10 @@ LIME.View.Vertex = Backbone.View.extend({
 
   updateForm: function(){
     LIME.actionPanel.loadVertexForm(this.model, this.predecessor);
+  },
+
+  setCoverForm: function(){
+    LIME.actionPanel.loadCoverForm(this.model);
   },
 
   renderAttributes: function(){

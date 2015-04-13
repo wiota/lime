@@ -70,71 +70,6 @@
   padding: 2% 0 2% 16%;
 }
 
-.summary {
-  z-index: 120;
-  position: relative;
-  background-color: transparent;
-  padding: 5%;
-  margin: 0;
-  width: 90%;
-  }
-
-  .summary .attributes .icon {
-    width: 32px;
-    height:32px;
-    padding: 4px 0;
-    margin-right: 8px;
-    float:left;
-    }
-    .summary.with_cover .attributes .icon{
-      padding: 4px;
-      background-color: rgba(255,255,255,1);
-    }
-
-
-  .summary .attributes .attribute {
-    display:block;
-  }
-
-  .summary .attributes .primary {
-    font-size: 180%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    }
-
-  .summary .ui {
-    clear: both;
-    }
-    .summary .ui a.delete {
-      display:none;
-    }
-    .summary .ui a.drag_handle {
-      display:none;
-      }
-
-  .summary .cover {width: 100%;}
-  .summary .cover img {width: 100%;}
-
-.summary.body {
-  color: #000;
-  }
-
-  .summary.body .title {
-  }
-
-.summary.category {
-  }
-
-.summary.happenings {
-}
-
-.summary.tag {
-  background-color: #8779ef;
-  }
-.summary.work {
-}
-
-
 /* Succset form ------------------------------------- */
 
 form.succset {
@@ -357,6 +292,8 @@ form.succset .file_upload input {
   position:absolute;
   top: 0;
   right: 0;
+  background-color: #f00;
+  color: #fff;
 }
 
 /* File Upload */

@@ -311,7 +311,8 @@ LIME.FormView['Vertex'] = Backbone.View.extend({
     this.appendGodAttributes();
     this.appendAtrributeFields();
 
-    this.listenToOnce(this.attributeFields, 'rendered', this.saveView.render)
+    //this.listenToOnce(this.attributeFields, 'rendered', this.saveView.render)
+    this.saveView.render();
     this.listenToOnce(this.attributeFields, 'rendered', this.godAttributes.render)
 
     this.listenTo(this.model, 'sync', this.saveView.statusSaved);
@@ -604,10 +605,12 @@ LIME.ActionPanel = Backbone.View.extend({
   },
 
   rollUp: function(){
+    LIME.pathPanel.$el.removeClass('form_open');
     this.$el.removeClass('show');
   },
 
   rollDown: function(){
+    LIME.pathPanel.$el.addClass('form_open');
     this.$el.addClass('show');
   },
 
