@@ -14,9 +14,9 @@
 
 .ui a {
   font-family: "Inconsolata","Monaco","Lucida Console","Courier New", "monospace";
+  -webkit-font-smoothing: antialiased;
+  font-weight: bold;
   cursor: pointer;
-  text-decoration: underline;
-  font-weight: normal;
   text-align: center;
   padding: 10px 5%;
 }
@@ -25,7 +25,12 @@
 
 .menu {
   font-family: "Inconsolata","Monaco","Lucida Console","Courier New", "monospace";
+  -webkit-font-smoothing: antialiased;
+  font-weight: bold;
   cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+    user-select: none;
 }
 
 .menu.open a.switch {
@@ -36,7 +41,7 @@
 }
 
 .menu .label {
-  font-weight: normal;
+  font-weight: bold;
 }
 
 .menu .icon {
@@ -57,6 +62,7 @@
   left: 0;
   width: 100%;
   z-index: 200;
+  margin-left: 1%;
 }
 
 .view_menu .menu {
@@ -109,10 +115,14 @@
   visibility: visible;
   height: 19px;
   opacity: 1;
+  -webkit-box-shadow: 2px 2px 10px 0px rgba(100,100,100, .3);
+  -moz-box-shadow:    2px 2px 10px 0px rgba(100,100,100, .3);
+  box-shadow:         2px 2px 10px 0px rgba(100,100,100, .3);
 }
 
 .view_menu ul:hover li.selected a {
   padding: 7px 0% 8px 20%;
+  z-index: 100;
   -webkit-box-shadow: 5px 5px 15px 0px rgba(100,100,100, .3);
   -moz-box-shadow:    5px 5px 15px 0px rgba(100,100,100, .3);
   box-shadow:         5px 5px 15px 0px rgba(100,100,100, .3);
@@ -126,10 +136,10 @@
 
 .view_menu .layout a {
   color: #222;
-  background-color: #dadada;
+  background-color: #fff;
 }
 
-.view_menu .layout ul:hover .selected a {
+.view_menu .layout ul .selected a {
   color: #222;
   background-color: #eaeaea;
 }
@@ -316,18 +326,18 @@
   bottom: 0;
   right: 0;
   overflow: auto;
-  padding: 66px 0 100px;
 }
 
 /* Apex Menu -----------------------------------  */
 
 .home_menu {
-  padding: 1%;
+  padding: 1% 2%;
   font-size: 60px;
 }
 
 .home_menu li {
   clear:left;
+  margin: 32px 0;
 }
   .home_menu li .icon {
     display:block;
@@ -383,8 +393,8 @@
   z-index: 110;
   width: 100%;
   margin: 0;
-  padding: 0;
   position:relative;
+  padding: 66px 0 100px;
 }
 
 .succset_list li {
@@ -404,7 +414,7 @@
 
   .succset_list li.with_cover .cover {
     width: 100%;
-    margin: 0 10px 10px 0;
+    padding: 0 10px 10px 0;
   }
 
   .succset_list li.with_cover .cover img {
@@ -478,28 +488,7 @@
       10px 10px 25px 0px rgba(100,100,100, .3);
   }
 
-.succset_list li .attributes {
-  width: 100%;
-  background-color: #fff;
-  -webkit-transition: all .1s;
-  -moz-transition: all .1s;
-  transition: all .1s;
-}
 
-  .succset_list li.with_cover .attributes {
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    bottom: 18px;
-    right: 0px;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    margin: 4%;
-    padding: 0;
-    width: 92%;
-    color: #000;
-    background-color: transparent;
-  }
 
   .succset_list li.dragged.without_cover .attributes {
     -webkit-box-shadow: 5px 5px 15px 0px rgba(100,100,100, .3);
@@ -508,7 +497,6 @@
   }
 
   .succset_list li.with_cover .attributes .attribute {
-    background-color: #fff;
   }
 
 .succset_list li .attributes .icon {
@@ -521,7 +509,6 @@
 
   .succset_list li.with_cover .icon {
     padding: 4px;
-    background-color: rgba(255,255,255,1);
   }
 
 .succset_list .attributes .attribute {
@@ -530,6 +517,9 @@
   padding: 4px;
   font-size: 10px;
   line-height: 1.3em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
 
 .succset_list .attribute.primary {
@@ -540,28 +530,46 @@
   font-size: 12px;
 }
 
-.succset_list .photo img {
+.succset_list .attribute img {
   display:block;
   max-width: 100%;
 }
 
 /* List View ------------------------------------- */
 
-.list_view .succset_list {}
+.list_view .succset_list {
+
+}
 
 .list_view .succset_list li {
-  width: 25%;
-  margin: 1%;
+  width: 97%;
+  margin: 1% 1% 1% 2%;
   padding: 0 0 1%;
   font-size: 16px;
   border-bottom: 1px solid #e3e9ea;
   background-color: #fff;
   min-height: 1em;
+  overflow: auto;
 }
 
   .list_view .succset_list li.dragged {
     border-bottom: none;
     background-color: transparent;
+  }
+
+  .list_view .succset_list li.with_cover .cover {
+    width: 64px;
+    float:left;
+  }
+
+  .list_view .succset_list li.with_cover .attributes {
+    width: auto;
+    margin-left: 84px;
+  }
+
+  .succset_list .attributes img {
+    display:block;
+    max-width: 64px;
   }
 
 /* Grid View ------------------------------------- */
@@ -584,19 +592,42 @@
     background-color: transparent;
   }
 
-.grid_view .succset_list li.photo img {
-  display:block;
-  max-width: 100%;
-  max-height: 100%;
+  .grid_view .succset_list li.photo img {
+    display:block;
+    max-width: 100%;
+    /* Gotta do something here */
+  }
+
+  /* Overlapping attributes */
+
+.grid_view .succset_list li .attributes {
+  width: 100%;
+  background-color: #fff;
+  -webkit-transition: all .1s;
+  -moz-transition: all .1s;
+  transition: all .1s;
+}
+
+  .grid_view .succset_list li.with_cover .attributes {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    bottom: 18px;
+    right: 0px;
+    margin: 4%;
+    padding: 0;
+    width: 92%;
+    color: #000;
+    overflow: hidden;
   }
 
   .grid_view .succset_list li .attributes .icon {
-  width: 16px;
-  height:16px;
-  padding: 4px;
-  margin-right: 4px;
-  float:none;
-}
+    width: 16px;
+    height:16px;
+    padding: 4px;
+    margin-right: 4px;
+    float:left;
+  }
 
 /* ui ------------------------------------- */
 
@@ -621,6 +652,7 @@
     display:block;
     position:absolute;
     z-index: 20;
+    padding: 0;
     top: 0;
     left: 0;
     right: 0;
@@ -687,7 +719,6 @@
   background-color: transparent;
   margin: 5%;
   padding-top: 37px;
-  width: 90%;
   -webkit-transition: all .2s;
   -moz-transition: all .2s;
   transition: all .2s;
@@ -724,6 +755,9 @@
     padding: 4px 0;
     font-size: 10px;
     line-height: 1.3em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
   }
 
   .summary .attributes .attribute.primary {
@@ -750,9 +784,12 @@
     }
 
     .summary .ui a {
-      padding: 10px 10%;
+      color: #000;
+      background-color: rgba(255,255,255,.7);
+      padding: 10px 20% 10px 0;
       height: 17px;
       display:block;
+      text-align: left;
       width: 80%;
       -webkit-transition: all .2s;
       -moz-transition: all .2s;
@@ -761,41 +798,22 @@
 
     .summary .ui a:hover {
       width: 80%;
-      padding: 10px 0% 10px 20%;
+      padding: 10px 10% 10px 10%;
       -webkit-box-shadow: 5px 5px 15px 0px rgba(100,100,100, .3);
       -moz-box-shadow:    5px 5px 15px 0px rgba(100,100,100, .3);
       box-shadow:         5px 5px 15px 0px rgba(100,100,100, .3);
     }
 
-    .summary .ui a.update {
-      background-color: #82db8a;
-      color: #fff;
-    }
-
-    .summary .ui a.update:hover {
-      background-color: #fff;
-      color: #82db8a;
-    }
-
-    /* space for set cover button to sit before cover photo has loaded */
-    .summary.with_cover .cover {
+    /* space for set cover button to sit if there is no cover photo */
+    .summary .cover {
       min-height: 27px;
     }
 
-    .summary .ui .set_cover {
-      display:none;
-    }
-
-    .summary.with_cover .set_cover {
+    .summary .set_cover {
       display:block;
       color: #000;
       padding: 5px 10%;
-      background-color: rgba(255,255,255,.7);
-    }
 
-    .summary.with_cover .set_cover:hover {
-      color: #fff;
-      background-color: rgba(50,50,50,.7);
     }
 
     .summary .ui a.get {

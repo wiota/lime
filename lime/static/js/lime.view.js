@@ -102,7 +102,7 @@ LIME.View.Vertex = Backbone.View.extend({
     if(ca.length){
       this.$el.addClass('with_cover');
       _.each(ca, function(coverItem){
-        this.$cover.append("<img src='"+coverItem.href+"?w=500' alt='' />")
+        this.$cover.append("<img src='"+coverItem.href+"?h=200' alt='' />")
       }, this);
     } else {
       this.$el.addClass('without_cover');
