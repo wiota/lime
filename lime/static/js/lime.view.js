@@ -598,7 +598,7 @@ LIME.ListingPanel = Backbone.View.extend({
     // For testing
     pS = [
       ['standard', 'Standard'],
-      ['wide', 'Wide'],
+      ['predecessor', 'Pred'],
       ['narrow', 'Narrow']
     ]
     pSI = pS[0];
