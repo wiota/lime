@@ -576,10 +576,11 @@
 .grid_view .succset_list {}
 
 .grid_view .succset_list li {
-  width: 23.75%;
-  height: 0;
-  padding: 0 0 20%;
-  display: inline-block;
+  width: 160px;
+  height: 160px;
+  padding: 0 15px 15px 0;
+  display: block; /* Inline-block causes cover animation to fail */
+  float:left;
   margin: 1% 0 0 1%;
   font-size: 16px;
   background-color: #fff;
@@ -608,13 +609,12 @@
 
   .grid_view .succset_list li.with_cover .attributes {
     position: absolute;
-    top: 0px;
-    left: 0px;
-    bottom: 18px;
-    right: 0px;
+    top: 0;
+    left: 0;
+    right: 10px;
     margin: 4%;
     padding: 0;
-    width: 92%;
+    width: auto;
     color: #000;
     overflow: hidden;
   }
