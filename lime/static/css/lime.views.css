@@ -18,7 +18,6 @@
   font-weight: bold;
   cursor: pointer;
   text-align: center;
-  padding: 10px 5%;
 }
 
 /* Menus ------------------------------------- */
@@ -190,6 +189,8 @@
 }
 
 .action_menu a.switch {
+  top:0;
+  right:0;
   display: block;
   width: 66px;
   height: 36px;
@@ -227,11 +228,11 @@
   overflow: hidden;
   background-color: #fff;
   position: absolute;
-  top:100%;
+  top:0;
   right: 0;
   opacity: 0;
   width: 200px;
-  padding: 10%;
+  padding: 10px;
   z-index: 100;
   pointer-events:none;
   -webkit-transition: all .4s ease-out;
@@ -245,16 +246,17 @@
   -moz-transform:translateX(0) rotateY(-180deg);
 }
 
-.action_menu .open ul {
+/* Only show action menu if in add mode */
+.add_mode .action_menu .open ul {
   pointer-events:auto;
   opacity: 1;
   visibility: visible;
   transform:translateX(0) rotateY(0deg);
   -webkit-transform:translateX(0) rotateY(0deg);
   -moz-transform:translateX(0) rotateY(0deg);
-  -webkit-box-shadow: 5px 5px 15px 0px rgba(100,100,100, .3);
-  -moz-box-shadow:    5px 5px 15px 0px rgba(100,100,100, .3);
-  box-shadow:         5px 5px 15px 0px rgba(100,100,100, .3);
+  -webkit-box-shadow: -5px 5px 15px 0px rgba(100,100,100, .3);
+  -moz-box-shadow:    -5px 5px 15px 0px rgba(100,100,100, .3);
+  box-shadow:         -5px 5px 15px 0px rgba(100,100,100, .3);
 }
 
 .action_menu li {
@@ -278,10 +280,6 @@
 .action_menu .selected a {
   background: #555;
   color: #fff;
-}
-
-.action_menu ul:hover li {
-  visibility: visible;
 }
 
 .action_menu ul li.selected {
@@ -355,6 +353,7 @@
   padding: 0;
   font-style: italic;
   font-size: 110%;
+  padding: 66px 0 100px;
 }
   .empty_succset h2 {
     font-weight: normal;
@@ -491,9 +490,6 @@
 
 
   .succset_list li.dragged.without_cover .attributes {
-    -webkit-box-shadow: 5px 5px 15px 0px rgba(100,100,100, .3);
-    -moz-box-shadow:    5px 5px 15px 0px rgba(100,100,100, .3);
-    box-shadow:         5px 5px 15px 0px rgba(100,100,100, .3);
   }
 
   .succset_list li.with_cover .attributes .attribute {
@@ -537,9 +533,7 @@
 
 /* List View ------------------------------------- */
 
-.list_view .succset_list {
-
-}
+.list_view .succset_list {}
 
 .list_view .succset_list li {
   width: 97%;
@@ -547,14 +541,19 @@
   padding: 0 0 1%;
   font-size: 16px;
   border-bottom: 1px solid #e3e9ea;
-  background-color: #fff;
   min-height: 1em;
-  overflow: auto;
+  clear:both;
+  overflow: hidden;
 }
 
   .list_view .succset_list li.dragged {
     border-bottom: none;
     background-color: transparent;
+  }
+
+
+  .list_view .succset_list li .attributes {
+    max-width: 600px;
   }
 
   .list_view .succset_list li.with_cover .cover {
@@ -569,7 +568,7 @@
 
   .succset_list .attributes img {
     display:block;
-    max-width: 64px;
+    max-width: 128px;
   }
 
 /* Grid View ------------------------------------- */
@@ -595,11 +594,10 @@
   .grid_view .succset_list li.photo img {
     display:block;
     max-width: 100%;
-    /* Gotta do something here */
+    /* How do I make the image fit in the box? */
   }
 
   /* Overlapping attributes */
-
 .grid_view .succset_list li .attributes {
   width: 100%;
   background-color: #fff;
@@ -632,16 +630,11 @@
 /* ui ------------------------------------- */
 
 .succset_list .ui {
-  position:absolute;
-  top:0;
-  right: 0;
-  bottom: 0;
-  left: 0;
   z-index: 21;
 }
 
   .succset_list .ui a {
-    display:inline-block;
+
   }
 
   .succset_list .dragged .ui {
@@ -660,15 +653,22 @@
   }
 
   .succset_list a.delete {
-    -webkit-transition: all .2s;
-    -moz-transition: all .2s;
-    transition: all .2s;
     position:absolute;
     top:0;
     right: 0;
-    width:0;
-    visibility:hidden;
-    opacity: 0;
+    display:block;
+    padding: 5px 5%;
+    -webkit-transition: all .4s ease-out;
+    -moz-transition: all .4s ease-out;
+    transition: all .4s ease-out;
+    transform-origin: 100% 50%;
+    -webkit-transform-origin: 100% 50%;
+    -moz-transform-origin: 100% 50%;
+    transform:translateX(0) rotateY(-180deg);
+    -webkit-transform:translateX(0) rotateY(-180deg);
+    -moz-transform:translateX(0) rotateY(-180deg);
+    /* visibility: hidden; */
+    opacity: 1;
   }
 
   .succset_list .delete {
@@ -685,6 +685,9 @@
     width: 50px;
     visibility: visible;
     opacity: 1;
+    transform:translateX(0) rotateY(0deg);
+    -webkit-transform:translateX(0) rotateY(0deg);
+    -moz-transform:translateX(0) rotateY(0deg);
   }
 
   .succset_list .ui a.drag_handle {
