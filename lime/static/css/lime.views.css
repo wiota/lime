@@ -354,15 +354,16 @@
   font-style: italic;
   font-size: 110%;
   padding: 66px 0 100px;
+  margin: 0 0 0 2%;
 }
   .empty_succset h2 {
     font-weight: normal;
     margin: 0 0 10px;
-    padding: 10px;
+    padding: 10px 0;
   }
   .empty_succset p {
     margin: 0;
-    padding: 10px;
+    padding: 10px 0;
   }
 
   .empty_succset .drag,
@@ -573,7 +574,9 @@
 
 /* Grid View ------------------------------------- */
 
-.grid_view .succset_list {}
+.grid_view .succset_list {
+  margin-left: 2%;
+}
 
 .grid_view .succset_list li {
   width: 160px;
@@ -581,7 +584,6 @@
   padding: 0 15px 15px 0;
   display: block; /* Inline-block causes cover animation to fail */
   float:left;
-  margin: 1% 0 0 1%;
   font-size: 16px;
   background-color: #fff;
   overflow: hidden;
