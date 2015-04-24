@@ -97,8 +97,8 @@
 
     <div class='ui'>
       <a class='get' href='#<%- vertex_type %>/<%- _id %>'></a>
-      <a class='update'>update</a>
-      <a class='set_cover'>set cover</a>
+      <a class='set_cover'><img class='icon update' src='/icon/lens.svg'><b class='label'>set cover</b></a>
+      <a class='update'><img class='icon update' src='/icon/pencil.svg'><b class='label'>update</b></a>
       <a class='delete'>delete</a>
       <a class='drag_handle'>&#8597;</a>
     </div>
@@ -383,28 +383,6 @@
     </ul>
 
     <ul class='lime_nav nav'>
-      <li class='home'>
-        <a href="{{ url_for('root.index') }}#">
-          <b class='icon home'>
-            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 33 33"><rect fill="#FFFFFF" width="33" height="33"/><rect x="1" y="1" fill="#4f5555" width="7" height="3"/><rect x="9" y="1" fill="#4f5555" width="7" height="3"/><rect x="17" y="1" fill="#4f5555" width="7" height="3"/><rect x="25" y="1" fill="#4f5555" width="7" height="3"/><rect x="1" y="29" fill="#4f5555" width="7" height="3"/><rect x="9" y="29" fill="#4f5555" width="7" height="3"/><rect x="17" y="29" fill="#4f5555" width="7" height="3"/><rect x="5" y="21" fill="#4f5555" width="7" height="7"/><rect x="13" y="21" fill="#4f5555" width="7" height="7"/><rect x="21" y="21" fill="#4f5555" width="7" height="7"/><rect x="29" y="21" fill="#4f5555" width="3" height="7"/><rect x="1" y="21" fill="#4f5555" width="3" height="7"/><rect x="5" y="5" fill="#4f5555" width="7" height="7"/><rect x="13" y="5" fill="#4f5555" width="7" height="7"/><rect x="21" y="5" fill="#4f5555" width="7" height="7"/><rect x="29" y="5" fill="#4f5555" width="3" height="7"/><rect x="1" y="5" fill="#4f5555" width="3" height="7"/><rect x="25" y="29" fill="#4f5555" width="7" height="3"/><rect x="1" y="13" fill="#4f5555" width="7" height="7"/><rect x="9" y="13" fill="#4f5555" width="7" height="7"/><rect x="17" y="13" fill="#4f5555" width="7" height="7"/><rect x="25" y="13" fill="#4f5555" width="7" height="7"/></svg>
-            </b>
-          <b class='label'>home</b>
-        </a>
-      </li>
-      <li class='vertex body'>
-        <a href='/#body'>
-          <b class='icon bookcase'></b>
-          <b class='label'>body of work</b>
-        </a>
-      </li>
-      <li class='vertex happenings'>
-        <a href='/#happenings'>
-          <b class='icon calendar'>
-            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 16 16"><rect y="1" fill="#78F7D8" width="16" height="13"/><rect x="1.5" y="4" fill="#FFFFFF" width="1" height="1"/><rect x="3.5" y="4" fill="#FFFFFF" width="1" height="1"/><rect x="5.5" y="4" fill="#FFFFFF" width="1" height="1"/><rect x="7.5" y="4" fill="#FFFFFF" width="1" height="1"/><rect x="9.5" y="4" fill="#FFFFFF" width="1" height="1"/><rect x="11.5" y="4" fill="#FFFFFF" width="1" height="1"/><rect x="13.5" y="4" fill="#FFFFFF" width="1" height="1"/><rect x="1.5" y="6" fill="#FFFFFF" width="1" height="1"/><rect x="3.5" y="6" fill="#FFFFFF" width="1" height="1"/><rect x="5.5" y="6" fill="#FFFFFF" width="1" height="1"/><rect x="7.5" y="6" fill="#FFFFFF" width="1" height="1"/><rect x="9.5" y="6" fill="#FFFFFF" width="1" height="1"/><rect x="11.5" y="6" fill="#FFFFFF" width="1" height="1"/><rect x="13.5" y="6" fill="#FFFFFF" width="1" height="1"/><rect x="1.5" y="8" fill="#FFFFFF" width="1" height="1"/><rect x="3.5" y="8" fill="#FFFFFF" width="1" height="1"/><rect x="5.5" y="8" fill="#FFFFFF" width="1" height="1"/><rect x="7.5" y="8" fill="#FFFFFF" width="1" height="1"/><rect x="9.5" y="8" fill="#FFFFFF" width="1" height="1"/><rect x="11.5" y="8" fill="#FFFFFF" width="1" height="1"/><rect x="13.5" y="8" fill="#FFFFFF" width="1" height="1"/><rect x="1.5" y="10" fill="#FFFFFF" width="1" height="1"/><rect x="3.5" y="10" fill="#FFFFFF" width="1" height="1"/><rect x="5.5" y="10" fill="#FFFFFF" width="1" height="1"/><rect x="1.5" y="12" fill="#FFFFFF" width="1" height="1"/><rect x="3.5" y="12" fill="#FFFFFF" width="1" height="1"/><rect x="13.5" y="2" fill="#FFFFFF" width="1" height="1"/><rect x="7.5" y="10" fill="#FFFFFF" width="1" height="1"/><rect x="9.5" y="10" fill="#FFFFFF" width="1" height="1"/><rect x="11.5" y="10" fill="#FFFFFF" width="1" height="1"/><rect x="13.5" y="10" fill="#FFFFFF" width="1" height="1"/></svg>
-          </b>
-          <b class='label'>happenings</b>
-        </a>
-      </li>
       <li class='god'>
         <a>
           <b class='icon god'>
@@ -413,16 +391,16 @@
           <b class='label'>god</b>
         </a>
       </li>
-    </ul>
-
-    <ul class='graph_nav nav'>
+      <li class='home'>
+        <a href="{{ url_for('root.index') }}#">
+          <b class='icon bookcase'></b>
+          <b class='label'>home</b>
+        </a>
+      </li>
       <li class='back'>
         <a class='' onclick='javascript: history.go(-1)'>
-          <b class='icon back over'>
-            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 16 16"><polyline fill="none" stroke="#0083c6" stroke-miterlimit="10" points="15.5,2.5 15.5,15.5 6.5,15.5 "/><rect x="5.5" y="0.542" fill="#0083c6" stroke="#0083c6" stroke-miterlimit="10" width="8" height="13"/><line fill="none" stroke="#0083c6" stroke-miterlimit="10" x1="6.499" y1="14.479" x2="5.5" y2="14.479"/><line fill="none" stroke="#FFFFFF" x1="7" y1="4.5" x2="12" y2="4.5"/></svg>
-            </b>
-          <b class='icon back out'>
-            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 16 16"><rect x="0.5" y="1.5" fill="#0083c6" stroke="#0083c6" stroke-miterlimit="10" width="6" height="13"/><rect x="8.5" y="1.5" fill="#0083c6" stroke="#0083c6" stroke-miterlimit="10" width="7" height="13"/><polyline fill="none" stroke="#FFFFFF" points="6,3.5 2,7.5 6,11.5"/><line fill="none" stroke="#FFFFFF" x1="2" y1="7.5" x2="7" y2="7.5"/><line fill="none" stroke="#FFFFFF" x1="8" y1="8.5" x2="13" y2="8.5"/></svg>
+          <b class='icon back'>
+            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 16 16"><circle fill="#0083c6" cx="8" cy="8" r="8"/><path fill="#ffffff" d="M8,1.018V6l6.697-0.003c0.191,0.637,0.294,1.312,0.294,2.012c0,0.691-0.101,1.36-0.288,1.991H8v5L1,8 L8,1.018z"/></svg>
             </b>
           <b class='label'>back</b>
         </a>
@@ -430,7 +408,31 @@
         <ul class='path god'>
         </ul>
       </li>
+      <!--
+      <li class='vertex body'>
+        <a href='/#body'>
+          <b class='icon bookcase'></b>
+          <b class='label'>body of work</b>
+        </a>
+      </li>
+
+      <li class='vertex happenings'>
+        <a href='/#happenings'>
+          <b class='icon calendar'>
+            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 16 16"><rect y="1" fill="#78F7D8" width="16" height="13"/><rect x="1.5" y="4" fill="#FFFFFF" width="1" height="1"/><rect x="3.5" y="4" fill="#FFFFFF" width="1" height="1"/><rect x="5.5" y="4" fill="#FFFFFF" width="1" height="1"/><rect x="7.5" y="4" fill="#FFFFFF" width="1" height="1"/><rect x="9.5" y="4" fill="#FFFFFF" width="1" height="1"/><rect x="11.5" y="4" fill="#FFFFFF" width="1" height="1"/><rect x="13.5" y="4" fill="#FFFFFF" width="1" height="1"/><rect x="1.5" y="6" fill="#FFFFFF" width="1" height="1"/><rect x="3.5" y="6" fill="#FFFFFF" width="1" height="1"/><rect x="5.5" y="6" fill="#FFFFFF" width="1" height="1"/><rect x="7.5" y="6" fill="#FFFFFF" width="1" height="1"/><rect x="9.5" y="6" fill="#FFFFFF" width="1" height="1"/><rect x="11.5" y="6" fill="#FFFFFF" width="1" height="1"/><rect x="13.5" y="6" fill="#FFFFFF" width="1" height="1"/><rect x="1.5" y="8" fill="#FFFFFF" width="1" height="1"/><rect x="3.5" y="8" fill="#FFFFFF" width="1" height="1"/><rect x="5.5" y="8" fill="#FFFFFF" width="1" height="1"/><rect x="7.5" y="8" fill="#FFFFFF" width="1" height="1"/><rect x="9.5" y="8" fill="#FFFFFF" width="1" height="1"/><rect x="11.5" y="8" fill="#FFFFFF" width="1" height="1"/><rect x="13.5" y="8" fill="#FFFFFF" width="1" height="1"/><rect x="1.5" y="10" fill="#FFFFFF" width="1" height="1"/><rect x="3.5" y="10" fill="#FFFFFF" width="1" height="1"/><rect x="5.5" y="10" fill="#FFFFFF" width="1" height="1"/><rect x="1.5" y="12" fill="#FFFFFF" width="1" height="1"/><rect x="3.5" y="12" fill="#FFFFFF" width="1" height="1"/><rect x="13.5" y="2" fill="#FFFFFF" width="1" height="1"/><rect x="7.5" y="10" fill="#FFFFFF" width="1" height="1"/><rect x="9.5" y="10" fill="#FFFFFF" width="1" height="1"/><rect x="11.5" y="10" fill="#FFFFFF" width="1" height="1"/><rect x="13.5" y="10" fill="#FFFFFF" width="1" height="1"/></svg>
+          </b>
+          <b class='label'>happenings</b>
+        </a>
+      </li>
+    -->
+
     </ul>
+
+    <!--
+    <ul class='graph_nav nav'>
+
+    </ul>
+    -->
 
     <div id='path_panel'></div>
 

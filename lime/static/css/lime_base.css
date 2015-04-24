@@ -261,39 +261,19 @@ textarea {
 
 }
 
-
-/* Graph Nav */
-
-.graph_nav {
-  /* background-color: #f5f8f8;
-  margin: 0;
-  padding: 20% 0% 3%;
-  overflow: auto;
-  list-style-type: none;
-  position:absolute;
-  z-index: 200;
-  top: 0px;
-  left: 0;
-  right: 0;
-  */
-}
-  .graph_nav:hover {
-
-  }
-
-.graph_nav li {
-  cursor: pointer;
-  width: 90%;
-  margin: 0;
-  padding: 0;
-  clear:left;
+.lime_nav li .icon {
+  -webkit-transition: all .1s ease-out;
+  -moz-transition: all .1s ease-out;
+  transition: all .1s ease-out;
 }
 
-.graph_nav a {
-  text-align: left;
-  }
+.lime_nav li.home:hover .icon {
+}
 
-.graph_nav li.god {
+.lime_nav li.back:hover .icon {
+  -webkit-transform: translateX(-20%);
+  -moz-transform: translateX(-20%);
+  transform: translateX(-20%);
 }
 
 
