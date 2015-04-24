@@ -11,7 +11,7 @@ LIME.menu = Backbone.View.extend({
 
   initialize: function(options){
     options = options || {};
-    this.exclusive = options.exclusive || "true";
+    this.radio = options.radio || false;
     this.initial = options.initial || false;
     this.label = options.label || "+";
     this.cls = options.cls || "menu";
@@ -70,8 +70,10 @@ LIME.menu = Backbone.View.extend({
   },
 
   select: function(cls){
+    console.log(this.radio);
     var item = this.byCls[cls];
     var deselect = null;
+    // if there is something selected
     if(this._selected){
       if(this._selected === item){
         return false;
@@ -80,9 +82,11 @@ LIME.menu = Backbone.View.extend({
       deselect = this._selected.cls;
       this.$a.removeClass(this._selected.cls)
     }
-    this._selected = item;
-    item.$el.addClass(this.selectedClass);
-    this.$a.addClass(item.cls)
+    if(this.radio){
+      this._selected = item;
+      item.$el.addClass(this.selectedClass);
+      this.$a.addClass(item.cls)
+    }
     this.trigger('select', item.cls, deselect);
   }
 })
