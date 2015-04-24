@@ -120,13 +120,11 @@ LIME.View.Vertex = Backbone.View.extend({
 });
 
 /* ------------------------------------------------------------------- */
-// Successor Set List
+// Set List
 // Logic for sorting and displaying views
 /* ------------------------------------------------------------------- */
 
-LIME.View.SuccsetView = {};
-
-LIME.View.SuccsetView['Vertex'] = Backbone.View.extend({
+LIME.View.SetView = Backbone.View.extend({
   tagName: 'ol',
   className: 'succset_list oldview',
   idName: 'succset_list',
@@ -281,130 +279,6 @@ LIME.View.SuccsetView['Vertex'] = Backbone.View.extend({
   }
 });
 
-
-/* ------------------------------------------------------------------- */
-// Summaries
-/* ------------------------------------------------------------------- */
-
-LIME.View.SummaryView = {};
-
-LIME.View.SummaryView['Vertex'] = LIME.SummaryView = Backbone.View.extend({
-  tagName: 'div',
-
-  events:{
-    'click .title':'toggleMeta',
-    'click .update':'updateForm',
-    'click .set_cover':'setCoverForm'
-  },
-
-  initialize: function(){
-    this.template = this.buildTemplate();
-    this.addTemplate = _.template($('#vertex_add').html());
-
-    // set up sync handler to render anytime model is synced
-    // Seems sloppy to set up a sync handler and a summary changed
-    // handler. This is done here because summaryChanged is fired before
-    // fetchSuccess callback. Deep and Fetched are set there, and when
-    // sync is called, it rerenders after those variables are set
-    // possible option, put it in the parse function, however this
-    // creates difficulties because the model is not created yet
-    // Another option would be to override the fetch function.
-    this.listenTo(this.model, 'summaryChanged', this.render)
-    this.listenTo(this.model, 'sync', this.render);
-    this.listenTo(LIME.host, 'sync', this.render);
-
-    _.bindAll('newForm');
-
-    if(this.model.isFetched()){
-      this.render();
-    }
-  },
-
-  buildTemplate: function(){
-    var typeSpecificTemplate = $('#'+ this.model.vertexType +'_summary');
-    if(typeSpecificTemplate.length){
-      return _.template(typeSpecificTemplate.html());
-    } else {
-      // _id, vertex_type, and title required
-      return _.template($('#vertex_summary').html());
-    }
-  },
-
-  render_meta: function(){
-    var schema = LIME.host.vertexSchema[this.model.vertexType];
-    var first = true;
-
-    _.each(schema, function(field){
-      console.log(field)
-      if(_.has(this.model.attributes, field.name)){
-        if(first){
-          first = false;
-          this.$meta.append("<b class='attribute primary'>"+this.model.attributes[field.name]+"</b>");
-        } else {
-          this.$meta.append("<b class='attribute'>"+this.model.attributes[field.name]+"</b>");
-        }
-      }
-    }, this)
-  },
-
-  render: function(){
-    if(!this.model.isFetched()){
-      return false;
-    }
-
-    var vertexSchema = LIME.host.vertexSchema;
-
-    // template
-    this.$el.html(this.template(this.model.toJSON()));
-
-    // meta
-    this.$meta = this.$el.children('.meta');
-    this.render_meta();
-
-    // cover
-    this.$cover = this.$el.find('.cover');
-    _.each(this.model.get('cover'), function(coverItem){
-      this.$cover.append("<img src='"+coverItem.href+"?w=500' alt='' />");
-    }, this);
-
-    // add menu
-    this.$add_menu = this.$el.find('.add_menu');
-
-    // Happenings check for backwards compatibility with existing
-    // happenings vertex. There should be a better solution for this
-    if(this.model.vertexType !== 'happenings'){
-      _.each(vertexSchema, function(fields, vertexType){
-        var add = $(this.addTemplate({'vertex_type': vertexType, 'vertex_label': vertexType.replace(/[-_.]/g, ' ')}))
-        $(add).click(_.bind(this.newForm, this, vertexType));
-        this.$add_menu.append(add);
-      }, this)
-    }
-
-
-    this.delegateEvents();
-    return this;
-  },
-
-  updateForm: function(){
-    LIME.actionPanel.loadVertexForm(this.model, null);
-  },
-
-  newForm: function(type){
-    // API uses underscored attribute names
-    var v = new LIME.Model.Vertex({'vertex_type': type});
-    LIME.actionPanel.loadVertexForm(v, this.model);
-  },
-
-  setCoverForm: function(){
-    LIME.actionPanel.loadCoverForm(this.model);
-  },
-
-  saveSuccset: function(){
-    this.model.saveSuccset();
-  }
-
-});
-
 /* ------------------------------------------------------------------- */
 // Listings
 /* ------------------------------------------------------------------- */
@@ -413,9 +287,6 @@ LIME.View.ListingView = {};
 
 LIME.View.ListingView['Vertex'] = Backbone.View.extend({
   tagName: 'div',
-  summary: null,
-  list: null,
-  photoNesting: [],
   emptyFlagTemplate: _.template($('#empty_succset').html()),
   events: {
     'dragover': 'outline',
@@ -425,27 +296,31 @@ LIME.View.ListingView['Vertex'] = Backbone.View.extend({
 
   initialize: function(){
     // children
-    this.list = new LIME.View.SuccsetView['Vertex']({model:this.model})
+    this.list = new LIME.View.SetView({model:this.model})
 
     this.upload = new LIME.FormView['Succset']({
       'model': this.model,
-      'photoNesting': this.model.photoNesting,
       'className': 'succset draggable form'
     });
 
     // This should become add menu
     this.$instruction = $(this.emptyFlagTemplate());
+    this.$instruction.hide();
+
+
+    this.$el.append(this.$instruction);
+    this.$el.append(this.list.el);
+
+    this.$el.append(this.upload.el);
+    this.upload.$el.hide();
 
     this.children = [this.list, this.upload];
-    this.appendElements();
 
     // Depth checking is done by Listing Panel before rendering
     this.render();
 
     // Listen to changes in the succset and rerender
-    // Could be more granular
     this.listenTo(this.model, 'change:succset', this.render);
-
   },
 
   render: function(){
@@ -459,17 +334,8 @@ LIME.View.ListingView['Vertex'] = Backbone.View.extend({
     return this;
   },
 
-  appendElements: function(){
-    this.$instruction.hide();
-    this.$el.append(this.$instruction);
-    this.$el.append(this.list.el);
-    this.$el.append(this.upload.el);
-    this.upload.$el.hide();
-  },
-
   outline: function(e){
     this.upload.$el.show();
-
   },
 
   disappear: function(e){
@@ -479,7 +345,7 @@ LIME.View.ListingView['Vertex'] = Backbone.View.extend({
 
 
 /* ------------------------------------------------------------------- */
-// Apex Menu
+// Apex Menu - This will be replaced by host apex
 /* ------------------------------------------------------------------- */
 
 LIME.View.HomeMenu = Backbone.View.extend({
@@ -578,21 +444,24 @@ LIME.ListingPanel = Backbone.View.extend({
       className: 'layout menu',
       schema: this.layouts,
       initial: this.layout,
-      label: "View"
+      label: "View",
+      radio: true
     });
 
     this.modeMenu = new LIME.menu({
       className: 'mode menu',
       schema: this.modes,
       initial: this.mode,
-      label: "Mode"
+      label: "Mode",
+      radio: true
     });
 
     this.addMenu = new LIME.menu({
       className: 'add menu',
       schema: addList,
       label: "Add",
-      cls: "add"
+      cls: "add",
+      radio: false
     });
 
     // For testing
@@ -601,13 +470,15 @@ LIME.ListingPanel = Backbone.View.extend({
       ['predecessor', 'Pred'],
       ['narrow', 'Narrow']
     ]
+
     pSI = pS[0];
     this.panelMenu = new LIME.menu({
       className: 'column_width menu god',
       schema: pS,
       initial: pSI,
       label: "GOD",
-      cls: "god"
+      cls: "god",
+      radio: true
     });
 
     this.listenTo(this.layoutsMenu, 'select', this.switchLayout);
