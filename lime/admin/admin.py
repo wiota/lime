@@ -100,16 +100,27 @@ def delete_user(id):
 def definitely_delete_user(id):
     user = User.objects.get(id=id)
     if user.email == request.form["email"]:
-        # Delete the S3 Bucket
-        conn = boto.connect_s3()
-        try:
-            bucket_name = '%s_%s' % (os.environ["S3_BUCKET"], user.email_hash)
-            b = boto.s3.bucket.Bucket(conn, bucket_name)
-            for x in b.list():
-                b.delete_key(x.key)
-            conn.delete_bucket(bucket_name)
-        except:
-            pass
+        host = Host.by_owner(user)
+        host.update(pull__owners=user)
+        host.reload()
+
+        if not host.owners:
+            # Delete the S3 Bucket
+            conn = boto.connect_s3()
+            try:
+                bucket_name = '%s_%s' % (os.environ["S3_BUCKET"], user.email_hash)
+                b = boto.s3.bucket.Bucket(conn, bucket_name)
+                for x in b.list():
+                    b.delete_key(x.key)
+                conn.delete_bucket(bucket_name)
+            except:
+                pass
+
+            # Delete all the host's vertices
+            Vertex.objects(host=host).delete()
+
+            # Delete the host
+            host.delete()
 
         # Delete the Stripe customer
         try:
@@ -118,14 +129,7 @@ def definitely_delete_user(id):
         except:
             pass
 
-        host = Host.by_owner(user)
-        host.update(pull__owners=user)
-        host.reload()
-
-        if not host.owners:
-            Vertex.objects(host=host).delete()
-            host.delete()
-
+        # Delete the user
         user.delete()
 
         flash("User '%s' successfully deleted" % (user.email))
