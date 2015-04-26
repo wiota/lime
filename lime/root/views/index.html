@@ -146,69 +146,6 @@
 
   <!-- deprecated templates  - - - - - - - - - - - - - - - - - - - -  -->
 
-  <!-- Summaries -->
-  <script type="text/template" id="happenings_summary_deprecated">
-    <div class='happenings_title title'>happenings</div>
-    <div class='meta'>
-
-    </div>
-    <div class='add_menu'>
-      <a class='add_happening'><img src='/icon/calendar.svg'>add happening</a>
-      <a class='add_category'><img src='/icon/book.svg?c=d8bb00'>add category</a>
-    </div>
-  </script>
-
-  <script type="text/template" id="body_summary_deprecated">
-    <b class='icon bookcase'><img src='/icon/bookcase.svg'></b>
-    <div class='body_title title'>body of work</div>
-    <div class='meta'>
-
-    </div>
-    <div class='add_menu'><!-- typeSchema --></div>
-  </script>
-
-  <script type="text/template" id="category_summary_deprecated">
-    <b class='icon book'><img src='/icon/book.svg?c=d8bb00'></b>
-    <div class='category_title title'><%- title %></div>
-    <div class='meta'>
-      <a class='update'>update</a>
-      <div class='cover set_cover'><a class='set_cover'>set cover</a></div>
-    </div>
-    <div class='add_menu'><!-- typeSchema --></div>
-  </script>
-
-  <script type="text/template" id="work_summary_deprecated">
-    <b class='icon tree'><img src='/icon/tree.svg'></b>
-    <div class='work_title title'><%- title %></div>
-    <div class='meta'>
-      <a class='update'>update</a>
-      <a class='set_cover'>set cover</a>
-      <div class='cover set_cover'></div>
-    </div>
-    <div class='add_menu'><!-- typeSchema --></div>
-  </script>
-
-  <script type="text/template" id="happening_summary_deprecated">
-    <b class='icon calendar'><img src='/icon/calendar.svg'></b>
-    <div class='title'><%- title %></div>
-    <div class='meta'>
-      <a class='update'>update</a>
-      <a class='set_cover'>set cover</a>
-      <div class='cover set_cover'></div>
-    </div>
-  </script>
-
-  <script type="text/template" id="vertex_summary_deprecated">
-    <b class='icon <%- vertex_type %>'><img src='/icon/<%- vertex_type %>.svg'></b>
-    <div class='title'><%- title %></div>
-    <div class='meta'>
-      <a class='update'>update</a>
-      <a class='set_cover'>set cover</a>
-      <div class='cover set_cover'></div>
-    </div>
-    <div class='add_menu'><!-- typeSchema --></div>
-  </script>
-
   <!-- SuccsetItem  -->
 
   <!-- Link  -->
@@ -227,56 +164,6 @@
 
     <div class='ui'>
       <a class='get' href='#body/<%- _id %>'></a>
-      <a class='drag_handle'>&#8597;</a>
-    </div>
-  </script>
-
-  <!-- Category  -->
-  <script type="text/template" id="category_in_set_deprecated">
-    <div class='cover'></div>
-
-    <div class='attributes'>
-      <img class='icon book' src='/icon/book.svg?<%- Math.random() %>'>
-      <b class='title'><%- title %></b>
-    </div>
-
-    <div class='ui'>
-      <a class='get' href='#category/<%- _id %>'></a>
-      <a class='delete'>delete</a>
-      <a class='drag_handle'>&#8597;</a>
-    </div>
-  </script>
-
-  <!-- Work  -->
-  <script type="text/template" id="work_in_set_deprecated">
-
-    <div class='cover'></div>
-
-    <div class='attributes'>
-      <img class='icon tree' src='/icon/tree.svg'>
-      <b class='title'><%- title %></b>
-    </div>
-
-    <div class='ui'>
-      <a class='get' href='#work/<%- _id %>'></a>
-      <a class='delete'>delete</a>
-      <a class='drag_handle'>&#8597;</a>
-    </div>
-  </script>
-
-  <!-- Happening  -->
-  <script type="text/template" id="happening_in_set_deprecated">
-
-    <div class='cover'></div>
-
-    <div class='attributes'>
-      <a class='get' href='#happening/<%- _id %>'></a>
-      <img class='icon calendar' src='/icon/calendar.svg'>
-      <b class='title'><%- title %></b>
-    </div>
-
-    <div class='ui'>
-      <a class='delete'>delete</a>
       <a class='drag_handle'>&#8597;</a>
     </div>
   </script>
