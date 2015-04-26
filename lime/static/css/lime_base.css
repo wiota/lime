@@ -139,6 +139,23 @@ textarea {
   -moz-perspective: 1000px;
   -o-perspective: 1000px;
   transition: all .2s ease-in-out;
+}
+
+#predecessor_column {
+  z-index: 4;
+  margin: 0 0;
+  padding: 0;
+  position:fixed;
+  top: 0;
+  left: 0;
+  bottom:0;
+  width: 0;
+  overflow: auto;
+  perspective: 1000px;
+  -webkit-perspective: 1000px;
+  -moz-perspective: 1000px;
+  -o-perspective: 1000px;
+  transition: all .2s ease-in-out;
 
 }
 

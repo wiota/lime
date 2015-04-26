@@ -18,12 +18,11 @@ LIME.Router = Backbone.Router.extend({
     });
 
     LIME.panel.addPreset('standard', [0, 0, 250]);
-    LIME.panel.addPreset('predecessor', [0, 250, 500]);
-    LIME.panel.addPreset('narrow', [0, 0, 100]);
+    LIME.panel.addPreset('predecessor', [0, 500, 750]);
 
     LIME.focus = new LIME.Focus();
-    LIME.successorSet = new LIME.ListingPanel();
-    LIME.predecessorSet = new LIME.ListingPanel();
+    LIME.successorSet = new LIME.ListingPanel({"setType": "successor", el: $('#succset')});
+    LIME.predecessorSet = new LIME.ListingPanel({"setType": "predecessor", el: $('#predset')});
     LIME.actionPanel = new LIME.ActionPanel();
 
     // not shown right now
@@ -72,6 +71,7 @@ LIME.Router = Backbone.Router.extend({
     var vertex = LIME.collection.Vertex.lookup(id, vertexType);
     LIME.focus.list(vertex);
     LIME.successorSet.list(vertex);
+    LIME.predecessorSet.list(vertex);
 
   },
 

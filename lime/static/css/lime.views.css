@@ -2,7 +2,7 @@
 /* Listing Panel */
 /* -------------------------------------------------------------------  */
 
-#listing_panel {
+#succset, #predset {
   perspective: 5000px;
   -webkit-perspective: 5000px;
   -moz-perspective: 5000px;
@@ -389,7 +389,7 @@
 
 /* Listing */
 
-.succset_list {
+.set {
   z-index: 110;
   width: 100%;
   margin: 0;
@@ -397,11 +397,11 @@
   padding: 66px 0 100px;
 }
 
-.succset_list li {
+.set li {
   position: relative;
 }
 
-  .succset_list li.dragged {
+  .set li.dragged {
     position:absolute;
     z-index: 30;
   }
@@ -412,12 +412,12 @@
 
   /* Cover */
 
-  .succset_list li.with_cover .cover {
+  .set li.with_cover .cover {
     width: 100%;
     padding: 0 10px 10px 0;
   }
 
-  .succset_list li.with_cover .cover img {
+  .set li.with_cover .cover img {
     width: 100%;
     display: block;
 
@@ -451,7 +451,7 @@
       10px 10px 0 rgba(220, 220, 220, 1.0);
   }
 
-  .succset_list li.with_cover.dragged .cover img {
+  .set li.with_cover.dragged .cover img {
     width: 100%;
     display: block;
 
@@ -490,13 +490,13 @@
 
 
 
-  .succset_list li.dragged.without_cover .attributes {
+  .set li.dragged.without_cover .attributes {
   }
 
-  .succset_list li.with_cover .attributes .attribute {
+  .set li.with_cover .attributes .attribute {
   }
 
-.succset_list li .attributes .icon {
+.set li .attributes .icon {
   width: 16px;
   height:16px;
   padding: 4px 0;
@@ -504,11 +504,11 @@
   float:left;
 }
 
-  .succset_list li.with_cover .icon {
+  .set li.with_cover .icon {
     padding: 4px;
   }
 
-.succset_list .attributes .attribute {
+.set .attributes .attribute {
   display:block;
   font-weight: normal;
   padding: 4px;
@@ -519,24 +519,24 @@
   max-width: 100%;
 }
 
-.succset_list .attribute.primary {
+.set .attribute.primary {
   font-size: 16px;
 }
 
-.succset_list .attribute.secondary {
+.set .attribute.secondary {
   font-size: 12px;
 }
 
-.succset_list .attribute img {
+.set .attribute img {
   display:block;
   max-width: 100%;
 }
 
 /* List View ------------------------------------- */
 
-.list_view .succset_list {}
+.list_view .set {}
 
-.list_view .succset_list li {
+.list_view .set li {
   width: 97%;
   margin: 1% 1% 1% 2%;
   padding: 0 0 1%;
@@ -547,38 +547,38 @@
   overflow: hidden;
 }
 
-  .list_view .succset_list li.dragged {
+  .list_view .set li.dragged {
     border-bottom: none;
     background-color: transparent;
   }
 
 
-  .list_view .succset_list li .attributes {
+  .list_view .set li .attributes {
     max-width: 600px;
   }
 
-  .list_view .succset_list li.with_cover .cover {
+  .list_view .set li.with_cover .cover {
     width: 64px;
     float:left;
   }
 
-  .list_view .succset_list li.with_cover .attributes {
+  .list_view .set li.with_cover .attributes {
     width: auto;
     margin-left: 84px;
   }
 
-  .succset_list .attributes img {
+  .set .attributes img {
     display:block;
     max-width: 128px;
   }
 
 /* Grid View ------------------------------------- */
 
-.grid_view .succset_list {
+.grid_view .set {
   margin-left: 2%;
 }
 
-.grid_view .succset_list li {
+.grid_view .set li {
   width: 160px;
   height: 160px;
   padding: 0 15px 15px 0;
@@ -589,19 +589,19 @@
   overflow: hidden;
 }
 
-  .grid_view .succset_list li.dragged {
+  .grid_view .set li.dragged {
     border-bottom: none;
     background-color: transparent;
   }
 
-  .grid_view .succset_list li.photo img {
+  .grid_view .set li.photo img {
     display:block;
     max-width: 100%;
     /* How do I make the image fit in the box? */
   }
 
   /* Overlapping attributes */
-.grid_view .succset_list li .attributes {
+.grid_view .set li .attributes {
   width: 100%;
   background-color: #fff;
   -webkit-transition: all .1s;
@@ -609,7 +609,7 @@
   transition: all .1s;
 }
 
-  .grid_view .succset_list li.with_cover .attributes {
+  .grid_view .set li.with_cover .attributes {
     position: absolute;
     top: 0;
     left: 0;
@@ -621,7 +621,7 @@
     overflow: hidden;
   }
 
-  .grid_view .succset_list li .attributes .icon {
+  .grid_view .set li .attributes .icon {
     width: 16px;
     height:16px;
     padding: 4px;
@@ -631,19 +631,19 @@
 
 /* ui ------------------------------------- */
 
-.succset_list .ui {
+.set .ui {
   z-index: 21;
 }
 
-  .succset_list .ui a {
+  .set .ui a {
 
   }
 
-  .succset_list .dragged .ui {
+  .set .dragged .ui {
     display:none;
   }
 
-  .succset_list a.get {
+  .set a.get {
     display:block;
     position:absolute;
     z-index: 20;
@@ -654,7 +654,7 @@
     bottom: 0;
   }
 
-  .succset_list a.delete {
+  .set a.delete {
     position:absolute;
     top:0;
     right: 0;
@@ -673,17 +673,17 @@
     opacity: 1;
   }
 
-  .succset_list .delete {
+  .set .delete {
     background-color: #f00;
     color: #fff;
     }
 
-  .succset_list .delete:hover {
+  .set .delete:hover {
     background-color: rgba(255,255,255,1);
     color: #f00;
     }
 
-  .remove_mode .succset_list li a.delete {
+  .remove_mode .set li a.delete {
     width: 50px;
     visibility: visible;
     opacity: 1;
@@ -692,13 +692,13 @@
     -moz-transform:translateX(0) rotateY(0deg);
   }
 
-  .succset_list .ui a.drag_handle {
+  .set .ui a.drag_handle {
     display:none;
     visibility:hidden;
     opacity: 0;
   }
 
-  .reorder_mode .succset_list a.drag_handle {
+  .reorder_mode .set a.drag_handle {
     color: #000;
     background-color: #f5e135;
     font-size: 26px;
@@ -708,11 +708,11 @@
     display: block;
   }
 
-  .succset_list .ui .update {
+  .set .ui .update {
     display:none;
   }
 
-  .succset_list .ui .set_cover {
+  .set .ui .set_cover {
     display:none;
   }
 

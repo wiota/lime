@@ -126,8 +126,7 @@ LIME.View.Vertex = Backbone.View.extend({
 
 LIME.View.SetView = Backbone.View.extend({
   tagName: 'ol',
-  className: 'succset_list oldview',
-  idName: 'succset_list',
+  className: 'set',
   sortFunction: null,
 
   events: {
@@ -135,8 +134,11 @@ LIME.View.SetView = Backbone.View.extend({
     'mouseup': 'stopScrolling'
   },
 
-  initialize: function(){
-    // Should be listening to add event and appending element
+  initialize: function(options){
+
+    this.setType = options.setType;
+    this.$el.addClass(this.setType);
+
     this.children = [];
 
     _.bindAll(this, 'update');
@@ -150,7 +152,7 @@ LIME.View.SetView = Backbone.View.extend({
     var tolerance = 100;
     var exponent = 40;
     var initialSpeed = 1;
-    var container = $('#listing_panel .listing');
+    var container = this.$el;
     var windowHeight = $(window).height();
     var scrollLimit = this.$el.outerHeight() - windowHeight;
     var list = this.$el;
@@ -259,20 +261,22 @@ LIME.View.SetView = Backbone.View.extend({
     if(!this.model.isDeep()){return false;}
 
     this.$el.empty();
-    successors = this.model.get('succset');
-
-    _.each(successors, function(successor, index){
-      var viewFactory = LIME.View.Vertex;
+    if(this.setType === 'successor'){
+      var set = this.model.get('succset');
+    } else if (this.setType === 'predecessor'){
+      var set = this.model.get('predset');
+    }
+    _.each(set, function(item, index){
       var options = {
-        'model':successor,
+        'model':item,
         'predecessor': this.model,
-        'className': successor.vertexType+ ' successorItem',
+        'className': item.vertexType+ ' successorItem',
         'tagName': 'li'
       }
-      var successorItemView = new viewFactory(options);
-      this.$el.append(successorItemView.render().el);
-      successorItemView.listenTo(successor, 'change', successorItemView.render);
-      this.children.push(successorItemView);
+      var itemView = new LIME.View.Vertex(options);
+      this.$el.append(itemView.render().el);
+      itemView.listenTo(item, 'change', itemView.render);
+      this.children.push(itemView);
     }, this);
 
     return this;
@@ -294,9 +298,11 @@ LIME.View.ListingView['Vertex'] = Backbone.View.extend({
     'drop': 'disappear'
   },
 
-  initialize: function(){
+  initialize: function(options){
+    this.setType = options.setType;
+
     // children
-    this.list = new LIME.View.SetView({model:this.model})
+    this.list = new LIME.View.SetView({model:this.model, setType: this.setType})
 
     this.upload = new LIME.FormView['Succset']({
       'model': this.model,
@@ -320,12 +326,21 @@ LIME.View.ListingView['Vertex'] = Backbone.View.extend({
     this.render();
 
     // Listen to changes in the succset and rerender
-    this.listenTo(this.model, 'change:succset', this.render);
+    if(this.setType === 'successor'){
+      this.listenTo(this.model, 'change:succset', this.render);
+    } else if (this.setType === 'predecessor'){
+      this.listenTo(this.model, 'change:predset', this.render);
+    }
   },
 
   render: function(){
+    if(this.setType === 'successor'){
+      var set = this.model.get('succset');
+    } else if (this.setType === 'predecessor'){
+      var set = this.model.get('predset');
+    }
     // Should be done with CSS, not jQuery
-    if(this.model.get('succset').length <= 0){
+    if(set.length <= 0){
       this.$instruction.fadeIn();
     } else {
       this.$instruction.slideUp();
@@ -365,7 +380,6 @@ LIME.View.HomeMenu = Backbone.View.extend({
 /* ------------------------------------------------------------------- */
 
 LIME.ListingPanel = Backbone.View.extend({
-  el: $('#listing_panel'),
   view: null,
   listedModel: null,
   listMode: null,
@@ -385,7 +399,10 @@ LIME.ListingPanel = Backbone.View.extend({
     //['move_view', 'Move']
   ],
 
-  initialize: function(){
+  initialize: function(options){
+
+    // Set to render
+    this.setType = options.setType;
 
     // Intial view config
     this.mode = 'add_mode';
@@ -512,7 +529,8 @@ LIME.ListingPanel = Backbone.View.extend({
     // new listing
     this.listing = new LIME.View.ListingView['Vertex']({
       'model':this.model,
-      'className': this.model.vertexType + ' vertex listing'
+      'className': this.model.vertexType + ' vertex listing',
+      'setType': this.setType
     });
 
     this.$el.append(this.listing.render().el);

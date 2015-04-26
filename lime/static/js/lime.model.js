@@ -98,7 +98,9 @@ LIME.Model.Vertex= Backbone.Model.extend({
 
   parse: function(response){
     if(response.result){
-      response.result.succset = this.reference(response.result.succset);
+      _.each(this.referencedFields, function(field){
+        response.result[field] = this.reference(response.result[field]);
+      }, this);
       this.vertexType = response.result.vertex_type;
       return response.result;
     }
@@ -126,15 +128,14 @@ LIME.Model.Vertex= Backbone.Model.extend({
     console.log("Fetch unsucessful " + response);
   },
 
-  reference: function(succset){
-    var succsetReferences = [];
-    _.each(succset, function(object){
+  reference: function(set){
+    var setReferences = [];
+    _.each(set, function(object){
       var model = LIME.collection.Vertex.get(object['_id']) || new LIME.Model.Vertex(object, {'fetched': true, 'deep': false});
-
-      LIME.collection.Vertex.add(model); // if model already exists in collection, this request is ignored
-      succsetReferences.push(model);
+      LIME.collection.Vertex.add(model); // if model already exists in collection, this method call is ignored
+      setReferences.push(model);
     });
-    return succsetReferences;
+    return setReferences;
   },
 
   /* ------------------------------------------------------------------- */
