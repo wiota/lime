@@ -605,12 +605,12 @@ LIME.ActionPanel = Backbone.View.extend({
   },
 
   rollUp: function(){
-    LIME.pathPanel.$el.removeClass('form_open');
+    LIME.focus.$el.removeClass('form_open');
     this.$el.removeClass('show');
   },
 
   rollDown: function(){
-    LIME.pathPanel.$el.addClass('form_open');
+    LIME.focus.$el.addClass('form_open');
     this.$el.addClass('show');
   },
 

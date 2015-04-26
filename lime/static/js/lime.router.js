@@ -14,7 +14,7 @@ LIME.Router = Backbone.Router.extend({
   initialize: function(){
     // LIME interface
     LIME.panel = new LIME.Panel({
-      panels: ['#predecessor_column','#navigation_column', '#display_column']
+      panels: ['#predecessor_column','#focus_column', '#display_column']
     });
 
     LIME.panel.addPreset('standard', [0, 0, 250]);
@@ -24,12 +24,12 @@ LIME.Router = Backbone.Router.extend({
     LIME.requestPanel = new LIME.RequestPanel();
     LIME.listingPanel = new LIME.ListingPanel();
     LIME.actionPanel = new LIME.ActionPanel();
-    LIME.pathPanel = new LIME.Path.PathPanel();
+    LIME.focus = new LIME.Focus();
 
     // special vertices
     LIME.apex = {}
-    LIME.apex.body = new LIME.Model.Vertex({'vertex_type':'body'});
-    LIME.apex.happenings = new LIME.Model.Vertex({'vertex_type':'happenings'});
+    LIME.apex.body = new LIME.Model.Vertex({'vertex_type':'body', 'title': 'body of work'});
+    LIME.apex.happenings = new LIME.Model.Vertex({'vertex_type':'happenings', 'title': 'happenings'});
 
     // fetch
     LIME.apex.body.deepen();
@@ -49,8 +49,8 @@ LIME.Router = Backbone.Router.extend({
 
   home: function() {
     LIME.listingPanel.apexMenu();
-    LIME.pathPanel.nowhere();
-    LIME.pathPanel.jsonLink('#');
+    LIME.focus.nowhere();
+    LIME.focus.jsonLink('#');
   },
 
   // Body of work
@@ -58,8 +58,8 @@ LIME.Router = Backbone.Router.extend({
     console.log('got body');
     var vertex = LIME.apex.body;
     LIME.listingPanel.list(vertex);
-    LIME.pathPanel.list(vertex);
-    LIME.pathPanel.jsonLink('/api/v1/body/');
+    LIME.focus.list(vertex);
+    LIME.focus.jsonLink('/api/v1/body/');
   },
 
   // Vertex
@@ -67,16 +67,16 @@ LIME.Router = Backbone.Router.extend({
     console.log('got vertex');
     var vertex = LIME.collection.Vertex.lookup(id, vertexType);
     LIME.listingPanel.list(vertex);
-    LIME.pathPanel.list(vertex);
-    LIME.pathPanel.jsonLink('/api/v1/'+vertexType+'/'+id);
+    LIME.focus.list(vertex);
+    LIME.focus.jsonLink('/api/v1/'+vertexType+'/'+id);
   },
 
   // Happenings Apex
   getHappeningsApex: function(){
     var vertex = LIME.apex.happenings;
     LIME.listingPanel.list(vertex);
-    LIME.pathPanel.list(vertex);
-    LIME.pathPanel.jsonLink('/api/v1/happenings/');
+    LIME.focus.list(vertex);
+    LIME.focus.jsonLink('/api/v1/happenings/');
   }
 
 });

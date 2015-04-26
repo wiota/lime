@@ -110,7 +110,7 @@ textarea {
 /* Layout */
 /* -------------------------------------------------------------------  */
 
-#navigation_column {
+#focus_column {
   z-index: 2;
   width: 249px;
   border-right: 1px solid #f5f8f8;

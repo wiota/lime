@@ -226,7 +226,7 @@
 
 {% block content %}
   <div id='predecessor_column'></div>
-  <div id='navigation_column'>
+  <div id='focus_column'>
 
     <ul class='account_nav nav'>
       <li class='identification'>
@@ -311,22 +311,14 @@
           <b class='label'>happenings</b>
         </a>
       </li>
-    -->
-
+      -->
     </ul>
 
-    <!--
-    <ul class='graph_nav nav'>
 
-    </ul>
-    -->
-
-    <div id='path_panel'></div>
-
-
-
+    <div id='focus'></div>
 
   </div>
+
   <div id='display_column'>
     <div id='listing_panel'></div>
     <div id='action_panel'></div>
@@ -348,7 +340,7 @@
   <script type="text/javascript" src='{{ url_for('static', filename='js/lime.panel.js') }}'></script>
   <script type="text/javascript" src='{{ url_for('static', filename='js/lime.view.js') }}'></script>
   <script type="text/javascript" src='{{ url_for('static', filename='js/lime.form.js') }}'></script>
-  <script type="text/javascript" src='{{ url_for('static', filename='js/lime.path.js') }}'></script>
+  <script type="text/javascript" src='{{ url_for('static', filename='js/lime.focus.js') }}'></script>
   <script type="text/javascript" src='{{ url_for('static', filename='js/lime.menu.js') }}'></script>
   <script type="text/javascript" src='{{ url_for('static', filename='js/lime.router.js') }}'></script>
   <script type="text/javascript" src='{{ url_for('static', filename='js/lime.request.js') }}'></script>

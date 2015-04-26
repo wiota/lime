@@ -517,7 +517,7 @@ LIME.ListingPanel = Backbone.View.extend({
 
     this.$el.append(this.listing.render().el);
     this.renderMenus();
-    LIME.pathPanel.render();
+    LIME.focus.render();
   },
 
   list: function(model){

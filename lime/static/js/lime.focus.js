@@ -2,50 +2,42 @@
 // Path Views
 /* ------------------------------------------------------------------- */
 
-LIME.Path = {};
-
-LIME.Path.PathPanel = Backbone.View.extend({
-  el: $('#navigation_column'),
-  path: [],
-  walk: [],
-  template: _.template($('#path_panel_template').html()),
-  vertexTemplate: _.template($('#path_vertex_template').html()),
+LIME.Focus = Backbone.View.extend({
+  el: $('#focus'),
+  historyTemplate: _.template($('#path_vertex_template').html()),
 
   initialize: function(){
-    this.summary;
+    this.walk = [];
+    this.path = [];
+    this.focus = null;
+    this.focusView = null;
   },
 
   render: function(){
-    var $path = this.$el.find('#path_panel')
-    var $history = this.$el.find('.graph_nav .back .path');
-
-
-    $path.html(this.template({}));
-
     if(this.path.length <= 0){
       return;
     }
 
-    // path
-    $history.html('');
+    // history
+    var $history = $('.lime_nav .back .path');
+    $history.empty();
     _.each(_.initial(this.path), function(vertex, iterator){
-      var click = function (){
-        LIME.pathPanel.retrace(iterator);
-      }
-      $(this.vertexTemplate(vertex.toJSON())).appendTo($history).click(click);
+      $(this.historyTemplate(vertex.toJSON())).appendTo($history).click(_.bind(LIME.focus.retrace, this, iterator));
     }, this);
 
-    // summary
+    // focus
     var vertex = _.last(this.path);
-    this.summary = new LIME.View.Vertex({
+    this.focusView = new LIME.View.Vertex({
       'model':vertex,
       'className': vertex.vertexType + ' vertex summary',
       'tagName':'div'
     });
-    $path.append(this.summary.el);
+
+    this.$el.empty();
+    this.$el.append(this.focusView.el);
 
     if(vertex.isDeep()){
-      this.summary.render();
+      this.focusView.render();
     };
   },
 
@@ -60,8 +52,8 @@ LIME.Path.PathPanel = Backbone.View.extend({
     this.mapWalk(vertex);
 
 
-    if(this.summary){
-      this.summary.close();
+    if(this.focusView){
+      this.focusView.close();
     }
 
     this.render();
@@ -86,8 +78,8 @@ LIME.Path.PathPanel = Backbone.View.extend({
   },
 
   nowhere: function(){
-    if(this.summary){
-      this.summary.close();
+    if(this.focusView){
+      this.focusView.close();
     }
     this.path = [];
     this.render();

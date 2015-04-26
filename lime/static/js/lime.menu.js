@@ -70,7 +70,6 @@ LIME.menu = Backbone.View.extend({
   },
 
   select: function(cls){
-    console.log(this.radio);
     var item = this.byCls[cls];
     var deselect = null;
     // if there is something selected
