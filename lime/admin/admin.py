@@ -5,7 +5,6 @@ from flask.ext.login import login_required
 from itsdangerous import URLSafeSerializer, BadSignature
 from flask.ext.login import login_required
 from flask.ext.login import current_user
-from toolbox.tools import admin_required
 from toolbox.models import User, Host, Vertex, Body, Happenings
 from toolbox.emailer import InviteEmail
 from toolbox.s3 import s3_config
@@ -24,6 +23,16 @@ mod = Blueprint(
     template_folder='views',
     static_url_path='/static/admin',
     url_prefix='/admin')
+
+
+# TODO: Remove this once we remove /admin from Lime
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not current_user.admin:
+            return redirect(url_for("admin.index"))
+        return f(*args, **kwargs)
+    return decorated_function
 
 
 def send_invite(user):
