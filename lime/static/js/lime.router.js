@@ -21,17 +21,22 @@ LIME.Router = Backbone.Router.extend({
     LIME.panel.addPreset('predecessor', [0, 250, 500]);
     LIME.panel.addPreset('narrow', [0, 0, 100]);
 
-    LIME.requestPanel = new LIME.RequestPanel();
-    LIME.listingPanel = new LIME.ListingPanel();
-    LIME.actionPanel = new LIME.ActionPanel();
     LIME.focus = new LIME.Focus();
+    LIME.successorSet = new LIME.ListingPanel();
+    LIME.predecessorSet = new LIME.ListingPanel();
+    LIME.actionPanel = new LIME.ActionPanel();
+
+    // not shown right now
+    LIME.requestPanel = new LIME.RequestPanel();
 
     // special vertices
+    // This should be replace by host apex
     LIME.apex = {}
     LIME.apex.body = new LIME.Model.Vertex({'vertex_type':'body', 'title': 'body of work'});
     LIME.apex.happenings = new LIME.Model.Vertex({'vertex_type':'happenings', 'title': 'happenings'});
 
     // fetch
+    // This should be replace by host apex
     LIME.apex.body.deepen();
     LIME.apex.happenings.deepen();
 
@@ -42,41 +47,40 @@ LIME.Router = Backbone.Router.extend({
 
     this.on('route', function(r,p){
       LIME.icon.refresh();
+      // This should disappear with the forms being passed through the router
       LIME.actionPanel.closeForm();
     })
 
   },
 
+  // This should be replace by host apex
   home: function() {
-    LIME.listingPanel.apexMenu();
+    LIME.successorSet.apexMenu();
     LIME.focus.nowhere();
-    LIME.focus.jsonLink('#');
   },
 
   // Body of work
+  // This should be replace by host apex
   getBody: function() {
-    console.log('got body');
     var vertex = LIME.apex.body;
-    LIME.listingPanel.list(vertex);
     LIME.focus.list(vertex);
-    LIME.focus.jsonLink('/api/v1/body/');
+    LIME.successorSet.list(vertex);
   },
 
   // Vertex
   getVertex: function(vertexType, id){
-    console.log('got vertex');
     var vertex = LIME.collection.Vertex.lookup(id, vertexType);
-    LIME.listingPanel.list(vertex);
     LIME.focus.list(vertex);
-    LIME.focus.jsonLink('/api/v1/'+vertexType+'/'+id);
+    LIME.successorSet.list(vertex);
+
   },
 
   // Happenings Apex
+  // This should be replace by host apex
   getHappeningsApex: function(){
     var vertex = LIME.apex.happenings;
-    LIME.listingPanel.list(vertex);
+    LIME.successorSet.list(vertex);
     LIME.focus.list(vertex);
-    LIME.focus.jsonLink('/api/v1/happenings/');
   }
 
 });

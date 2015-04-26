@@ -41,11 +41,13 @@ LIME.Focus = Backbone.View.extend({
     };
   },
 
-  jsonLink: function(link){
-    $('li.god a').attr('href', link).attr('target', 'blank');
-  },
-
   list: function(vertex){
+
+    if(vertex.vertexType === 'body'){
+      $('li.god a').attr('href', '/api/v1/body').attr('target', 'blank');
+    } else {
+      $('li.god a').attr('href', '/api/v1/'+vertex.vertexType+'/'+vertex.id).attr('target', 'blank');
+    }
 
     // Method 1
     //var last = this.path.length > 1 ? _.first(_.last(this.path, 2)) : {get:function(){return 'nothing';}};
@@ -78,6 +80,7 @@ LIME.Focus = Backbone.View.extend({
   },
 
   nowhere: function(){
+    $('li.god a').attr('href', '/api/v1/host').attr('target', 'blank');
     if(this.focusView){
       this.focusView.close();
     }
