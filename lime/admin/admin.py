@@ -10,6 +10,7 @@ from toolbox.emailer import InviteEmail
 from toolbox.s3 import s3_config
 from flask.ext.login import login_user
 from .forms import *
+from functools import wraps
 import requests
 import boto
 import stripe

@@ -1,4 +1,4 @@
-from flask import Blueprint, request, redirect, render_template, url_for, flash, session, make_response
+from flask import Blueprint, request, redirect, render_template, url_for, flash, session, make_response, abort
 
 from toolbox.models import *
 from toolbox.tools import retrieve_image
@@ -11,6 +11,7 @@ from jinja2 import TemplateNotFound
 from .forms import *
 
 from flask import current_app as app
+import time
 import requests
 import boto
 import os
@@ -155,3 +156,18 @@ def confirm(payload=None):
         login_user(user)
         return redirect(url_for("root.index"))
     return render_template("confirm.html", form=form)
+
+
+@mod.route('/trowel/<token>', methods=['GET'])
+@nocache
+def trowel_login(token=None):
+    s = URLSafeSerializer(app.config['SECRET_KEY'])
+    try:
+        payload = s.loads(token)
+    except BadSignature:
+        abort(404)
+    current_time = time.time()
+    if current_time - 10 <= payload["stamp"] <= current_time + 10:
+        login_user(User.objects.get(id=payload["id"]))
+        return redirect(url_for("root.index"))
+    abort(404)
