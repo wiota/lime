@@ -14,7 +14,7 @@ LIME.Router = Backbone.Router.extend({
   initialize: function(){
     // LIME interface
     LIME.panel = new LIME.Panel({
-      panels: ['#predecessor_column','#focus_column', '#display_column']
+      panels: ['#predecessor_column','#focus_column', '#successor_column']
     });
 
     LIME.panel.addPreset('standard', [0, 0, 250]);

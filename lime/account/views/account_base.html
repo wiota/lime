@@ -28,7 +28,7 @@
     {%- block user -%}
       {% if not current_user.is_anonymous() %}
 
-        <div id='navigation_column'>
+        <div id='focus_column'>
 
           <ul class='account_nav nav'>
             <li class='identification'>
@@ -123,7 +123,7 @@
       {% endif %}
     {%- endblock -%}
 
-    <div id='display_column'>
+    <div id='successor_column'>
       <div class="account">
         {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
         {% block content %}{% endblock %}

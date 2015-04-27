@@ -124,7 +124,7 @@ textarea {
   transition: all .2s ease-in-out;
 }
 
-#display_column {
+#successor_column {
   z-index: 4;
   margin: 0 0;
   padding: 0;
