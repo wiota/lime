@@ -2,7 +2,7 @@
 /* Lime Account/Admin page styles */
 /* -------------------------------------------------------------------  */
 
-.account #display_column {
+.account #successor_column {
     line-height: 1.5em;
 }
 
@@ -12,17 +12,17 @@
   display:block;
 }
 
-#display_column .account {margin: 0 5%;}
+#successor_column .account {margin: 0 5%;}
 
-#display_column .account h2 {margin: 2% 0; font-size: 20px;}
+#successor_column .account h2 {margin: 2% 0; font-size: 20px;}
 
-#display_column .account a {font-weight: bold;color: #000;text-decoration: underline; padding: 3px;}
-#display_column .account .pro_tip {font-size: 80%;text-decoration: none;}
+#successor_column .account a {font-weight: bold;color: #000;text-decoration: underline; padding: 3px;}
+#successor_column .account .pro_tip {font-size: 80%;text-decoration: none;}
 
-#display_column .account .toolbar {margin: 2% 0;}
-#display_column .account .toolbar a {background-color: #fff;padding: 5px; border: 1px solid #cbdada; display:inline-block; }
+#successor_column .account .toolbar {margin: 2% 0;}
+#successor_column .account .toolbar a {background-color: #fff;padding: 5px; border: 1px solid #cbdada; display:inline-block; }
 
-#display_column .account .topcon {display:block;margin: 2% 0; width: 16%;}
+#successor_column .account .topcon {display:block;margin: 2% 0; width: 16%;}
 
 /* -------------------------------------------------------------------  */
 /* Account Panel */
