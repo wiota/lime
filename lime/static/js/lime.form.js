@@ -14,7 +14,7 @@ LIME.FormView.templates = {
   'button': _.template($('#button').html()),
   'file_upload': _.template($('#html5_file_upload').html()),
   'cover_display': _.template($('#cover_display').html()),
-  'datetime-local': function(){return false}
+  'datetime-local': _.template($('#datetime-local').html()),
 
 };
 
@@ -45,6 +45,7 @@ LIME.FormView.SerialFieldsView = Backbone.View.extend({
     _.each(this.fieldSchema, function(field){
 
       var templateFunction = this.templates[field.type];
+      console.log(field.type);
       var formData = {
         'name':field.name,
         'label':field.label,
