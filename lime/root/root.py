@@ -8,6 +8,7 @@ from flask.ext.login import LoginManager
 from flask.ext.login import login_required, login_user, logout_user, current_user
 from itsdangerous import URLSafeSerializer, BadSignature
 from jinja2 import TemplateNotFound
+from flask_headers import headers
 from .forms import *
 
 from flask import current_app as app
@@ -50,6 +51,7 @@ def post_index():
 
 
 @mod.route('/image/<image_name>')
+@headers({'Cache-Control':'public, max-age=2675309'})
 def image(image_name):
     return retrieve_image(image_name, Host.by_current_user().bucketname)
 
