@@ -112,7 +112,20 @@
   </script>
 
   <script type="text/template" id="datetime-local">
-    <label class='<%- name %>' for='<%- name %>'><%- label %></label><input class='input' type='text' id='<%- name %>' value='<%- value %>' />
+    <fieldset id='<%- name %>' class='datetime'>
+      <legend class='<%- name %>'><%- label %></legend>
+      <label for='<%- name %>_month'>Month</label>
+      <input class='input' type='text' id='<%- name %>_month' value='<%- month+1 %>' />
+
+      <label for='<%- name %>_day'>Day</label>
+      <input class='input' type='text' id='<%- name %>_day' value='<%- date %>' />
+
+      <label for='<%- name %>_year'>Year</label>
+      <input class='input' type='text' id='<%- name %>_year' value='<%- year %>' />
+
+      <input class='input' type='text' id='<%- name %>_hour' value='<%- hours %>' /> :
+      <input class='input' type='text' id='<%- name %>_minute' value='<%- minutes %>' />
+    </fieldset>
   </script>
 
   <script type="text/template" id="textarea">

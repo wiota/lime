@@ -14,7 +14,35 @@ LIME.FormView.templates = {
   'button': _.template($('#button').html()),
   'file_upload': _.template($('#html5_file_upload').html()),
   'cover_display': _.template($('#cover_display').html()),
-  'datetime-local': _.template($('#datetime-local').html()),
+  'datetime-local': (function(data){
+
+    // set up template function
+    var tfn = _.template($('#datetime-local').html());
+
+    // set up data transformation function
+    var rfn = function(data){
+      // data transformation
+      var d = new Date(parseInt(data.value*1000));
+      parseData = {}
+      parseData.date = d.getDate();
+      parseData.day = d.getDay();
+      parseData.month = d.getMonth();
+      parseData.year = d.getFullYear();
+      parseData.hours = d.getHours();
+      parseData.minutes = d.getMinutes();
+      parseData.seconds = d.getSeconds();
+
+      parseData.name = data.name;
+      parseData.value = data.value;
+      parseData.label = data.label;
+
+      return tfn(parseData);
+    }
+
+    return rfn;
+
+  })()
+  //'datetime-local':_.template($('#datetime-local').html()),
 
 };
 
@@ -45,7 +73,6 @@ LIME.FormView.SerialFieldsView = Backbone.View.extend({
     _.each(this.fieldSchema, function(field){
 
       var templateFunction = this.templates[field.type];
-      console.log(field.type);
       var formData = {
         'name':field.name,
         'label':field.label,
