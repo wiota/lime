@@ -39,6 +39,7 @@ def index():
 def post_index():
     form = LoginForm()
     ref = request.values.get('next', None)
+    anchor = request.values.get('anchor', None)
     if form.validate_on_submit():
         # login and validate the user...
         user = User.objects.get(id=form.user.id)
@@ -46,7 +47,7 @@ def post_index():
         flash("Logged in successfully.")
         if user.admin :
             return redirect(url_for("admin.index"))
-        return redirect(ref or url_for("root.index"))
+        return redirect(ref or url_for("root.index", _anchor=anchor))
     return render_template("login.html", form=form, ref=ref)
 
 
