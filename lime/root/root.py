@@ -45,8 +45,6 @@ def post_index():
         user = User.objects.get(id=form.user.id)
         login_user(user)
         flash("Logged in successfully.")
-        if user.admin :
-            return redirect(url_for("admin.index"))
         return redirect(ref or url_for("root.index", _anchor=anchor))
     return render_template("login.html", form=form, ref=ref)
 
