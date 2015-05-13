@@ -1,10 +1,11 @@
 {% extends "fancyform.html" %}
 {% block form %}
-  <form action="{{ url_for('root.index') }}" method=post>
+  <form id='login' action="{{ url_for('root.index') }}" method=post>
     {{ render(form) }}
     {% if ref %}
         <input type="hidden" name="next" value="{{ ref }}"/>
     {% endif %}
+    <input type="hidden" id="anchor" name="anchor" value=""/>
   </form>
   <div id="forgot_password">
     <a href="{{ url_for("root.forgot_password") }}">Forgot your password?</a>
