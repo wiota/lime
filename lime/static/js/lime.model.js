@@ -419,9 +419,22 @@ LIME.Model.Host = LIME.Model.Base.extend({
 // These types should remain standard
 /* ------------------------------------------------------------------- */
 
-LIME.Model.photoNesting = {
-  'category': ['Vertex.Work']
-}
+/* ------------------------------------------------------------------- */
+// Medium - Should replace Medium and Photo
+/* ------------------------------------------------------------------- */
+
+LIME.Model.Medium = LIME.Model.Vertex.extend({
+
+  initialize: function(attributes, options){
+    LIME.Model.Vertex.prototype.initialize.apply(this, arguments);
+    this.fileRef = options.fileRef || null;
+    this.accepted = true; // if file is rejected during upload an object with false will be returned instead
+
+  },
+
+
+
+})
 
 /* ------------------------------------------------------------------- */
 // Medium - Abstract class - do not instantiate!
@@ -447,4 +460,3 @@ LIME.Model['Vertex.Medium.Photo'] = LIME.Model['Vertex.Medium'].extend({
   urlRoot: "api/v1/photo/",
   _cls: "Vertex.Medium.Photo"
 });
-

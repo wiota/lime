@@ -401,11 +401,8 @@ LIME.FormView['Vertex'] = Backbone.View.extend({
         ]},
       ]);
     } else {
-      LIME.requestPanel.one([
-        {'func': 'updateVertexRequest', 'args': [this.model]},
-      ]);
+      LIME.stack.updateVertex(this.model);
     }
-    return false;
   },
 
   savePeriodically: _.debounce(function(){
@@ -537,14 +534,7 @@ LIME.FormView['Succset'] = Backbone.View.extend({
   // Events
 
   filesChanged: function(files){
-    this.model;
-    this.photoNesting;
-    this.predecessor;
-
-    LIME.requestPanel.one([
-      {'func': 'batchPhotosToVertex', 'args': [files, this.photoNesting, this.model, null]},
-    ]);
-
+    LIME.stack.batchMedia(files);
   }
 
 });

@@ -291,7 +291,8 @@ form.succset .file_upload input {
   -moz-transform:translateX(0) rotateY(180deg);
   -o-transform:translateX(0) rotateY(180deg);
   }
-#action_panel .error .input.save {background-color: #f00; color: #fff;}
+#action_panel .error .input.save {background-color: #eac828; color: #fff;}
+
 
 
 #action_panel .input.cancel,
@@ -302,9 +303,11 @@ form.succset .file_upload input {
 
 #action_panel .input.cancel:hover,
 #action_panel .input.close:hover {
-  background-color: #82db8a;
-  color: #fff;
+  background-color: #eaeaea;
+  color: #000;
   }
+
+#action_panel .error .input.close:hover {background-color: #eac828; color: #fff;}
 
 #action_panel .cover_display {
   position: relative;
