@@ -54,6 +54,7 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
     attributes = attributes || {};
     options = options || {};
 
+
     // Modified should eventually be implemented at the field level
     this.modified = options.modified || false; // modified flag is used to determine state of save view
     this.fetched = options.fetched || false;  // fetched and
