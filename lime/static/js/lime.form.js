@@ -108,15 +108,15 @@ LIME.FormView.GodAttributes = Backbone.View.extend({
 
   render: function(){
     var deletable = this.model.get('deletable')
-    var obj = {'deletable':""};
+    var obj = {'deletable':"", 'pub':''};
     if(this.model.get('deletable')){
       obj.deletable = "checked='checked'";
     }
     if(this.model.get('public')){
       obj.pub = "checked='checked'";
     }
-    obj.layout = this.model.get('layout');
-    obj.slug = this.model.get('slug');
+    obj.layout = this.model.get('layout') || '';
+    obj.slug = this.model.get('slug') || '';
     this.$el.html(this.template(obj));
     this.$el.find('#deletable').change(this.attributeChange);
     return this;
@@ -336,8 +336,6 @@ LIME.FormView['Vertex'] = Backbone.View.extend({
     this.saveView = new LIME.FormView.SaveView();
     this.attributeFields = new LIME.FormView.Attributes({model: this.model});
     this.godAttributes = new LIME.FormView.GodAttributes({model: this.model})
-
-    //_.bindAll(this, 'saveAndClose');
 
   },
 
