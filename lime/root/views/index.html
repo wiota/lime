@@ -139,8 +139,12 @@
   </script>
 
   <script type="text/template" id="god_attributes">
-    <img class='icon god' src='/icon/god.svg'>
-    <label for='deletable'><input id="deletable" type="checkbox" name="deletable" value="true" <%- deletable %> /> Deletable</label>
+    <a class='head'>In vertex we trust <img class='icon god' src='/icon/god.svg'></a>
+    <label class='checkbox' for='deletable'><input id="deletable" type="checkbox" name="deletable" value="true" <%- deletable %> /> Deletable</label>
+    <label class='checkbox' for='pub'><input id="pub" type="checkbox" name="pub" value="true" <%- pub %> /> Public</label>
+    <label class='layout' for='layout'>Layout</label><input class='input' type='text' id='layout' value='<%- layout %>' />
+    <label class='slug' for='slug'>Slug</label><input disabled='true' class='input' type='text' id='slug' value='<%- slug %>' />
+
   </script>
 
 

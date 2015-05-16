@@ -112,6 +112,11 @@ LIME.FormView.GodAttributes = Backbone.View.extend({
     if(this.model.get('deletable')){
       obj.deletable = "checked='checked'";
     }
+    if(this.model.get('public')){
+      obj.pub = "checked='checked'";
+    }
+    obj.layout = this.model.get('layout');
+    obj.slug = this.model.get('slug');
     this.$el.html(this.template(obj));
     this.$el.find('#deletable').change(this.attributeChange);
     return this;

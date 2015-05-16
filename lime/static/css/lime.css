@@ -189,17 +189,46 @@ form.succset .file_upload input {
   }
 
 #action_panel .god_attributes {
-  position: fixed;
-  top: 0;
-  right: 0;
-  padding: 2%;
-  width: 10%;
-  color: #f00;
+  position:relative;
+  width: 440px;
+  height: 160px;
+  padding: 20px 25px;
+  background: #fff url('http://s3.amazonaws.com/wiota/lime/marquee.gif');
+}
+
+#action_panel .god_attributes .head {
+  display: block;
+  margin: 1% 0;
+  text-align: left;
+  font-style: italic;
+  font-size: 12px;
+  position:absolute;
+  top:20px;
+  right: 20px;
+
+}
+
+#action_panel .god_attributes .icon{
+  display:inline;
+  margin-right: 10px;
+  width: 16px;
+  height: 16px;
+}
+
+#action_panel .god_attributes input:disabled {
+  opacity: .5;
+  border-top:none;
+  padding-left: 0;
+}
+
+#action_panel .god_attributes label.checkbox {
+  display:inline-block;
 }
 
 #action_panel .god_attributes input[type=checkbox] {
-  margin: 2%;
+  margin: 0;
 }
+
 #action_panel .save_view {
   width: 500px;
 }
