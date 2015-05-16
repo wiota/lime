@@ -73,10 +73,10 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
     // Log until transition is finished and cleaned up
     // console.log(this.cid + " " + this.vertexType + " vertex_type:"+attributes.vertex_type+" cls:" + this.get('_cls'));
 
-    this.on('sync', function(){this.modified = false;})
-
     if(this.isNew()){
       this.set({'title': this.get('title') || 'untitled'})
+      // This is a bit disingenous. The form will not save on close if info hasn't been entered
+      // This is more reason to have a separate new form
       this.modified = false;
     }
     this.on('change', this.triggerEvents);
@@ -152,6 +152,7 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
     var attrs = _.omit(this.attributes, this.referencedFields);
     var model = this;
 
+    model.modified = false;
     options = options || {};
 
     var success = options.success;
@@ -159,17 +160,20 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
 
     options.success = function(resp){
       if(success) success(model, resp, options);
+      this.modified = false;
       model.trigger('sync', model, resp);
-      console.log('sync attributes save on ' + model.get('_id'))
     }
 
     options.error = function(resp){
       if(error) error(model, resp, options);
+      model.modified = true;
       model.trigger('error', model, resp);
     }
 
     options.attrs = attrs;
     Backbone.sync('update', this, options);
+    // for testing
+    // setTimeout(options.error, 500)
   },
 
   /* ------------------------------------------------------------------- */

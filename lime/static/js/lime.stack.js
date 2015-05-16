@@ -49,6 +49,12 @@
       v.saveAttributes(options);
     },
 
+    createEdge: function(v1, v2){},
+
+    deleteEdge: function(v1, v2){},
+
+    addToGraph: function(vertices, edges){}
+
   }
 
 })(LIME);
