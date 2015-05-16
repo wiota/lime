@@ -34,7 +34,7 @@
     },
 
     createVertex: function(attributes){
-      return LIME.Model.Vertex(attributes);
+      return new LIME.Model.Vertex(attributes);
     },
 
     updateVertex: function(v){
