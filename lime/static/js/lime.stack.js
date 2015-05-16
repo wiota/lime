@@ -53,7 +53,39 @@
 
     deleteEdge: function(v1, v2){},
 
-    addToGraph: function(vertices, edges){}
+    addToGraph: function(vertices, edges){
+      // add vertices
+      _.map(vertices, stack.addVertex);
+      // save edges
+      _.map(edges, stack.addEdge);
+    },
+
+    addVertex: function(cb, vertex){
+      // add vertex to local collection and server
+      // test
+      stack.asyncTest(function(){ console.log('vertex added') });
+    },
+
+    addEdge: function(cb, vertex){
+      // add edge locally and at server
+      // test
+      stack.asyncTest(function(){ console.log('edge added') });
+    },
+
+    // testing
+
+    asyncTest: function(cb){
+      var time = Math.random()*2000 + 500;
+      setTimeout(_.bind(cb, null, true), time);
+
+    test1: function(number){
+      da = {vertex_type: 'work'}
+      var nv = _.map([da,da,da,da,da], stack.createVertex);
+      var ne = [];
+      stack.addToGraph(nv);
+    }
+
+
 
   }
 
