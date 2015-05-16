@@ -60,25 +60,21 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
   initialize: function(attributes, options){
     attributes = attributes || {};
     options = options || {};
-    this.fetched = options.fetched || false;
-    this.deep = options.deep || false;
-    this.modified = options.modified || false;
 
-    // Transition to customVertex:
-    // if(!attributes.vertexType){return false}
+    this.modified = options.modified || false; // modified flag is used to determine state of save view
+    this.fetched = options.fetched || false;  // fetched and
+    this.deep = options.deep || false;       // deep are used in dereferencing
 
-    // Ease transition for now by falling back to class variable
-    this.vertexType = attributes.vertex_type || this.cls_dict[this.get("_cls")];
-
-    // Log until transition is finished and cleaned up
-    // console.log(this.cid + " " + this.vertexType + " vertex_type:"+attributes.vertex_type+" cls:" + this.get('_cls'));
+    this.vertexType = attributes.vertex_type; // vertexType is a constant here
+    if(!this.vertexType){
+      console.warn('Vertex has no type: '+ this.vertexType);
+      return false
+    }
 
     if(this.isNew()){
       this.set({'title': this.get('title') || 'untitled'})
-      // This is a bit disingenous. The form will not save on close if info hasn't been entered
-      // This is more reason to have a separate new form
-      this.modified = false;
     }
+
     this.on('change', this.triggerEvents);
   },
 
@@ -106,10 +102,6 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
 
   isDeep: function(){
     return this.deep;
-  },
-
-  isModified: function(){
-    return this.modified;
   },
 
   parse: function(response){
