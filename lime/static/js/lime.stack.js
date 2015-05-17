@@ -2,6 +2,7 @@
 // Underscore.js
 // Backbone.js
 // LIME.Models
+// LIME.Collection
 
 (function(LIME){
 
@@ -53,36 +54,100 @@
 
     deleteEdge: function(v1, v2){},
 
-    addToGraph: function(vertices, edges){
+    addToGraph: function(vertices, edges, callback){
+      var callback = callback || function(){}
       // add vertices
-      _.map(vertices, stack.addVertex);
-      // save edges
-      _.map(edges, stack.addEdge);
+      async.reject(vertices, stack.addVertex, function(rejects){
+        if(rejects.length > 0){
+          //stack.addToGraph(rejects, edges, callback); // rerun command with rejected vertices
+        } else {
+          // add edges
+          async.reject(edges, stack.addEdge, function(rejects){
+            if(rejects.length > 0){
+              //stack.addToGraph({}, rejects, callback); // rerun command with rejected edges
+            } else {
+              callback()
+            }
+          })
+        }
+      });
     },
 
-    addVertex: function(cb, vertex){
-      // add vertex to local collection and server
+    addVertex: function(vertex, callback){
+      // options
+      var options = {
+        success: function(){
+          // add vertex to local collection
+          LIME.collection.Vertex.add(vertex);
+          callback(true);
+        },
+        error: function(){
+          callback(false);
+        }
+      }
+
+      // add vertex to db
+      vertex.save({}, options);
+
       // test
-      stack.asyncTest(function(){ console.log('vertex added') });
+      // stack.asyncTest(vertex, callback);
     },
 
-    addEdge: function(cb, vertex){
+    addEdge: function(edge, callback){
       // add edge locally and at server
+      var options = {
+        success: function(){
+          callback(true);
+        },
+        error: function(){
+          callback(false);
+        }
+      }
+
+      edge[0].addEdgeTo(edge[1], options);
+
       // test
-      stack.asyncTest(function(){ console.log('edge added') });
+      // stack.asyncTest(edge, callback);
     },
 
     // testing
+    asyncTest: function(obj, cb){
+      // waits between 1-2 seconds and returns an err at some frequency
+      var err = null;
+      var err2 = '';
+      var truth = true;
+      var errFreq = 20;
+      var minDelay = 1000;
+      var variance = 1000;
 
-    asyncTest: function(cb){
-      var time = Math.random()*2000 + 500;
-      setTimeout(_.bind(cb, null, true), time);
+      if(Math.random()<(errFreq/100)){
+        err2 = 'x';
+        err = "Testing Error";
+        truth = false;
+      }
+      var time = Math.random()*variance + minDelay;
+      console.log("Start "+ obj.get('title') + " time " + time + " " + err2);
+      setTimeout(function(){
+        cb(truth);
+      }, time);
+    },
 
-    test1: function(number){
-      da = {vertex_type: 'work'}
+    add1: function(number){
+      da = {vertex_type: 'work', title: 'Test Work'}
       var nv = _.map([da,da,da,da,da], stack.createVertex);
       var ne = [];
       stack.addToGraph(nv);
+    },
+
+    add5: function(number){
+      var nv = _.map([
+        {vertex_type: 'work', title: "Test work 1"},
+        {vertex_type: 'work', title: "Test work 2"},
+        {vertex_type: 'work', title: "Test work 3"},
+        {vertex_type: 'work', title: "Test work 4"}
+      ], stack.createVertex);
+      var ne = [];
+      stack.addToGraph(nv, ne, function(){console.log('add5 done')});
     }
 
 

@@ -412,12 +412,7 @@ LIME.FormView['Vertex'] = Backbone.View.extend({
 
     // Should use a different form for new models here
     if(this.model.isNew()){
-      LIME.requestPanel.one([
-        {'func': 'graphRequest', 'args': [
-          [this.model],
-          [[this.predecessor, this.model]]
-        ]},
-      ]);
+      LIME.stack.addToGraph([this.model],[[this.predecessor, this.model]])
     } else {
       LIME.stack.updateVertex(this.model);
     }
