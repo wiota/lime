@@ -216,6 +216,7 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
     options.error = function(resp){
       if(error) error(model, resp, options);
       model.trigger('error', model, resp);
+      // patch up locally
     }
 
     options.url = 'api/v1/edge/';
@@ -243,11 +244,11 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
     options.error = function(resp){
       if(error) error(model, resp, options);
       model.trigger('error', model, resp);
+      // patch up locally
     }
 
     options.url = 'api/v1/edge/';
     options.data = JSON.stringify({'edges': [this.get('_id'),successor.get('_id')]});
-    console.log(options.data);
     options.contentType = 'application/json';
     Backbone.sync('create', this, options);
   },
@@ -298,30 +299,6 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
   setCover: function(coverObj, options){
     this.set({'cover':coverObj});
     this.saveAttributes(options);
-  },
-
-  saveCover: function(options){
-    var list = this.get('cover');
-    var model = this;
-
-    options = options || {};
-
-    var success = options.success;
-    var error = options.error;
-
-    options.success = function(resp){
-      if(success) success(model, resp, options);
-      model.trigger('sync', model, resp);
-      console.log('sync cover save on ' + model.get('_id'))
-    }
-
-    options.error = function(resp){
-      if(error) error(model, resp, options);
-      model.trigger('error', model, resp);
-    }
-
-    options.attrs = {'cover': _.pluck(list, 'id')};
-    Backbone.sync('update', this, options);
   }
 
 });
