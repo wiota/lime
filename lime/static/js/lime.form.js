@@ -214,7 +214,7 @@ LIME.Forms.FileUploadView = Backbone.View.extend({
 })
 
 /* ------------------------------------------------------------------- */
-// Save Fieldset - tagName should become fieldset
+// Save Fieldset - tagName should become fieldset - Dumb view
 /* ------------------------------------------------------------------- */
 
 LIME.Forms.SaveView = Backbone.View.extend({
@@ -348,14 +348,15 @@ LIME.Forms['Vertex'] = Backbone.View.extend({
   },
 
   initSaveEvents: function(){
-    // pass down from model
+    // listen for model events and pass to saveView
     this.listenTo(this.model, 'sync', this.saveView.saved);
     this.listenTo(this.model, 'error', this.saveView.error);
-    // listen for interaction
+    this.listenTo(this.model, 'change', this.saveView.unsaved)
+    // listen for form actions and handle
     this.listenTo(this.saveView, 'save', this.save);
     this.listenTo(this.saveView, 'close', this.forceClose);
     this.listenTo(this.saveView, 'saveclose', this.saveAndClose);
-    // initial state
+    // initial saveView state based on model
     if(this.model.isNew()){
       this.saveView.unpersisted();
     } else if (this.model.modified){
@@ -401,7 +402,6 @@ LIME.Forms['Vertex'] = Backbone.View.extend({
   },
 
   attributesChanged: function(changes){
-    this.saveView.unsaved();
     LIME.stack.modifyVertex(this.model, changes);
   },
 
