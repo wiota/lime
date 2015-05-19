@@ -4,6 +4,8 @@
 
 LIME.Forms = {};
 
+LIME.Forms.ENTERKEY = 13;
+
 /* ------------------------------------------------------------------- */
 // Fields - Should be replaced by views
 /* ------------------------------------------------------------------- */
@@ -406,7 +408,7 @@ LIME.Forms['Vertex'] = Backbone.View.extend({
   },
 
   keyCheck: function(evt){
-    if(evt.which == 13){
+    if(evt.which == LIME.Forms.ENTERKEY){
       this.saveAndClose();
       return false;
     }
