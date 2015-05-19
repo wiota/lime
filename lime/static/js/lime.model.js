@@ -66,16 +66,22 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
     this.deep = options.deep || false;       // deep are used in dereferencing
 
     this.vertexType = attributes.vertex_type; // vertexType is a constant here
-    if(!this.vertexType){
-      console.warn('Vertex has no type: '+ this.vertexType);
-      return false
-    }
+    this.typeCheck();
 
     if(this.isNew()){
       this.set({'title': this.get('title') || 'untitled'})
     }
 
     this.on('change', this.triggerEvents);
+  },
+
+  typeCheck: function(){
+    if(!this.vertexType && (this.isFetched() || this.isNew())){
+      console.warn('Vertex ' + this.id + ' has no type: '+ this.vertexType);
+      return false;
+    } else {
+      return true;
+    }
   },
 
   urlRoot: function(){
@@ -111,6 +117,7 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
       result[field] = this.setReference(result[field]);
     }, this);
     this.vertexType = result.vertex_type || null;
+    this.typeCheck();
     return result;
   },
 
