@@ -304,7 +304,7 @@ LIME.View.ListingView['Vertex'] = Backbone.View.extend({
     // children
     this.list = new LIME.View.SetView({model:this.model, setType: this.setType})
 
-    this.upload = new LIME.FormView['Succset']({
+    this.upload = new LIME.Forms['Succset']({
       'model': this.model,
       'className': 'succset draggable form'
     });

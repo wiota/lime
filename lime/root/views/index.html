@@ -108,12 +108,12 @@
   <!-- Form templates - - - - - - - - - - - - - - - - - - - - -->
 
   <script type="text/template" id="text">
-    <label class='<%- name %>' for='<%- name %>'><%- label %></label><input class='input' type='text' id='<%- name %>' value='<%- value %>' />
+    <label class='<%- name %>' for='<%- name %>'><%- label %></label><input tabindex='<%- tabindex %>' class='input' type='text' id='<%- name %>' value='<%- value %>' />
   </script>
 
   <script type="text/template" id="textarea">
     <label class='<%- name %>' for='<%- name %>'><%- label %></label>
-    <textarea class='input textarea' id='<%- name %>'><%- value %></textarea>
+    <textarea tabindex='<%- tabindex %>' class='input textarea' id='<%- name %>'><%- value %></textarea>
   </script>
 
   <script type="text/template" id="button">

@@ -150,11 +150,6 @@ form.succset .file_upload input {
   -o-perspective: 5000px;
 }
 
-#action_panel .input:focus {
-  outline: none;
-  border-top: 1px dotted #d8e8e8;
-}
-
 #action_panel form {
   margin: 0;
   overflow: visible;
@@ -166,12 +161,23 @@ form.succset .file_upload input {
   }
 
 #action_panel .input {
-  transition: all .3s ease;
+  transition: all .1s ease;
   border-style:none;
   padding: 1%;
   border-top: 1px solid #d8e8e8;
   font-size: 16px;
   }
+
+#action_panel .input:focus {
+  outline: none;
+  box-shadow: -5px 5px 0px #ccc;
+  /* border-left: 5px dotted #82db8a; */
+}
+
+#action_panel .input.changed {
+  outline: none;
+  box-shadow: -5px 5px 0px #82db8a;
+}
 
 #action_panel textarea {
   height: 10em;
@@ -182,11 +188,15 @@ form.succset .file_upload input {
   }
 
 #action_panel .input#title {
-  border-top: none;
   padding: 1% 0;
+  width: 95%;
   font-size: 34px;
   background-color: transparent;
+  border-top: none;
   }
+#action_panel .input#title:focus {
+  box-shadow: none;
+}
 
 #action_panel .god_attributes {
   position:relative;

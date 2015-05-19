@@ -2,13 +2,13 @@
 // Form Views
 /* ------------------------------------------------------------------- */
 
-LIME.FormView = {};
+LIME.Forms = {};
 
 /* ------------------------------------------------------------------- */
-// Templates - Should be replaced by views
+// Fields - Should be replaced by views
 /* ------------------------------------------------------------------- */
 
-LIME.FormView.templates = {
+LIME.Forms.templates = {
   'text': _.template($('#text').html()),
   'textarea': _.template($('#textarea').html()),
   'button': _.template($('#button').html()),
@@ -19,48 +19,58 @@ LIME.FormView.templates = {
 };
 
 /* ------------------------------------------------------------------- */
-// Serialized Fields triggers change event and passes change object
+// Fieldsets
 /* ------------------------------------------------------------------- */
 
-LIME.FormView.Attributes = Backbone.View.extend({
+
+/* ------------------------------------------------------------------- */
+// Schema Fieldset - triggers change event and passes change object
+/* ------------------------------------------------------------------- */
+
+LIME.Forms.Attributes = Backbone.View.extend({
   tagName: 'fieldset',
   className: 'serial_fields',
-  templates: LIME.FormView.templates,
+  templates: LIME.Forms.templates,
 
   events: {
     'blur input':'focusEnd',
-    'blur textarea':'focusEnd'
+    'blur textarea':'focusEnd',
+    'input input' :'attributeChange',
+    'input textarea' :'attributeChange'
   },
 
   initialize: function(){
-    this.isRendered = false;
     this.fieldSchema = LIME.host.vertexSchema[this.model.vertexType];
     this.render();
+    this.keys = null;
   },
 
   render: function(){
     if(!this.fieldSchema){return false;}
     this.$el.empty();
 
-    _.each(this.fieldSchema, function(field){
+    // Use field schema to generate form
+    this.keys = _.map(this.fieldSchema, function(field, key){
 
+      // TODO, migrate to field views
       var templateFunction = this.templates[field.type];
+
+      // Use defaults within the view for this
       var formData = {
         'name':field.name,
         'label':field.label,
-        'value': (this.model && this.model.get(field.name)) || ''
+        'value': (this.model && this.model.get(field.name)) || '',
+        'tabindex': (key+1)
       }
 
       // Pass key, field, and value to form input template function and append result
       $(templateFunction(formData)).appendTo(this.$el);
 
+      return key;
     }, this);
 
     this.focusStart();
     this.delegateEvents();
-    //this.$el.children('input').on('blur', function(){console.log('blur')})
-    this.isRendered = true;
-    this.trigger('rendered');
     return this;
   },
 
@@ -68,14 +78,11 @@ LIME.FormView.Attributes = Backbone.View.extend({
     this.$el.children('input').first().focus().select();
   },
 
-  focusEnd: function(){
-    console.log('focusEnd');
-    //this.focusStart();
-  },
-
-  events: {
-    'input input' :'attributeChange',
-    'input textarea' :'attributeChange'
+  // try focus guarding - also, may want to move this to form level
+  focusEnd: function(evt){
+    if($(evt.currentTarget).attr('tabindex') == this.keys.length){
+      this.focusStart();
+    }
   },
 
   attributeChange: function(evt){
@@ -90,10 +97,10 @@ LIME.FormView.Attributes = Backbone.View.extend({
 
 
 /* ------------------------------------------------------------------- */
-// God attributes - features not available to casual users
+// God fieldset - features not available to casual users
 /* ------------------------------------------------------------------- */
 
-LIME.FormView.GodAttributes = Backbone.View.extend({
+LIME.Forms.GodAttributes = Backbone.View.extend({
   tagName: 'fieldset',
   className: 'god_attributes god',
   template: _.template($('#god_attributes').html()),
@@ -133,13 +140,13 @@ LIME.FormView.GodAttributes = Backbone.View.extend({
 })
 
 /* ------------------------------------------------------------------- */
-// Upload Field - triggers change event and passes files to handlers
+// Upload Fieldset - triggers change event and passes files to handlers
 /* ------------------------------------------------------------------- */
 
-LIME.FormView.FileUploadView = Backbone.View.extend({
+LIME.Forms.FileUploadView = Backbone.View.extend({
   tagName: 'fieldset',
   className: 'file_upload',
-  template: LIME.FormView.templates['file_upload'],
+  template: LIME.Forms.templates['file_upload'],
 
   events: {
     'changed .files': 'filesChange',
@@ -210,10 +217,10 @@ LIME.FormView.FileUploadView = Backbone.View.extend({
 })
 
 /* ------------------------------------------------------------------- */
-// Save View
+// Save Fieldset - tagName should become fieldset
 /* ------------------------------------------------------------------- */
 
-LIME.FormView.SaveView = Backbone.View.extend({
+LIME.Forms.SaveView = Backbone.View.extend({
   tagName: 'div',
   className: 'save_view',
   template: _.template($('#button').html()),
@@ -318,10 +325,14 @@ LIME.FormView.SaveView = Backbone.View.extend({
 })
 
 /* ------------------------------------------------------------------- */
+// Forms
+/* ------------------------------------------------------------------- */
+
+/* ------------------------------------------------------------------- */
 // Vertex - Attribute form
 /* ------------------------------------------------------------------- */
 
-LIME.FormView['Vertex'] = Backbone.View.extend({
+LIME.Forms['Vertex'] = Backbone.View.extend({
   tagName: 'form',
   events: {
     'keypress input' :'keyCheck',
@@ -333,9 +344,9 @@ LIME.FormView['Vertex'] = Backbone.View.extend({
     this.children = [];
 
     // children
-    this.saveView = new LIME.FormView.SaveView();
-    this.attributeFields = new LIME.FormView.Attributes({model: this.model});
-    this.godAttributes = new LIME.FormView.GodAttributes({model: this.model})
+    this.saveView = new LIME.Forms.SaveView();
+    this.attributeFields = new LIME.Forms.Attributes({model: this.model});
+    this.godAttributes = new LIME.Forms.GodAttributes({model: this.model})
 
   },
 
@@ -424,15 +435,15 @@ LIME.FormView['Vertex'] = Backbone.View.extend({
 // Cover Photo Form
 /* ------------------------------------------------------------------- */
 
-LIME.FormView['Cover'] = Backbone.View.extend({
+LIME.Forms['Cover'] = Backbone.View.extend({
   tagName: 'form',
 
   initialize: function(options){
     this.options = options || {};
     this.children = [];
 
-    this.fileUpload = new LIME.FormView.FileUploadView({model: this.model});
-    this.saveView = new LIME.FormView.SaveView();
+    this.fileUpload = new LIME.Forms.FileUploadView({model: this.model});
+    this.saveView = new LIME.Forms.SaveView();
 
     this.listenTo(this.model, 'summaryChanged', this.render)
     _.bindAll(this, 'close', 'noCover');
@@ -446,8 +457,8 @@ LIME.FormView['Cover'] = Backbone.View.extend({
 
   appendCover: function(cover){
 
-    this.$cover = $(LIME.FormView.templates['cover_display']());
-    this.$removebutton = $(LIME.FormView.templates['button']({'label':'remove cover','cls': 'remove_cover delete'}));
+    this.$cover = $(LIME.Forms.templates['cover_display']());
+    this.$removebutton = $(LIME.Forms.templates['button']({'label':'remove cover','cls': 'remove_cover delete'}));
     this.$cover.append(this.$removebutton);
     this.$el.append(this.$cover);
 
@@ -507,7 +518,7 @@ LIME.FormView['Cover'] = Backbone.View.extend({
 /* ------------------------------------------------------------------- */
 
 
-LIME.FormView['Succset'] = Backbone.View.extend({
+LIME.Forms['Succset'] = Backbone.View.extend({
   passableOptions: ['model', 'uploadLabel'],
   tagName: 'form',
 
@@ -521,7 +532,7 @@ LIME.FormView['Succset'] = Backbone.View.extend({
   },
 
   appendFileUpload: function(){
-    this.fileUpload = new LIME.FormView.FileUploadView(this.childOptions),
+    this.fileUpload = new LIME.Forms.FileUploadView(this.childOptions),
     this.$el.append(this.fileUpload.el);
     this.listenTo(this.fileUpload, 'change', this.filesChanged);
     this.children.push(this.fileUpload);
@@ -541,14 +552,11 @@ LIME.FormView['Succset'] = Backbone.View.extend({
 });
 
 
-
 /* ------------------------------------------------------------------- */
 // Action Panel
-// This panel should be the startpoint for all forms
-/* ------------------------------------------------------------------- */
-
-/* ------------------------------------------------------------------- */
-// Templates
+// This panel is the startpoint for all forms
+// It may be better to load the forms into the same container the
+// Vertex view is in and swap them when editing.
 /* ------------------------------------------------------------------- */
 
 LIME.ActionPanel = Backbone.View.extend({
@@ -565,7 +573,7 @@ LIME.ActionPanel = Backbone.View.extend({
   loadVertexForm: function(model, predecessor){
     this.closeForm();
 
-    this.form = new LIME.FormView['Vertex']({
+    this.form = new LIME.Forms['Vertex']({
       'predecessor': predecessor,
       'model': model,
       'className': model.vertexType + ' vertex form'
@@ -581,7 +589,7 @@ LIME.ActionPanel = Backbone.View.extend({
   loadCoverForm: function(model){
     this.closeForm();
 
-    this.form = new LIME.FormView['Cover']({
+    this.form = new LIME.Forms['Cover']({
       'className': 'cover form',
       'model': model
     });
