@@ -50,23 +50,17 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
     "title":  ""
   },
 
-  cls_dict: {
-      "Vertex.Category":"category",
-      "Vertex.Work":"work",
-      "Vertex.Happening":"happening",
-      "Vertex.Medium.Photo":"photo"
-  },
-
   initialize: function(attributes, options){
     attributes = attributes || {};
     options = options || {};
 
+    // Modified should eventually be implemented at the field level
     this.modified = options.modified || false; // modified flag is used to determine state of save view
     this.fetched = options.fetched || false;  // fetched and
     this.deep = options.deep || false;       // deep are used in dereferencing
 
     this.vertexType = attributes.vertex_type; // vertexType is a constant here
-    this.typeCheck();
+    this.typeCheck(); // will produce warning if type is not set
 
     if(this.isNew()){
       this.set({'title': this.get('title') || 'untitled'})

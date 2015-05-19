@@ -158,14 +158,12 @@ LIME.Forms.FileUploadView = Backbone.View.extend({
 
   initialize: function(options){
     options = options || {};
-    this.predecessor = options.predecessor || null;
-    this.nesting = options.nesting || [];
-    this.uploadLabel = options.uploadLabel || '';
+    this.label = options.label || '';
     _.bindAll(this, 'render');
   },
 
   render: function(){
-    var obj = {'label':this.uploadLabel};
+    var obj = {'label':this.label};
     this.$el.html(this.template(obj));
     this.$fileInput = this.$el.find('.files');
     return this;
@@ -192,7 +190,6 @@ LIME.Forms.FileUploadView = Backbone.View.extend({
     this.$el.removeClass('over');
     this.cancelEvent(event);
   },
-
 
   // form input
 
