@@ -400,9 +400,9 @@ LIME.Forms['Vertex'] = Backbone.View.extend({
     this.close();
   },
 
-  attributesChanged: function(changeObject){
+  attributesChanged: function(changes){
     this.saveView.unsaved();
-    this.model.set(changeObject);
+    LIME.stack.modifyVertex(this.model, changes);
   },
 
   keyCheck: function(evt){

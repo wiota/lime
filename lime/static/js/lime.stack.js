@@ -38,6 +38,11 @@
       return new LIME.Model.Vertex(attributes);
     },
 
+    modifyVertex: function(v, changes){
+      v.set(changes);
+      return v;
+    },
+
     updateVertex: function(v){
       var options = {
         success: function(){
