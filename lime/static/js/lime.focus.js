@@ -2,7 +2,7 @@
 // Path Views
 /* ------------------------------------------------------------------- */
 
-LIME.Focus = Backbone.View.extend({
+LIME.Focus = Backbone.View.Base.extend({
   el: $('#focus'),
   historyTemplate: _.template($('#path_vertex_template').html()),
 

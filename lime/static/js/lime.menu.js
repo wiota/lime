@@ -2,7 +2,7 @@
 // Listing Menus
 /* ------------------------------------------------------------------- */
 
-LIME.menu = Backbone.View.extend({
+LIME.menu = Backbone.View.Base.extend({
   tagName: 'div',
   selectedClass: 'selected',
   openClass: 'open',

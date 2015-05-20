@@ -15,7 +15,7 @@ LIME.Upload = {};
 // Batch Item Progress View
 /* ------------------------------------------------------------------- */
 
-LIME.Upload.batchItemProgressView = Backbone.View.extend({
+LIME.Upload.batchItemProgressView = Backbone.View.Base.extend({
   percent: 0,
   label: null,
   tagName: 'div',
@@ -60,7 +60,7 @@ LIME.Upload.batchItemProgressView = Backbone.View.extend({
 // Upload Bar - Individual Upload Views
 /* ------------------------------------------------------------------- */
 
-LIME.Upload.batchItemView = Backbone.View.extend({
+LIME.Upload.batchItemView = Backbone.View.Base.extend({
   percent: 0,
   label: null,
   tagName: 'div',
@@ -164,7 +164,7 @@ LIME.Upload.batchItemView = Backbone.View.extend({
 // Batch Progress View
 /* ------------------------------------------------------------------- */
 
-LIME.Upload.batchProgressView = Backbone.View.extend({
+LIME.Upload.batchProgressView = Backbone.View.Base.extend({
   tagName: 'div',
   template: _.template($('#batch').html()),
 
@@ -204,7 +204,7 @@ LIME.Upload.batchProgressView = Backbone.View.extend({
 // Upload batch
 /* ------------------------------------------------------------------- */
 
-LIME.Upload.batchView = Backbone.View.extend({
+LIME.Upload.batchView = Backbone.View.Base.extend({
   tagName: 'div',
   template: _.template($('#batch').html()),
 

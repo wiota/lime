@@ -2,7 +2,7 @@
 // LIME Panels
 /* ------------------------------------------------------------------- */
 
-LIME.Panel = Backbone.View.extend({
+LIME.Panel = Backbone.View.Base.extend({
   className: 'panel',
 
   initialize: function(options){

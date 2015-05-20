@@ -5,16 +5,29 @@
 LIME.View = {};
 
 /* ------------------------------------------------------------------- */
-// Extend all views with close method
+// Base View with child management
 /* ------------------------------------------------------------------- */
 
-Backbone.View.prototype.close = function(){
-  if(this.children){_.invoke(this.children, 'close')};
-  this.children = null;
-  this.stopListening();
-  this.unbind();
-  this.remove();
-}
+Backbone.View.Base = Backbone.View.extend({
+  constructor: function(){
+    this.children = [];
+    Backbone.View.apply(this, arguments);
+  },
+
+  close: function(){
+    if(this.children){_.invoke(this.children, 'close')};
+    this.children = null;
+    this.stopListening();
+    this.unbind();
+    this.remove();
+  },
+
+  appendChildView: function(view){
+    view.$el.appendTo(this.$el);
+    this.children.push(view);
+    return view;
+  }
+})
 
 /* ------------------------------------------------------------------- */
 // Vertex View
@@ -23,7 +36,7 @@ Backbone.View.prototype.close = function(){
 // View queries data
 /* ------------------------------------------------------------------- */
 
-LIME.View.Vertex = Backbone.View.extend({
+LIME.View.Vertex = Backbone.View.Base.extend({
   events:{
     'click .delete':'delete',
     'click .update':'updateForm',
@@ -124,7 +137,7 @@ LIME.View.Vertex = Backbone.View.extend({
 // Logic for sorting and displaying views
 /* ------------------------------------------------------------------- */
 
-LIME.View.SetView = Backbone.View.extend({
+LIME.View.SetView = Backbone.View.Base.extend({
   tagName: 'ol',
   className: 'set',
   sortFunction: null,
@@ -138,8 +151,6 @@ LIME.View.SetView = Backbone.View.extend({
 
     this.setType = options.setType;
     this.$el.addClass(this.setType);
-
-    this.children = [];
 
     _.bindAll(this, 'update');
     this.sortInit();
@@ -289,7 +300,7 @@ LIME.View.SetView = Backbone.View.extend({
 
 LIME.View.ListingView = {};
 
-LIME.View.ListingView['Vertex'] = Backbone.View.extend({
+LIME.View.ListingView['Vertex'] = Backbone.View.Base.extend({
   tagName: 'div',
   emptyFlagTemplate: _.template($('#empty_succset').html()),
   events: {
@@ -363,7 +374,7 @@ LIME.View.ListingView['Vertex'] = Backbone.View.extend({
 // Apex Menu - This will be replaced by host apex
 /* ------------------------------------------------------------------- */
 
-LIME.View.HomeMenu = Backbone.View.extend({
+LIME.View.HomeMenu = Backbone.View.Base.extend({
   tagName: 'ul',
   template: _.template($('#home_menu').html()),
   className: 'home_menu',
@@ -379,7 +390,7 @@ LIME.View.HomeMenu = Backbone.View.extend({
 // This panel should be the startpoint for all listings
 /* ------------------------------------------------------------------- */
 
-LIME.ListingPanel = Backbone.View.extend({
+LIME.ListingPanel = Backbone.View.Base.extend({
   view: null,
   listedModel: null,
   listMode: null,

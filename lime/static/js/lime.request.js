@@ -128,7 +128,7 @@ LIME.RequestLibrary = {
 // Request Function
 /* ------------------------------------------------------------------- */
 
-LIME.Request = Backbone.View.extend({
+LIME.Request = Backbone.View.Base.extend({
 
   initialize: function(options){
 
@@ -185,7 +185,7 @@ LIME.Request = Backbone.View.extend({
 // Request Panel
 /* ------------------------------------------------------------------- */
 
-LIME.RequestPanel = Backbone.View.extend({
+LIME.RequestPanel = Backbone.View.Base.extend({
   el: $('#request_panel'),
   requestsMade: 0,
   pendingRequests: [],
@@ -264,7 +264,7 @@ LIME.RequestPanel = Backbone.View.extend({
 
 })
 
-LIME.MountainView = Backbone.View.extend({
+LIME.MountainView = Backbone.View.Base.extend({
 
   tagName: 'div',
   className: 'mountain_view',

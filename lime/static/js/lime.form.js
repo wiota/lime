@@ -29,7 +29,7 @@ LIME.Forms.templates = {
 // Schema Fieldset - triggers change event and passes change object
 /* ------------------------------------------------------------------- */
 
-LIME.Forms.Attributes = Backbone.View.extend({
+LIME.Forms.Attributes = Backbone.View.Base.extend({
   tagName: 'fieldset',
   className: 'serial_fields',
   templates: LIME.Forms.templates,
@@ -102,7 +102,7 @@ LIME.Forms.Attributes = Backbone.View.extend({
 // God fieldset - features not available to casual users
 /* ------------------------------------------------------------------- */
 
-LIME.Forms.GodAttributes = Backbone.View.extend({
+LIME.Forms.GodAttributes = Backbone.View.Base.extend({
   tagName: 'fieldset',
   className: 'god_attributes god',
   template: _.template($('#god_attributes').html()),
@@ -145,7 +145,7 @@ LIME.Forms.GodAttributes = Backbone.View.extend({
 // Upload Fieldset - triggers change event and passes files to handlers
 /* ------------------------------------------------------------------- */
 
-LIME.Forms.FileUploadView = Backbone.View.extend({
+LIME.Forms.FileUploadView = Backbone.View.Base.extend({
   tagName: 'fieldset',
   className: 'file_upload',
   template: LIME.Forms.templates['file_upload'],
@@ -219,7 +219,7 @@ LIME.Forms.FileUploadView = Backbone.View.extend({
 // Save Fieldset - tagName should become fieldset - Dumb view
 /* ------------------------------------------------------------------- */
 
-LIME.Forms.SaveView = Backbone.View.extend({
+LIME.Forms.SaveView = Backbone.View.Base.extend({
   tagName: 'div',
   className: 'save_view',
   template: _.template($('#button').html()),
@@ -331,7 +331,7 @@ LIME.Forms.SaveView = Backbone.View.extend({
 // Vertex - Attribute form
 /* ------------------------------------------------------------------- */
 
-LIME.Forms['Vertex'] = Backbone.View.extend({
+LIME.Forms['Vertex'] = Backbone.View.Base.extend({
   tagName: 'form',
   events: {
     'keypress input' :'keyCheck',
@@ -340,7 +340,6 @@ LIME.Forms['Vertex'] = Backbone.View.extend({
   initialize: function(options){
     this.options = options || {};
     this.predecessor = options.predecessor || null; // can be removed if new form is separate
-    this.children = [];
 
     // children
     this.saveView = new LIME.Forms.SaveView();
@@ -366,12 +365,6 @@ LIME.Forms['Vertex'] = Backbone.View.extend({
     } else {
       this.saveView.saved();
     }
-  },
-
-  appendChildView: function(view){
-    view.$el.appendTo(this.$el);
-    this.children.push(view);
-    return view;
   },
 
   render: function(){
@@ -434,24 +427,17 @@ LIME.Forms['Vertex'] = Backbone.View.extend({
 // Cover Photo Form
 /* ------------------------------------------------------------------- */
 
-LIME.Forms['Cover'] = Backbone.View.extend({
+LIME.Forms['Cover'] = Backbone.View.Base.extend({
   tagName: 'form',
 
   initialize: function(options){
     this.options = options || {};
-    this.children = [];
 
     this.fileUpload = new LIME.Forms.FileUploadView({model: this.model});
     this.saveView = new LIME.Forms.SaveView();
 
     this.listenTo(this.model, 'summaryChanged', this.render)
     _.bindAll(this, 'close', 'noCover');
-  },
-
-  appendChildView: function(view){
-    view.$el.appendTo(this.$el);
-    this.children.push(view);
-    return view;
   },
 
   appendCover: function(cover){
@@ -517,7 +503,7 @@ LIME.Forms['Cover'] = Backbone.View.extend({
 /* ------------------------------------------------------------------- */
 
 
-LIME.Forms['Succset'] = Backbone.View.extend({
+LIME.Forms['Succset'] = Backbone.View.Base.extend({
   passableOptions: ['model', 'uploadLabel'],
   tagName: 'form',
 
@@ -558,7 +544,7 @@ LIME.Forms['Succset'] = Backbone.View.extend({
 // Vertex view is in and swap them when editing.
 /* ------------------------------------------------------------------- */
 
-LIME.ActionPanel = Backbone.View.extend({
+LIME.ActionPanel = Backbone.View.Base.extend({
   el: $('#action_panel'),
   batches: [],
   model: null,
