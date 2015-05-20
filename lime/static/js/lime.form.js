@@ -160,7 +160,6 @@ LIME.Forms.FileUploadView = Backbone.View.Base.extend({
 
   initialize: function(options){
     options = options || {};
-    this.label = options.label || '';
     _.bindAll(this, 'render');
   },
 
@@ -510,7 +509,7 @@ LIME.Forms['Succset'] = Backbone.View.Base.extend({
   initialize: function(options){
     this.options = options || {};
 
-    this.fileUpload = new LIME.Forms.FileUploadView({"label":"Upload media"}),
+    this.fileUpload = new LIME.Forms.FileUploadView(),
     this.appendChildView(this.fileUpload);
     this.listenTo(this.fileUpload, 'change', this.filesChanged);
 
