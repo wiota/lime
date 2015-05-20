@@ -433,7 +433,7 @@ LIME.Forms['Cover'] = Backbone.View.Base.extend({
   initialize: function(options){
     this.options = options || {};
 
-    this.fileUpload = new LIME.Forms.FileUploadView({model: this.model});
+    this.fileUpload = new LIME.Forms.FileUploadView();
     this.saveView = new LIME.Forms.SaveView();
 
     this.listenTo(this.model, 'summaryChanged', this.render)
@@ -509,18 +509,11 @@ LIME.Forms['Succset'] = Backbone.View.Base.extend({
 
   initialize: function(options){
     this.options = options || {};
-    this.photoNesting = options.photoNesting || [];
-    this.children = [];
-    this.childOptions = _.pick(this.options, this.passableOptions);
-    this.appendFileUpload();
-    _.bindAll(this, 'close');
-  },
 
-  appendFileUpload: function(){
-    this.fileUpload = new LIME.Forms.FileUploadView(this.childOptions),
-    this.$el.append(this.fileUpload.el);
+    this.fileUpload = new LIME.Forms.FileUploadView({"label":"Upload media"}),
+    this.appendChildView(this.fileUpload);
     this.listenTo(this.fileUpload, 'change', this.filesChanged);
-    this.children.push(this.fileUpload);
+
   },
 
   render: function(){
