@@ -187,6 +187,10 @@ LIME.Forms.FileUploadView = Backbone.View.Base.extend({
   },
 
   drop: function(event){
+    var imgURL = event.originalEvent.dataTransfer.getData('URL');
+    if(imgURL){
+      console.warn(imgURL + " is from another domain. Direct upload not supported.")
+    }
     this.change(event.originalEvent.dataTransfer.files);
     this.$el.removeClass('over');
     this.cancelEvent(event);
@@ -523,7 +527,7 @@ LIME.Forms['Succset'] = Backbone.View.Base.extend({
   // Events
 
   filesChanged: function(files){
-    LIME.stack.batchMedia(files);
+    LIME.stack.batchMedia(files, this.model);
   }
 
 });

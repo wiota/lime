@@ -13,29 +13,35 @@
       var allowed = {
         //"video/quicktime": "video",
         //"image/vnd.adobe.photoshop": ""
-        "audio/mp3": "audio",
+        //"audio/mp3": "audio",
         "image/svg+xml": "photo",
         "image/gif": "photo",
         "image/jpeg": "photo",
-        "audio/mp3": "audio",
-        "application/pdf": "pdf",
+        //"application/pdf": "pdf",
         "image/png": "photo"
       }
-      if(allowed[file.type]){
-        return new LIME.Model.Medium({}, {fileRef:file, accepted: true});
+      var type = null;
+      if(type = allowed[file.type]){
+        return new LIME.Model.Medium({vertex_type: type}, {fileRef:file, accepted: true});
       } else {
         return {accepted: false, fileRef: file}
       }
     },
 
-    batchMedia: function(files){
-      media = _.map(files, stack.createMedium);
-      //var map = _.map(media, function(m){return m.fileRef})
-      //console.log(map);
+    batchMedia: function(files, v){
+      var media = _.map(files, stack.createMedium);
+      var accepted = _.filter(media, function(m){ return m.accepted });
+      var rejected = _.filter(media, function(m){ return !m.accepted });
+      var edges = _.map(accepted, function(m){ return [v, m]; });
+
+      stack.addToGraph(accepted, edges);
+      if(rejected.length > 0){
+        console.warn(_.reduce(rejected, function(memo, val, index){ return memo += ' [' + val.fileRef.name; + ']'; }, 'The following files were rejected: '));
+      }
     },
 
-    createVertex: function(attributes){
-      return new LIME.Model.Vertex(attributes);
+    createVertex: function(attributes, options){
+      return new LIME.Model.Vertex(attributes, options);
     },
 
     modifyVertex: function(v, changes){
@@ -62,14 +68,16 @@
     addToGraph: function(vertices, edges, callback){
       var callback = callback || function(){}
       // add vertices
-      async.reject(vertices, stack.addVertex, function(rejects){
-        if(rejects.length > 0){
-          //stack.addToGraph(rejects, edges, callback); // rerun command with rejected vertices
+      async.reject(vertices, stack.addVertex, function(rejected){
+        if(rejected.length > 0){
+          console.warn(rejected.length +' vertices failed to be added');
+          //stack.addToGraph(rejected, edges, callback); // rerun command with rejected vertices
         } else {
           // add edges
-          async.reject(edges, stack.addEdge, function(rejects){
-            if(rejects.length > 0){
-              //stack.addToGraph({}, rejects, callback); // rerun command with rejected edges
+          async.reject(edges, stack.addEdge, function(rejected){
+            if(rejected.length > 0){
+              console.warn(rejected.length +' edges failed to be added');
+              //stack.addToGraph({}, rejected, callback); // rerun command with rejected edges
             } else {
               callback()
             }
@@ -93,9 +101,6 @@
 
       // add vertex to db
       vertex.save({}, options);
-
-      // test
-      // stack.asyncTest(vertex, callback);
     },
 
     addEdge: function(edge, callback){
@@ -110,53 +115,7 @@
       }
 
       edge[0].addEdgeTo(edge[1], options);
-
-      // test
-      // stack.asyncTest(edge, callback);
-    },
-
-    // testing
-    asyncTest: function(obj, cb){
-      // waits between 1-2 seconds and returns an err at some frequency
-      var err = null;
-      var err2 = '';
-      var truth = true;
-      var errFreq = 20;
-      var minDelay = 1000;
-      var variance = 1000;
-
-      if(Math.random()<(errFreq/100)){
-        err2 = 'x';
-        err = "Testing Error";
-        truth = false;
-      }
-      var time = Math.random()*variance + minDelay;
-      console.log("Start "+ obj.get('title') + " time " + time + " " + err2);
-      setTimeout(function(){
-        cb(truth);
-      }, time);
-    },
-
-    add1: function(number){
-      da = {vertex_type: 'work', title: 'Test Work'}
-      var nv = _.map([da,da,da,da,da], stack.createVertex);
-      var ne = [];
-      stack.addToGraph(nv);
-    },
-
-    add5: function(number){
-      var nv = _.map([
-        {vertex_type: 'work', title: "Test work 1"},
-        {vertex_type: 'work', title: "Test work 2"},
-        {vertex_type: 'work', title: "Test work 3"},
-        {vertex_type: 'work', title: "Test work 4"}
-      ], stack.createVertex);
-      var ne = [];
-      stack.addToGraph(nv, ne, function(){console.log('add5 done')});
     }
-
-
-
   }
 
 })(LIME);
