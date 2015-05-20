@@ -353,7 +353,7 @@
   padding: 0;
   font-style: italic;
   font-size: 110%;
-  padding: 66px 0 100px;
+  padding: 135px 0 100px;
   margin: 0 0 0 2%;
 }
   .empty_succset h2 {
@@ -394,7 +394,7 @@
   width: 100%;
   margin: 0;
   position:relative;
-  padding: 66px 0 100px;
+  padding: 135px 0 100px;
 }
 
 .set li {
@@ -538,17 +538,17 @@
 
 .list_view .set li {
   width: 97%;
-  margin: 1% 1% 1% 2%;
-  padding: 0 0 1%;
+  margin: 0 1% 10px 2%;
+  padding: 10px 0 0;
   font-size: 16px;
-  border-bottom: 1px solid #e3e9ea;
+  border-top: 1px solid #e3e9ea;
   min-height: 1em;
   clear:both;
   overflow: hidden;
 }
 
   .list_view .set li.dragged {
-    border-bottom: none;
+    border-top: none;
     background-color: transparent;
   }
 
@@ -590,7 +590,7 @@
 }
 
   .grid_view .set li.dragged {
-    border-bottom: none;
+    border-top: none;
     background-color: transparent;
   }
 
