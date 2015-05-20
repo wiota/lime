@@ -351,7 +351,7 @@ LIME.View.ListingView['Vertex'] = Backbone.View.Base.extend({
       var set = this.model.get('predset');
     }
     // Should be done with CSS, not jQuery
-    if(set.length <= 0){
+    if(set.length <= 0 && this.setType === 'successor'){
       this.$instruction.fadeIn();
     } else {
       this.$instruction.slideUp();
@@ -495,8 +495,8 @@ LIME.ListingPanel = Backbone.View.Base.extend({
     // For testing
     pS = [
       ['standard', 'Standard'],
-      ['predecessor', 'Pred'],
-      ['narrow', 'Narrow']
+      ['predecessor', 'Predecessor'],
+      ['successor', 'Successor']
     ]
 
     pSI = pS[0];
@@ -528,7 +528,9 @@ LIME.ListingPanel = Backbone.View.Base.extend({
 
   clearMenus: function(){
     this.$viewMenu.empty();
-    this.$actionMenu.empty();
+    if(this.$actionMenu){
+      this.$actionMenu.empty();
+    }
   },
 
   renderListing: function(){
@@ -545,7 +547,13 @@ LIME.ListingPanel = Backbone.View.Base.extend({
     });
 
     this.$el.append(this.listing.render().el);
-    this.renderMenus();
+    if(this.setType == 'successor'){
+      this.renderMenus();
+    } else {
+      this.switchEditMode(this.mode, null);
+      this.switchLayout(this.layout, null)
+    }
+
     LIME.focus.render();
   },
 

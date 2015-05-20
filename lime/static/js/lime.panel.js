@@ -21,19 +21,30 @@ LIME.Panel = Backbone.View.Base.extend({
     this.presets[index] = locations;
   },
 
+  clamp: function(l, n, h){
+    if(n<l){
+      return l;
+    } else if (h && n>h){
+      return h;
+    } else {
+      return n;
+    }
+  },
+
   shift: function(index){
     var units = this.presetUnits[index];
     var preset = this.presets[index];
     _.each(preset, function(val, key){
-      if(next = preset[key+1]){
+      if((next = preset[key+1]) !== undefined){
         css = {
           "top": 0,
           "bottom": 0,
           "left": (val) + units,
           // account for border
-          "width": (next - val - 1) + units,
+          "width": this.clamp(0, (next - val - 1), null) + units,
         }
       } else {
+        console.log(this.clamp(0, (next - val - 1), null))
         css = {
           "top": 0,
           "bottom": 0,

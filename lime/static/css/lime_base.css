@@ -112,7 +112,7 @@ textarea {
 
 #focus_column {
   z-index: 2;
-  width: 249px;
+  width: 10px;
   border-right: 1px solid #f5f8f8;
   background-color: #fff;
   position:fixed;
@@ -151,6 +151,7 @@ textarea {
   bottom:0;
   width: 0;
   overflow: auto;
+  border-right: 1px solid #c4cbcb;
   perspective: 1000px;
   -webkit-perspective: 1000px;
   -moz-perspective: 1000px;

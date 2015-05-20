@@ -16,7 +16,9 @@ LIME.Router = Backbone.Router.extend({
     });
 
     LIME.panel.addPreset('standard', [0, 0, 250]);
-    LIME.panel.addPreset('predecessor', [0, 500, 750]);
+    LIME.panel.addPreset('predecessor', [0, 250, 500]);
+    LIME.panel.addPreset('successor', [0, 0, 180]);
+    LIME.panel.shift('standard');
 
     LIME.focus = new LIME.Focus();
     LIME.successorSet = new LIME.ListingPanel({"setType": "successor", el: $('#succset')});
