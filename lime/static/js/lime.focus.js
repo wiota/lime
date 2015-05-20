@@ -21,9 +21,9 @@ LIME.Focus = Backbone.View.Base.extend({
     // history
     var $history = $('.lime_nav .back .path');
     $history.empty();
-    _.each(_.initial(this.path), function(vertex, iterator){
-      $(this.historyTemplate(vertex.toJSON())).appendTo($history).click(_.bind(LIME.focus.retrace, this, iterator));
-    }, this);
+    // _.each(_.initial(this.path), function(vertex, iterator){
+    //  $(this.historyTemplate(vertex.toJSON())).appendTo($history).click(_.bind(LIME.focus.retrace, this, iterator));
+    // }, this);
 
     // focus
     var vertex = _.last(this.path);
