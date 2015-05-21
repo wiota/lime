@@ -141,11 +141,19 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
   // Attribute Functions
   /* ------------------------------------------------------------------- */
 
-  saveAttributes: function(options){
-    var attrs = _.omit(this.attributes, this.referencedFields);
+  // wraps the default Backbone save with some extras
+  save: function(attr, options){
+    console.log('Save decorator called');
+    if(this.fileRef){
+      console.log('File Ref awaiting upload');
+      // Do async stuff here
+      return false;
+    }
+
     var model = this;
 
     model.modified = false;
+    model.saving = true;
     options = options || {};
 
     var success = options.success;
@@ -154,12 +162,41 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
     options.success = function(resp){
       if(success) success(model, resp, options);
       this.modified = false;
+      model.saving = false;
+    }
+
+    options.error = function(resp){
+      if(error) error(model, resp, options);
+      model.modified = true;
+      model.saving = false;
+    }
+
+    Backbone.Model.prototype.save.call(this, attr, options);
+  },
+
+  // wraps Backbone sync function, automatically omitting referenced fields
+  saveAttributes: function(options){
+    var attrs = _.omit(this.attributes, this.referencedFields);
+    var model = this;
+
+    model.modified = false;
+    model.saving = true;
+    options = options || {};
+
+    var success = options.success;
+    var error = options.error;
+
+    options.success = function(resp){
+      if(success) success(model, resp, options);
+      model.modified = false;
+      model.saving = false;
       model.trigger('sync', model, resp);
     }
 
     options.error = function(resp){
       if(error) error(model, resp, options);
       model.modified = true;
+      model.saving = false;
       model.trigger('error', model, resp);
     }
 
