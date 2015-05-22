@@ -5,9 +5,7 @@
 LIME.Router = Backbone.Router.extend({
 
   routes:{
-    "":"home",
-    "body":"getBody",
-    "happenings":"getHappeningsApex",
+    "":"getHost",
     ":vertexType/:id":"getVertex"
   },
 
@@ -28,17 +26,6 @@ LIME.Router = Backbone.Router.extend({
     // not shown right now
     LIME.requestPanel = new LIME.RequestPanel();
 
-    // special vertices
-    // This should be replace by host apex
-    LIME.apex = {}
-    LIME.apex.body = new LIME.Model.Vertex({'vertex_type':'body', 'title': 'body of work'});
-    LIME.apex.happenings = new LIME.Model.Vertex({'vertex_type':'happenings', 'title': 'happenings'});
-
-    // fetch
-    // This should be replace by host apex
-    LIME.apex.body.deepen();
-    LIME.apex.happenings.deepen();
-
     // icons
     LIME.icon = new Iconset();
     LIME.icon.add("bookcase", '.bookcase.icon');
@@ -52,18 +39,10 @@ LIME.Router = Backbone.Router.extend({
 
   },
 
-  // This should be replace by host apex
-  home: function() {
-    LIME.successorSet.apexMenu();
-    LIME.focus.nowhere();
-  },
-
-  // Body of work
-  // This should be replace by host apex
-  getBody: function() {
-    var vertex = LIME.apex.body;
-    LIME.focus.list(vertex);
-    LIME.successorSet.list(vertex);
+  // Host
+  getHost: function() {
+    var id = (LIME.host.get('apex'));
+    this.getVertex('host', id);
   },
 
   // Vertex
@@ -73,14 +52,6 @@ LIME.Router = Backbone.Router.extend({
     LIME.successorSet.list(vertex);
     LIME.predecessorSet.list(vertex);
 
-  },
-
-  // Happenings Apex
-  // This should be replace by host apex
-  getHappeningsApex: function(){
-    var vertex = LIME.apex.happenings;
-    LIME.successorSet.list(vertex);
-    LIME.focus.list(vertex);
   }
 
 });

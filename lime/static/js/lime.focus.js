@@ -73,9 +73,10 @@ LIME.Focus = Backbone.View.extend({
     this.path.push(vertex);
     this.walk.push(vertex);
 
-    if(this.path[0].vertexType !== "body"){
-      var body = LIME.apex.body;
-      this.path.unshift(body);
+    if(this.path[0].vertexType !== "host"){
+      var id = (LIME.host.get('apex'));
+      var host = LIME.collection.Vertex.lookup(id, 'host');
+      this.path.unshift(host);
     }
   },
 

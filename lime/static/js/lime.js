@@ -17,7 +17,7 @@ LIME.start = function(){
   })
 
   LIME.router = new LIME.Router();
-  LIME.host = new LIME.Model.Host({'vertex_type':'host'});
+  LIME.host = new LIME.Model.Host({});
 
   LIME.host.fetch({
     success: function(){

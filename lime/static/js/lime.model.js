@@ -8,25 +8,41 @@ LIME.Model = {};
 // App Model Overrides
 /* ------------------------------------------------------------------- */
 
-Backbone.Model.prototype.parse = function(response){
-  if(response.result)
-  return response.result;
-};
+LIME.Model.Base = Backbone.Model.extend({
+  idAttribute: "_id",
 
-Backbone.Model.prototype.origUrl = Backbone.Model.prototype.url
+  parse: function(response){
+    if(response.result){
+      return response.result;
+    } else {
+      return {};
+    }
+  },
 
-Backbone.Model.prototype.url = function() {
-    var origUrl = Backbone.Model.prototype.origUrl.call(this);
+  url: function() {
+    var origUrl = Backbone.Model.prototype.url.call(this);
     return origUrl + (origUrl.charAt(origUrl.length - 1) == '/' ? '' : '/');
-}
+  },
 
-Backbone.Model.prototype.idAttribute = "_id";
+  reference: function(object){
+    var model = LIME.collection.Vertex.get(object['_id']) || new LIME.Model.Vertex(object, {'fetched': true, 'deep': false});
+    LIME.collection.Vertex.add(model); // if model already exists in collection, this method call is ignored
+    return model;
+  },
+
+  setReference: function(set){
+    var setReferences = [];
+    setReferences = _.map(set, this.reference);
+    return setReferences;
+  },
+
+})
 
 /* ------------------------------------------------------------------- */
 // Vertex - Abstract class - to be transitioned to singular customVertex
 /* ------------------------------------------------------------------- */
 
-LIME.Model.Vertex= Backbone.Model.extend({
+LIME.Model.Vertex= LIME.Model.Base.extend({
   referencedFields: ['succset', 'predset'],
   apiVers: 'api/v1/',
   vertexType: 'vertex',
@@ -97,13 +113,13 @@ LIME.Model.Vertex= Backbone.Model.extend({
   },
 
   parse: function(response){
-    if(response.result){
-      _.each(this.referencedFields, function(field){
-        response.result[field] = this.reference(response.result[field]);
-      }, this);
-      this.vertexType = response.result.vertex_type;
-      return response.result;
-    }
+    result = LIME.Model.Base.prototype.parse(response);
+
+    _.each(this.referencedFields, function(field){
+      result[field] = this.setReference(result[field]);
+    }, this);
+    this.vertexType = result.vertex_type || null;
+    return result;
   },
 
   deepen: function(){
@@ -126,16 +142,6 @@ LIME.Model.Vertex= Backbone.Model.extend({
 
   deepenError: function(model, response, options){
     console.log("Fetch unsucessful " + response);
-  },
-
-  reference: function(set){
-    var setReferences = [];
-    _.each(set, function(object){
-      var model = LIME.collection.Vertex.get(object['_id']) || new LIME.Model.Vertex(object, {'fetched': true, 'deep': false});
-      LIME.collection.Vertex.add(model); // if model already exists in collection, this method call is ignored
-      setReferences.push(model);
-    });
-    return setReferences;
   },
 
   /* ------------------------------------------------------------------- */
@@ -328,8 +334,8 @@ LIME.Model.Vertex= Backbone.Model.extend({
 // Host
 /* ------------------------------------------------------------------- */
 
-LIME.Model.Host = Backbone.Model.extend({
-  vertexType: 'host',
+LIME.Model.Host = LIME.Model.Base.extend({
+  referencedFields: ['apex'],
   apiVers: 'api/v1/',
   defaults: {},
   // staticly defined translation between server vertex blueprint and front-end
@@ -356,15 +362,18 @@ LIME.Model.Host = Backbone.Model.extend({
 
   parse: function(response){
     // handle result object wrapper
-    response = Backbone.Model.prototype.parse(response);
+    result = LIME.Model.Base.prototype.parse(response);
+
+    // make apex id available
+    result.apex = result.apex._id;
 
     // iterate through vertex schema and add to vertexSchema property of host
     // misnomer custom_vertex_fields -> vertex schema
-    _.each(response.custom_vertex_fields, _.bind(this.parseSingleVertexType, this))
+    _.each(result.custom_vertex_fields, _.bind(this.parseSingleVertexType, this))
 
     // delete custom vertex types from response and return the rest
-    delete response.custom_vertex_fields;
-    return response;
+    delete result.custom_vertex_fields;
+    return result;
   },
 
   parseSingleVertexType: function(fields, vertexType){
