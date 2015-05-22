@@ -144,26 +144,55 @@
   </script>
 
 
-  <!-- deprecated templates  - - - - - - - - - - - - - - - - - - - -  -->
+  <!-- Custom templates  - - - - - - - - - - - - - - - - - - - -  -->
 
-  <!-- SuccsetItem  -->
+  <!-- Host  -->
+  <script type="text/template" id="host_in_set">
+    <div class='cover'></div>
 
-  <!-- Link  -->
-  <!-- Cover  -->
-  <!-- Attributes or Schematic Fields  -->
-  <!-- Menu  -->
+    <div class='attributes'>
+      <img class='icon host' src='/icon/host.svg'>
+      <b class='attribute primary'><%- title %></b>
+    </div>
+
+    <div class='ui'>
+      <a class='get' href='#'></a>
+      <a class='set_cover'><img class='icon update' src='/icon/lens.svg'><b class='label'>set cover</b></a>
+      <a class='update'><img class='icon update' src='/icon/pencil.svg'><b class='label'>update</b></a>
+      <a class='drag_handle'>&#8597;</a>
+    </div>
+  </script>
 
   <!-- Body  -->
   <script type="text/template" id="body_in_set">
     <div class='cover'></div>
 
     <div class='attributes'>
-      <img class='icon' src='/icon/body.svg'>
-      <b class='attribute primary'>body of work</b>
+      <img class='icon body' src='/icon/body.svg'>
+      <b class='attribute primary'>Body of Work</b>
     </div>
 
     <div class='ui'>
       <a class='get' href='#body/<%- _id %>'></a>
+      <a class='set_cover'><img class='icon update' src='/icon/lens.svg'><b class='label'>set cover</b></a>
+      <a class='update'><img class='icon update' src='/icon/pencil.svg'><b class='label'>update</b></a>
+      <a class='drag_handle'>&#8597;</a>
+    </div>
+  </script>
+
+    <!-- Happenings  -->
+  <script type="text/template" id="calendar_in_set">
+    <div class='cover'></div>
+
+    <div class='attributes'>
+      <img class='icon calendar' src='/icon/calendar.svg'>
+      <b class='attribute primary'>Happenings</b>
+    </div>
+
+    <div class='ui'>
+      <a class='get' href='#calendar/<%- _id %>'></a>
+      <a class='set_cover'><img class='icon update' src='/icon/lens.svg'><b class='label'>set cover</b></a>
+      <a class='update'><img class='icon update' src='/icon/pencil.svg'><b class='label'>update</b></a>
       <a class='drag_handle'>&#8597;</a>
     </div>
   </script>

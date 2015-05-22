@@ -47,7 +47,7 @@ LIME.View.Vertex = Backbone.View.extend({
     // id
     this.$el.attr('id', "_id_"+this.model.id);
 
-    // customTemplate templates (for leaves)
+    // customTemplate templates (for leaves, host, and legacy body / happenings)
     this.$tmp = $('#'+ this.model.vertexType+'_in_set');
     this.customTemplate = (this.$tmp.length > 0);
 
