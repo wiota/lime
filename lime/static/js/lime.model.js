@@ -111,7 +111,7 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
       result[field] = this.setReference(result[field]);
     }, this);
     this.vertexType = result.vertex_type || null;
-    this.typeCheck();
+    this.typeCheck()
     return result;
   },
 
