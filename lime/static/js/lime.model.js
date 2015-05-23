@@ -138,16 +138,40 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
     console.log("Fetch unsucessful " + response);
   },
 
+  awaitingUpload: function(){
+
+    // This can be improved by chaining
+    var awaiting = _.map(_.pick(this.attributes, function(val, key) {
+      return (val instanceof window.File);
+    }), function(val, key){
+      return [key, val];
+    });
+
+    if (_.isEmpty(awaiting)){
+      return false
+    } else {
+      return awaiting;
+    }
+  },
+
   /* ------------------------------------------------------------------- */
   // Attribute Functions
   /* ------------------------------------------------------------------- */
 
   // wraps the default Backbone save with some extras
   save: function(attr, options){
-    console.log('Save decorator called');
-    if(this.fileRef){
-      console.log('File Ref awaiting upload');
-      // Do async stuff here
+    var model = this;
+    var awaiting = this.awaitingUpload();
+    var saveArguments = arguments;
+
+    if(awaiting){ // Multiple fields possible
+      async.reject(awaiting, _.bind(this.uploadToAttribute, this), function(rejected){
+        if(rejected.length>0){
+          console.warn(rejected.length +' uploads failed');
+        }
+        console.log(model);
+        model.save.apply(model, saveArguments); // If there are still unsuccessful uploads awaiting will continue
+      })
       return false;
     }
 
@@ -203,14 +227,55 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
 
     options.attrs = attrs;
     Backbone.sync('update', this, options);
-    // for testing
-    // setTimeout(options.error, 500)
+  },
+
+  uploadToAttribute: function(attrFilePair, callback){
+    var asyncCallback = callback;
+    var obj = {};
+
+    console.log(attrFilePair);
+
+    var callback = _.bind(function(err, result){
+      if(err){
+        asyncCallback(false);
+      } else {
+        obj[attrFilePair[0]] = "/image/" + result;
+        this.set(obj);
+        asyncCallback(true);
+      }
+    }, this)
+
+    this.uploadFile(attrFilePair[1], callback)
+  },
+
+  uploadFile: function(file, callback){
+    // testing
+    // if(Math.random()<.5){
+    //   request.trigger('error');
+    //   return false;
+    // }
+
+    // timestamp
+    var arr = file.name.split('.');
+    var ext = arr.pop();
+    var name = arr.join('.') + '_' + Date.now() + '.' + ext;
+
+    // S3 uploader
+    var uploader = new LIME.Uploader();
+    uploader.on('complete', function(href){
+      callback(null, name);
+    });
+    uploader.on('uploadError', function(){
+      callback("error", file);
+    });
+    uploader.uploadFile(file, {"name": name});
   },
 
   /* ------------------------------------------------------------------- */
   // Succset Functions
   /* ------------------------------------------------------------------- */
 
+  // Local modification - initiates server request
   addEdgeTo: function(successor, options){
 
     // succset
@@ -223,9 +288,10 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
     predset.unshift(this);
     successor.set({'predset': predset});
 
-    this.createEdge(successor, options);
+    this._createEdge(successor, options);
   },
 
+  // Local modification - initiates server request
   removeEdgeTo: function(successor, options){
     // succset
     var succset = this.get('succset');
@@ -235,10 +301,11 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
     var predset = successor.get('predset');
     successor.set({'succset':_.without(predset, this)});
 
-    this.destroyEdge(successor, options);
+    this._destroyEdge(successor, options);
   },
 
-  destroyEdge: function(successor, options){
+  // Server request
+  _destroyEdge: function(successor, options){
     var model = this;
 
     options = options || {};
@@ -265,8 +332,8 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
     Backbone.sync('delete', this, options);
   },
 
-
-  createEdge: function(successor, options){
+  // Server request
+  _createEdge: function(successor, options){
     var model = this;
 
     options = options || {};
@@ -292,6 +359,7 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
     Backbone.sync('create', this, options);
   },
 
+  // Server request for reordering
   saveSuccset: function(options){
     var list = this.get('succset');
     var model = this;
@@ -318,7 +386,7 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
     Backbone.sync('update', this, options);
   },
 
-  // for reordering
+  // Local modification - initiates server request
   setSuccset: function(idList){
     var succset = this.get('succset');
     var update = [];

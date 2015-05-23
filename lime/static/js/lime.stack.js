@@ -22,7 +22,7 @@
       }
       var type = null;
       if(type = allowed[file.type]){
-        return new LIME.Model.Medium({vertex_type: type}, {fileRef:file, accepted: true});
+        return new LIME.Model.Medium({vertex_type: type, href: file}, {accepted: true});
       } else {
         return {accepted: false, fileRef: file}
       }
@@ -36,7 +36,7 @@
 
       stack.addToGraph(accepted, edges);
       if(rejected.length > 0){
-        console.warn(_.reduce(rejected, function(memo, val, index){ return memo += ' [' + val.fileRef.name; + ']'; }, 'The following files were rejected: '));
+        console.warn(_.reduce(rejected, function(memo, val, index){ return memo += '\n[' + val.fileRef.name + " " + val.fileRef.type + '] '; }, 'The following files were rejected: '));
       }
     },
 
