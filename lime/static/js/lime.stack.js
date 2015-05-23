@@ -11,18 +11,19 @@
 
     createMedium: function(file){
       var allowed = {
-        //"video/quicktime": "video",
-        //"image/vnd.adobe.photoshop": ""
-        //"audio/mp3": "audio",
-        "image/svg+xml": "photo",
+        // "video/quicktime": "video",
+        // "image/vnd.adobe.photoshop": ""
+        // "image/svg+xml": "photo",
+        "audio/x-m4a": "audio",
+        "audio/mp3": "audio",
         "image/gif": "photo",
         "image/jpeg": "photo",
-        //"application/pdf": "pdf",
+        // "application/pdf": "pdf",
         "image/png": "photo"
       }
       var type = null;
       if(type = allowed[file.type]){
-        return new LIME.Model.Medium({vertex_type: type, href: file}, {accepted: true});
+        return new LIME.Model.Medium({vertex_type: type, href: file, title: file.name}, {accepted: true});
       } else {
         return {accepted: false, fileRef: file}
       }

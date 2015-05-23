@@ -217,6 +217,28 @@
     </div>
   </script>
 
+  <!-- Audio  -->
+  <script type="text/template" id="audio_in_set">
+
+    <!-- no cover -->
+
+    <div class='attributes'>
+      <img class='icon audio' src='/icon/audio.svg'>
+      <b class='attribute primary'><%- title %></b>
+      <audio src="<%- href %>" controls >
+        <p>Your browser does not support the <code>audio</code> element </p>
+        <a href="<%- href %>"><%- title %></a>
+      </audio>
+
+
+    </div>
+
+    <div class='ui'>
+      <a class='delete'>delete</a>
+      <a class='drag_handle'>&#8597;</a>
+    </div>
+  </script>
+
   <!-- Youtube  -->
   <script type="text/template" id="youtube_in_set">
 

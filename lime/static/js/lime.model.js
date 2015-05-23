@@ -166,10 +166,7 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
 
     if(awaiting){ // Multiple fields possible
       async.reject(awaiting, _.bind(this.uploadToAttribute, this), function(rejected){
-        if(rejected.length>0){
-          console.warn(rejected.length +' uploads failed');
-        }
-        console.log(model);
+        if(rejected.length>0){console.warn(rejected.length +' uploads failed')}
         model.save.apply(model, saveArguments); // If there are still unsuccessful uploads awaiting will continue
       })
       return false;
