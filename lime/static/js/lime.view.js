@@ -71,7 +71,10 @@ LIME.View.Vertex = Backbone.View.Base.extend({
       this.template = this.defaultTemplate;
     }
 
-    this.listenTo(this.model, 'summaryChanged', this.render)
+    // Upload template
+    this.awaitingTemplate = _.template($('#awaiting').html());
+
+    this.listenTo(this.model, 'summaryChanged', this.render);
   },
 
 
@@ -93,15 +96,34 @@ LIME.View.Vertex = Backbone.View.Base.extend({
   },
 
   renderAttributes: function(){
-    var clsList = ['primary','secondary','tertiary']
     _.each(LIME.host.vertexSchema[this.model.vertexType], function(field, key){
-      if(_.has(this.model.attributes, field.name)){
-        this.$attributes.append("<b class='attribute "+(clsList[key])+"'>"+this.model.attributes[field.name]+"</b>");
-      }
+      this.renderAttribute(field.name, key);
     }, this)
   },
 
+  renderAttribute: function(field, order){
+    var clsList = ['primary','secondary','tertiary', 'quaternary', 'quinary', 'senary', 'septenary', 'octonary', 'nonary', 'denary']
+    if(_.has(this.model.attributes, field)){
+      if(this.model.attributeAwaitingUpload(field)){
+        this.$attributes.append("<b class='attribute "+clsList[order]+"'>Loading</b>");
+      } else {
+        this.$attributes.append("<b class='attribute "+clsList[order]+"'>"+this.model.get(field)+"</b>");
+      }
+    }
+  },
+
   render: function(){
+    var awaiting = null;
+    if(awaiting = this.model.awaitingUpload()){
+      this.$el.html(this.awaitingTemplate());
+      this.$attributes = this.$el.children('.attributes');
+      _.each(awaiting, function(){
+        this.$attributes.append('uploading...');
+      }, this)
+
+      return false;
+    }
+
     this.$el.html(this.template(this.model.toJSON()));
     this.$attributes = this.$el.children('.attributes');
     this.$cover = this.$el.children('.cover');
