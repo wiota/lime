@@ -74,22 +74,24 @@
         if(rejected.length > 0){
           console.warn(rejected.length +' vertices failed to be added');
           //stack.addToGraph(rejected, edges, callback); // rerun command with rejected vertices
-        } else {
-          // add edges
-          async.reject(edges, stack.addEdge, function(rejected){
-            if(rejected.length > 0){
-              console.warn(rejected.length +' edges failed to be added');
-              //stack.addToGraph({}, rejected, callback); // rerun command with rejected edges
-            } else {
-              callback()
-            }
-          })
         }
       });
+
+      // add edges locally, rely on model to await model ids
+      // edges are controlled locally by the initial vertex, or the first in the pair
+      async.reject(edges, stack.addEdge, function(rejected){
+        if(rejected.length > 0){
+          console.warn(rejected.length +' edges failed to be added');
+          //stack.addToGraph({}, rejected, callback); // rerun command with rejected edges
+        } else {
+          callback()
+        }
+      })
     },
 
+    // Add vertex remotely
     addVertex: function(vertex, callback){
-      // options
+
       var options = {
         success: function(){
           // add vertex to local collection
@@ -105,8 +107,9 @@
       vertex.save({}, options);
     },
 
+    // Add edge locally and remotely
     addEdge: function(edge, callback){
-      // add edge locally and at server
+
       var options = {
         success: function(){
           callback(true);

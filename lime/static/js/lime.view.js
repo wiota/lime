@@ -81,10 +81,7 @@ LIME.View.Vertex = Backbone.View.Base.extend({
 
   // This should update the model and the model should initiate the request to the server
   delete: function(){
-    LIME.requestPanel.one([
-      {'func': 'removeEdgeRequest', 'args': [[this.predecessor, this.model]]},
-    ]);
-    //this.predecessor.removeEdge(this.model);
+    this.predecessor.removeEdgeTo(this.model);
   },
 
   updateForm: function(){
@@ -114,6 +111,8 @@ LIME.View.Vertex = Backbone.View.Base.extend({
 
   render: function(){
     var awaiting = null;
+
+    // If item is still awaiting upload, render loading bar
     if(awaiting = this.model.awaitingUpload()){
       this.$el.html(this.awaitingTemplate());
       this.$attributes = this.$el.children('.attributes');
@@ -121,7 +120,13 @@ LIME.View.Vertex = Backbone.View.Base.extend({
         this.$attributes.append('uploading...');
       }, this)
 
-      return false;
+      return this;
+    }
+
+    // If item is new, do not render the UI view.
+    if(this.model.isNew()){
+      this.$el.html("... .- ...- .. -. --.");
+      return this;
     }
 
     this.$el.html(this.template(this.model.toJSON()));
@@ -134,7 +139,7 @@ LIME.View.Vertex = Backbone.View.Base.extend({
 
     // render cover
     var ca = this.model.get('cover');
-    if(ca.length){
+    if(ca && ca.length){
       this.$el.addClass('with_cover');
       _.each(ca, function(coverItem){
         this.$cover.append("<img src='"+coverItem.href+"?h=200' alt='' />")
@@ -147,7 +152,7 @@ LIME.View.Vertex = Backbone.View.Base.extend({
     this.delegateEvents();
     // disallow delete
     if(!this.model.get('deletable')){
-      this.$el.find('.delete').hide();
+      this.$el.find('.delete').remove();
     }
 
     return this;
@@ -289,16 +294,19 @@ LIME.View.SetView = Backbone.View.Base.extend({
     this.model.setSuccset(ids);
   },
 
+  // targeted add remove rendering will go here
+
   render: function(){
     // if model needs to be refetched for dereferenced succset
     if(!this.model.isDeep()){return false;}
 
     this.$el.empty();
     if(this.setType === 'successor'){
-      var set = this.model.get('succset');
+      var set = this.model.succset;
     } else if (this.setType === 'predecessor'){
-      var set = this.model.get('predset');
+      var set = this.model.predset;
     }
+
     _.each(set, function(item, index){
       var options = {
         'model':item,
@@ -360,18 +368,21 @@ LIME.View.ListingView['Vertex'] = Backbone.View.Base.extend({
 
     // Listen to changes in the succset and rerender
     if(this.setType === 'successor'){
-      this.listenTo(this.model, 'change:succset', this.render);
+      this.listenTo(this.model, 'successorAdd', this.render);
+      this.listenTo(this.model, 'successorRemove', this.render);
     } else if (this.setType === 'predecessor'){
-      this.listenTo(this.model, 'change:predset', this.render);
+      this.listenTo(this.model, 'predecessorAdd', this.render);
+      this.listenTo(this.model, 'predecessorRemove', this.render);
     }
   },
 
   render: function(){
     if(this.setType === 'successor'){
-      var set = this.model.get('succset');
+      var set = this.model.succset;
     } else if (this.setType === 'predecessor'){
-      var set = this.model.get('predset');
+      var set = this.model.predset;
     }
+
     // Should be done with CSS, not jQuery
     if(set.length <= 0 && this.setType === 'successor'){
       this.$instruction.fadeIn();
