@@ -67,6 +67,7 @@
     deleteEdge: function(v1, v2){},
 
     addToGraph: function(vertices, edges, callback){
+      // may not need async stuff here
       var callback = callback || function(){}
       // add vertices
       async.reject(vertices, stack.addVertex, function(rejected){

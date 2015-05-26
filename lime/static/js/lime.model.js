@@ -30,10 +30,10 @@ LIME.Model.Base = Backbone.Model.extend({
     return model;
   },
 
-  setReference: function(set){
-    var setReferences = [];
-    setReferences = _.map(set, this.reference);
-    return setReferences;
+  referenceSet: function(set){
+    var setOfReferences = [];
+    setOfReferences = _.map(set, this.reference);
+    return setOfReferences;
   },
 
 })
@@ -63,6 +63,7 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
     this.vertexType = attributes.vertex_type; // vertexType is a constant here
     this.typeCheck(); // will produce warning if type is not set
 
+    // May not need this if defaults work as expected
     if(this.isNew()){
       this.set({'title': this.get('title') || 'untitled'})
     }
@@ -141,11 +142,13 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
   awaitingUpload: function(){
 
     // This can be improved by chaining
-    var awaiting = _.map(_.pick(this.attributes, function(val, key) {
-      return (val instanceof window.File);
-    }), function(val, key){
-      return [key, val];
-    });
+    var awaiting = _.map(
+      _.pick(this.attributes, function(val, key){
+        return this.attributeAwaitingUpload(key);
+      }, this),
+      function(val, key){return [key, val]},
+      this
+    );
 
     if (_.isEmpty(awaiting)){
       return false
@@ -154,17 +157,24 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
     }
   },
 
+  attributeAwaitingUpload: function(key) {
+    return (this.attributes[key] instanceof window.File);
+  },
+
   /* ------------------------------------------------------------------- */
   // Attribute Functions
   /* ------------------------------------------------------------------- */
 
   // wraps the default Backbone save with some extras
+  // if attributes with uploads awaiting are passed, they will fail.
   save: function(attr, options){
+    // Attribute handling is limited
+    // Succset and predset should never be modified with the save method
     var model = this;
-    var awaiting = this.awaitingUpload();
     var saveArguments = arguments;
+    var awaiting = null;
 
-    if(awaiting){ // Multiple fields possible
+    if(awaiting = this.awaitingUpload()){ // Multiple fields possible
       async.reject(awaiting, _.bind(this.uploadToAttribute, this), function(rejected){
         if(rejected.length>0){console.warn(rejected.length +' uploads failed')}
         model.save.apply(model, saveArguments); // If there are still unsuccessful uploads awaiting will continue
@@ -193,6 +203,7 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
       model.saving = false;
     }
 
+    // not currently possible to save individual attributes
     Backbone.Model.prototype.save.call(this, attr, options);
   },
 
