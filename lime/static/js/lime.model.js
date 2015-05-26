@@ -112,13 +112,17 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
   parse: function(response){
     result = LIME.Model.Base.prototype.parse(response);
 
+    // If server returns success, do not set any attributes.
+    if(result == 'success'){
+      return {};
+    }
     // pluck referenced fields out of attributes
     _.each(this.referencedFields, function(field){
       this[field] = this.referenceSet(result[field]);
       delete result[field];
     }, this);
     this.vertexType = result.vertex_type || null;
-    this.typeCheck()
+    this.typeCheck();
     return result;
   },
 
@@ -180,9 +184,6 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
     // representation to be sent because the server does not yet support PATCH
     // requests.
 
-    // Once the server supports PATCH requests, this function may take the place
-    // of the saveAttributes method.
-
     // Succset and predset will not be included in serialized attributes
 
     var model = this;
@@ -221,36 +222,6 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
 
     // not currently possible to save individual attributes
     Backbone.Model.prototype.save.call(this, attr, options);
-  },
-
-  // wraps Backbone sync function, automatically omitting referenced fields
-  saveAttributes: function(options){
-    var attrs = _.omit(this.attributes, this.referencedFields);
-    var model = this;
-
-    model.modified = false;
-    model.saving = true;
-    options = options || {};
-
-    var success = options.success;
-    var error = options.error;
-
-    options.success = function(resp){
-      if(success) success(model, resp, options);
-      model.modified = false;
-      model.saving = false;
-      model.trigger('sync', model, resp);
-    }
-
-    options.error = function(resp){
-      if(error) error(model, resp, options);
-      model.modified = true;
-      model.saving = false;
-      model.trigger('error', model, resp);
-    }
-
-    options.attrs = attrs;
-    Backbone.sync('update', this, options);
   },
 
   uploadToAttribute: function(attrFilePair, callback){
@@ -459,7 +430,7 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
 
   setCover: function(coverObj, options){
     this.set({'cover':coverObj});
-    this.saveAttributes(options);
+    this.save(options);
   }
 
 });

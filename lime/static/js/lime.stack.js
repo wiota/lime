@@ -59,7 +59,7 @@
           console.log(v.id + ' vertex failed')
         }
       }
-      v.saveAttributes(options);
+      v.save({}, options);
     },
 
     createEdge: function(v1, v2){},
