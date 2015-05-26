@@ -14,11 +14,11 @@
         // "video/quicktime": "video",
         // "image/vnd.adobe.photoshop": ""
         // "image/svg+xml": "photo",
+        // "application/pdf": "pdf",
         "audio/x-m4a": "audio",
         "audio/mp3": "audio",
         "image/gif": "photo",
         "image/jpeg": "photo",
-        // "application/pdf": "pdf",
         "image/png": "photo"
       }
       var type = null;
