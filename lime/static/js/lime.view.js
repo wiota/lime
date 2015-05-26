@@ -467,8 +467,7 @@ LIME.ListingPanel = Backbone.View.Base.extend({
 
   newForm: function(type){
     // API uses underscored attribute names
-    var v = new LIME.Model.Vertex({'vertex_type': type});
-    LIME.actionPanel.loadVertexForm(v, this.model);
+    LIME.actionPanel.loadVertexForm(LIME.stack.createVertex({'vertex_type': type}), this.model);
   },
 
   render: function(){

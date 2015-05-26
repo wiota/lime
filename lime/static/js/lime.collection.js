@@ -28,7 +28,7 @@ LIME.Collection.Vertex = Backbone.Collection.extend({
   },
 
   getEmpty: function(id, vertexType){
-    return new this.model({'_id': id, 'vertex_type': vertexType}, {vertexType: vertexType});
+    return LIME.stack.createVertex({'_id': id, 'vertex_type': vertexType}, {vertexType: vertexType})
   }
 
 });
