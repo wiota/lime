@@ -164,6 +164,10 @@ LIME.titlePref = function(string){
   );
 }
 
+LIME.fileSafe = function(string){
+  return string.replace(/[^a-z0-9_\-.]/gi, '-');
+}
+
 // Tools --------------------------------------------------------------
 
 LIME.fileToName = function(string){

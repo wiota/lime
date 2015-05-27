@@ -253,7 +253,7 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
     // timestamp
     var arr = file.name.split('.');
     var ext = arr.pop();
-    var name = arr.join('.') + '_' + Date.now() + '.' + ext;
+    var name = LIME.fileSafe(arr.join('.')) + '_' + Date.now() + '.' + ext;
 
     // S3 uploader
     var uploader = new LIME.Uploader();
