@@ -51,22 +51,6 @@ LIME.subnav = (function(){
 
 // ---------------------------------------------------------------------
 
-LIME.imgfix = function(selector){
-  var $el = $(selector);
-  //console.log($el);
-  //$el.fadeOut();
-  $el.find('img').on('load', function(){
-    $(this).fadeIn();
-  });
-  $el.find('img').on('error', function(){
-    console.log('error');
-  });
-
-
-}
-
-// ---------------------------------------------------------------------
-
 LIME.god = (function(){
   var god_keyin = 0;
   var god_keycheck = [71,79,68,71,79,68,71,79,68];
