@@ -73,6 +73,7 @@ LIME.View.Vertex = Backbone.View.Base.extend({
 
     // Upload template
     this.awaitingTemplate = _.template($('#awaiting').html());
+    this.barTemplate = _.template($('#upload').html());
 
     this.listenTo(this.model, 'summaryChanged', this.render);
   },
@@ -109,20 +110,41 @@ LIME.View.Vertex = Backbone.View.Base.extend({
     }
   },
 
+  // This render function is becoming bloated
   render: function(){
     var awaiting = null;
 
     // If item is still awaiting upload, render loading bar
     if(awaiting = this.model.awaitingUpload()){
-      this.$el.html(this.awaitingTemplate());
+      this.$el.html(this.awaitingTemplate(this.model.toJSON()));
       this.$attributes = this.$el.children('.attributes');
+      this.$uploadContainer = this.$el.children('.upload_container');
+
       this.bars = _.reduce(awaiting, function(memo, attrFilePair){
         var key = attrFilePair[0];
-        memo[key] = $('<span>...</span>').appendTo(this.$attributes);
+        memo[key] = $(this.barTemplate()).appendTo(this.$uploadContainer);
         return memo;
-      }, {}, this)
+      }, {}, this);
+
+      this.renderAttribute('title', 0);
+
+      // Listener
       this.listenTo(this.model, 'uploadProgress', function(percent, attributeKey){
-        this.bars[attributeKey].css({width:percent+"%"})
+        this.bars[attributeKey].css({width:percent+"%"});
+      })
+
+      // Needs to be cleaned up
+      this.listenTo(this.model, 'uploadError', function(percent, attributeKey){
+        var bar = this.bars[attributeKey];
+        var view = this;
+        var msg = $('<span>click to retry</span>').appendTo(bar);
+        bar.addClass('error');
+        bar.on('click', function(){
+          msg.remove();
+          bar.removeClass('error');
+          bar.off('click');
+          view.model.save.call(view.model);
+        });
       })
       return this;
     }

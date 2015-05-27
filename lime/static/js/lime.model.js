@@ -193,8 +193,11 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
     if(awaiting = this.awaitingUpload()){ // Multiple fields possible
       async.reject(awaiting, _.bind(this.uploadToAttribute, this), function(rejected){
         // callback will execute after attribute has been set with href
-        if(rejected.length>0){console.warn(rejected.length +' uploads failed')}
-        model.save.call(model, {}, options); // If there are still unsuccessful uploads awaiting will continue
+        if(rejected.length>0){
+          console.warn(rejected.length +' uploads failed');
+        } else {
+          model.save.call(model, {}, options); // If there are still unsuccessful uploads awaiting will continue
+        }
       })
       return false; // must return false, otherwise the File object will be serialized and sent
     }
@@ -230,10 +233,12 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
 
     var callback = _.bind(function(status, result){
       if(status === 'error'){
+        this.trigger('uploadError', result, attrFilePair[0]);
         asyncCallback(false);
       } else if(status === 'progress'){
         this.trigger('uploadProgress', result, attrFilePair[0]);
-      } else {
+      } else if(status === 'complete') {
+        this.trigger('uploadProgress', 100, attrFilePair[0]);
         obj[attrFilePair[0]] = "/image/" + result;
         this.set(obj);
         asyncCallback(true);
@@ -258,7 +263,7 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
     // S3 uploader
     var uploader = new LIME.Uploader();
     uploader.on('complete', function(href){
-      callback(null, name);
+      callback('complete', name);
     });
     uploader.on('uploadError', function(){
       callback("error", file);
