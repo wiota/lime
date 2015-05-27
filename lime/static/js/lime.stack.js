@@ -23,7 +23,7 @@
       }
       var type = null;
       if(type = allowed[file.type]){
-        return new LIME.Model.Medium({vertex_type: type, href: file, title: file.name}, {accepted: true});
+        return new LIME.Model.Medium({vertex_type: type, href: file, title: LIME.fileToName(file.name)}, {accepted: true});
       } else {
         return {accepted: false, fileRef: file}
       }

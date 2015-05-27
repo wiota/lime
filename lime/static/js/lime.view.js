@@ -116,16 +116,19 @@ LIME.View.Vertex = Backbone.View.Base.extend({
     if(awaiting = this.model.awaitingUpload()){
       this.$el.html(this.awaitingTemplate());
       this.$attributes = this.$el.children('.attributes');
-      _.each(awaiting, function(){
-        this.$attributes.append('uploading...');
-      }, this)
-
+      this.bars = _.reduce(awaiting, function(memo, attrFilePair){
+        var key = attrFilePair[0];
+        memo[key] = $('<span>...</span>').appendTo(this.$attributes);
+        return memo;
+      }, {}, this)
+      this.listenTo(this.model, 'uploadProgress', function(percent, attributeKey){
+        this.bars[attributeKey].css({width:percent+"%"})
+      })
       return this;
     }
 
-    // If item is new, do not render the UI view.
+    // If item is new, do not rerender the UI view.
     if(this.model.isNew()){
-      this.$el.html("... .- ...- .. -. --.");
       return this;
     }
 

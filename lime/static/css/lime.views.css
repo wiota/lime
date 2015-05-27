@@ -519,6 +519,21 @@
   max-width: 100%;
 }
 
+
+/* Upload */
+.set .attributes.awaiting {
+  background-color: #e3e9ea;
+}
+
+.set .attributes.awaiting span {
+  transition: all .5s ease-in-out;
+  display:block;
+  height: 30px;
+  width: 0;
+  color: 000;
+  background-color: #b0b3b4;
+}
+
 .set .attribute.primary {
   font-size: 16px;
 }

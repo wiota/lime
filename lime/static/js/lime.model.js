@@ -228,11 +228,11 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
     var asyncCallback = callback;
     var obj = {};
 
-    console.log(attrFilePair);
-
-    var callback = _.bind(function(err, result){
-      if(err){
+    var callback = _.bind(function(status, result){
+      if(status === 'error'){
         asyncCallback(false);
+      } else if(status === 'progress'){
+        this.trigger('uploadProgress', result, attrFilePair[0]);
       } else {
         obj[attrFilePair[0]] = "/image/" + result;
         this.set(obj);
@@ -263,6 +263,9 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
     uploader.on('uploadError', function(){
       callback("error", file);
     });
+    uploader.on('progress', function(percent){
+      callback("progress", percent);
+    })
     uploader.uploadFile(file, {"name": name});
   },
 
@@ -331,9 +334,6 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
   _createEdge: function(successor, options){
     var model = this;
     options = options || {};
-
-    console.log(this);
-    console.log(successor);
 
     // ensure initial id
     if(this.isNew()){
