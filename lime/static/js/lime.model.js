@@ -245,7 +245,7 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
       }
     }, this)
 
-    this.uploadFile(attrFilePair[1], callback)
+    this.uploadFile(attrFilePair[1], callback);
   },
 
   uploadFile: function(file, callback){
