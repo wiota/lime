@@ -113,7 +113,7 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
     result = LIME.Model.Base.prototype.parse(response);
 
     // If server returns success, do not set any attributes.
-    if(result == 'success'){
+    if(result === 'success'){
       return {};
     }
     // pluck referenced fields out of attributes
@@ -149,15 +149,9 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
   },
 
   awaitingUpload: function(){
-
-    // This can be improved by chaining
-    var awaiting = _.map(
-      _.pick(this.attributes, function(val, key){
-        return this.attributeAwaitingUpload(key);
-      }, this),
-      function(val, key){return [key, val]},
-      this
-    );
+    // Would like to compose
+    var awaiting = _.pick(this.attributes, function(val, key){ return this.isFile(key); }, this)
+    awaiting = _.map(awaiting, function(val, key){ return [key, val]; }, this);
 
     if (_.isEmpty(awaiting)){
       return false
@@ -166,7 +160,7 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
     }
   },
 
-  attributeAwaitingUpload: function(key) {
+  isFile: function(key) {
     return (this.attributes[key] instanceof window.File);
   },
 
@@ -174,35 +168,50 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
   // Attribute Functions
   /* ------------------------------------------------------------------- */
 
-  // wraps the default Backbone save with some extras
-  // if attributes with uploads awaiting are passed, they will fail.
+
+  uploadAttributes: function(attributesAwaiting, callback){
+    var model = this;
+    async.map(attributesAwaiting, _.bind(this.uploadToAttribute, this), function(err, results){
+
+      // map results to attributes on model
+      var rejected = _.reject(results, function(attValPair){
+        if(model.isFile(attValPair[1])){
+          return false
+        }
+        var obj = {}
+        if(attValPair[0] === 'cover'){ // hard coded cover logic - migrate to array handling
+          obj[attValPair[0]] = [{"href": "/image/"+attValPair[1]}];
+        } else {
+          obj[attValPair[0]] = "/image/" + attValPair[1];
+        }
+        console.log(obj);
+        model.set(obj);
+        return true
+      })
+
+      if(rejected.length>0){
+        console.warn(rejected.length +' uploads failed');
+      } else {
+        callback(); // If there are still unsuccessful uploads awaiting will continue
+      }
+    })
+    return false; // must return false, otherwise the File object will be serialized and sent
+  },
+
   save: function(attr, options){
-
-    // Attribute handling is limited here:
-    // Backbone provides the ability to pass a block of attributes. Right now,
-    // this save function overrides the passed attributes and forces a complete
-    // representation to be sent because the server does not yet support PATCH
-    // requests.
-
+    // Attribute handling is limited. A complete representation is sent to the server.
     // Succset and predset will not be included in serialized attributes
 
     var model = this;
-    var awaiting = null;
+    var attributesAwaiting = null;
 
-    // If attributes are awaiting uploading, the save request is deferred until the uploading is complete
-    if(awaiting = this.awaitingUpload()){ // Multiple fields possible
-      async.reject(awaiting, _.bind(this.uploadToAttribute, this), function(rejected){
-        // callback will execute after attribute has been set with href
-        if(rejected.length>0){
-          console.warn(rejected.length +' uploads failed');
-        } else {
-          model.save.call(model, {}, options); // If there are still unsuccessful uploads awaiting will continue
-        }
-      })
-      return false; // must return false, otherwise the File object will be serialized and sent
+    // If attributes are awaiting uploading, the save request is deferred until
+    // the uploading is complete. Must return false, otherwise the File object
+    // will be serialized and sent. Need to work this out.
+    if(attributesAwaiting = this.awaitingUpload()){
+      this.uploadAttributes(attributesAwaiting, _.bind(model.save, model, {}, options));
+      return false;
     }
-
-    var model = this;
 
     model.modified = false;
     model.saving = true;
@@ -223,32 +232,29 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
       model.saving = false;
     }
 
-    // not currently possible to save individual attributes
     Backbone.Model.prototype.save.call(this, attr, options);
   },
 
-  uploadToAttribute: function(attrFilePair, callback){
-    var asyncCallback = callback;
-    var obj = {};
-
-    var callback = _.bind(function(status, result){
+  uploadToAttribute: function(attValPair, asyncCallback){
+    var uploadCallback = _.bind(function(status, result){
       if(status === 'error'){
-        this.trigger('uploadError', result, attrFilePair[0]);
-        asyncCallback(false);
-      } else if(status === 'progress'){
-        this.trigger('uploadProgress', result, attrFilePair[0]);
+        this.trigger('uploadError', result, attValPair[0]);
+        asyncCallback(null, [attValPair[0], result]);
+
       } else if(status === 'complete') {
-        this.trigger('uploadProgress', 100, attrFilePair[0]);
-        obj[attrFilePair[0]] = "/image/" + result;
-        this.set(obj);
-        asyncCallback(true);
+        this.trigger('uploadProgress', 100, attValPair[0]);
+        asyncCallback(null, [attValPair[0], result]);
       }
+    }, this);
+
+    var uploadProgress = _.bind(function(percent){
+      this.trigger('uploadProgress', result, attValPair[0]);
     }, this)
 
-    this.uploadFile(attrFilePair[1], callback);
+    this.uploadFile(attValPair[1], uploadCallback, uploadProgress);
   },
 
-  uploadFile: function(file, callback){
+  uploadFile: function(file, callback, progress){
     // testing
     // if(Math.random()<.5){
     //   request.trigger('error');
@@ -269,7 +275,7 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
       callback("error", file);
     });
     uploader.on('progress', function(percent){
-      callback("progress", percent);
+      progress(percent);
     })
     uploader.uploadFile(file, {"name": name});
   },

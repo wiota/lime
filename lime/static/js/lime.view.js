@@ -102,7 +102,7 @@ LIME.View.Vertex = Backbone.View.Base.extend({
   renderAttribute: function(field, order){
     var clsList = ['primary','secondary','tertiary', 'quaternary', 'quinary', 'senary', 'septenary', 'octonary', 'nonary', 'denary']
     if(_.has(this.model.attributes, field)){
-      if(this.model.attributeAwaitingUpload(field)){
+      if(this.model.isFile(field)){
         this.$attributes.append("<b class='attribute "+clsList[order]+"'>Loading</b>");
       } else {
         this.$attributes.append("<b class='attribute "+clsList[order]+"'>"+this.model.get(field)+"</b>");
