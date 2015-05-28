@@ -1,5 +1,15 @@
 /* ------------------------------------------------------------------- */
-// Portphillio Admin Backbone Router
+// LIME Router
+//
+// requires
+// underscore.js, backbone.js, jquery.js,
+// lime.model.js,
+// lime.collection.js,
+// lime.panel.js,
+// lime.view.js,
+// lime.focus.js,
+// lime.form.js,
+// lime.icon.js
 /* ------------------------------------------------------------------- */
 
 LIME.Router = Backbone.Router.extend({

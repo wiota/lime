@@ -416,7 +416,7 @@ LIME.Forms['Vertex'] = Backbone.View.Base.extend({
     }
     this.saveView.saving();
 
-    // Should use a different form for new models here
+    // Should I use a different form for new models here?
     if(this.model.isNew()){
       LIME.stack.addToGraph([this.model],[[this.predecessor, this.model]])
     } else {

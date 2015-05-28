@@ -1,5 +1,5 @@
 /* ------------------------------------------------------------------- */
-// LIME Listings
+// LIME Views
 /* ------------------------------------------------------------------- */
 
 LIME.View = {};
@@ -445,7 +445,7 @@ LIME.View.HomeMenu = Backbone.View.Base.extend({
 
 /* ------------------------------------------------------------------- */
 // Listing Panel
-// This panel should be the startpoint for all listings
+// This panel should be rendered once per set
 /* ------------------------------------------------------------------- */
 
 LIME.ListingPanel = Backbone.View.Base.extend({

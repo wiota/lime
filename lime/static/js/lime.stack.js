@@ -1,8 +1,11 @@
+/* ------------------------------------------------------------------- */
+// LIME stack
+//
 // requires
-// Underscore.js
-// Backbone.js
-// LIME.Models
-// LIME.Collection
+// underscore.js, backbone.js
+// lime.models.js
+// lime.collection.js
+/* ------------------------------------------------------------------- */
 
 (function(LIME){
 

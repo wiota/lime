@@ -1,11 +1,12 @@
 /* ------------------------------------------------------------------- */
-// Portphillio Admin Backbone Models
+// LIME Models
+// requires Backbone.js, Underscore.js
 /* ------------------------------------------------------------------- */
 
 LIME.Model = {};
 
 /* ------------------------------------------------------------------- */
-// App Model Overrides
+// Base Model
 /* ------------------------------------------------------------------- */
 
 LIME.Model.Base = Backbone.Model.extend({
@@ -39,7 +40,7 @@ LIME.Model.Base = Backbone.Model.extend({
 })
 
 /* ------------------------------------------------------------------- */
-// Vertex - Abstract class - to be transitioned to singular customVertex
+// Vertex
 /* ------------------------------------------------------------------- */
 
 LIME.Model.Vertex= LIME.Model.Base.extend({
@@ -54,7 +55,6 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
     attributes = attributes || {};
     options = options || {};
 
-
     // Modified should eventually be implemented at the field level
     this.modified = options.modified || false; // modified flag is used to determine state of save view
     this.fetched = options.fetched || false;  // fetched and
@@ -62,11 +62,6 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
 
     this.vertexType = attributes.vertex_type; // vertexType is a constant here
     this.typeCheck(); // will produce warning if type is not set
-
-    // May not need this if defaults work as expected
-    if(this.isNew()){
-      this.set({'title': this.get('title') || 'untitled'})
-    }
 
     this.succset = [];
     this.predset = [];
@@ -145,7 +140,7 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
   },
 
   deepenError: function(model, response, options){
-    console.log("Fetch unsucessful " + response);
+    console.warn("Fetch unsucessful " + response);
   },
 
   awaitingUpload: function(){

@@ -1,5 +1,5 @@
 /* ------------------------------------------------------------------- */
-// Path Views
+// LIME Focus is the notion of place or location in the graph
 /* ------------------------------------------------------------------- */
 
 LIME.Focus = Backbone.View.Base.extend({
