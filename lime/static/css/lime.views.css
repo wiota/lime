@@ -369,7 +369,7 @@
   .empty_succset h2 {
     font-weight: normal;
     margin: 0 0 10px;
-    padding: 10px 0;
+    padding: 0 0 10px;
   }
   .empty_succset p {
     margin: 0;

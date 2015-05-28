@@ -20,7 +20,11 @@ LIME.Router = Backbone.Router.extend({
   },
 
   initialize: function(){
-    // LIME interface
+
+    // Location on graph
+    LIME.focus = null;
+
+    // LIME panels
     LIME.panel = new LIME.Panel({
       panels: ['#predecessor_column','#focus_column', '#successor_column']
     });
@@ -30,22 +34,21 @@ LIME.Router = Backbone.Router.extend({
     LIME.panel.addPreset('successor', [0, 0, 180]);
     LIME.panel.shift('standard');
 
-    LIME.focus = new LIME.Focus();
-    LIME.successorSet = new LIME.ListingPanel({"setType": "successor", el: $('#succset')});
-    LIME.predecessorSet = new LIME.ListingPanel({"setType": "predecessor", el: $('#predset')});
+    LIME.focusPanel = new LIME.FocusPanel();
+    LIME.successorPanel = new LIME.ListingPanel({"setType": "successor", el: $('#succset')});
+    LIME.predecessorPanel = new LIME.ListingPanel({"setType": "predecessor", el: $('#predset')});
     LIME.actionPanel = new LIME.ActionPanel();
 
-    // icons
+    // Icons
     LIME.icon = new Iconset();
     LIME.icon.add("bookcase", '.bookcase.icon');
     LIME.icon.refresh();
 
+    // This should disappear with the forms being passed through the router
     this.on('route', function(r,p){
       LIME.icon.refresh();
-      // This should disappear with the forms being passed through the router
       LIME.actionPanel.closeForm();
     })
-
   },
 
   // Host
@@ -56,10 +59,10 @@ LIME.Router = Backbone.Router.extend({
 
   // Vertex
   getVertex: function(vertexType, id){
-    var vertex = LIME.collection.Vertex.lookup(id, vertexType);
-    LIME.focus.list(vertex);
-    LIME.successorSet.list(vertex);
-    LIME.predecessorSet.list(vertex);
+    LIME.focus = LIME.collection.Vertex.lookup(id, vertexType);
+    LIME.focusPanel.list(LIME.focus);
+    LIME.successorPanel.list(LIME.focus);
+    LIME.predecessorPanel.list(LIME.focus);
 
   }
 
