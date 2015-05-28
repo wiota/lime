@@ -243,7 +243,7 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
     }, this);
 
     var uploadProgress = _.bind(function(percent){
-      this.trigger('uploadProgress', result, attValPair[0]);
+      this.trigger('uploadProgress', percent, attValPair[0]);
     }, this)
 
     this.uploadFile(attValPair[1], uploadCallback, uploadProgress);
