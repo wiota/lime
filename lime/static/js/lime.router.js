@@ -25,9 +25,6 @@ LIME.Router = Backbone.Router.extend({
     LIME.predecessorSet = new LIME.ListingPanel({"setType": "predecessor", el: $('#predset')});
     LIME.actionPanel = new LIME.ActionPanel();
 
-    // not shown right now
-    LIME.requestPanel = new LIME.RequestPanel();
-
     // icons
     LIME.icon = new Iconset();
     LIME.icon.add("bookcase", '.bookcase.icon');

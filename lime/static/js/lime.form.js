@@ -450,6 +450,8 @@ LIME.Forms['Cover'] = Backbone.View.Base.extend({
     this.$cover.append(this.$removebutton);
     this.$el.append(this.$cover);
 
+    this.$removebutton.on('click', this.noCover);
+
     // add cover images
     _.each(cover, function(coverItem){
       this.$cover.append("<img src='"+coverItem.href+"?w=500' alt='' />");
@@ -473,11 +475,19 @@ LIME.Forms['Cover'] = Backbone.View.Base.extend({
     this.listenTo(this.fileUpload, 'change', this.filesChanged);
     this.listenTo(this.saveView, 'close', this.forceClose);
     // request process saves in a different place
-    this.$removebutton.on('click', this.noCover);
 
     this.saveView.unpersisted();
 
     return this;
+  },
+
+  saveAndClose: function(){
+    if(this.model.modified){
+      LIME.stack.updateVertex(this.model);
+      this.forceClose();
+    } else {
+      this.forceClose();
+    }
   },
 
   forceClose: function(){
@@ -486,17 +496,13 @@ LIME.Forms['Cover'] = Backbone.View.Base.extend({
   },
 
   filesChanged: function(files){
-    file = files[0];
-    this.model;
-    LIME.requestPanel.serial([
-      {'func': 'uploadCoverPhoto', 'args': [file, this.model]},
-    ]);
+    LIME.stack.modifyVertex(this.model, {"cover": files[0]}); // migrate to array handling
+    this.saveAndClose();
   },
 
   noCover: function(){
-    LIME.requestPanel.serial([
-      {'func': 'removeCover', 'args': [this.model]},
-    ]);
+    LIME.stack.modifyVertex(this.model, {"cover": []}); // migrate to array handling
+    this.saveAndClose();
   }
 
 });
