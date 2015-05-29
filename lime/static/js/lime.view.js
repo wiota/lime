@@ -483,7 +483,6 @@ LIME.ListingPanel = Backbone.View.Base.extend({
     // Model
     this.model;
 
-    this.render();
   },
 
   switchLayout: function(to, from){
@@ -502,16 +501,16 @@ LIME.ListingPanel = Backbone.View.Base.extend({
   },
 
   newForm: function(type){
-    // API uses underscored attribute names
-    LIME.actionPanel.loadVertexForm(LIME.stack.createVertex({'vertex_type': type}), this.model);
+    LIME.actionPanel.loadVertexForm(LIME.stack.createVertex({'vertex_type': type}), this.model); // API uses underscored attribute names such as vertex_type
   },
 
-  render: function(){
+  renderMenuInterface: function(){
     this.$viewMenu = $("<div class='view_menu'></div>").appendTo(this.$el);
     this.$actionMenu = $("<div class='action_menu'></div>").appendTo(this.$el);
     return this;
   },
 
+  // This is a bloated function and possibly in the wrong spot
   renderMenus: function(){
     var vertexType = this.model.vertexType;
     var vertexSchema = LIME.host.vertexSchema;
@@ -591,11 +590,16 @@ LIME.ListingPanel = Backbone.View.Base.extend({
   },
 
   renderListing: function(){
+
+    this.renderMenuInterface();
+
     // only render if deep
     if(this.model===null){
+      console.warn("Listing render attempted before vertex was ready.")
       return false;
     }
 
+    console.log("Listing render " + this.setType);
     // new listing
     this.listing = new LIME.View.ListingView['Vertex']({
       'model':this.model,
@@ -611,21 +615,20 @@ LIME.ListingPanel = Backbone.View.Base.extend({
       this.switchLayout(this.layout, null)
     }
 
-    LIME.focus.render();
   },
 
-  list: function(model){
-    this.model = model;
+  list: function(vertex){
 
-    // remove old listing
+    this.model = vertex;
+
     if(this.listing){
       this.listing.close();
     }
 
-    if(!this.model.isDeep()){
-      this.listenToOnce(this.model, 'sync', this.renderListing);
+    if(!vertex.isDeep()){
+      this.listenToOnce(vertex, 'sync', _.bind(this.renderListing, this, vertex));
     } else {
-      this.renderListing();
+      this.renderListing(vertex);
     }
 
   },

@@ -14,6 +14,7 @@ LIME.FocusPanel = Backbone.View.Base.extend({
   render: function(vertex){
     if(!this.model.isFetched()){
       return false;
+      console.warn("Focus render attempted before vertex was ready.")
     }
 
     // focus
