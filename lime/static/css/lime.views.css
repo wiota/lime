@@ -325,6 +325,38 @@
   text-align: center;
 }
 
+/* Vertex ------------------------------------- */
+
+/* Upload */
+.vertex .upload_container {
+  display:block;
+  width: auto;
+  max-width: 300px;
+  background-color: transparent;
+  height: 16px;
+  border: 1px solid #5e5e5e;
+  border-radius: 4px;
+  padding: 0 2px;
+  overflow: hidden;
+
+}
+
+.vertex .upload_container .upload_fill {
+  -webkit-transition: all .2s ease-out;
+  -moz-transition: all .2s ease-out;
+  transition: all .2s ease-out;
+  display:block;
+  margin:2px 0;
+  height: 12px;
+  color: #000;
+  background-color: #3abef3;
+  position:relative;
+}
+
+.vertex .upload_container .upload_fill.error {
+  background-color: #ea8328;
+}
+
 /* Listing ------------------------------------- */
 
 .listing {
@@ -532,56 +564,6 @@
   text-overflow: ellipsis;
   max-width: 100%;
 }
-
-
-/* Upload */
-.set .upload_container {
-  display:block;
-  width: auto;
-  max-width: 300px;
-  background-color: transparent;
-  height: 20px;
-  border-radius: 10px;
-  border: 1px solid #5e5e5e;
-  padding: 0 2px;
-  overflow: hidden;
-
-}
-
-.set .upload_container .upload_fill {
-  -webkit-transition: all .2s ease-out;
-  -moz-transition: all .2s ease-out;
-  transition: all .2s ease-out;
-  transform-origin: 50% 50%;
-  -webkit-transform-origin: 50% 50%;
-  -moz-transform-origin: 50% 50%;
-  display:block;
-  margin:2px 0;
-  width: 0;
-  height: 16px;
-  text-indent: 20px;
-  border-radius: 13px;
-  color: #000;
-  background-color: #eac828;
-  position:relative;
-}
-
-.set .upload_container .upload_fill.error {
-  background-color: #ea8328;
-}
-
-
-.set .upload_container .upload_fill div {
-  display:none;
-  background-color: #90f3ff;
-  border-radius: 15px;
-  height: 28px;
-  width: 28px;
-  position:absolute;
-  top:0px;
-  right:0px;
-}
-
 
 .set .attribute.primary {
   font-size: 16px;

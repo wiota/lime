@@ -151,18 +151,19 @@
 
   <script type="text/template" id="awaiting">
 
-    <!-- no cover -->
-
-    <div class='attributes awaiting'>
-      <img class='icon <%- vertex_type %>' src='/icon/<%- vertex_type %>.svg'>
-    </div>
+    <div class='cover'></div>
 
     <div class='upload_container'>
 
     </div>
 
+    <div class='attributes awaiting'>
+      <img class='icon <%- vertex_type %>' src='/icon/<%- vertex_type %>.svg'>
+    </div>
+
     <div class='ui'>
-      <a class='delete'>cancel upload</a>
+      <a class='set_cover'><img class='icon update' src='/icon/lens.svg'><b class='label'>set cover</b></a>
+      <a class='update'><img class='icon update' src='/icon/pencil.svg'><b class='label'>update</b></a>
       <a class='drag_handle'>&#8597;</a>
     </div>
   </script>
