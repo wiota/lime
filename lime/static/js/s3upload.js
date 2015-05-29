@@ -10,7 +10,6 @@ LIME.Uploader.prototype.s3_sign_put_url = 'upload/sign_s3/';
 
 LIME.Uploader.prototype.onFinishS3Put = function(public_url, file) {
   this.trigger('complete', public_url);
-  //return console.log('base.onFinishS3Put()', public_url, file);
 };
 
 LIME.Uploader.prototype.onProgress = function(percent, status, public_url, file) {
@@ -20,7 +19,7 @@ LIME.Uploader.prototype.onProgress = function(percent, status, public_url, file)
 
 LIME.Uploader.prototype.onError = function(status, file) {
   this.trigger('uploadError');
-  console.log('base.onError()', status, file);
+  console.warn('base.onError()', status, file);
 };
 
 LIME.Uploader.prototype.initialize = function(options){

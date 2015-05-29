@@ -55,12 +55,8 @@
 
     updateVertex: function(v){
       var options = {
-        success: function(){
-          console.log(v.id + ' vertex updated')
-        },
-        error: function(){
-          console.log(v.id + ' vertex failed')
-        }
+        success: function(){},
+        error: function(){}
       }
       v.save({}, options);
     },

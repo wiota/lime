@@ -64,7 +64,7 @@ LIME.god = (function(){
   }
 
   var revealGod = function(){
-    console.log('GOD');
+    console.warn('In vertex we trust');
     $('body').addClass('godman');
   }
 
@@ -74,13 +74,11 @@ LIME.god = (function(){
   }
 
   var ephemeralMan = function(){
-    console.log('MAN');
     $('body').removeClass('godman');
   }
 
   $(document).keyup(function(event){
     // god
-    //console.log(event.which);
     if(event.which == god_keycheck[god_keyin]){
       god_keyin++;
     } else {

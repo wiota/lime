@@ -599,7 +599,6 @@ LIME.ListingPanel = Backbone.View.Base.extend({
       return false;
     }
 
-    console.log("Listing render " + this.setType);
     // new listing
     this.listing = new LIME.View.ListingView['Vertex']({
       'model':this.model,

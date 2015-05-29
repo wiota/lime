@@ -52,7 +52,6 @@ LIME.Panel = Backbone.View.Base.extend({
         }
       }
       $(this.panels[key]).css(css);
-      //console.log(css);
     }, this)
   }
 

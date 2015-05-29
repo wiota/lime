@@ -43,8 +43,6 @@ LIME.FocusPanel = Backbone.View.Base.extend({
       this.focusView.close();
     }
 
-    console.log(vertex.isFetched());
-
     if(!vertex.isFetched()){
       this.listenToOnce(vertex, 'sync', this.render);
     } else {

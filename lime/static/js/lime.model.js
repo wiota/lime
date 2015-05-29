@@ -90,7 +90,6 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
     this.modified = true;
     var attr = model.changedAttributes()
     var summary_attr = _.omit(attr, 'succset');
-    //console.log('change triggered ' + _.reduce(summary_attr, function(a, b){return a + " " + b}, ''));
     if(!_.isEmpty(summary_attr)){
       this.trigger('summaryChanged', {'attr':summary_attr});
     }
@@ -179,7 +178,7 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
         } else {
           obj[attValPair[0]] = "/image/" + attValPair[1];
         }
-        console.log(obj);
+
         model.set(obj);
         return true
       })
@@ -321,7 +320,6 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
     options.success = function(resp){
       if(success) success(model, resp, options);
       model.trigger('sync', model, resp);
-      // console.log('sync succset save on ' + model.get('_id'))
     }
 
     options.error = function(resp){
@@ -363,7 +361,6 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
     options.success = function(resp){
       if(success) success(model, resp, options);
       model.trigger('sync', model, resp);
-      // console.log('sync succset save on ' + model.get('_id'))
     }
 
     options.error = function(resp){
@@ -513,8 +510,6 @@ LIME.Model.Host = LIME.Model.Base.extend({
   },
 
   lookupForm: function(func){
-    console.log("looking up "+vertexType);
-
     if(this.isSchemaAvailable(vertexType)){
       func(this.vertexSchema[vertexType]);
     } else {
