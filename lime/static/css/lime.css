@@ -37,7 +37,7 @@
 
 #action_panel {
 
-  background: url('https://s3.amazonaws.com/wiota/lime/bricks_lowc_limegrey.png') #fff;
+  background: url('https://s3.amazonaws.com/wiota/lime/bricks_lowc_limegrey.png') #efecdc;
   z-index: 6;
   overflow: auto;
   margin: 0;
@@ -150,11 +150,6 @@ form.succset .file_upload input {
   -o-perspective: 5000px;
 }
 
-#action_panel .input:focus {
-  outline: none;
-  border-top: 1px dotted #d8e8e8;
-}
-
 #action_panel form {
   margin: 0;
   overflow: visible;
@@ -166,12 +161,23 @@ form.succset .file_upload input {
   }
 
 #action_panel .input {
-  transition: all .3s ease;
+  transition: all .1s ease;
   border-style:none;
   padding: 1%;
   border-top: 1px solid #d8e8e8;
   font-size: 16px;
   }
+
+#action_panel .input:focus {
+  outline: none;
+  box-shadow: -5px 5px 0px #ccc;
+  /* border-left: 5px dotted #82db8a; */
+}
+
+#action_panel .input.changed {
+  outline: none;
+  box-shadow: -5px 5px 0px #82db8a;
+}
 
 #action_panel textarea {
   height: 10em;
@@ -182,24 +188,57 @@ form.succset .file_upload input {
   }
 
 #action_panel .input#title {
-  border-top: none;
   padding: 1% 0;
+  width: 95%;
   font-size: 34px;
   background-color: transparent;
+  border-top: none;
   }
+#action_panel .input#title:focus {
+  box-shadow: none;
+}
 
 #action_panel .god_attributes {
-  position: fixed;
-  top: 0;
-  right: 0;
-  padding: 2%;
-  width: 10%;
-  color: #f00;
+  position:relative;
+  width: 440px;
+  height: 160px;
+  padding: 20px 25px;
+  background: #fff url('http://s3.amazonaws.com/wiota/lime/marquee.gif');
+}
+
+#action_panel .god_attributes .head {
+  display: block;
+  margin: 1% 0;
+  text-align: left;
+  font-style: italic;
+  font-size: 12px;
+  position:absolute;
+  top:20px;
+  right: 20px;
+
+}
+
+#action_panel .god_attributes .icon{
+  display:inline;
+  margin-right: 10px;
+  width: 16px;
+  height: 16px;
+}
+
+#action_panel .god_attributes input:disabled {
+  opacity: .5;
+  border-top:none;
+  padding-left: 0;
+}
+
+#action_panel .god_attributes label.checkbox {
+  display:inline-block;
 }
 
 #action_panel .god_attributes input[type=checkbox] {
-  margin: 2%;
+  margin: 0;
 }
+
 #action_panel .save_view {
   width: 500px;
 }
@@ -251,6 +290,7 @@ form.succset .file_upload input {
 
 #action_panel .unsaved .input.save:hover {
   background-color: #82db8a; color: #fff;
+  box-shadow: -5px 5px 0px #ccc;
 }
 
 #action_panel .unsaved .input.save {background-color: #fff;}
@@ -262,7 +302,8 @@ form.succset .file_upload input {
   -moz-transform:translateX(0) rotateY(180deg);
   -o-transform:translateX(0) rotateY(180deg);
   }
-#action_panel .error .input.save {background-color: #f00; color: #fff;}
+#action_panel .error .input.save {background-color: #eac828; color: #fff;}
+
 
 
 #action_panel .input.cancel,
@@ -273,9 +314,11 @@ form.succset .file_upload input {
 
 #action_panel .input.cancel:hover,
 #action_panel .input.close:hover {
-  background-color: #82db8a;
-  color: #fff;
+  color: #000;
+  box-shadow: -5px 5px 0px #ccc;
   }
+
+#action_panel .error .input.close:hover {background-color: #eac828; color: #fff;}
 
 #action_panel .cover_display {
   position: relative;

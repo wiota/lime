@@ -1,11 +1,12 @@
 /* ------------------------------------------------------------------- */
-// Portphillio Admin Backbone Models
+// LIME Models
+// requires Backbone.js, Underscore.js
 /* ------------------------------------------------------------------- */
 
 LIME.Model = {};
 
 /* ------------------------------------------------------------------- */
-// App Model Overrides
+// Base Model
 /* ------------------------------------------------------------------- */
 
 LIME.Model.Base = Backbone.Model.extend({
@@ -30,16 +31,16 @@ LIME.Model.Base = Backbone.Model.extend({
     return model;
   },
 
-  setReference: function(set){
-    var setReferences = [];
-    setReferences = _.map(set, this.reference);
-    return setReferences;
+  referenceSet: function(set){
+    var setOfReferences = [];
+    setOfReferences = _.map(set, this.reference);
+    return setOfReferences;
   },
 
 })
 
 /* ------------------------------------------------------------------- */
-// Vertex - Abstract class - to be transitioned to singular customVertex
+// Vertex
 /* ------------------------------------------------------------------- */
 
 LIME.Model.Vertex= LIME.Model.Base.extend({
@@ -50,36 +51,30 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
     "title":  ""
   },
 
-  cls_dict: {
-      "Vertex.Category":"category",
-      "Vertex.Work":"work",
-      "Vertex.Happening":"happening",
-      "Vertex.Medium.Photo":"photo"
-  },
-
   initialize: function(attributes, options){
     attributes = attributes || {};
     options = options || {};
-    this.fetched = options.fetched || false;
-    this.deep = options.deep || false;
-    this.modified = options.modified || false;
 
-    // Transition to customVertex:
-    // if(!attributes.vertexType){return false}
+    // Modified should eventually be implemented at the field level
+    this.modified = options.modified || false; // modified flag is used to determine state of save view
+    this.fetched = options.fetched || false;  // fetched and
+    this.deep = options.deep || false;       // deep are used in dereferencing
 
-    // Ease transition for now by falling back to class variable
-    this.vertexType = attributes.vertex_type || this.cls_dict[this.get("_cls")];
+    this.vertexType = attributes.vertex_type; // vertexType is a constant here
+    this.typeCheck(); // will produce warning if type is not set
 
-    // Log until transition is finished and cleaned up
-    // console.log(this.cid + " " + this.vertexType + " vertex_type:"+attributes.vertex_type+" cls:" + this.get('_cls'));
-
-    this.on('sync', function(){this.modified = false;})
-
-    if(this.isNew()){
-      this.set({'title': this.get('title') || 'untitled'})
-      this.modified = false;
-    }
+    this.succset = [];
+    this.predset = [];
     this.on('change', this.triggerEvents);
+  },
+
+  typeCheck: function(){
+    if(!this.vertexType && (this.isFetched() || this.isNew())){
+      console.warn('Vertex ' + this.id + ' has no type: '+ this.vertexType);
+      return false;
+    } else {
+      return true;
+    }
   },
 
   urlRoot: function(){
@@ -90,6 +85,7 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
     return this.url() + 'succset/';
   },
 
+  // This can be updated now that referenced fields are not in the attribute set
   triggerEvents: function(model, options){
     this.modified = true;
     var attr = model.changedAttributes()
@@ -108,17 +104,20 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
     return this.deep;
   },
 
-  isModified: function(){
-    return this.modified;
-  },
-
   parse: function(response){
     result = LIME.Model.Base.prototype.parse(response);
 
+    // If server returns success, do not set any attributes.
+    if(result === 'success'){
+      return {};
+    }
+    // pluck referenced fields out of attributes
     _.each(this.referencedFields, function(field){
-      result[field] = this.setReference(result[field]);
+      this[field] = this.referenceSet(result[field]);
+      delete result[field];
     }, this);
     this.vertexType = result.vertex_type || null;
+    this.typeCheck();
     return result;
   },
 
@@ -141,17 +140,76 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
   },
 
   deepenError: function(model, response, options){
-    console.log("Fetch unsucessful " + response);
+    console.warn("Fetch unsucessful " + response);
+  },
+
+  awaitingUpload: function(){
+    // Would like to compose
+    var awaiting = _.pick(this.attributes, function(val, key){ return this.isFile(key); }, this)
+    awaiting = _.map(awaiting, function(val, key){ return [key, val]; }, this);
+
+    if (_.isEmpty(awaiting)){
+      return false
+    } else {
+      return awaiting;
+    }
+  },
+
+  isFile: function(key) {
+    return (this.attributes[key] instanceof window.File);
   },
 
   /* ------------------------------------------------------------------- */
   // Attribute Functions
   /* ------------------------------------------------------------------- */
 
-  saveAttributes: function(options){
-    var attrs = _.omit(this.attributes, this.referencedFields);
-    var model = this;
 
+  uploadAttributes: function(attributesAwaiting, callback){
+    var model = this;
+    async.map(attributesAwaiting, _.bind(this.uploadToAttribute, this), function(err, results){
+
+      // map results to attributes on model
+      var rejected = _.reject(results, function(attValPair){
+        if(model.isFile(attValPair[1])){
+          return false
+        }
+        var obj = {}
+        if(attValPair[0] === 'cover'){ // hard coded cover logic - migrate to array handling
+          obj[attValPair[0]] = [{"href": "/image/"+attValPair[1]}];
+        } else {
+          obj[attValPair[0]] = "/image/" + attValPair[1];
+        }
+        console.log(obj);
+        model.set(obj);
+        return true
+      })
+
+      if(rejected.length>0){
+        console.warn(rejected.length +' uploads failed');
+      } else {
+        callback(); // If there are still unsuccessful uploads awaiting will continue
+      }
+    })
+    return false; // must return false, otherwise the File object will be serialized and sent
+  },
+
+  save: function(attr, options){
+    // Attribute handling is limited. A complete representation is sent to the server.
+    // Succset and predset will not be included in serialized attributes
+
+    var model = this;
+    var attributesAwaiting = null;
+
+    // If attributes are awaiting uploading, the save request is deferred until
+    // the uploading is complete. Must return false, otherwise the File object
+    // will be serialized and sent. Need to work this out.
+    if(attributesAwaiting = this.awaitingUpload()){
+      this.uploadAttributes(attributesAwaiting, _.bind(model.save, model, {}, options));
+      return false;
+    }
+
+    model.modified = false;
+    model.saving = true;
     options = options || {};
 
     var success = options.success;
@@ -159,51 +217,100 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
 
     options.success = function(resp){
       if(success) success(model, resp, options);
-      model.trigger('sync', model, resp);
-      console.log('sync attributes save on ' + model.get('_id'))
+      this.modified = false;
+      model.saving = false;
     }
 
     options.error = function(resp){
       if(error) error(model, resp, options);
-      model.trigger('error', model, resp);
+      model.modified = true;
+      model.saving = false;
     }
 
-    options.attrs = attrs;
-    Backbone.sync('update', this, options);
+    Backbone.Model.prototype.save.call(this, attr, options);
+  },
+
+  uploadToAttribute: function(attValPair, asyncCallback){
+    var uploadCallback = _.bind(function(status, result){
+      if(status === 'error'){
+        this.trigger('uploadError', result, attValPair[0]);
+        asyncCallback(null, [attValPair[0], result]);
+
+      } else if(status === 'complete') {
+        this.trigger('uploadProgress', 100, attValPair[0]);
+        asyncCallback(null, [attValPair[0], result]);
+      }
+    }, this);
+
+    var uploadProgress = _.bind(function(percent){
+      this.trigger('uploadProgress', percent, attValPair[0]);
+    }, this)
+
+    this.uploadFile(attValPair[1], uploadCallback, uploadProgress);
+  },
+
+  uploadFile: function(file, callback, progress){
+    // testing
+    // if(Math.random()<.5){
+    //   request.trigger('error');
+    //   return false;
+    // }
+
+    // timestamp
+    var arr = file.name.split('.');
+    var ext = arr.pop();
+    var name = LIME.fileSafe(arr.join('.')) + '_' + Date.now() + '.' + ext;
+
+    // S3 uploader
+    var uploader = new LIME.Uploader();
+    uploader.on('complete', function(href){
+      callback('complete', name);
+    });
+    uploader.on('uploadError', function(){
+      callback("error", file);
+    });
+    uploader.on('progress', function(percent){
+      progress(percent);
+    })
+    uploader.uploadFile(file, {"name": name});
   },
 
   /* ------------------------------------------------------------------- */
-  // Succset Functions
+  // Succset Functions - successorAdd, successorRemove, predecessorAdd, predecessorRemove
   /* ------------------------------------------------------------------- */
 
+  // Local modification - initiates server request
   addEdgeTo: function(successor, options){
 
-    // succset
-    var succset = _.clone(this.get('succset'));
+    var succset = this.succset;
+    var predset = successor.predset;
+
     succset.unshift(successor);
-    this.set({'succset':succset});
-
-    // predset
-    var predset = _.clone(successor.get('predset'));
     predset.unshift(this);
-    successor.set({'predset': predset});
 
-    this.createEdge(successor, options);
+    this.trigger('successorAdd', successor);
+    successor.trigger('predecessorAdd', this);
+
+    this._createEdge(successor, options);
   },
 
+  // Local modification - initiates server request
   removeEdgeTo: function(successor, options){
-    // succset
-    var succset = this.get('succset');
-    this.set({'succset':_.without(succset, successor)});
 
-    // predset
-    var predset = successor.get('predset');
-    successor.set({'succset':_.without(predset, this)});
+    var succset = this.succset;
+    var predset = successor.predset;
 
-    this.destroyEdge(successor, options);
+    this.succset = _.without(succset, successor);
+    successor.predset = _.without(predset, this);
+
+    this.trigger('successorRemove', successor);
+    successor.trigger('predecessorRemove', this);
+
+    this._destroyEdge(successor, options);
   },
 
-  destroyEdge: function(successor, options){
+  // Server request
+  _destroyEdge: function(successor, options){
     var model = this;
 
     options = options || {};
@@ -220,20 +327,35 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
     options.error = function(resp){
       if(error) error(model, resp, options);
       model.trigger('error', model, resp);
+      // patch up locally
     }
 
     options.url = 'api/v1/edge/';
     options.data = JSON.stringify({'edges': [this.get('_id'),successor.get('_id')]});
-    // console.log(options.data);
     options.contentType = 'application/json';
     Backbone.sync('delete', this, options);
   },
 
-
-  createEdge: function(successor, options){
+  // Server request
+  _createEdge: function(successor, options){
     var model = this;
-
     options = options || {};
+
+    // ensure initial id
+    if(this.isNew()){
+      this.once('sync', function(){
+        model._createEdge.apply(model, arguments)
+      })
+      return false;
+    }
+
+    // ensure terminal id
+    if(successor.isNew()){
+      successor.once('sync', function(){
+        model._createEdge.apply(model, arguments)
+      })
+      return false;
+    }
 
     var success = options.success;
     var error = options.error;
@@ -247,18 +369,20 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
     options.error = function(resp){
       if(error) error(model, resp, options);
       model.trigger('error', model, resp);
+      // patch up locally
     }
+
 
     options.url = 'api/v1/edge/';
     options.data = JSON.stringify({'edges': [this.get('_id'),successor.get('_id')]});
-    console.log(options.data);
     options.contentType = 'application/json';
     Backbone.sync('create', this, options);
   },
 
+  // Server request for reordering
   saveSuccset: function(options){
-    var list = this.get('succset');
     var model = this;
+    var idList = _.pluck(this.succset, 'id');
 
     options = options || {};
 
@@ -267,32 +391,43 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
 
     options.success = function(resp){
       if(success) success(model, resp, options);
+      // not sure where this is used
       model.trigger('sync', model, resp);
-      //console.log('sync succset save on ' + model.get('_id'))
+      // new event
+      model.trigger('successorSync', model, resp);
     }
 
     options.error = function(resp){
       if(error) error(model, resp, options);
+      // not sure where this is used
       model.trigger('error', model, resp);
+      // new event
+      model.trigger('successorError', model, resp);
     }
 
     options.url = _.result(this, 'urlSuccset');
-    options.attrs = {'succset': _.pluck(list, 'id')};
+    options.attrs = {'succset': idList};
 
     Backbone.sync('update', this, options);
   },
 
-  // for reordering
+  // Local modification - initiates server request
   setSuccset: function(idList){
-    var succset = this.get('succset');
-    var update = [];
-    _.each(idList, function(id, index, list){
-      var obj = _.findWhere(succset, {'id': id});
-      update.push(obj);
-    });
-    //console.log(_.pluck(update, 'id'));
-    this.set({'succset': update});
-    this.saveSuccset();
+    var undefined;
+    // inefficient algorithm
+    var update = _.map(idList, function(id, index, list){
+      var obj = _.findWhere(this.succset, {'id': id});
+      return obj;
+    }, this);
+
+    this.succset = update;
+
+    // Prevent null saves
+    if(_.indexOf(this.succset, undefined)<0){
+      this.saveSuccset();
+    } else {
+      console.warn('Succsessor set contains null values.');
+    }
   },
 
   /* ------------------------------------------------------------------- */
@@ -301,31 +436,7 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
 
   setCover: function(coverObj, options){
     this.set({'cover':coverObj});
-    this.saveAttributes(options);
-  },
-
-  saveCover: function(options){
-    var list = this.get('cover');
-    var model = this;
-
-    options = options || {};
-
-    var success = options.success;
-    var error = options.error;
-
-    options.success = function(resp){
-      if(success) success(model, resp, options);
-      model.trigger('sync', model, resp);
-      console.log('sync cover save on ' + model.get('_id'))
-    }
-
-    options.error = function(resp){
-      if(error) error(model, resp, options);
-      model.trigger('error', model, resp);
-    }
-
-    options.attrs = {'cover': _.pluck(list, 'id')};
-    Backbone.sync('update', this, options);
+    this.save(options);
   }
 
 });
@@ -419,14 +530,28 @@ LIME.Model.Host = LIME.Model.Base.extend({
 // These types should remain standard
 /* ------------------------------------------------------------------- */
 
-LIME.Model.photoNesting = {
-  'category': ['Vertex.Work']
-}
+/* ------------------------------------------------------------------- */
+// Medium - Should replace Medium and Photo
+/* ------------------------------------------------------------------- */
+
+LIME.Model.Medium = LIME.Model.Vertex.extend({
+
+  initialize: function(attributes, options){
+    LIME.Model.Vertex.prototype.initialize.apply(this, arguments);
+    this.fileRef = options.fileRef || null;
+    this.accepted = true; // if file is rejected during upload an object with false will be returned instead
+
+  },
+
+
+
+})
 
 /* ------------------------------------------------------------------- */
 // Medium - Abstract class - do not instantiate!
 /* ------------------------------------------------------------------- */
 
+/*
 LIME.Model['Vertex.Medium'] = LIME.Model.Vertex.extend({
   _cls: "Vertex.Medium",
 
@@ -437,14 +562,16 @@ LIME.Model['Vertex.Medium'] = LIME.Model.Vertex.extend({
     this.deep = false;
   }
 });
+*/
 
 /* ------------------------------------------------------------------- */
 // Photo
 /* ------------------------------------------------------------------- */
 
+/*
 LIME.Model['Vertex.Medium.Photo'] = LIME.Model['Vertex.Medium'].extend({
   vertexType: 'photo',
   urlRoot: "api/v1/photo/",
   _cls: "Vertex.Medium.Photo"
 });
-
+*/

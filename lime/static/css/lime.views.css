@@ -61,15 +61,20 @@
   left: 0;
   width: 100%;
   z-index: 200;
-  margin-left: 1%;
+  height: 31px;
+  padding: 0 0 10px 10px;
 }
 
 .view_menu .menu {
   position: relative;
   display:block;
   float:left;
-  width: 25%;
-  margin-left: 1%;
+  width: 180px;
+  margin: 0 0 0 10px;
+}
+
+.view_menu .menu:hover {
+  z-index: 201;
 }
 
 .view_menu .menu b {
@@ -77,8 +82,8 @@
 
 .view_menu a.switch {
   display: none;
-  width: 80%;
-  padding: 7px 10% 8px;
+  width: 160px;
+  padding: 7px 10px 8px;
 }
 
 .view_menu ul {
@@ -90,41 +95,46 @@
 .view_menu li a {
   display:block;
   text-align: left;
-  width: 80%;
-  padding: 0 10%;
+  width: 160px;
+  padding: 0 10px;
   cursor: pointer;
   opacity: 0;
-  -webkit-transition: all .1s ease-out;
-  -moz-transition: all .1s ease-out;
-  transition: all .1s ease-out;
-  transform-origin: 0 50%;
+  -webkit-transition: all .1s ease-in-out;
+  -moz-transition: all .1s ease-in-out;
+  transition: all .1s ease-in-out;
+  border-style: solid;
+  border-color: #f5f8f8;
+  border-width: 0;
   height: 0;
   overflow: hidden;
 }
 
 .view_menu li.selected a {
-  padding: 7px 10% 8px;
+  padding: 6px 10px 6px;
+  border-width: 0 1px 1px;
   visibility: visible;
   height: 19px;
   opacity: 1;
+}
+
+.view_menu ul:hover {
+
 }
 
 .view_menu ul:hover li a {
-  padding: 7px 10% 8px;
+  padding: 7px 20px 8px;
+  border-width: 0 1px 1px;
   visibility: visible;
   height: 19px;
   opacity: 1;
-  -webkit-box-shadow: 2px 2px 10px 0px rgba(100,100,100, .3);
-  -moz-box-shadow:    2px 2px 10px 0px rgba(100,100,100, .3);
-  box-shadow:         2px 2px 10px 0px rgba(100,100,100, .3);
 }
 
 .view_menu ul:hover li.selected a {
-  padding: 7px 0% 8px 20%;
+  padding: 7px 0% 8px 40px;
   z-index: 100;
-  -webkit-box-shadow: 5px 5px 15px 0px rgba(100,100,100, .3);
-  -moz-box-shadow:    5px 5px 15px 0px rgba(100,100,100, .3);
-  box-shadow:         5px 5px 15px 0px rgba(100,100,100, .3);
+  -webkit-box-shadow: 5px 5px 0 0 rgba(100,100,100, .3);
+  -moz-box-shadow:    5px 5px 0 0 rgba(100,100,100, .3);
+  box-shadow:         5px 5px 0 0 rgba(100,100,100, .3);
 }
 
 .view_menu ul li.selected {
@@ -140,7 +150,7 @@
 
 .view_menu .layout ul .selected a {
   color: #222;
-  background-color: #eaeaea;
+  background: url('https://s3.amazonaws.com/wiota/lime/bricks_lowc_limegrey.png') #efecdc;
 }
 
 
@@ -315,6 +325,38 @@
   text-align: center;
 }
 
+/* Vertex ------------------------------------- */
+
+/* Upload */
+.vertex .upload_container {
+  display:block;
+  width: auto;
+  max-width: 300px;
+  background-color: transparent;
+  height: 16px;
+  border: 1px solid #5e5e5e;
+  border-radius: 4px;
+  padding: 0 2px;
+  overflow: hidden;
+
+}
+
+.vertex .upload_container .upload_fill {
+  -webkit-transition: all .2s ease-out;
+  -moz-transition: all .2s ease-out;
+  transition: all .2s ease-out;
+  display:block;
+  margin:2px 0;
+  height: 12px;
+  color: #000;
+  background-color: #3abef3;
+  position:relative;
+}
+
+.vertex .upload_container .upload_fill.error {
+  background-color: #ea8328;
+}
+
 /* Listing ------------------------------------- */
 
 .listing {
@@ -353,13 +395,13 @@
   padding: 0;
   font-style: italic;
   font-size: 110%;
-  padding: 66px 0 100px;
+  padding: 135px 0 100px;
   margin: 0 0 0 2%;
 }
   .empty_succset h2 {
     font-weight: normal;
     margin: 0 0 10px;
-    padding: 10px 0;
+    padding: 0 0 10px;
   }
   .empty_succset p {
     margin: 0;
@@ -394,7 +436,7 @@
   width: 100%;
   margin: 0;
   position:relative;
-  padding: 66px 0 100px;
+  padding: 135px 0 100px;
 }
 
 .set li {
@@ -508,6 +550,10 @@
     padding: 4px;
   }
 
+.set .attributes {
+  transition: all .5s;
+}
+
 .set .attributes .attribute {
   display:block;
   font-weight: normal;
@@ -537,18 +583,18 @@
 .list_view .set {}
 
 .list_view .set li {
-  width: 97%;
-  margin: 1% 1% 1% 2%;
-  padding: 0 0 1%;
+  width: auto;
+  margin: 0 10px 10px 20px;
+  padding: 10px 0 0;
   font-size: 16px;
-  border-bottom: 1px solid #e3e9ea;
+  border-top: 1px solid #e3e9ea;
   min-height: 1em;
   clear:both;
   overflow: hidden;
 }
 
   .list_view .set li.dragged {
-    border-bottom: none;
+    border-top: none;
     background-color: transparent;
   }
 
@@ -575,7 +621,7 @@
 /* Grid View ------------------------------------- */
 
 .grid_view .set {
-  margin-left: 2%;
+  margin-left: 20px;
 }
 
 .grid_view .set li {
@@ -590,7 +636,7 @@
 }
 
   .grid_view .set li.dragged {
-    border-bottom: none;
+    border-top: none;
     background-color: transparent;
   }
 

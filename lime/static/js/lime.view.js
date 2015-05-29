@@ -1,20 +1,33 @@
 /* ------------------------------------------------------------------- */
-// LIME Listings
+// LIME Views
 /* ------------------------------------------------------------------- */
 
 LIME.View = {};
 
 /* ------------------------------------------------------------------- */
-// Extend all views with close method
+// Base View with child management
 /* ------------------------------------------------------------------- */
 
-Backbone.View.prototype.close = function(){
-  if(this.children){_.invoke(this.children, 'close')};
-  this.children = null;
-  this.stopListening();
-  this.unbind();
-  this.remove();
-}
+Backbone.View.Base = Backbone.View.extend({
+  constructor: function(){
+    this.children = [];
+    Backbone.View.apply(this, arguments);
+  },
+
+  close: function(){
+    if(this.children){_.invoke(this.children, 'close')};
+    this.children = null;
+    this.stopListening();
+    this.unbind();
+    this.remove();
+  },
+
+  appendChildView: function(view){
+    view.$el.appendTo(this.$el);
+    this.children.push(view);
+    return view;
+  }
+})
 
 /* ------------------------------------------------------------------- */
 // Vertex View
@@ -23,7 +36,7 @@ Backbone.View.prototype.close = function(){
 // View queries data
 /* ------------------------------------------------------------------- */
 
-LIME.View.Vertex = Backbone.View.extend({
+LIME.View.Vertex = Backbone.View.Base.extend({
   events:{
     'click .delete':'delete',
     'click .update':'updateForm',
@@ -58,17 +71,18 @@ LIME.View.Vertex = Backbone.View.extend({
       this.template = this.defaultTemplate;
     }
 
-    this.listenTo(this.model, 'summaryChanged', this.render)
+    // Upload template
+    this.awaitingTemplate = _.template($('#awaiting').html());
+    this.barTemplate = _.template($('#upload').html());
+
+    this.listenTo(this.model, 'summaryChanged', this.render);
   },
 
 
 
   // This should update the model and the model should initiate the request to the server
   delete: function(){
-    LIME.requestPanel.one([
-      {'func': 'removeEdgeRequest', 'args': [[this.predecessor, this.model]]},
-    ]);
-    //this.predecessor.removeEdge(this.model);
+    this.predecessor.removeEdgeTo(this.model);
   },
 
   updateForm: function(){
@@ -80,15 +94,66 @@ LIME.View.Vertex = Backbone.View.extend({
   },
 
   renderAttributes: function(){
-    var clsList = ['primary','secondary','tertiary']
     _.each(LIME.host.vertexSchema[this.model.vertexType], function(field, key){
-      if(_.has(this.model.attributes, field.name)){
-        this.$attributes.append("<b class='attribute "+(clsList[key])+"'>"+this.model.attributes[field.name]+"</b>");
-      }
+      this.renderAttribute(field.name, key);
     }, this)
   },
 
+  renderAttribute: function(field, order){
+    var clsList = ['primary','secondary','tertiary', 'quaternary', 'quinary', 'senary', 'septenary', 'octonary', 'nonary', 'denary']
+    if(_.has(this.model.attributes, field)){
+      if(this.model.isFile(field)){
+        this.$attributes.append("<b class='attribute "+clsList[order]+"'>Loading</b>");
+      } else {
+        this.$attributes.append("<b class='attribute "+clsList[order]+"'>"+this.model.get(field)+"</b>");
+      }
+    }
+  },
+
+  // This render function is becoming bloated
   render: function(){
+    var awaiting = null;
+
+    // If item is still awaiting upload, render loading bar
+    if(awaiting = this.model.awaitingUpload()){
+      this.$el.html(this.awaitingTemplate(this.model.toJSON()));
+      this.$attributes = this.$el.children('.attributes');
+      this.$uploadContainer = this.$el.children('.upload_container');
+
+      this.bars = _.reduce(awaiting, function(memo, attrFilePair){
+        var key = attrFilePair[0];
+        memo[key] = $(this.barTemplate()).appendTo(this.$uploadContainer);
+        return memo;
+      }, {}, this);
+
+      this.renderAttribute('title', 0);
+
+      // Listener
+      this.listenTo(this.model, 'uploadProgress', function(percent, attributeKey){
+        this.bars[attributeKey].css({width:percent+"%"});
+      })
+
+      // Needs to be cleaned up
+      this.listenTo(this.model, 'uploadError', function(percent, attributeKey){
+        var bar = this.bars[attributeKey];
+        var view = this;
+        var msg = $('<span>click to retry</span>').appendTo(bar);
+        bar.addClass('error');
+        bar.on('click', function(){
+          msg.remove();
+          bar.removeClass('error');
+          bar.off('click');
+          view.model.save.call(view.model);
+        });
+      })
+      return this;
+    }
+
+    // If item is new, do not rerender the UI view.
+    if(this.model.isNew()){
+      return this;
+    }
+
     this.$el.html(this.template(this.model.toJSON()));
     this.$attributes = this.$el.children('.attributes');
     this.$cover = this.$el.children('.cover');
@@ -99,7 +164,7 @@ LIME.View.Vertex = Backbone.View.extend({
 
     // render cover
     var ca = this.model.get('cover');
-    if(ca.length){
+    if(ca && ca.length){
       this.$el.addClass('with_cover');
       _.each(ca, function(coverItem){
         this.$cover.append("<img src='"+coverItem.href+"?h=200' alt='' />")
@@ -112,7 +177,7 @@ LIME.View.Vertex = Backbone.View.extend({
     this.delegateEvents();
     // disallow delete
     if(!this.model.get('deletable')){
-      this.$el.find('.delete').hide();
+      this.$el.find('.delete').remove();
     }
 
     return this;
@@ -124,7 +189,7 @@ LIME.View.Vertex = Backbone.View.extend({
 // Logic for sorting and displaying views
 /* ------------------------------------------------------------------- */
 
-LIME.View.SetView = Backbone.View.extend({
+LIME.View.SetView = Backbone.View.Base.extend({
   tagName: 'ol',
   className: 'set',
   sortFunction: null,
@@ -138,8 +203,6 @@ LIME.View.SetView = Backbone.View.extend({
 
     this.setType = options.setType;
     this.$el.addClass(this.setType);
-
-    this.children = [];
 
     _.bindAll(this, 'update');
     this.sortInit();
@@ -256,16 +319,19 @@ LIME.View.SetView = Backbone.View.extend({
     this.model.setSuccset(ids);
   },
 
+  // targeted add remove rendering will go here
+
   render: function(){
     // if model needs to be refetched for dereferenced succset
     if(!this.model.isDeep()){return false;}
 
     this.$el.empty();
     if(this.setType === 'successor'){
-      var set = this.model.get('succset');
+      var set = this.model.succset;
     } else if (this.setType === 'predecessor'){
-      var set = this.model.get('predset');
+      var set = this.model.predset;
     }
+
     _.each(set, function(item, index){
       var options = {
         'model':item,
@@ -289,7 +355,7 @@ LIME.View.SetView = Backbone.View.extend({
 
 LIME.View.ListingView = {};
 
-LIME.View.ListingView['Vertex'] = Backbone.View.extend({
+LIME.View.ListingView['Vertex'] = Backbone.View.Base.extend({
   tagName: 'div',
   emptyFlagTemplate: _.template($('#empty_succset').html()),
   events: {
@@ -304,7 +370,7 @@ LIME.View.ListingView['Vertex'] = Backbone.View.extend({
     // children
     this.list = new LIME.View.SetView({model:this.model, setType: this.setType})
 
-    this.upload = new LIME.FormView['Succset']({
+    this.upload = new LIME.Forms['Succset']({
       'model': this.model,
       'className': 'succset draggable form'
     });
@@ -327,20 +393,23 @@ LIME.View.ListingView['Vertex'] = Backbone.View.extend({
 
     // Listen to changes in the succset and rerender
     if(this.setType === 'successor'){
-      this.listenTo(this.model, 'change:succset', this.render);
+      this.listenTo(this.model, 'successorAdd', this.render);
+      this.listenTo(this.model, 'successorRemove', this.render);
     } else if (this.setType === 'predecessor'){
-      this.listenTo(this.model, 'change:predset', this.render);
+      this.listenTo(this.model, 'predecessorAdd', this.render);
+      this.listenTo(this.model, 'predecessorRemove', this.render);
     }
   },
 
   render: function(){
     if(this.setType === 'successor'){
-      var set = this.model.get('succset');
+      var set = this.model.succset;
     } else if (this.setType === 'predecessor'){
-      var set = this.model.get('predset');
+      var set = this.model.predset;
     }
+
     // Should be done with CSS, not jQuery
-    if(set.length <= 0){
+    if(set.length <= 0 && this.setType === 'successor'){
       this.$instruction.fadeIn();
     } else {
       this.$instruction.slideUp();
@@ -363,7 +432,7 @@ LIME.View.ListingView['Vertex'] = Backbone.View.extend({
 // Apex Menu - This will be replaced by host apex
 /* ------------------------------------------------------------------- */
 
-LIME.View.HomeMenu = Backbone.View.extend({
+LIME.View.HomeMenu = Backbone.View.Base.extend({
   tagName: 'ul',
   template: _.template($('#home_menu').html()),
   className: 'home_menu',
@@ -376,10 +445,10 @@ LIME.View.HomeMenu = Backbone.View.extend({
 
 /* ------------------------------------------------------------------- */
 // Listing Panel
-// This panel should be the startpoint for all listings
+// This panel should be rendered once per set
 /* ------------------------------------------------------------------- */
 
-LIME.ListingPanel = Backbone.View.extend({
+LIME.ListingPanel = Backbone.View.Base.extend({
   view: null,
   listedModel: null,
   listMode: null,
@@ -414,7 +483,6 @@ LIME.ListingPanel = Backbone.View.extend({
     // Model
     this.model;
 
-    this.render();
   },
 
   switchLayout: function(to, from){
@@ -433,17 +501,16 @@ LIME.ListingPanel = Backbone.View.extend({
   },
 
   newForm: function(type){
-    // API uses underscored attribute names
-    var v = new LIME.Model.Vertex({'vertex_type': type});
-    LIME.actionPanel.loadVertexForm(v, this.model);
+    LIME.actionPanel.loadVertexForm(LIME.stack.createVertex({'vertex_type': type}), this.model); // API uses underscored attribute names such as vertex_type
   },
 
-  render: function(){
+  renderMenuInterface: function(){
     this.$viewMenu = $("<div class='view_menu'></div>").appendTo(this.$el);
     this.$actionMenu = $("<div class='action_menu'></div>").appendTo(this.$el);
     return this;
   },
 
+  // This is a bloated function and possibly in the wrong spot
   renderMenus: function(){
     var vertexType = this.model.vertexType;
     var vertexSchema = LIME.host.vertexSchema;
@@ -484,8 +551,8 @@ LIME.ListingPanel = Backbone.View.extend({
     // For testing
     pS = [
       ['standard', 'Standard'],
-      ['predecessor', 'Pred'],
-      ['narrow', 'Narrow']
+      ['predecessor', 'Predecessor'],
+      ['successor', 'Successor']
     ]
 
     pSI = pS[0];
@@ -517,15 +584,22 @@ LIME.ListingPanel = Backbone.View.extend({
 
   clearMenus: function(){
     this.$viewMenu.empty();
-    this.$actionMenu.empty();
+    if(this.$actionMenu){
+      this.$actionMenu.empty();
+    }
   },
 
   renderListing: function(){
+
+    this.renderMenuInterface();
+
     // only render if deep
     if(this.model===null){
+      console.warn("Listing render attempted before vertex was ready.")
       return false;
     }
 
+    console.log("Listing render " + this.setType);
     // new listing
     this.listing = new LIME.View.ListingView['Vertex']({
       'model':this.model,
@@ -534,22 +608,27 @@ LIME.ListingPanel = Backbone.View.extend({
     });
 
     this.$el.append(this.listing.render().el);
-    this.renderMenus();
-    LIME.focus.render();
+    if(this.setType == 'successor'){
+      this.renderMenus();
+    } else {
+      this.switchEditMode(this.mode, null);
+      this.switchLayout(this.layout, null)
+    }
+
   },
 
-  list: function(model){
-    this.model = model;
+  list: function(vertex){
 
-    // remove old listing
+    this.model = vertex;
+
     if(this.listing){
       this.listing.close();
     }
 
-    if(!this.model.isDeep()){
-      this.listenToOnce(this.model, 'sync', this.renderListing);
+    if(!vertex.isDeep()){
+      this.listenToOnce(vertex, 'sync', _.bind(this.renderListing, this, vertex));
     } else {
-      this.renderListing();
+      this.renderListing(vertex);
     }
 
   },

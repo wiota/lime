@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------- */
 // LIME Vertex Collection
-// requires Backbone.js, Underscore.js, jQuery
+// requires Backbone.js, Underscore.js, lime.model.js
 /* ------------------------------------------------------------------- */
 
 LIME.Collection = {};
@@ -8,12 +8,7 @@ LIME.Collection = {};
 LIME.Collection.Vertex = Backbone.Collection.extend({
   model: LIME.Model.Vertex,
 
-  initialize: function(){
-    _.bindAll(this, 'added');
-    this.on('add', this.added);
-  },
-
-  added: function(model, collection){},
+  initialize: function(){},
 
   // This function returns a model instance and
   // initiates a deepen call on the model if necessary
@@ -28,7 +23,7 @@ LIME.Collection.Vertex = Backbone.Collection.extend({
   },
 
   getEmpty: function(id, vertexType){
-    return new this.model({'_id': id, 'vertex_type': vertexType}, {vertexType: vertexType});
+    return LIME.stack.createVertex({'_id': id, 'vertex_type': vertexType}, {vertexType: vertexType})
   }
 
 });

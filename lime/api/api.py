@@ -177,12 +177,25 @@ Photo endpoints
 @login_required
 def post_photo():
     # TODO: This should probably be removed and a POST to /<vertex_type> with a
-    # type of "photo" used instead.
+    # type of "photo" used instead. See issue #122
     data = request.json
     data['host'] = Host.by_current_user()
     photo = Photo(**data).save()
     return photo.to_bson(expand=False), 200
 
+'''
+Audio endpoints
+'''
+
+@mod.route('/audio/', methods=['POST'])
+@login_required
+def post_audio():
+    # TODO: This should probably be removed and a POST to /<vertex_type> with a
+    # type of "audio" used instead. See issue #122
+    data = request.json
+    data['host'] = Host.by_current_user()
+    audio = Audio(**data).save()
+    return audio.to_bson(expand=False), 200
 
 '''
 Edge endpoints

@@ -1,14 +1,16 @@
 /* ------------------------------------------------------------------- */
-// Portphillio Admin Backbone Forms
+// Form Views
 /* ------------------------------------------------------------------- */
 
-LIME.FormView = {};
+LIME.Forms = {};
+
+LIME.Forms.ENTERKEY = 13;
 
 /* ------------------------------------------------------------------- */
-// Templates
+// Fields - Should be replaced by views
 /* ------------------------------------------------------------------- */
 
-LIME.FormView.templates = {
+LIME.Forms.templates = {
   'text': _.template($('#text').html()),
   'textarea': _.template($('#textarea').html()),
   'button': _.template($('#button').html()),
@@ -19,48 +21,58 @@ LIME.FormView.templates = {
 };
 
 /* ------------------------------------------------------------------- */
-// Serialized Fields triggers change event and passes change object
+// Fieldsets
 /* ------------------------------------------------------------------- */
 
-LIME.FormView.SerialFieldsView = Backbone.View.extend({
+
+/* ------------------------------------------------------------------- */
+// Schema Fieldset - triggers change event and passes change object
+/* ------------------------------------------------------------------- */
+
+LIME.Forms.Attributes = Backbone.View.Base.extend({
   tagName: 'fieldset',
   className: 'serial_fields',
-  templates: LIME.FormView.templates,
+  templates: LIME.Forms.templates,
 
   events: {
     'blur input':'focusEnd',
-    'blur textarea':'focusEnd'
+    'blur textarea':'focusEnd',
+    'input input' :'attributeChange',
+    'input textarea' :'attributeChange'
   },
 
   initialize: function(){
-    this.isRendered = false;
     this.fieldSchema = LIME.host.vertexSchema[this.model.vertexType];
     this.render();
+    this.keys = null;
   },
 
   render: function(){
     if(!this.fieldSchema){return false;}
     this.$el.empty();
 
-    _.each(this.fieldSchema, function(field){
+    // Use field schema to generate form
+    this.keys = _.map(this.fieldSchema, function(field, key){
 
+      // TODO, migrate to field views
       var templateFunction = this.templates[field.type];
+
+      // Use defaults within the view for this
       var formData = {
         'name':field.name,
         'label':field.label,
-        'value': (this.model && this.model.get(field.name)) || ''
+        'value': (this.model && this.model.get(field.name)) || '',
+        'tabindex': (key+1)
       }
 
       // Pass key, field, and value to form input template function and append result
       $(templateFunction(formData)).appendTo(this.$el);
 
+      return key;
     }, this);
 
     this.focusStart();
     this.delegateEvents();
-    //this.$el.children('input').on('blur', function(){console.log('blur')})
-    this.isRendered = true;
-    this.trigger('rendered');
     return this;
   },
 
@@ -68,14 +80,11 @@ LIME.FormView.SerialFieldsView = Backbone.View.extend({
     this.$el.children('input').first().focus().select();
   },
 
-  focusEnd: function(){
-    console.log('focusEnd');
-    //this.focusStart();
-  },
-
-  events: {
-    'input input' :'attributeChange',
-    'input textarea' :'attributeChange'
+  // try focus guarding - also, may want to move this to form level
+  focusEnd: function(evt){
+    if($(evt.currentTarget).attr('tabindex') == this.keys.length){
+      this.focusStart();
+    }
   },
 
   attributeChange: function(evt){
@@ -90,10 +99,10 @@ LIME.FormView.SerialFieldsView = Backbone.View.extend({
 
 
 /* ------------------------------------------------------------------- */
-// God attributes - features not available to casual users
+// God fieldset - features not available to casual users
 /* ------------------------------------------------------------------- */
 
-LIME.FormView.GodAttributes = Backbone.View.extend({
+LIME.Forms.GodAttributes = Backbone.View.Base.extend({
   tagName: 'fieldset',
   className: 'god_attributes god',
   template: _.template($('#god_attributes').html()),
@@ -108,10 +117,15 @@ LIME.FormView.GodAttributes = Backbone.View.extend({
 
   render: function(){
     var deletable = this.model.get('deletable')
-    var obj = {'deletable':""};
+    var obj = {'deletable':"", 'pub':''};
     if(this.model.get('deletable')){
       obj.deletable = "checked='checked'";
     }
+    if(this.model.get('public')){
+      obj.pub = "checked='checked'";
+    }
+    obj.layout = this.model.get('layout') || '';
+    obj.slug = this.model.get('slug') || '';
     this.$el.html(this.template(obj));
     this.$el.find('#deletable').change(this.attributeChange);
     return this;
@@ -128,13 +142,13 @@ LIME.FormView.GodAttributes = Backbone.View.extend({
 })
 
 /* ------------------------------------------------------------------- */
-// Upload Field - triggers change event and passes files to handlers
+// Upload Fieldset - triggers change event and passes files to handlers
 /* ------------------------------------------------------------------- */
 
-LIME.FormView.FileUploadView = Backbone.View.extend({
+LIME.Forms.FileUploadView = Backbone.View.Base.extend({
   tagName: 'fieldset',
   className: 'file_upload',
-  template: LIME.FormView.templates['file_upload'],
+  template: LIME.Forms.templates['file_upload'],
 
   events: {
     'changed .files': 'filesChange',
@@ -146,14 +160,11 @@ LIME.FormView.FileUploadView = Backbone.View.extend({
 
   initialize: function(options){
     options = options || {};
-    this.predecessor = options.predecessor || null;
-    this.nesting = options.nesting || [];
-    this.uploadLabel = options.uploadLabel || '';
     _.bindAll(this, 'render');
   },
 
   render: function(){
-    var obj = {'label':this.uploadLabel};
+    var obj = {'label':this.label};
     this.$el.html(this.template(obj));
     this.$fileInput = this.$el.find('.files');
     return this;
@@ -176,11 +187,14 @@ LIME.FormView.FileUploadView = Backbone.View.extend({
   },
 
   drop: function(event){
+    var imgURL = event.originalEvent.dataTransfer.getData('URL');
+    if(imgURL){
+      console.warn(imgURL + " is from another domain. Direct upload not supported.")
+    }
     this.change(event.originalEvent.dataTransfer.files);
     this.$el.removeClass('over');
     this.cancelEvent(event);
   },
-
 
   // form input
 
@@ -205,73 +219,97 @@ LIME.FormView.FileUploadView = Backbone.View.extend({
 })
 
 /* ------------------------------------------------------------------- */
-// Save View
+// Save Fieldset - tagName should become fieldset - Dumb view
 /* ------------------------------------------------------------------- */
 
-LIME.FormView.SaveView = Backbone.View.extend({
+LIME.Forms.SaveView = Backbone.View.Base.extend({
   tagName: 'div',
   className: 'save_view',
-
   template: _.template($('#button').html()),
 
   initialize: function(options){
-    this.listenTo(this.model, 'saved', this.saved);
-    this.listenTo(this.model, 'unsaved', this.unsaved);
-    _.bindAll(this, 'render', 'statusUnpersisted', 'statusUnsaved', 'statusError', 'statusSaving', 'statusSaved', 'triggerSave', 'triggerClose');
+    _.bindAll(this, 'render', 'unpersisted', 'unsaved', 'saving', 'saved', 'error', 'triggerSave', 'triggerClose', 'triggerSaveClose');
+    this.flashTimer = null;
+    this.setClass('saved');
   },
 
-  statusUnpersisted: function(){
-    this.$el.attr('class', this.className + ' unpersisted');
+  unpersisted: function(){
+    this.setClass('unpersisted');
+    this.setClose('close', this.triggerClose);
+    this.setSave('', null);
   },
 
-  statusUnsaved: function(){
-    this.$el.attr('class', this.className + ' unsaved');
-    this.$savebutton.val('save now');
-    this.$closebutton.val('save and close');
-    this.$savebutton.attr('disabled', false);
-    this.$savebutton.off();
-    this.$savebutton.on('click', this.triggerSave);
+  unsaved: function(){
+    this.setClass('unsaved');
+    this.setClose('save and close', this.triggerSaveClose);
+    this.setSave('save now', this.triggerSave);
   },
 
-  statusSaving: function(){
-    this.$el.attr('class', this.className + ' saving');
-    this.$savebutton.val('saving');
-    this.$savebutton.attr('disabled', true);
-    this.$savebutton.off();
-
+  saving: function(){
+    this.setClass('saving', 'close', 'saving...');
+    this.setClose(null, null);
+    this.setSave('saving...', null);
   },
 
-  statusSaved: function(){
-    this.$el.attr('class', this.className + ' saved');
-    this.$savebutton.val('saved');
-    this.$closebutton.val('close');
-    this.$savebutton.attr('disabled', true);
-    this.$savebutton.off();
-
+  saved: function(){
+    this.setClass('saved');
+    this.setClose('close', this.triggerClose);
+    this.setSave('saved!');
   },
 
-  statusError: function(){
-    this.$el.attr('class', this.className + ' error');
-    this.$savebutton.val('not saved!');
-    this.$savebutton.on('click', this.triggerSave);
-
+  error: function(){
+    this.setClass('error');
+    this.setClose('close without saving', this.triggerClose);
+    this.setSave('not saved!', this.triggerSave);
+    this.flashTimer = setTimeout(_.bind(this.setSave, this, 'save now', this.triggerSave), 1000);
   },
 
-  render: function(message){
-    this.$savebutton = $(this.template({'label':' ','cls': 'save'}));
-    this.$closebutton = $(this.template({'label':'Close','cls': 'close'}));
+  // Used to modify buttons
 
-    if(this.model.isNew()){
-      this.statusUnpersisted();
+  setClass: function(cls){
+    this.$el.attr('class', this.className + ' ' + cls);
+    clearInterval(this.flashTimer);
+  },
+
+  setSave: function(text, action){
+    this.setButtonText(this.$savebutton, text);
+    this.setButtonAction(this.$savebutton, action);
+  },
+
+  setClose: function(text, action){
+    this.setButtonText(this.$closebutton, text);
+    this.setButtonAction(this.$closebutton, action);
+  },
+
+  setButtonText: function(button, text){
+    if(text){
+      button.val(text);
     } else {
-      this.statusSaved();
+      button.val(' ');
     }
+  },
+
+  setButtonAction: function(button, action){
+    button.off();
+    if(_.isFunction(action)){
+      button.on('click', action)
+      // this.$savebutton.attr('disabled', false);
+    } else {
+      // this.$savebutton.attr('disabled', true);
+    }
+  },
+
+  // Render
+
+  render: function(state){
+    this.$savebutton = $(this.template({'label':'','cls': 'save'}));
+    this.$closebutton = $(this.template({'label':'','cls': 'close'}));
 
     this.$el.empty();
     this.$el.append(this.$closebutton);
     this.$el.append(this.$savebutton);
 
-    this.$closebutton.on('click', this.triggerClose);
+    return this;
   },
 
   triggerSave: function(){
@@ -280,132 +318,111 @@ LIME.FormView.SaveView = Backbone.View.extend({
 
   triggerClose: function(){
     this.trigger('close');
+  },
+
+  triggerSaveClose: function(){
+    this.trigger('saveclose');
   }
 
 })
 
 /* ------------------------------------------------------------------- */
+// Forms
+/* ------------------------------------------------------------------- */
+
+/* ------------------------------------------------------------------- */
 // Vertex - Attribute form
 /* ------------------------------------------------------------------- */
 
-LIME.FormView['Vertex'] = Backbone.View.extend({
-
-  passableOptions: ['model', 'predecessor'],
+LIME.Forms['Vertex'] = Backbone.View.Base.extend({
   tagName: 'form',
-
   events: {
-    'submit' :'submit',
     'keypress input' :'keyCheck',
   },
 
   initialize: function(options){
     this.options = options || {};
-    this.predecessor = options.predecessor || null;
-    this.photoNesting = options.photoNesting || [];
+    this.predecessor = options.predecessor || null; // can be removed if new form is separate
 
-    this.children = [];
-    this.childOptions = _.pick(this.options, this.passableOptions);
-
-    //this.appendFileUpload();
-    this.appendSaveView();
-    this.appendGodAttributes();
-    this.appendAtrributeFields();
-
-    //this.listenToOnce(this.attributeFields, 'rendered', this.saveView.render)
-    this.saveView.render();
-    this.listenToOnce(this.attributeFields, 'rendered', this.godAttributes.render)
-
-    this.listenTo(this.model, 'sync', this.saveView.statusSaved);
-    this.listenTo(this.model, 'error', this.saveView.statusError);
-
-    _.bindAll(this, 'collapse');
+    // children
+    this.saveView = new LIME.Forms.SaveView();
+    this.attributeFields = new LIME.Forms.Attributes({model: this.model});
+    this.godAttributes = new LIME.Forms.GodAttributes({model: this.model})
 
   },
 
-  appendGodAttributes: function(){
-    this.godAttributes = new LIME.FormView.GodAttributes(this.childOptions)
-    this.$el.append(this.godAttributes.el);
-    this.listenTo(this.godAttributes, 'change', this.attributesChanged);
-    this.children.push(this.godAttributes);
-  },
-
-
-  appendAtrributeFields: function(){
-    this.attributeFields = new LIME.FormView.SerialFieldsView(this.childOptions)
-    this.$el.append(this.attributeFields.el);
-    this.listenTo(this.attributeFields, 'change', this.attributesChanged);
-    this.children.push(this.attributeFields);
-  },
-
-  appendSaveView: function(){
-    this.saveView = new LIME.FormView.SaveView(this.childOptions);
-    this.$el.append(this.saveView.el);
-    this.listenTo(this.saveView, 'save', this.save)
-    this.listenTo(this.saveView, 'close', this.collapse)
-    this.children.push(this.saveView);
+  initSaveEvents: function(){
+    // listen for model events and pass to saveView
+    this.listenTo(this.model, 'sync', this.saveView.saved);
+    this.listenTo(this.model, 'error', this.saveView.error);
+    this.listenTo(this.model, 'change', this.saveView.unsaved)
+    // listen for form actions and handle
+    this.listenTo(this.saveView, 'save', this.save);
+    this.listenTo(this.saveView, 'close', this.forceClose);
+    this.listenTo(this.saveView, 'saveclose', this.saveAndClose);
+    // initial saveView state based on model
+    if(this.model.isNew()){
+      this.saveView.unpersisted();
+    } else if (this.model.modified){
+      this.saveView.error();
+    } else {
+      this.saveView.saved();
+    }
   },
 
   render: function(){
-    //this.listenToOnce(this.attributeFields, 'rendered', this.fileUpload.render);
-    this.listenToOnce(this.attributeFields, 'rendered', this.saveView.render)
-    this.listenToOnce(this.attributeFields, 'rendered', this.godAttributes.render)
-    this.attributeFields.render();
+    _.each(this.children, function(child){child.close()});
+
+    // In order
+    this.appendChildView(this.saveView).render();
+    this.appendChildView(this.godAttributes).render();
+    this.appendChildView(this.attributeFields).render();
+
+    // Interface
+    this.listenTo(this.godAttributes, 'change', this.attributesChanged);
+    this.listenTo(this.attributeFields, 'change', this.attributesChanged);
+    this.initSaveEvents(this.saveView);
     return this;
   },
 
-  collapse: function(){
-    if(this.model.isModified()){
+  saveAndClose: function(){
+    if(this.model.modified){
       this.save();
+      this.listenToOnce(this.model, 'sync', this.forceClose);
+    } else {
+      this.forceClose();
     }
-    this.trigger('collapse');
+  },
+
+  forceClose: function(){
+    this.trigger('closed');
     this.close();
   },
 
-  // Events
-
-  attributesChanged: function(changeObject){
-    this.saveView.statusUnsaved();
-    this.model.set(changeObject);
-    //this.savePeriodically();
-  },
-
-  submit: function(evt){
-    this.collapse();
-    return false;
+  attributesChanged: function(changes){
+    LIME.stack.modifyVertex(this.model, changes);
   },
 
   keyCheck: function(evt){
-    if(evt.which == 13){
-      this.collapse();
+    if(evt.which == LIME.Forms.ENTERKEY){
+      this.saveAndClose();
       return false;
     }
   },
 
   save: function(){
-    if(!this.model.isModified()){
+    if(!this.model.modified){
       return false;
     }
-    this.saveView.statusSaving();
-    this.model.modified = false;
-    // Lets use a different form for new models
-    if(this.model.isNew()){
-      LIME.requestPanel.one([
-        {'func': 'graphRequest', 'args': [
-          [this.model],
-          [[this.predecessor, this.model]]
-        ]},
-      ]);
-    } else {
-      LIME.requestPanel.one([
-        {'func': 'updateVertexRequest', 'args': [this.model]},
-      ]);
-    }
-    return false;
-  },
+    this.saveView.saving();
 
-  savePeriodically: _.debounce(function(){
-    this.save();
-  }, 1000)
+    // Should I use a different form for new models here?
+    if(this.model.isNew()){
+      LIME.stack.addToGraph([this.model],[[this.predecessor, this.model]])
+    } else {
+      LIME.stack.updateVertex(this.model);
+    }
+  },
 
 });
 
@@ -413,88 +430,79 @@ LIME.FormView['Vertex'] = Backbone.View.extend({
 // Cover Photo Form
 /* ------------------------------------------------------------------- */
 
-LIME.FormView['Cover'] = Backbone.View.extend({
-
-  passableOptions: ['model'],
+LIME.Forms['Cover'] = Backbone.View.Base.extend({
   tagName: 'form',
-  events: {},
 
   initialize: function(options){
     this.options = options || {};
 
-    this.children = [];
-    this.childOptions = _.pick(this.options, this.passableOptions);
+    this.fileUpload = new LIME.Forms.FileUploadView();
+    this.saveView = new LIME.Forms.SaveView();
 
     this.listenTo(this.model, 'summaryChanged', this.render)
-    _.bindAll(this, 'close', 'collapse', 'noCover');
+    _.bindAll(this, 'close', 'noCover');
   },
 
-  appendFileUpload: function(){
-    this.fileUpload = new LIME.FormView.FileUploadView(this.childOptions),
-    this.$el.append(this.fileUpload.el);
-    this.listenTo(this.fileUpload, 'change', this.filesChanged);
-    this.children.push(this.fileUpload);
-  },
+  appendCover: function(cover){
 
-  appendSaveView: function(){
-    this.saveView = new LIME.FormView.SaveView(this.childOptions);
-    this.$el.append(this.saveView.el);
-    this.listenTo(this.saveView, 'save', this.save)
-    this.listenTo(this.saveView, 'close', this.collapse)
-    this.children.push(this.saveView);
-  },
-
-  appendCover: function(covers){
-    this.$cover = $(LIME.FormView.templates['cover_display']());
-    this.$removebutton = $(LIME.FormView.templates['button']({'label':'remove cover','cls': 'remove_cover delete'}));
-    // add cover images
-    _.each(this.model.get('cover'), function(coverItem){
-      this.$cover.append("<img src='"+coverItem.href+"?w=500' alt='' />");
-    }, this);
-
-    // append
+    this.$cover = $(LIME.Forms.templates['cover_display']());
+    this.$removebutton = $(LIME.Forms.templates['button']({'label':'remove cover','cls': 'remove_cover delete'}));
     this.$cover.append(this.$removebutton);
     this.$el.append(this.$cover);
 
-    // events
     this.$removebutton.on('click', this.noCover);
+
+    // add cover images
+    _.each(cover, function(coverItem){
+      this.$cover.append("<img src='"+coverItem.href+"?w=500' alt='' />");
+    }, this);
+
+
   },
 
   render: function(){
-    this.$el.html('')
-    this.appendSaveView();
-    this.appendFileUpload();
-    var cover = this.model.get('cover');
+    this.$el.html('');
+
+    this.appendChildView(this.saveView).render();
+    this.appendChildView(this.fileUpload).render();
+
+    // raw markup should be views
+    var cover = this.model.get('cover')
     if(cover && cover.length > 0){
       this.appendCover(cover);
     }
-    this.fileUpload.render();
-    this.saveView.render();
+
+    this.listenTo(this.fileUpload, 'change', this.filesChanged);
+    this.listenTo(this.saveView, 'close', this.forceClose);
+    // request process saves in a different place
+
+    this.saveView.unpersisted();
+
     return this;
   },
 
-  collapse: function(){
-    if(this.model.isModified()){
-      this.save();
+  saveAndClose: function(){
+    if(this.model.modified){
+      LIME.stack.updateVertex(this.model);
+      this.forceClose();
+    } else {
+      this.forceClose();
     }
-    this.trigger('collapse');
+  },
+
+  forceClose: function(){
+    this.trigger('closed');
     this.close();
   },
 
-  // Events
-
   filesChanged: function(files){
-    file = files[0];
-    this.model;
-    LIME.requestPanel.serial([
-      {'func': 'uploadCoverPhoto', 'args': [file, this.model]},
-    ]);
+    LIME.stack.modifyVertex(this.model, {"cover": files[0]}); // migrate to array handling
+    this.saveAndClose();
   },
 
   noCover: function(){
-    LIME.requestPanel.serial([
-      {'func': 'removeCover', 'args': [this.model]},
-    ]);
+    LIME.stack.modifyVertex(this.model, {"cover": []}); // migrate to array handling
+    this.saveAndClose();
   }
 
 });
@@ -504,24 +512,17 @@ LIME.FormView['Cover'] = Backbone.View.extend({
 /* ------------------------------------------------------------------- */
 
 
-LIME.FormView['Succset'] = Backbone.View.extend({
+LIME.Forms['Succset'] = Backbone.View.Base.extend({
   passableOptions: ['model', 'uploadLabel'],
   tagName: 'form',
 
   initialize: function(options){
     this.options = options || {};
-    this.photoNesting = options.photoNesting || [];
-    this.children = [];
-    this.childOptions = _.pick(this.options, this.passableOptions);
-    this.appendFileUpload();
-    _.bindAll(this, 'close');
-  },
 
-  appendFileUpload: function(){
-    this.fileUpload = new LIME.FormView.FileUploadView(this.childOptions),
-    this.$el.append(this.fileUpload.el);
+    this.fileUpload = new LIME.Forms.FileUploadView(),
+    this.appendChildView(this.fileUpload);
     this.listenTo(this.fileUpload, 'change', this.filesChanged);
-    this.children.push(this.fileUpload);
+
   },
 
   render: function(){
@@ -532,30 +533,20 @@ LIME.FormView['Succset'] = Backbone.View.extend({
   // Events
 
   filesChanged: function(files){
-    this.model;
-    this.photoNesting;
-    this.predecessor;
-
-    LIME.requestPanel.one([
-      {'func': 'batchPhotosToVertex', 'args': [files, this.photoNesting, this.model, null]},
-    ]);
-
+    LIME.stack.batchMedia(files, this.model);
   }
 
 });
 
 
-
 /* ------------------------------------------------------------------- */
 // Action Panel
-// This panel should be the startpoint for all forms
+// This panel is the startpoint for all forms
+// It may be better to load the forms into the same container the
+// Vertex view is in and swap them when editing.
 /* ------------------------------------------------------------------- */
 
-/* ------------------------------------------------------------------- */
-// Templates
-/* ------------------------------------------------------------------- */
-
-LIME.ActionPanel = Backbone.View.extend({
+LIME.ActionPanel = Backbone.View.Base.extend({
   el: $('#action_panel'),
   batches: [],
   model: null,
@@ -569,13 +560,17 @@ LIME.ActionPanel = Backbone.View.extend({
   loadVertexForm: function(model, predecessor){
     this.closeForm();
 
-    this.form = new LIME.FormView['Vertex']({
+    if(!model.isNew()){
+      LIME.focusPanel.$el.addClass('form_open');
+    }
+
+    this.form = new LIME.Forms['Vertex']({
       'predecessor': predecessor,
       'model': model,
       'className': model.vertexType + ' vertex form'
     });
 
-    this.listenTo(this.form, 'collapse', this.collapseActionPanel);
+    this.listenTo(this.form, 'closed', this.collapseActionPanel);
 
     this.$el.html(this.form.el);
     this.form.render();
@@ -585,12 +580,12 @@ LIME.ActionPanel = Backbone.View.extend({
   loadCoverForm: function(model){
     this.closeForm();
 
-    this.form = new LIME.FormView['Cover']({
+    this.form = new LIME.Forms['Cover']({
       'className': 'cover form',
       'model': model
     });
 
-    this.listenTo(this.form, 'collapse', this.collapseActionPanel);
+    this.listenTo(this.form, 'closed', this.collapseActionPanel);
 
     this.$el.append(this.form.el);
     this.form.render();
@@ -605,18 +600,17 @@ LIME.ActionPanel = Backbone.View.extend({
   },
 
   rollUp: function(){
-    LIME.focus.$el.removeClass('form_open');
+    LIME.focusPanel.$el.removeClass('form_open');
     this.$el.removeClass('show');
   },
 
   rollDown: function(){
-    LIME.focus.$el.addClass('form_open');
     this.$el.addClass('show');
   },
 
   closeForm: function(){
     if(this.form){
-      this.form.collapse();
+      this.form.saveAndClose();
     }
   }
 

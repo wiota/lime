@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------
-// LIME base
+// LIME namespace
 // ---------------------------------------------------------------------
 
 var LIME = {
@@ -48,22 +48,6 @@ LIME.subnav = (function(){
   }
 
 })();
-
-// ---------------------------------------------------------------------
-
-LIME.imgfix = function(selector){
-  var $el = $(selector);
-  //console.log($el);
-  //$el.fadeOut();
-  $el.find('img').on('load', function(){
-    $(this).fadeIn();
-  });
-  $el.find('img').on('error', function(){
-    console.log('error');
-  });
-
-
-}
 
 // ---------------------------------------------------------------------
 
@@ -162,6 +146,10 @@ LIME.titlePref = function(string){
   return LIME.titleCleaner.cases[LIME.titleCleaner.casePref](
     LIME.titleCleaner.spaces[LIME.titleCleaner.spacePref](string)
   );
+}
+
+LIME.fileSafe = function(string){
+  return string.replace(/[^a-z0-9_\-.]/gi, '-');
 }
 
 // Tools --------------------------------------------------------------

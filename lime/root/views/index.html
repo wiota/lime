@@ -108,12 +108,12 @@
   <!-- Form templates - - - - - - - - - - - - - - - - - - - - -->
 
   <script type="text/template" id="text">
-    <label class='<%- name %>' for='<%- name %>'><%- label %></label><input class='input' type='text' id='<%- name %>' value='<%- value %>' />
+    <label class='<%- name %>' for='<%- name %>'><%- label %></label><input tabindex='<%- tabindex %>' class='input' type='text' id='<%- name %>' value='<%- value %>' />
   </script>
 
   <script type="text/template" id="textarea">
     <label class='<%- name %>' for='<%- name %>'><%- label %></label>
-    <textarea class='input textarea' id='<%- name %>'><%- value %></textarea>
+    <textarea tabindex='<%- tabindex %>' class='input textarea' id='<%- name %>'><%- value %></textarea>
   </script>
 
   <script type="text/template" id="button">
@@ -130,7 +130,6 @@
   <script type="text/template" id="html5_file_upload">
     <input type="file" multiple="multiple" name="files[]" class="files"/>
     <div class='files_container'>
-      <i class='message'><%- label %></i>
     </div>
   </script>
 
@@ -139,10 +138,41 @@
   </script>
 
   <script type="text/template" id="god_attributes">
-    <img class='icon god' src='/icon/god.svg'>
-    <label for='deletable'><input id="deletable" type="checkbox" name="deletable" value="true" <%- deletable %> /> Deletable</label>
+    <a class='head'>In vertex we trust <img class='icon god' src='/icon/god.svg'></a>
+    <label class='checkbox' for='deletable'><input id="deletable" type="checkbox" name="deletable" value="true" <%- deletable %> /> Deletable</label>
+    <label class='checkbox' for='pub'><input id="pub" type="checkbox" name="pub" value="true" <%- pub %> /> Public</label>
+    <label class='layout' for='layout'>Layout</label><input class='input' type='text' id='layout' value='<%- layout %>' />
+    <label class='slug' for='slug'>Slug</label><input disabled='true' class='input' type='text' id='slug' value='<%- slug %>' />
+
   </script>
 
+
+  <!-- Upload templates  - - - - - - - - - - - - - - - - - - - -  -->
+
+  <script type="text/template" id="awaiting">
+
+    <div class='cover'></div>
+
+    <div class='upload_container'>
+
+    </div>
+
+    <div class='attributes awaiting'>
+      <img class='icon <%- vertex_type %>' src='/icon/<%- vertex_type %>.svg'>
+    </div>
+
+    <div class='ui'>
+      <a class='set_cover'><img class='icon update' src='/icon/lens.svg'><b class='label'>set cover</b></a>
+      <a class='update'><img class='icon update' src='/icon/pencil.svg'><b class='label'>update</b></a>
+      <a class='drag_handle'>&#8597;</a>
+    </div>
+  </script>
+
+  <script type="text/template" id="upload">
+    <div style='width: 0%' class='upload_fill'></div>
+    <!--<a class='cancel'>X</a>-->
+    <!--<i class='label'></i>-->
+  </script>
 
   <!-- Custom templates  - - - - - - - - - - - - - - - - - - - -  -->
 
@@ -209,6 +239,28 @@
 
     <div class='ui'>
       <a class='get' target='_blank' href='<%- href %>'></a>
+      <a class='delete'>delete</a>
+      <a class='drag_handle'>&#8597;</a>
+    </div>
+  </script>
+
+  <!-- Audio  -->
+  <script type="text/template" id="audio_in_set">
+
+    <!-- no cover -->
+
+    <div class='attributes'>
+      <img class='icon audio' src='/icon/audio.svg'>
+      <b class='attribute primary'><%- title %></b>
+      <audio src="<%- href %>" controls >
+        <p>Your browser does not support the <code>audio</code> element </p>
+        <a href="<%- href %>"><%- title %></a>
+      </audio>
+
+
+    </div>
+
+    <div class='ui'>
       <a class='delete'>delete</a>
       <a class='drag_handle'>&#8597;</a>
     </div>
@@ -286,7 +338,17 @@
                 <b class='label'>Admin</b>
               </a>
             </li>
+
           {% endif %}
+
+          <li class='god'>
+            <a>
+              <b class='icon god'>
+                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 16 16"><polyline fill="none" stroke="#000000" points="0.5,1 0.5,15.5 15.5,15.5 15.5,1.5 2.5,1.5 2.5,13.5 13.5,13.5 13.5,3.5 4.5,3.5 4.5,11.5 11.5,11.5 11.5,5.5 6.5,5.5 6.5,9.5 9.5,9.5 9.5,7.5 8,7.5 "/><polyline fill="none" stroke="#fffff" points="1.5,1 1.5,14.5 14.5,14.5 14.5,2.5 3.5,2.5 3.5,12.5 12.5,12.5 12.5,4.5 5.5,4.5 5.5,10.5 10.5,10.5 10.5,6.5 7.5,6.5 7.5,8.5 9,8.5 "/></svg>
+              </b>
+              <b class='label'>API endpoint</b>
+            </a>
+          </li>
 
           <li class='logout'>
             <a href="{{ url_for('root.logout') }} ">
@@ -302,14 +364,6 @@
     </ul>
 
     <ul class='lime_nav nav'>
-      <li class='god'>
-        <a>
-          <b class='icon god'>
-            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 16 16"><polyline fill="none" stroke="#000000" points="0.5,1 0.5,15.5 15.5,15.5 15.5,1.5 2.5,1.5 2.5,13.5 13.5,13.5 13.5,3.5 4.5,3.5 4.5,11.5 11.5,11.5 11.5,5.5 6.5,5.5 6.5,9.5 9.5,9.5 9.5,7.5 8,7.5 "/><polyline fill="none" stroke="#fffff" points="1.5,1 1.5,14.5 14.5,14.5 14.5,2.5 3.5,2.5 3.5,12.5 12.5,12.5 12.5,4.5 5.5,4.5 5.5,10.5 10.5,10.5 10.5,6.5 7.5,6.5 7.5,8.5 9,8.5 "/></svg>
-          </b>
-          <b class='label'>god</b>
-        </a>
-      </li>
       <li class='home'>
         <a href="{{ url_for('root.index') }}#">
           <b class='icon bookcase'></b>
@@ -366,17 +420,17 @@
 
 {% block js_footer %}
 
-  <script type="text/javascript" src='{{ url_for('static', filename='js/s3upload.js') }}'></script>
-  <script type="text/javascript" src='{{ url_for('static', filename='js/lime.model.js') }}'></script>
-  <script type="text/javascript" src='{{ url_for('static', filename='js/lime.collection.js') }}'></script>
-  <script type="text/javascript" src='{{ url_for('static', filename='js/lime.panel.js') }}'></script>
-  <script type="text/javascript" src='{{ url_for('static', filename='js/lime.view.js') }}'></script>
-  <script type="text/javascript" src='{{ url_for('static', filename='js/lime.form.js') }}'></script>
-  <script type="text/javascript" src='{{ url_for('static', filename='js/lime.focus.js') }}'></script>
-  <script type="text/javascript" src='{{ url_for('static', filename='js/lime.menu.js') }}'></script>
-  <script type="text/javascript" src='{{ url_for('static', filename='js/lime.router.js') }}'></script>
-  <script type="text/javascript" src='{{ url_for('static', filename='js/lime.request.js') }}'></script>
-  <script type="text/javascript" src='{{ url_for('static', filename='js/lime.requestapi.js') }}'></script>
+  <script type="text/javascript" src='{{ url_for('static', filename='js/s3upload.js')|bust }}'></script>
+  <script type="text/javascript" src='{{ url_for('static', filename='js/async.js')|bust }}'></script>
+  <script type="text/javascript" src='{{ url_for('static', filename='js/lime.router.js')|bust }}'></script>
+  <script type="text/javascript" src='{{ url_for('static', filename='js/lime.model.js')|bust }}'></script>
+  <script type="text/javascript" src='{{ url_for('static', filename='js/lime.collection.js')|bust }}'></script>
+  <script type="text/javascript" src='{{ url_for('static', filename='js/lime.view.js')|bust }}'></script>
+  <script type="text/javascript" src='{{ url_for('static', filename='js/lime.panel.js')|bust }}'></script>
+  <script type="text/javascript" src='{{ url_for('static', filename='js/lime.focus.js')|bust }}'></script>
+  <script type="text/javascript" src='{{ url_for('static', filename='js/lime.form.js')|bust }}'></script>
+  <script type="text/javascript" src='{{ url_for('static', filename='js/lime.menu.js')|bust }}'></script>
+  <script type="text/javascript" src='{{ url_for('static', filename='js/lime.stack.js')|bust }}'></script>
   <script type='text/javascript'>
     $(document).ready(function() {
       LIME.subnav('.nav a.drop');
