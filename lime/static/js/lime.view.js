@@ -33,7 +33,6 @@ Backbone.View.Base = Backbone.View.extend({
 // Vertex View
 // What is custom to this view?
 // Information Heirarchy = Field order
-// View queries data
 /* ------------------------------------------------------------------- */
 
 LIME.View.Vertex = Backbone.View.Base.extend({
@@ -192,7 +191,6 @@ LIME.View.Vertex = Backbone.View.Base.extend({
 LIME.View.SetView = Backbone.View.Base.extend({
   tagName: 'ol',
   className: 'set',
-  sortFunction: null,
 
   events: {
     'mousedown': 'startScrolling',
@@ -323,7 +321,10 @@ LIME.View.SetView = Backbone.View.Base.extend({
 
   render: function(){
     // if model needs to be refetched for dereferenced succset
-    if(!this.model.isDeep()){return false;}
+    if(!this.model.isDeep()){
+      console.warn("Set render attempted before vertex was ready.")
+      return false;
+    }
 
     this.$el.empty();
     if(this.setType === 'successor'){
@@ -332,7 +333,7 @@ LIME.View.SetView = Backbone.View.Base.extend({
       var set = this.model.predset;
     }
 
-    _.each(set, function(item, index){
+    this.children = _.map(set, function(item, index){
       var options = {
         'model':item,
         'predecessor': this.model,
@@ -426,22 +427,6 @@ LIME.View.ListingView['Vertex'] = Backbone.View.Base.extend({
     this.upload.$el.hide();
   },
 });
-
-
-/* ------------------------------------------------------------------- */
-// Apex Menu - This will be replaced by host apex
-/* ------------------------------------------------------------------- */
-
-LIME.View.HomeMenu = Backbone.View.Base.extend({
-  tagName: 'ul',
-  template: _.template($('#home_menu').html()),
-  className: 'home_menu',
-
-  render: function(){
-    this.$el.html(this.template({}));
-    return this;
-  }
-})
 
 /* ------------------------------------------------------------------- */
 // Listing Panel
@@ -594,8 +579,8 @@ LIME.ListingPanel = Backbone.View.Base.extend({
     this.renderMenuInterface();
 
     // only render if deep
-    if(this.model===null){
-      console.warn("Listing render attempted before vertex was ready.")
+    if(!this.model.isDeep()){
+      console.warn("Listing panel render attempted before vertex was ready.")
       return false;
     }
 
