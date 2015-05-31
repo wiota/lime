@@ -437,6 +437,7 @@
   margin: 0;
   position:relative;
   padding: 135px 0 100px;
+  overflow: auto;
 }
 
 .set li {
@@ -631,7 +632,6 @@
   display: block; /* Inline-block causes cover animation to fail */
   float:left;
   font-size: 16px;
-  background-color: #fff;
   overflow: hidden;
 }
 

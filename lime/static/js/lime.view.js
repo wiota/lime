@@ -205,78 +205,133 @@ LIME.View.SetView = Backbone.View.Base.extend({
     _.bindAll(this, 'update');
     this.sortInit();
     this.render();
-    this.timer = null;
+    this.scrollTimer = null;
   },
 
-  // fix bug here
-  startScrolling: function(event){
-    var tolerance = 100;
-    var exponent = 40;
-    var initialSpeed = 1;
-    var container = this.$el;
-    var windowHeight = $(window).height();
-    var scrollLimit = this.$el.outerHeight() - windowHeight;
-    var list = this.$el;
 
+  startScrolling: function(event){
+    var framerateInverse = 1000/60;
+    var tolerance = 100; // how near the edge
+    var initialSpeed = 1; // not sure
+
+    var container = this.$el.closest('.listing');
+    var orderedList = this.$el;
+
+    var windowHeight = $(window).height();
+    var scrollLimit = orderedList.outerHeight() - windowHeight;
+
+    var _mouseCache = null;
+    var _mouseCacheChanged = null;
+    var scrollTop = null;
+    var scrollBy = null;
+
+    var clamp = function(l, h, val){
+      if(val<l){ return l; }
+      else if(val>h){ return h; }
+      else { return val; }
+    }
+
+    var border = function(range, prox, val){
+      if(val < prox){ return (val - prox)/prox; }
+      else if (val > (flipProx = range-prox)){ return (val - (flipProx))/prox; }
+      else { return 0; }
+    }
+
+    var calcFn = function(val){
+      return val*framerateInverse;
+    }
+
+    var calcChange = function(calcFn, val){
+      return calcFn(border(windowHeight, tolerance, val));
+    }
+
+    var scrollWindow = function(sb){
+      // runs on timer
+      if(sb === 0){
+        return false;
+      }
+      var scrollTo = clamp(0, scrollLimit, (scrollTop+sb));
+      if(scrollTop !== scrollTo){
+        container.scrollTop(scrollTo);
+        scrollTop = scrollTo;
+      }
+      // trigger mousemove evt for sorting update
+      $(document).trigger(getMouseCache(), "extra");
+      return true;
+    }
+
+    var setMouseCache = function(evt, ex){
+      // mousemove handler
+      if(_mouseCache === evt){
+        return true;
+      }
+      _mouseCacheChanged = true;
+      _mouseCache = _.clone(evt);
+    }
+
+    var getMouseCache = function(){
+      _mouseCacheChanged = false;
+      return _mouseCache;
+    }
+
+    var run = function(time){
+      // runs on timer
+      if(_mouseCacheChanged){
+        scrollBy = calcChange(calcFn, getMouseCache().pageY);
+      }
+      scrollWindow(scrollBy);
+    }
+
+    // ----------------------------------------------
+    // right mouse button
     if(event.which > 1){
       return false;
     }
 
-    var scrollWindow = function(y){
-      var y = y;
-      var h = windowHeight;
-      var sb = borderExponent(y, h, tolerance)
+    clearInterval(this.scrollTimer);
+    this.scrollTimer = setInterval(_.bind(window.requestAnimationFrame, window, run), framerateInverse);
 
-      sb = sb*exponent;
+    // init
+    scrollTop = container.scrollTop();
+    scrollBy = calcChange(calcFn, getMouseCache());
+    _mouseCache = event;
+    _mouseCacheChanged = true;
 
-      var scrollTo = container.scrollTop()+sb;
-      if(scrollTo > scrollLimit){scrollTo = scrollLimit}
-      container.scrollTop(scrollTo);
-      return sb;
-    }
+    // run first
+    run();
 
-    var borderExponent = function(position, length, tolerance){
-      if(position < tolerance){
-        return (position - tolerance)/tolerance;
-      } else if (position > (length-tolerance)){
-        return (position - (length-tolerance))/tolerance;
-      } else {
-        return 0;
-      }
-    };
+    $(document).on('mousemove', function(){
 
-    var t = this;
 
-    this.$el.on('mousemove', function(event){
-        var sb = scrollWindow(event.pageY);
+    });
 
-        clearInterval(t.timer);
-
-        if(sb != 0){
-          t.timer = setInterval(function(){
-
-            list.trigger(event);;
-          }, 100)
-        }
-      }
-    )
+    $(document).on('mousemove', setMouseCache);
   },
 
   stopScrolling: function(){
-    clearInterval(this.timer);
-    this.$el.off('mousemove');
+    clearInterval(this.scrollTimer);
+    $(document).off('mousemove');
   },
 
-  sortInit: function(){
+  sortInit: function(orientation){
     var view = this;
+    var vert = false;
+
+    if(orientation == 'list_view'){
+      vert = true;
+    } else if (orientation == 'grid_view'){
+      vert = false;
+    }
+
+    console.log(vert);
 
     var sortable_opt = {
       distance: 10,
       delay: 200,
       // can't figure out what tolerance does
-      tolerance: -1000,
+      tolerance: 0,
       placeholder: $('<li class="placeholder"/>'),
-      vertical: false,
+      vertical: vert,
 
       onDrag: function ($item, position, _super, event) {
         position.left -= $item.grabOffset.left;
@@ -308,10 +363,10 @@ LIME.View.SetView = Backbone.View.Base.extend({
       }
     }
 
+    this.$el.sortable("destroy");
     this.$el.sortable(sortable_opt);
   },
 
-  // See sorting comment above
   update: function(event, ui){
     var ids = _.map(this.$el.children(), function(li){return li.id.slice(4)})
     this.model.setSuccset(ids);
@@ -337,13 +392,13 @@ LIME.View.SetView = Backbone.View.Base.extend({
       var options = {
         'model':item,
         'predecessor': this.model,
-        'className': item.vertexType+ ' successorItem',
+        'className': item.vertexType+ ' successorItem vertex',
         'tagName': 'li'
       }
       var itemView = new LIME.View.Vertex(options);
       this.$el.append(itemView.render().el);
       itemView.listenTo(item, 'change', itemView.render);
-      this.children.push(itemView);
+      return itemView;
     }, this);
 
     return this;
@@ -369,7 +424,7 @@ LIME.View.ListingView['Vertex'] = Backbone.View.Base.extend({
     this.setType = options.setType;
 
     // children
-    this.list = new LIME.View.SetView({model:this.model, setType: this.setType})
+    this.set = new LIME.View.SetView({model:this.model, setType: this.setType})
 
     this.upload = new LIME.Forms['Succset']({
       'model': this.model,
@@ -382,12 +437,12 @@ LIME.View.ListingView['Vertex'] = Backbone.View.Base.extend({
 
 
     this.$el.append(this.$instruction);
-    this.$el.append(this.list.el);
+    this.$el.append(this.set.el);
 
     this.$el.append(this.upload.el);
     this.upload.$el.hide();
 
-    this.children = [this.list, this.upload];
+    this.children = [this.set, this.upload];
 
     // Depth checking is done by Listing Panel before rendering
     this.render();
@@ -434,7 +489,7 @@ LIME.View.ListingView['Vertex'] = Backbone.View.Base.extend({
 /* ------------------------------------------------------------------- */
 
 LIME.ListingPanel = Backbone.View.Base.extend({
-  view: null,
+  listing: null,
   listedModel: null,
   listMode: null,
   viewMode: null,
@@ -472,6 +527,7 @@ LIME.ListingPanel = Backbone.View.Base.extend({
 
   switchLayout: function(to, from){
     this.layout = to;
+    this.listing.set.sortInit(to);
     this.switchClass(to,from);
   },
 
