@@ -327,6 +327,12 @@
 
 /* Vertex ------------------------------------- */
 
+.vertex {
+  -webkit-transition: opacity .4s, transform .4s ease-out;
+  -moz-transition: opacity .4s, transform .4s ease-out;
+  transition: opacity .4s, transform .4s ease-out;
+}
+
 /* Upload */
 .vertex .upload_container {
   display:block;
@@ -355,6 +361,14 @@
 
 .vertex .upload_container .upload_fill.error {
   background-color: #ea8328;
+}
+
+/* Set ----------------------------------------- */
+
+.set {
+  -webkit-transition: opacity .3s, background-color .3s ease-out;
+  -moz-transition: opacity .3s, background-color .3s ease-out;
+  transition: opacity .3s, background-color .3s ease-out;
 }
 
 /* Listing ------------------------------------- */
@@ -770,9 +784,9 @@
   position: relative;
   background-color: transparent;
   margin: 5%;
-  -webkit-transition: all .2s;
-  -moz-transition: all .2s;
-  transition: all .2s;
+  -webkit-transition: all .4s;
+  -moz-transition: all .4s;
+  transition: all .4s;
   -webkit-transform: translateX(0);
   -moz-transform: translateX(0);
   transform: translateX(0);

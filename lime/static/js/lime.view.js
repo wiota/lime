@@ -206,7 +206,6 @@ LIME.View.SetView = Backbone.View.Base.extend({
 
     _.bindAll(this, 'update');
     this.sortInit();
-    this.render();
     this.scrollTimer = null;
   },
 
@@ -324,8 +323,6 @@ LIME.View.SetView = Backbone.View.Base.extend({
     } else if (orientation == 'grid_view'){
       vert = false;
     }
-
-    console.log(vert);
 
     var sortable_opt = {
       distance: 10,
@@ -447,17 +444,19 @@ LIME.View.ListingView = Backbone.View.Base.extend({
 
     this.children = [this.set, this.upload];
 
-    // Depth checking is done by Listing Panel before rendering
-    this.render();
-
     // Listen to changes in the succset and rerender
     if(this.setType === 'successor'){
-      this.listenTo(this.model, 'successorAdd', this.render);
-      this.listenTo(this.model, 'successorRemove', this.render);
+      this.listenTo(this.model, 'successorAdd', this.renderAddRemove);
+      this.listenTo(this.model, 'successorRemove', this.renderAddRemove);
     } else if (this.setType === 'predecessor'){
-      this.listenTo(this.model, 'predecessorAdd', this.render);
-      this.listenTo(this.model, 'predecessorRemove', this.render);
+      this.listenTo(this.model, 'predecessorAdd', this.renderAddRemove);
+      this.listenTo(this.model, 'predecessorRemove', this.renderAddRemove);
     }
+  },
+
+  renderAddRemove: function(){
+    console.warn('Only one vertex in the set was modified, but the whole listing was rerendered');
+    this.render();
   },
 
   render: function(){
@@ -634,7 +633,6 @@ LIME.ListingPanel = Backbone.View.Base.extend({
   },
 
   renderListing: function(){
-
     this.renderMenuInterface();
 
     // only render if deep
@@ -661,7 +659,6 @@ LIME.ListingPanel = Backbone.View.Base.extend({
   },
 
   list: function(vertex){
-
     this.model = vertex;
 
     if(this.listing){
