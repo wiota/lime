@@ -409,9 +409,7 @@ LIME.View.SetView = Backbone.View.Base.extend({
 // Listings
 /* ------------------------------------------------------------------- */
 
-LIME.View.ListingView = {};
-
-LIME.View.ListingView['Vertex'] = Backbone.View.Base.extend({
+LIME.View.ListingView = Backbone.View.Base.extend({
   tagName: 'div',
   emptyFlagTemplate: _.template($('#empty_succset').html()),
   events: {
@@ -641,7 +639,7 @@ LIME.ListingPanel = Backbone.View.Base.extend({
     }
 
     // new listing
-    this.listing = new LIME.View.ListingView['Vertex']({
+    this.listing = new LIME.View.ListingView({
       'model':this.model,
       'className': this.model.vertexType + ' vertex listing',
       'setType': this.setType
