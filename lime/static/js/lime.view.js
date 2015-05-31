@@ -185,7 +185,9 @@ LIME.View.Vertex = Backbone.View.Base.extend({
 
 /* ------------------------------------------------------------------- */
 // Set List
-// Logic for sorting and displaying views
+//
+// A pure set (successors/predecessors) with no extra stuff. Includes
+// logic for sorting.
 /* ------------------------------------------------------------------- */
 
 LIME.View.SetView = Backbone.View.Base.extend({
@@ -407,6 +409,9 @@ LIME.View.SetView = Backbone.View.Base.extend({
 
 /* ------------------------------------------------------------------- */
 // Listings
+//
+// Includes a set (successors/predecessors) and interface items such as
+// instructions and upload drop container
 /* ------------------------------------------------------------------- */
 
 LIME.View.ListingView = Backbone.View.Base.extend({
