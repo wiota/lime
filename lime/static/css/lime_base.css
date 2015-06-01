@@ -180,14 +180,16 @@ textarea {
   font-weight: normal;
   font-family: "Inconsolata","Monaco","Lucida Console","Courier New", "monospace";
   font-size: 16px;
-  transition: all 1s;
+  -webkit-transition: all .3s;
+  -moz-transition: all .3s;
+  transition: all .3s;
   }
   .nav:hover {
     background-color: #fff;
     -webkit-box-shadow: 0px 0px 120px 0px rgba(51,51,51, 0.10);
     -moz-box-shadow:    0px 0px 120px 0px rgba(51,51,51, 0.10);
     box-shadow:         0px 0px 120px 0px rgba(51,51,51, 0.10);
-    width: 150%;
+    width: 300%;
   }
 
 .nav b {
