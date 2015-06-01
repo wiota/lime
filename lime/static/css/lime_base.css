@@ -174,18 +174,20 @@ textarea {
 .nav {
   z-index: 1000;
   padding: 0;
-  margin: 0 0 20px;
+  margin: 0 0 0px;
   overflow: auto;
   width: 100%;
   font-weight: normal;
   font-family: "Inconsolata","Monaco","Lucida Console","Courier New", "monospace";
   font-size: 16px;
+  transition: all 1s;
   }
   .nav:hover {
     background-color: #fff;
     -webkit-box-shadow: 0px 0px 120px 0px rgba(51,51,51, 0.10);
     -moz-box-shadow:    0px 0px 120px 0px rgba(51,51,51, 0.10);
     box-shadow:         0px 0px 120px 0px rgba(51,51,51, 0.10);
+    width: 150%;
   }
 
 .nav b {
@@ -276,6 +278,12 @@ textarea {
 }
 
 /* Lime Nav */
+
+
+.lime_nav {
+  border-bottom: 1px solid #f5f8f8;
+  margin-bottom: 71px;
+}
 
 .lime_nav:hover {
 
