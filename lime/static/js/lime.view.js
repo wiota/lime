@@ -33,7 +33,6 @@ Backbone.View.Base = Backbone.View.extend({
 // Vertex View
 // What is custom to this view?
 // Information Heirarchy = Field order
-// View queries data
 /* ------------------------------------------------------------------- */
 
 LIME.View.Vertex = Backbone.View.Base.extend({
@@ -86,7 +85,9 @@ LIME.View.Vertex = Backbone.View.Base.extend({
   },
 
   updateForm: function(){
-    LIME.actionPanel.loadVertexForm(this.model, this.predecessor);
+    // Pass through router to enable history
+    LIME.router.navigate('#'+this.model.vertexType+'/'+this.model.id+"/update");
+    LIME.router.update(this.model.vertexType, this.model.id);
   },
 
   setCoverForm: function(){
@@ -186,13 +187,14 @@ LIME.View.Vertex = Backbone.View.Base.extend({
 
 /* ------------------------------------------------------------------- */
 // Set List
-// Logic for sorting and displaying views
+//
+// A pure set (successors/predecessors) with no extra stuff. Includes
+// logic for sorting.
 /* ------------------------------------------------------------------- */
 
 LIME.View.SetView = Backbone.View.Base.extend({
   tagName: 'ol',
   className: 'set',
-  sortFunction: null,
 
   events: {
     'mousedown': 'startScrolling',
@@ -206,79 +208,131 @@ LIME.View.SetView = Backbone.View.Base.extend({
 
     _.bindAll(this, 'update');
     this.sortInit();
-    this.render();
-    this.timer = null;
+    this.scrollTimer = null;
   },
 
-  // fix bug here
-  startScrolling: function(event){
-    var tolerance = 100;
-    var exponent = 40;
-    var initialSpeed = 1;
-    var container = this.$el;
-    var windowHeight = $(window).height();
-    var scrollLimit = this.$el.outerHeight() - windowHeight;
-    var list = this.$el;
 
+  startScrolling: function(event){
+    var framerateInverse = 1000/60;
+    var tolerance = 100; // how near the edge
+    var initialSpeed = 1; // not sure
+
+    var container = this.$el.closest('.listing');
+    var orderedList = this.$el;
+
+    var windowHeight = $(window).height();
+    var scrollLimit = orderedList.outerHeight() - windowHeight;
+
+    var _mouseCache = null;
+    var _mouseCacheChanged = null;
+    var scrollTop = null;
+    var scrollBy = null;
+
+    var clamp = function(l, h, val){
+      if(val<l){ return l; }
+      else if(val>h){ return h; }
+      else { return val; }
+    }
+
+    var border = function(range, prox, val){
+      if(val < prox){ return (val - prox)/prox; }
+      else if (val > (flipProx = range-prox)){ return (val - (flipProx))/prox; }
+      else { return 0; }
+    }
+
+    var calcFn = function(val){
+      return val*framerateInverse;
+    }
+
+    var calcChange = function(calcFn, val){
+      return calcFn(border(windowHeight, tolerance, val));
+    }
+
+    var scrollWindow = function(sb){
+      // runs on timer
+      if(sb === 0){
+        return false;
+      }
+      var scrollTo = clamp(0, scrollLimit, (scrollTop+sb));
+      if(scrollTop !== scrollTo){
+        container.scrollTop(scrollTo);
+        scrollTop = scrollTo;
+      }
+      // trigger mousemove evt for sorting update
+      $(document).trigger(getMouseCache(), "extra");
+      return true;
+    }
+
+    var setMouseCache = function(evt, ex){
+      // mousemove handler
+      if(_mouseCache === evt){
+        return true;
+      }
+      _mouseCacheChanged = true;
+      _mouseCache = _.clone(evt);
+    }
+
+    var getMouseCache = function(){
+      _mouseCacheChanged = false;
+      return _mouseCache;
+    }
+
+    var run = function(time){
+      // runs on timer
+      if(_mouseCacheChanged){
+        scrollBy = calcChange(calcFn, getMouseCache().pageY);
+      }
+      scrollWindow(scrollBy);
+    }
+
+    // ----------------------------------------------
+    // right mouse button
     if(event.which > 1){
       return false;
     }
 
-    var scrollWindow = function(y){
-      var y = y;
-      var h = windowHeight;
-      var sb = borderExponent(y, h, tolerance)
+    clearInterval(this.scrollTimer);
+    this.scrollTimer = setInterval(_.bind(window.requestAnimationFrame, window, run), framerateInverse);
 
-      sb = sb*exponent;
+    // init
+    scrollTop = container.scrollTop();
+    scrollBy = calcChange(calcFn, getMouseCache());
+    _mouseCache = event;
+    _mouseCacheChanged = true;
 
-      var scrollTo = container.scrollTop()+sb;
-      if(scrollTo > scrollLimit){scrollTo = scrollLimit}
-      container.scrollTop(scrollTo);
-      return sb;
-    }
+    // run first
+    run();
 
-    var borderExponent = function(position, length, tolerance){
-      if(position < tolerance){
-        return (position - tolerance)/tolerance;
-      } else if (position > (length-tolerance)){
-        return (position - (length-tolerance))/tolerance;
-      } else {
-        return 0;
-      }
-    };
+    $(document).on('mousemove', function(){
 
-    var t = this;
 
-    this.$el.on('mousemove', function(event){
-        var sb = scrollWindow(event.pageY);
+    });
 
-        clearInterval(t.timer);
-
-        if(sb != 0){
-          t.timer = setInterval(function(){
-
-            list.trigger(event);;
-          }, 100)
-        }
-      }
-    )
+    $(document).on('mousemove', setMouseCache);
   },
 
   stopScrolling: function(){
-    clearInterval(this.timer);
-    this.$el.off('mousemove');
+    clearInterval(this.scrollTimer);
+    $(document).off('mousemove');
   },
 
-  sortInit: function(){
+  sortInit: function(orientation){
     var view = this;
+    var vert = false;
+
+    if(orientation == 'list_view'){
+      vert = true;
+    } else if (orientation == 'grid_view'){
+      vert = false;
+    }
 
     var sortable_opt = {
       distance: 10,
       delay: 200,
       // can't figure out what tolerance does
-      tolerance: -1000,
+      tolerance: 0,
       placeholder: $('<li class="placeholder"/>'),
-      vertical: false,
+      vertical: vert,
 
       onDrag: function ($item, position, _super, event) {
         position.left -= $item.grabOffset.left;
@@ -310,10 +364,10 @@ LIME.View.SetView = Backbone.View.Base.extend({
       }
     }
 
+    this.$el.sortable("destroy");
     this.$el.sortable(sortable_opt);
   },
 
-  // See sorting comment above
   update: function(event, ui){
     var ids = _.map(this.$el.children(), function(li){return li.id.slice(4)})
     this.model.setSuccset(ids);
@@ -323,7 +377,10 @@ LIME.View.SetView = Backbone.View.Base.extend({
 
   render: function(){
     // if model needs to be refetched for dereferenced succset
-    if(!this.model.isDeep()){return false;}
+    if(!this.model.isDeep()){
+      console.warn("Set render attempted before vertex was ready.")
+      return false;
+    }
 
     this.$el.empty();
     if(this.setType === 'successor'){
@@ -332,17 +389,17 @@ LIME.View.SetView = Backbone.View.Base.extend({
       var set = this.model.predset;
     }
 
-    _.each(set, function(item, index){
+    this.children = _.map(set, function(item, index){
       var options = {
         'model':item,
         'predecessor': this.model,
-        'className': item.vertexType+ ' successorItem',
+        'className': item.vertexType+ ' successorItem vertex',
         'tagName': 'li'
       }
       var itemView = new LIME.View.Vertex(options);
       this.$el.append(itemView.render().el);
       itemView.listenTo(item, 'change', itemView.render);
-      this.children.push(itemView);
+      return itemView;
     }, this);
 
     return this;
@@ -351,11 +408,12 @@ LIME.View.SetView = Backbone.View.Base.extend({
 
 /* ------------------------------------------------------------------- */
 // Listings
+//
+// Includes a set (successors/predecessors) and interface items such as
+// instructions and upload drop container
 /* ------------------------------------------------------------------- */
 
-LIME.View.ListingView = {};
-
-LIME.View.ListingView['Vertex'] = Backbone.View.Base.extend({
+LIME.View.ListingView = Backbone.View.Base.extend({
   tagName: 'div',
   emptyFlagTemplate: _.template($('#empty_succset').html()),
   events: {
@@ -368,7 +426,7 @@ LIME.View.ListingView['Vertex'] = Backbone.View.Base.extend({
     this.setType = options.setType;
 
     // children
-    this.list = new LIME.View.SetView({model:this.model, setType: this.setType})
+    this.set = new LIME.View.SetView({model:this.model, setType: this.setType})
 
     this.upload = new LIME.Forms['Succset']({
       'model': this.model,
@@ -381,24 +439,26 @@ LIME.View.ListingView['Vertex'] = Backbone.View.Base.extend({
 
 
     this.$el.append(this.$instruction);
-    this.$el.append(this.list.el);
+    this.$el.append(this.set.el);
 
     this.$el.append(this.upload.el);
     this.upload.$el.hide();
 
-    this.children = [this.list, this.upload];
-
-    // Depth checking is done by Listing Panel before rendering
-    this.render();
+    this.children = [this.set, this.upload];
 
     // Listen to changes in the succset and rerender
     if(this.setType === 'successor'){
-      this.listenTo(this.model, 'successorAdd', this.render);
-      this.listenTo(this.model, 'successorRemove', this.render);
+      this.listenTo(this.model, 'successorAdd', this.renderAddRemove);
+      this.listenTo(this.model, 'successorRemove', this.renderAddRemove);
     } else if (this.setType === 'predecessor'){
-      this.listenTo(this.model, 'predecessorAdd', this.render);
-      this.listenTo(this.model, 'predecessorRemove', this.render);
+      this.listenTo(this.model, 'predecessorAdd', this.renderAddRemove);
+      this.listenTo(this.model, 'predecessorRemove', this.renderAddRemove);
     }
+  },
+
+  renderAddRemove: function(){
+    console.warn('Only one vertex in the set was modified, but the whole listing was rerendered');
+    this.render();
   },
 
   render: function(){
@@ -427,29 +487,13 @@ LIME.View.ListingView['Vertex'] = Backbone.View.Base.extend({
   },
 });
 
-
-/* ------------------------------------------------------------------- */
-// Apex Menu - This will be replaced by host apex
-/* ------------------------------------------------------------------- */
-
-LIME.View.HomeMenu = Backbone.View.Base.extend({
-  tagName: 'ul',
-  template: _.template($('#home_menu').html()),
-  className: 'home_menu',
-
-  render: function(){
-    this.$el.html(this.template({}));
-    return this;
-  }
-})
-
 /* ------------------------------------------------------------------- */
 // Listing Panel
 // This panel should be rendered once per set
 /* ------------------------------------------------------------------- */
 
 LIME.ListingPanel = Backbone.View.Base.extend({
-  view: null,
+  listing: null,
   listedModel: null,
   listMode: null,
   viewMode: null,
@@ -487,6 +531,7 @@ LIME.ListingPanel = Backbone.View.Base.extend({
 
   switchLayout: function(to, from){
     this.layout = to;
+    this.listing.set.sortInit(to);
     this.switchClass(to,from);
   },
 
@@ -501,7 +546,9 @@ LIME.ListingPanel = Backbone.View.Base.extend({
   },
 
   newForm: function(type){
-    LIME.actionPanel.loadVertexForm(LIME.stack.createVertex({'vertex_type': type}), this.model); // API uses underscored attribute names such as vertex_type
+    // Pass through router to enable history
+    LIME.router.navigate('#'+this.model.vertexType+'/'+this.model.id+"/create/"+type);
+    LIME.router.create(this.model.vertexType, this.model.id, type);
   },
 
   renderMenuInterface: function(){
@@ -571,36 +618,32 @@ LIME.ListingPanel = Backbone.View.Base.extend({
     // Testing
     this.listenTo(this.panelMenu, 'select', _.bind(LIME.panel.shift, LIME.panel));
 
-    this.clearMenus();
+    // Clear
+    this.$viewMenu.empty();
+    if(this.$actionMenu){
+      this.$actionMenu.empty();
+    }
 
+    // Append
     this.$viewMenu.append(this.layoutsMenu.render().el);
     this.$viewMenu.append(this.modeMenu.render().el);
-
 
     this.$actionMenu.append(this.addMenu.render().el);
     // Testing
     this.$actionMenu.append(this.panelMenu.render().el);
   },
 
-  clearMenus: function(){
-    this.$viewMenu.empty();
-    if(this.$actionMenu){
-      this.$actionMenu.empty();
-    }
-  },
-
   renderListing: function(){
-
     this.renderMenuInterface();
 
     // only render if deep
-    if(this.model===null){
-      console.warn("Listing render attempted before vertex was ready.")
+    if(!this.model.isDeep()){
+      console.warn("Listing panel render attempted before vertex was ready.")
       return false;
     }
 
     // new listing
-    this.listing = new LIME.View.ListingView['Vertex']({
+    this.listing = new LIME.View.ListingView({
       'model':this.model,
       'className': this.model.vertexType + ' vertex listing',
       'setType': this.setType
@@ -617,7 +660,6 @@ LIME.ListingPanel = Backbone.View.Base.extend({
   },
 
   list: function(vertex){
-
     this.model = vertex;
 
     if(this.listing){

@@ -112,7 +112,7 @@ textarea {
 
 #focus_column {
   z-index: 2;
-  width: 10px;
+  width: 250px;
   border-right: 1px solid #f5f8f8;
   background-color: #fff;
   position:fixed;
@@ -171,21 +171,30 @@ textarea {
 
 /* All navigation */
 
+.nav_box {
+  z-index: 300;
+  background-color: #fff;
+}
+
 .nav {
   z-index: 1000;
   padding: 0;
-  margin: 0 0 20px;
+  margin: 0 0 0px;
   overflow: auto;
   width: 100%;
   font-weight: normal;
   font-family: "Inconsolata","Monaco","Lucida Console","Courier New", "monospace";
   font-size: 16px;
+  -webkit-transition: padding .1s, box-shadow .5s;
+  -moz-transition: padding .1s, box-shadow .5s;
+  transition: padding .1s, box-shadow .5s;
   }
   .nav:hover {
     background-color: #fff;
     -webkit-box-shadow: 0px 0px 120px 0px rgba(51,51,51, 0.10);
     -moz-box-shadow:    0px 0px 120px 0px rgba(51,51,51, 0.10);
     box-shadow:         0px 0px 120px 0px rgba(51,51,51, 0.10);
+    padding-left: 10px;
   }
 
 .nav b {
@@ -197,8 +206,18 @@ textarea {
 }
 
 .subnav {
-  display:none;
+  -webkit-transition: height .3s;
+  -moz-transition: height .3s;
+  transition: height .3s;
+  display:block;
+  overflow: hidden;
+  visibility: 0;
+  height: 0;
   }
+
+.subnav.open {
+  height: 63px;
+}
 
 .nav li {
   position:relative;
@@ -277,23 +296,18 @@ textarea {
 
 /* Lime Nav */
 
-.lime_nav:hover {
-
-}
-
 .lime_nav li .icon {
-  -webkit-transition: all .1s ease-out;
-  -moz-transition: all .1s ease-out;
-  transition: all .1s ease-out;
+  -webkit-transition: all .3s linear;
+  -moz-transition: all .3s linear;
+  transition: all .3s linear;
 }
 
-.lime_nav li.home:hover .icon {
-}
+.lime_nav li.home:hover .icon {}
 
 .lime_nav li.back:hover .icon {
-  -webkit-transform: translateX(-20%);
-  -moz-transform: translateX(-20%);
-  transform: translateX(-20%);
+  -webkit-transform: translateX(-5px);
+  -moz-transform: translateX(-5px);
+  transform: translateX(-5px);
 }
 
 

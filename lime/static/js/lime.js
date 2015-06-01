@@ -38,7 +38,7 @@ LIME.consoleTimer = (function(){
 LIME.subnav = (function(){
 
   var toggleNav = function(el){
-    $(el).next('.subnav').fadeToggle(100);
+    $(el).next('.subnav').toggleClass('open');
   }
 
   return function(selector){

@@ -4,7 +4,6 @@
 
 LIME.FocusPanel = Backbone.View.Base.extend({
   el: $('#focus'),
-  historyTemplate: _.template($('#path_vertex_template').html()),
 
   initialize: function(){
     this.walk = [];

@@ -327,6 +327,12 @@
 
 /* Vertex ------------------------------------- */
 
+.vertex {
+  -webkit-transition: opacity .4s, transform .4s ease-out;
+  -moz-transition: opacity .4s, transform .4s ease-out;
+  transition: opacity .4s, transform .4s ease-out;
+}
+
 /* Upload */
 .vertex .upload_container {
   display:block;
@@ -357,6 +363,14 @@
   background-color: #ea8328;
 }
 
+/* Set ----------------------------------------- */
+
+.set {
+  -webkit-transition: opacity .3s, background-color .3s ease-out;
+  -moz-transition: opacity .3s, background-color .3s ease-out;
+  transition: opacity .3s, background-color .3s ease-out;
+}
+
 /* Listing ------------------------------------- */
 
 .listing {
@@ -367,27 +381,6 @@
   right: 0;
   overflow: auto;
 }
-
-/* Apex Menu -----------------------------------  */
-
-.home_menu {
-  padding: 1% 2%;
-  font-size: 60px;
-}
-
-.home_menu li {
-  clear:left;
-  margin: 32px 0;
-}
-  .home_menu li .icon {
-    display:block;
-    float:left;
-    width: 10%;
-    height: 0;
-    padding: 0 0 10%;
-    margin: 0% 3% 0% 0%;
-  }
-
 
 /* Empty ------------------------------------- */
 
@@ -437,6 +430,7 @@
   margin: 0;
   position:relative;
   padding: 135px 0 100px;
+  overflow: auto;
 }
 
 .set li {
@@ -455,7 +449,6 @@
   /* Cover */
 
   .set li.with_cover .cover {
-    width: 100%;
     padding: 0 10px 10px 0;
   }
 
@@ -494,7 +487,7 @@
   }
 
   .set li.with_cover.dragged .cover img {
-    width: 100%;
+
     display: block;
 
     -webkit-transform: translate(0, 0);
@@ -529,8 +522,6 @@
       15px 15px 0 rgba(220, 220, 220, 1.0),
       10px 10px 25px 0px rgba(100,100,100, .3);
   }
-
-
 
   .set li.dragged.without_cover .attributes {
   }
@@ -631,7 +622,6 @@
   display: block; /* Inline-block causes cover animation to fail */
   float:left;
   font-size: 16px;
-  background-color: #fff;
   overflow: hidden;
 }
 
@@ -703,7 +693,7 @@
   .set a.delete {
     position:absolute;
     z-index: 21;
-    top:0;
+    top:10px;
     right: 0;
     display:block;
     padding: 5px 5%;
@@ -713,9 +703,9 @@
     transform-origin: 100% 50%;
     -webkit-transform-origin: 100% 50%;
     -moz-transform-origin: 100% 50%;
-    transform:translateX(0) rotateY(-180deg);
-    -webkit-transform:translateX(0) rotateY(-180deg);
-    -moz-transform:translateX(0) rotateY(-180deg);
+    transform:translateX(1px) rotateY(-180deg);
+    -webkit-transform:translateX(1px) rotateY(-180deg);
+    -moz-transform:translateX(1px) rotateY(-180deg);
     /* visibility: hidden; */
     opacity: 1;
   }
@@ -763,16 +753,20 @@
     display:none;
   }
 
-/* Summary ------------------------------------- */
+/* Summary - Focus ------------------------------------- */
+
+#focus {
+  margin-top: 41px;
+}
 
 .summary {
   z-index: 120;
   position: relative;
   background-color: transparent;
-  margin: 5%;
-  -webkit-transition: all .2s;
-  -moz-transition: all .2s;
-  transition: all .2s;
+  margin: 0 5% 5%;
+  -webkit-transition: all .4s;
+  -moz-transition: all .4s;
+  transition: all .4s;
   -webkit-transform: translateX(0);
   -moz-transform: translateX(0);
   transform: translateX(0);
@@ -828,7 +822,7 @@
 
   .summary .ui {
     clear: both;
-    opacity: 0;
+    opacity: 1;
     position:absolute;
     top:0;
     right: 0;
@@ -851,7 +845,7 @@
       display:block;
       float:left;
       clear:both;
-      padding: 4px;
+      padding: 4px 4px 4px 0;
       margin: 4px 4px 0 0;
       -webkit-transition: all .2s;
       -moz-transition: all .2s;
@@ -868,6 +862,14 @@
       padding: 4px 10px 0;
       font-weight: normal;
       line-height: 24px;
+      display:none;
+    }
+
+    .summary:hover .ui a .label {
+      padding: 4px 10px 0;
+      font-weight: normal;
+      line-height: 24px;
+      display:inline;
     }
 
     .summary .ui a:hover {
@@ -878,13 +880,19 @@
 
     /* space for set cover button to sit if there is no cover photo */
     .summary .cover {
-      min-height: 64px;
+      min-height: 72px;
     }
 
-    .summary .set_cover {
+    .summary .set_cover,
+    .summary .update {
       display:block;
+      width: 24px;
       color: #000;
+    }
 
+    .summary:hover .ui .set_cover,
+    .summary:hover .ui .update {
+      width: auto;
     }
 
     .summary .ui a.get {
