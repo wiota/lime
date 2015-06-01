@@ -5,60 +5,6 @@
 
   <!-- Menus and Nav - - - - - - - - - - - - - - - - - - - - -->
 
-  <!-- Home Page Menu - Replace with host root vertex -->
-  <script type="text/template" id="home_menu">
-    <li class='body'>
-      <a href='#body'><b class='icon bookcase'></b>body of work</a>
-    </li>
-    <li class='happening'>
-      <a href='#happenings'>
-      <b class='icon calendar'>
-        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 16 16">
-          <rect y="1" fill="#78F7D8" width="16" height="13"/>
-          <rect x="1.5" y="4" fill="#FFFFFF" width="1" height="1"/>
-          <rect x="3.5" y="4" fill="#FFFFFF" width="1" height="1"/>
-          <rect x="5.5" y="4" fill="#FFFFFF" width="1" height="1"/>
-          <rect x="7.5" y="4" fill="#FFFFFF" width="1" height="1"/>
-          <rect x="9.5" y="4" fill="#FFFFFF" width="1" height="1"/>
-          <rect x="11.5" y="4" fill="#FFFFFF" width="1" height="1"/>
-          <rect x="13.5" y="4" fill="#FFFFFF" width="1" height="1"/>
-          <rect x="1.5" y="6" fill="#FFFFFF" width="1" height="1"/>
-          <rect x="3.5" y="6" fill="#FFFFFF" width="1" height="1"/>
-          <rect x="5.5" y="6" fill="#FFFFFF" width="1" height="1"/>
-          <rect x="7.5" y="6" fill="#FFFFFF" width="1" height="1"/>
-          <rect x="9.5" y="6" fill="#FFFFFF" width="1" height="1"/>
-          <rect x="11.5" y="6" fill="#FFFFFF" width="1" height="1"/>
-          <rect x="13.5" y="6" fill="#FFFFFF" width="1" height="1"/>
-          <rect x="1.5" y="8" fill="#FFFFFF" width="1" height="1"/>
-          <rect x="3.5" y="8" fill="#FFFFFF" width="1" height="1"/>
-          <rect x="5.5" y="8" fill="#FFFFFF" width="1" height="1"/>
-          <rect x="7.5" y="8" fill="#FFFFFF" width="1" height="1"/>
-          <rect x="9.5" y="8" fill="#FFFFFF" width="1" height="1"/>
-          <rect x="11.5" y="8" fill="#FFFFFF" width="1" height="1"/>
-          <rect x="13.5" y="8" fill="#FFFFFF" width="1" height="1"/>
-          <rect x="1.5" y="10" fill="#FFFFFF" width="1" height="1"/>
-          <rect x="3.5" y="10" fill="#FFFFFF" width="1" height="1"/>
-          <rect x="5.5" y="10" fill="#FFFFFF" width="1" height="1"/>
-          <rect x="1.5" y="12" fill="#FFFFFF" width="1" height="1"/>
-          <rect x="3.5" y="12" fill="#FFFFFF" width="1" height="1"/>
-          <rect x="13.5" y="2" fill="#FFFFFF" width="1" height="1"/>
-          <rect x="7.5" y="10" fill="#FFFFFF" width="1" height="1"/>
-          <rect x="9.5" y="10" fill="#FFFFFF" width="1" height="1"/>
-          <rect x="11.5" y="10" fill="#FFFFFF" width="1" height="1"/>
-          <rect x="13.5" y="10" fill="#FFFFFF" width="1" height="1"/>
-        </svg>
-      </b>happenings</a>
-    </li>
-  </script>
-
-  <!-- Path Panel -->
-  <script type="text/template" id="path_panel_template">
-    <div class='path'></div>
-  </script>
-
-  <script type="text/template" id="path_vertex_template">
-    <div class='vertex link'><a><%- title %></a></div>
-  </script>
 
   <!-- Add Menu -->
   <script type="text/template" id="vertex_add">
@@ -312,79 +258,71 @@
 
   <div id='focus_column'>
 
-    <ul class='account_nav nav'>
-      <li class='identification'>
-        <a class='drop'>
-          <b class='label'>{{current_user.email}}</b>
-          <!--<b class='opacity_taper'></b>-->
-        </a>
-        <ul class='subnav'>
-          <li class='account'>
-            <a href='{{ url_for('account.account') }}'>
-              <b class='icon face'>
-                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 16 16"><circle fill="#FFFFFF" stroke="#000000" stroke-miterlimit="10" cx="8" cy="8" r="7.3"/><circle cx="6.5" cy="7.5" r="0.75"/><circle cx="9.5" cy="7.5" r="0.75"/><path fill="none" stroke="#000000" stroke-miterlimit="10" d="M5.5,10.5c0.516,0.625,1.438,1.062,2.5,1.062h0.001H8 c1.062,0,1.984-0.438,2.5-1.062"/></svg>
-                </b>
-              <b class='label'>account settings</b>
-            </a>
-          </li>
-
-
-          {% if current_user.admin %}
-            <li class='admin'>
-              <a href=" {{ url_for('admin.index') }} ">
-                <b class='eye icon'>
-                  <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 16 16"><circle fill="#FFFFFF" stroke="#000000" stroke-miterlimit="10" cx="8" cy="8" r="7.3"/><circle cx="6.499" cy="10.5" r="2"/></svg>
+    <div class='nav_box'>
+      <ul class='account_nav nav'>
+        <li class='identification'>
+          <a class='drop'><b class='label'>{{current_user.email}}</b></a>
+          <ul class='subnav'>
+            <li class='account'>
+              <a href='{{ url_for('account.account') }}'>
+                <b class='icon face'>
+                  <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 16 16"><circle fill="#FFFFFF" stroke="#000000" stroke-miterlimit="10" cx="8" cy="8" r="7.3"/><circle cx="6.5" cy="7.5" r="0.75"/><circle cx="9.5" cy="7.5" r="0.75"/><path fill="none" stroke="#000000" stroke-miterlimit="10" d="M5.5,10.5c0.516,0.625,1.438,1.062,2.5,1.062h0.001H8 c1.062,0,1.984-0.438,2.5-1.062"/></svg>
                   </b>
-                <b class='label'>Admin</b>
+                <b class='label'>account settings</b>
               </a>
             </li>
 
-          {% endif %}
 
-          <li class='god'>
-            <a>
-              <b class='icon god'>
-                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 16 16"><polyline fill="none" stroke="#000000" points="0.5,1 0.5,15.5 15.5,15.5 15.5,1.5 2.5,1.5 2.5,13.5 13.5,13.5 13.5,3.5 4.5,3.5 4.5,11.5 11.5,11.5 11.5,5.5 6.5,5.5 6.5,9.5 9.5,9.5 9.5,7.5 8,7.5 "/><polyline fill="none" stroke="#fffff" points="1.5,1 1.5,14.5 14.5,14.5 14.5,2.5 3.5,2.5 3.5,12.5 12.5,12.5 12.5,4.5 5.5,4.5 5.5,10.5 10.5,10.5 10.5,6.5 7.5,6.5 7.5,8.5 9,8.5 "/></svg>
-              </b>
-              <b class='label'>API endpoint</b>
-            </a>
-          </li>
+            {% if current_user.admin %}
+              <li class='admin'>
+                <a href=" {{ url_for('admin.index') }} ">
+                  <b class='eye icon'>
+                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 16 16"><circle fill="#FFFFFF" stroke="#000000" stroke-miterlimit="10" cx="8" cy="8" r="7.3"/><circle cx="6.499" cy="10.5" r="2"/></svg>
+                    </b>
+                  <b class='label'>admin</b>
+                </a>
+              </li>
 
-          <li class='logout'>
-            <a href="{{ url_for('root.logout') }} ">
-              <b class='icon'>
-                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 16 16"><line fill="none" stroke="#000000" stroke-miterlimit="10" x1="1" y1="1.5" x2="15" y2="1.5"/><line fill="none" stroke="#000000" stroke-miterlimit="10" x1="1" y1="13.5" x2="15" y2="13.5"/><line fill="none" stroke="#000000" stroke-miterlimit="10" x1="0.5" y1="2" x2="0.5" y2="13"/><line fill="none" stroke="#000000" stroke-miterlimit="10" x1="15.5" y1="2" x2="15.5" y2="13"/><line fill="none" stroke="#D80404" stroke-miterlimit="10" x1="2.5" y1="3" x2="2.5" y2="12"/><line fill="none" stroke="#D80404" stroke-miterlimit="10" x1="2" y1="3.5" x2="4" y2="3.5"/><line fill="none" stroke="#D80404" stroke-miterlimit="10" x1="2" y1="7.5" x2="4" y2="7.5"/><line fill="none" stroke="#D80404" stroke-miterlimit="10" x1="2" y1="11.5" x2="4" y2="11.5"/><polygon fill="#D80404" points="8,12 7,12 5,3 6,3 "/><polygon fill="#D80404" points="5,12 6,12 8,3 7,3 "/><line fill="none" stroke="#D80404" stroke-miterlimit="10" x1="9.5" y1="3" x2="9.5" y2="12"/><line fill="none" stroke="#D80404" stroke-miterlimit="10" x1="11" y1="3.5" x2="14" y2="3.5"/><line fill="none" stroke="#D80404" stroke-miterlimit="10" x1="12.5" y1="3.5" x2="12.5" y2="12"/></svg>
+            {% endif %}
+
+            <li class='god'>
+              <a>
+                <b class='icon god'>
+                  <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 16 16"><polyline fill="none" stroke="#000000" points="0.5,1 0.5,15.5 15.5,15.5 15.5,1.5 2.5,1.5 2.5,13.5 13.5,13.5 13.5,3.5 4.5,3.5 4.5,11.5 11.5,11.5 11.5,5.5 6.5,5.5 6.5,9.5 9.5,9.5 9.5,7.5 8,7.5 "/><polyline fill="none" stroke="#fffff" points="1.5,1 1.5,14.5 14.5,14.5 14.5,2.5 3.5,2.5 3.5,12.5 12.5,12.5 12.5,4.5 5.5,4.5 5.5,10.5 10.5,10.5 10.5,6.5 7.5,6.5 7.5,8.5 9,8.5 "/></svg>
                 </b>
-              <b class='label'>Logout</b>
-            </a>
-          </li>
+                <b class='label'>API endpoint</b>
+              </a>
+            </li>
 
-        </ul>
-      </li>
-    </ul>
+            <li class='logout'>
+              <a href="{{ url_for('root.logout') }} ">
+                <b class='icon'>
+                  <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 16 16"><line fill="none" stroke="#000000" stroke-miterlimit="10" x1="1" y1="1.5" x2="15" y2="1.5"/><line fill="none" stroke="#000000" stroke-miterlimit="10" x1="1" y1="13.5" x2="15" y2="13.5"/><line fill="none" stroke="#000000" stroke-miterlimit="10" x1="0.5" y1="2" x2="0.5" y2="13"/><line fill="none" stroke="#000000" stroke-miterlimit="10" x1="15.5" y1="2" x2="15.5" y2="13"/><line fill="none" stroke="#D80404" stroke-miterlimit="10" x1="2.5" y1="3" x2="2.5" y2="12"/><line fill="none" stroke="#D80404" stroke-miterlimit="10" x1="2" y1="3.5" x2="4" y2="3.5"/><line fill="none" stroke="#D80404" stroke-miterlimit="10" x1="2" y1="7.5" x2="4" y2="7.5"/><line fill="none" stroke="#D80404" stroke-miterlimit="10" x1="2" y1="11.5" x2="4" y2="11.5"/><polygon fill="#D80404" points="8,12 7,12 5,3 6,3 "/><polygon fill="#D80404" points="5,12 6,12 8,3 7,3 "/><line fill="none" stroke="#D80404" stroke-miterlimit="10" x1="9.5" y1="3" x2="9.5" y2="12"/><line fill="none" stroke="#D80404" stroke-miterlimit="10" x1="11" y1="3.5" x2="14" y2="3.5"/><line fill="none" stroke="#D80404" stroke-miterlimit="10" x1="12.5" y1="3.5" x2="12.5" y2="12"/></svg>
+                  </b>
+                <b class='label'>Logout</b>
+              </a>
+            </li>
+          </ul>
+        </li>
+      </ul>
 
-    <ul class='lime_nav nav'>
-      <li class='home'>
-        <a href="{{ url_for('root.index') }}#">
-          <b class='icon bookcase'></b>
-          <b class='label'>home</b>
-        </a>
-      </li>
-
-      <li class='back'>
-        <a class='' onclick='javascript: history.go(-1)'>
-          <b class='icon back'>
-            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 16 16"><circle fill="#0083c6" cx="8" cy="8" r="8"/><path fill="#ffffff" d="M8,1.018V6l6.697-0.003c0.191,0.637,0.294,1.312,0.294,2.012c0,0.691-0.101,1.36-0.288,1.991H8v5L1,8 L8,1.018z"/></svg>
-            </b>
-          <b class='label'>back</b>
-        </a>
-
-        <ul class='path god'>
-        </ul>
-      </li>
-
-
-    </ul>
+      <ul class='lime_nav nav'>
+        <li class='home'>
+          <a href="{{ url_for('root.index') }}#">
+            <b class='icon bookcase'></b>
+            <b class='label'>home</b>
+          </a>
+        </li>
+        <li class='back'>
+          <a class='' onclick='javascript: history.go(-1)'>
+            <b class='icon back'>
+              <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 16 16"><circle fill="#0083c6" cx="8" cy="8" r="8"/><path fill="#ffffff" d="M8,1.018V6l6.697-0.003c0.191,0.637,0.294,1.312,0.294,2.012c0,0.691-0.101,1.36-0.288,1.991H8v5L1,8 L8,1.018z"/></svg>
+              </b>
+            <b class='label'>back</b>
+          </a>
+        </li>
+      </ul>
+    </div>
 
 
     <div id='focus'></div>
