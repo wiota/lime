@@ -584,7 +584,7 @@ LIME.ActionPanel = Backbone.View.Base.extend({
 
     this.$el.html(this.form.el);
 
-    if(!model.isFetched()){
+    if(!model.isFetched() && !model.isNew()){
       this.listenToOnce(model, 'sync', _.bind(this.form.render, this.form));
     } else {
       this.form.render();
