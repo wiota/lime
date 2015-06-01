@@ -382,27 +382,6 @@
   overflow: auto;
 }
 
-/* Apex Menu -----------------------------------  */
-
-.home_menu {
-  padding: 1% 2%;
-  font-size: 60px;
-}
-
-.home_menu li {
-  clear:left;
-  margin: 32px 0;
-}
-  .home_menu li .icon {
-    display:block;
-    float:left;
-    width: 10%;
-    height: 0;
-    padding: 0 0 10%;
-    margin: 0% 3% 0% 0%;
-  }
-
-
 /* Empty ------------------------------------- */
 
 .empty_succset {
@@ -470,7 +449,6 @@
   /* Cover */
 
   .set li.with_cover .cover {
-    width: 100%;
     padding: 0 10px 10px 0;
   }
 
@@ -509,7 +487,7 @@
   }
 
   .set li.with_cover.dragged .cover img {
-    width: 100%;
+
     display: block;
 
     -webkit-transform: translate(0, 0);
@@ -544,8 +522,6 @@
       15px 15px 0 rgba(220, 220, 220, 1.0),
       10px 10px 25px 0px rgba(100,100,100, .3);
   }
-
-
 
   .set li.dragged.without_cover .attributes {
   }
@@ -904,7 +880,7 @@
 
     /* space for set cover button to sit if there is no cover photo */
     .summary .cover {
-      min-height: 64px;
+      min-height: 72px;
     }
 
     .summary .set_cover,
