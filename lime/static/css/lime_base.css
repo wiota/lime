@@ -1,24 +1,5 @@
 /* -------------------------------------------------------------------  */
 /* Lime Default Styles */
-
-/*
-Body:
-  terra cotta: #dd7700
-  apricot: #ff8800
-  orange cream: #ffa53f
-Request:
-  meltdown: #00db14,
-  jade: #82db8a
-Form
-  aluminum: #ebf4f4;
-  lead: #cbdada;
-  magnesium: #4f5555;
-Action
-  foam: #78F7D8;
-  acid: #04e8e8;
-shadow color  42,44,57
-*/
-
 /* -------------------------------------------------------------------  */
 
 body {margin:0; padding: 0; font-size: 100%; font-family: 'Helvetica', 'Arial', 'san-serif';}
@@ -93,19 +74,6 @@ textarea {
   display: none;
 }
 
-/* Opacity Taper */
-
-.opacity_taper {
-  position:absolute;
-  top:0;
-  bottom:0;
-  right:0;
-  width: 10%;
-  background-color: #fff;
-  background: linear-gradient(to right,  rgba(255,255,255,0) 0%,rgba(255,255,255,1) 80%);
-}
-
-
 /* -------------------------------------------------------------------  */
 /* Layout */
 /* -------------------------------------------------------------------  */
@@ -160,9 +128,14 @@ textarea {
 
 }
 
-#storage_column {
+#bucket_column {
+  z-index:5;
   position:absolute;
-  width: 0%;
+  right: 0;
+  top:0;
+  bottom:0;
+  width: 100px;
+  background-color: #67f7eb;
   }
 
 /* -------------------------------------------------------------------  */

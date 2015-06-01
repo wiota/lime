@@ -118,4 +118,8 @@ LIME.Router = Backbone.Router.extend({
     LIME.predecessorPanel.list(vertex);
   },
 
+  listBucket: function(id){
+
+  }
+
 });

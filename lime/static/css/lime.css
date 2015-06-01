@@ -1,20 +1,7 @@
 /* -------------------------------------------------------------------  */
-/* Path Panel */
+/* Focus Panel */
 /* -------------------------------------------------------------------  */
 
-#path_panel {
-  /* navigation column - lime_base.css */
-  }
-
-
-/* -------------------------------------------------------------------  */
-/* Request Panel */
-/* -------------------------------------------------------------------  */
-
-#request_panel {
-  display:none;
-  background-color: #cfc;
-}
 
 /* -------------------------------------------------------------------  */
 /* Listing Panel */
@@ -27,50 +14,11 @@
   right: 0;
   left: 0;
   bottom: 0;
-  /* display column - lime_base.css */
   }
 
-
 /* -------------------------------------------------------------------  */
-/* Action Panel */
+/* Add to Succset */
 /* -------------------------------------------------------------------  */
-
-#action_panel {
-
-  background: url('https://s3.amazonaws.com/wiota/lime/bricks_lowc_limegrey.png') #efecdc;
-  z-index: 6;
-  overflow: auto;
-  margin: 0;
-  padding: 0 0% 0 4%;
-  position:absolute;
-  top: 0;
-  right: 0;
-  left: 0;
-  bottom: 0;
-  transition: all .2s ease-in-out;
-  -moz-transform: translateX(-100%);
-  -webkit-transform: translateX(-100%);
-  transform: translateX(-100%);
-  }
-
-#action_panel.show {
-  -moz-transform: translateX(0%);
-  -webkit-transform: translateX(0%);
-  transform: translateX(0%);
-}
-
-/* -------------------------------------------------------------------  */
-/* Path Panel */
-/* -------------------------------------------------------------------  */
-
-
-.path .vertex.link a {
-  display:block;
-  cursor: pointer;
-  padding: 2% 0 2% 16%;
-}
-
-/* Succset form ------------------------------------- */
 
 form.succset {
   z-index: 210;
@@ -144,17 +92,36 @@ form.succset .file_upload input {
 /* -------------------------------------------------------------------  */
 
 #action_panel {
+  background: url('https://s3.amazonaws.com/wiota/lime/bricks_lowc_limegrey.png') #efecdc;
+  z-index: 6;
+  overflow: auto;
+  margin: 0;
+  padding: 0 0% 0 4%;
+  position:absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  transition: all .2s ease-in-out;
+  -moz-transform: translateX(-100%);
+  -webkit-transform: translateX(-100%);
+  transform: translateX(-100%);
   perspective: 5000px;
   -webkit-perspective: 5000px;
   -moz-perspective: 5000px;
   -o-perspective: 5000px;
 }
 
+#action_panel.show {
+  -moz-transform: translateX(0%);
+  -webkit-transform: translateX(0%);
+  transform: translateX(0%);
+}
+
 #action_panel form {
   margin: 0;
   overflow: visible;
   }
-
 
 #action_panel label {
   font-size: 11px;
@@ -243,7 +210,7 @@ form.succset .file_upload input {
   width: 500px;
 }
 
-/* Buttons */
+/* Save Buttons */
 
 #action_panel .input.button {
   font-family: "Inconsolata","Monaco","Lucida Console","Courier New", "monospace";
@@ -320,6 +287,8 @@ form.succset .file_upload input {
 
 #action_panel .error .input.close:hover {background-color: #eac828; color: #fff;}
 
+/* Cover */
+
 #action_panel .cover_display {
   position: relative;
   width: 250px;
@@ -337,64 +306,5 @@ form.succset .file_upload input {
   right: 0;
   background-color: #f00;
   color: #fff;
-}
-
-/* File Upload */
-
-#action_panel .file_upload {
-  width: 250px;
-  padding: 0% 0% 30%;
-  margin: 0%;
-  position:relative;
-}
-
-#action_panel .files_container {
-  position:absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  overflow:hidden;
-  border: 5px dotted #a3afaf;
-  margin: 0 0 1.5%;
-  padding: 1%;
-}
-
-#action_panel .vertex.photo.form .files {
-  position: absolute;
-  top:0;
-  left:0;
-  opacity: 0;
-  width: 100%;
-  height: 100%
-}
-
-#action_panel .file_upload.over .files_container {
-  border: 1px solid #a3afaf;
-  -webkit-box-shadow: inset 0px 0px 18px 0px rgba(42, 44, 57, 0.5);
-  -moz-box-shadow: inset 0px 0px 18px 0px rgba(42, 44, 57, 0.5);
-  box-shadow: inset 0px 0px 18px 0px rgba(42, 44, 57, 0.5);
-}
-
-#action_panel .files_container .message {
-  font-size: 20px;
-  font-style: normal;
-  color: #000;
-  position:relative;
-}
-
-#action_panel .over .files_container .message {
-  top: 1px;
-  left: 1px;
-}
-
-#action_panel .file_upload input {
-  position:absolute;
-  bottom: 0;
-  left: 0;
-  padding: 3%;
-  display: none;
-  font-size: 14px;
-  font-family: Helvetica, Arial, 'san-serif';
 }
 
