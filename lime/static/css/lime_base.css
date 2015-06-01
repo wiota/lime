@@ -180,16 +180,16 @@ textarea {
   font-weight: normal;
   font-family: "Inconsolata","Monaco","Lucida Console","Courier New", "monospace";
   font-size: 16px;
-  -webkit-transition: all .3s;
-  -moz-transition: all .3s;
-  transition: all .3s;
+  -webkit-transition: padding .1s, box-shadow .5s;
+  -moz-transition: padding .1s, box-shadow .5s;
+  transition: padding .1s, box-shadow .5s;
   }
   .nav:hover {
     background-color: #fff;
     -webkit-box-shadow: 0px 0px 120px 0px rgba(51,51,51, 0.10);
     -moz-box-shadow:    0px 0px 120px 0px rgba(51,51,51, 0.10);
     box-shadow:         0px 0px 120px 0px rgba(51,51,51, 0.10);
-    width: 300%;
+    padding-left: 10px;
   }
 
 .nav b {
@@ -292,18 +292,17 @@ textarea {
 }
 
 .lime_nav li .icon {
-  -webkit-transition: all .1s ease-out;
-  -moz-transition: all .1s ease-out;
-  transition: all .1s ease-out;
+  -webkit-transition: all .3s linear;
+  -moz-transition: all .3s linear;
+  transition: all .3s linear;
 }
 
-.lime_nav li.home:hover .icon {
-}
+.lime_nav li.home:hover .icon {}
 
 .lime_nav li.back:hover .icon {
-  -webkit-transform: translateX(-20%);
-  -moz-transform: translateX(-20%);
-  transform: translateX(-20%);
+  -webkit-transform: translateX(-5px);
+  -moz-transform: translateX(-5px);
+  transform: translateX(-5px);
 }
 
 
