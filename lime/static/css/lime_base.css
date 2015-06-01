@@ -112,7 +112,7 @@ textarea {
 
 #focus_column {
   z-index: 2;
-  width: 10px;
+  width: 250px;
   border-right: 1px solid #f5f8f8;
   background-color: #fff;
   position:fixed;
@@ -171,6 +171,11 @@ textarea {
 
 /* All navigation */
 
+.nav_box {
+  z-index: 300;
+  background-color: #fff;
+}
+
 .nav {
   z-index: 1000;
   padding: 0;
@@ -201,8 +206,18 @@ textarea {
 }
 
 .subnav {
-  display:none;
+  -webkit-transition: height .3s;
+  -moz-transition: height .3s;
+  transition: height .3s;
+  display:block;
+  overflow: hidden;
+  visibility: 0;
+  height: 0;
   }
+
+.subnav.open {
+  height: 63px;
+}
 
 .nav li {
   position:relative;
@@ -280,16 +295,6 @@ textarea {
 }
 
 /* Lime Nav */
-
-
-.lime_nav {
-  border-bottom: 1px solid #f5f8f8;
-  margin-bottom: 71px;
-}
-
-.lime_nav:hover {
-
-}
 
 .lime_nav li .icon {
   -webkit-transition: all .3s linear;

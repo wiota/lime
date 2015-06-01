@@ -777,13 +777,17 @@
     display:none;
   }
 
-/* Summary ------------------------------------- */
+/* Summary - Focus ------------------------------------- */
+
+#focus {
+  margin-top: 41px;
+}
 
 .summary {
   z-index: 120;
   position: relative;
   background-color: transparent;
-  margin: 5%;
+  margin: 0 5% 5%;
   -webkit-transition: all .4s;
   -moz-transition: all .4s;
   transition: all .4s;
@@ -842,7 +846,7 @@
 
   .summary .ui {
     clear: both;
-    opacity: 0;
+    opacity: 1;
     position:absolute;
     top:0;
     right: 0;
@@ -865,7 +869,7 @@
       display:block;
       float:left;
       clear:both;
-      padding: 4px;
+      padding: 4px 4px 4px 0;
       margin: 4px 4px 0 0;
       -webkit-transition: all .2s;
       -moz-transition: all .2s;
@@ -882,6 +886,14 @@
       padding: 4px 10px 0;
       font-weight: normal;
       line-height: 24px;
+      display:none;
+    }
+
+    .summary:hover .ui a .label {
+      padding: 4px 10px 0;
+      font-weight: normal;
+      line-height: 24px;
+      display:inline;
     }
 
     .summary .ui a:hover {
@@ -895,10 +907,16 @@
       min-height: 64px;
     }
 
-    .summary .set_cover {
+    .summary .set_cover,
+    .summary .update {
       display:block;
+      width: 24px;
       color: #000;
+    }
 
+    .summary:hover .ui .set_cover,
+    .summary:hover .ui .update {
+      width: auto;
     }
 
     .summary .ui a.get {

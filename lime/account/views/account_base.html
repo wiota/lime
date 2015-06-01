@@ -43,10 +43,8 @@
                       </b>
                     <b class='label'>account settings</b>
                   </a>
-                  <div class='drop'>
-
-                  </div>
                 </li>
+
 
                 {% if current_user.admin %}
                   <li class='admin'>
@@ -54,10 +52,20 @@
                       <b class='eye icon'>
                         <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 16 16"><circle fill="#FFFFFF" stroke="#000000" stroke-miterlimit="10" cx="8" cy="8" r="7.3"/><circle cx="6.499" cy="10.5" r="2"/></svg>
                         </b>
-                      <b class='label'>Admin</b>
+                      <b class='label'>admin</b>
                     </a>
                   </li>
+
                 {% endif %}
+
+                <li class='god'>
+                  <a>
+                    <b class='icon god'>
+                      <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 16 16"><polyline fill="none" stroke="#000000" points="0.5,1 0.5,15.5 15.5,15.5 15.5,1.5 2.5,1.5 2.5,13.5 13.5,13.5 13.5,3.5 4.5,3.5 4.5,11.5 11.5,11.5 11.5,5.5 6.5,5.5 6.5,9.5 9.5,9.5 9.5,7.5 8,7.5 "/><polyline fill="none" stroke="#fffff" points="1.5,1 1.5,14.5 14.5,14.5 14.5,2.5 3.5,2.5 3.5,12.5 12.5,12.5 12.5,4.5 5.5,4.5 5.5,10.5 10.5,10.5 10.5,6.5 7.5,6.5 7.5,8.5 9,8.5 "/></svg>
+                    </b>
+                    <b class='label'>API endpoint</b>
+                  </a>
+                </li>
 
                 <li class='logout'>
                   <a href="{{ url_for('root.logout') }} ">
@@ -74,44 +82,16 @@
           <ul class='lime_nav nav'>
             <li class='home'>
               <a href="{{ url_for('root.index') }}#">
-                <b class='icon home'>
-                  <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 33 33"><rect fill="#FFFFFF" width="33" height="33"/><rect x="1" y="1" fill="#4f5555" width="7" height="3"/><rect x="9" y="1" fill="#4f5555" width="7" height="3"/><rect x="17" y="1" fill="#4f5555" width="7" height="3"/><rect x="25" y="1" fill="#4f5555" width="7" height="3"/><rect x="1" y="29" fill="#4f5555" width="7" height="3"/><rect x="9" y="29" fill="#4f5555" width="7" height="3"/><rect x="17" y="29" fill="#4f5555" width="7" height="3"/><rect x="5" y="21" fill="#4f5555" width="7" height="7"/><rect x="13" y="21" fill="#4f5555" width="7" height="7"/><rect x="21" y="21" fill="#4f5555" width="7" height="7"/><rect x="29" y="21" fill="#4f5555" width="3" height="7"/><rect x="1" y="21" fill="#4f5555" width="3" height="7"/><rect x="5" y="5" fill="#4f5555" width="7" height="7"/><rect x="13" y="5" fill="#4f5555" width="7" height="7"/><rect x="21" y="5" fill="#4f5555" width="7" height="7"/><rect x="29" y="5" fill="#4f5555" width="3" height="7"/><rect x="1" y="5" fill="#4f5555" width="3" height="7"/><rect x="25" y="29" fill="#4f5555" width="7" height="3"/><rect x="1" y="13" fill="#4f5555" width="7" height="7"/><rect x="9" y="13" fill="#4f5555" width="7" height="7"/><rect x="17" y="13" fill="#4f5555" width="7" height="7"/><rect x="25" y="13" fill="#4f5555" width="7" height="7"/></svg>
-                  </b>
+                <b class='icon bookcase'>
+                  <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 16 16"><rect x="0" y="2" fill="#73a290" width="1" height="2"></rect><rect x="1" y="2" fill="#756377" width="1" height="2"></rect><rect x="2" y="2" fill="#482700" width="1" height="2"></rect><rect x="3" y="1" fill="#6f616e" width="1" height="3"></rect><rect x="4" y="1" fill="#ff4cb6" width="1" height="3"></rect><rect x="5" y="1" fill="#191816" width="1" height="3"></rect><rect x="6" y="2" fill="#ff2b23" width="1" height="2"></rect><rect x="7" y="2" fill="#6f616e" width="1" height="2"></rect><rect x="8" y="1" fill="#ff7172" width="1" height="3"></rect><rect x="9" y="1" fill="#ff8367" width="1" height="3"></rect><rect x="10" y="1" fill="#bb9856" width="1" height="3"></rect><rect x="11" y="2" fill="#6c0010" width="1" height="2"></rect><rect x="12" y="1" fill="#cbcac0" width="1" height="3"></rect><rect x="13" y="2" fill="#c90037" width="1" height="2"></rect><rect x="14" y="2" fill="#d30031" width="1" height="2"></rect><rect x="15" y="1" fill="#9e9f96" width="1" height="3"></rect><rect x="0" y="6" fill="#0d2236" width="1" height="2"></rect><rect x="1" y="5" fill="#cbcac0" width="1" height="3"></rect><rect x="2" y="5" fill="#003959" width="1" height="3"></rect><rect x="3" y="5" fill="#ff0768" width="1" height="3"></rect><rect x="4" y="5" fill="#bb9856" width="1" height="3"></rect><rect x="5" y="6" fill="#e8972a" width="1" height="2"></rect><rect x="6" y="6" fill="#ff5b45" width="1" height="2"></rect><rect x="7" y="5" fill="#ff4cb6" width="1" height="3"></rect><rect x="8" y="5" fill="#e2003d" width="1" height="3"></rect><rect x="9" y="6" fill="#d8bb00" width="1" height="2"></rect><rect x="10" y="5" fill="#82ae79" width="1" height="3"></rect><rect x="11" y="6" fill="#d7b777" width="1" height="2"></rect><rect x="12" y="5" fill="#ffa361" width="1" height="3"></rect><rect x="13" y="6" fill="#3d2d3c" width="1" height="2"></rect><rect x="14" y="6" fill="#bb9856" width="1" height="2"></rect><rect x="15" y="5" fill="#d8bb00" width="1" height="3"></rect><rect x="0" y="10" fill="#e68300" width="1" height="2"></rect><rect x="1" y="9" fill="#d39ca4" width="1" height="3"></rect><rect x="2" y="9" fill="#ff4cb6" width="1" height="3"></rect><rect x="3" y="9" fill="#d30031" width="1" height="3"></rect><rect x="4" y="10" fill="#d8bb00" width="1" height="2"></rect><rect x="5" y="10" fill="#16170e" width="1" height="2"></rect><rect x="6" y="10" fill="#7c4e64" width="1" height="2"></rect><rect x="7" y="10" fill="#ff2b23" width="1" height="2"></rect><rect x="8" y="9" fill="#c90037" width="1" height="3"></rect><rect x="9" y="10" fill="#c8676f" width="1" height="2"></rect><rect x="10" y="10" fill="#c8676f" width="1" height="2"></rect><rect x="11" y="10" fill="#82ae79" width="1" height="2"></rect><rect x="12" y="9" fill="#ff5b45" width="1" height="3"></rect><rect x="13" y="9" fill="#73a290" width="1" height="3"></rect><rect x="14" y="10" fill="#3d2d3c" width="1" height="2"></rect><rect x="15" y="9" fill="#62b89d" width="1" height="3"></rect><rect x="0" y="14" fill="#c8676f" width="1" height="2"></rect><rect x="1" y="13" fill="#c90037" width="1" height="3"></rect><rect x="2" y="13" fill="#0085c3" width="1" height="3"></rect><rect x="3" y="13" fill="#d30031" width="1" height="3"></rect><rect x="4" y="13" fill="#babc9b" width="1" height="3"></rect><rect x="5" y="13" fill="#111512" width="1" height="3"></rect><rect x="6" y="13" fill="#d39ca4" width="1" height="3"></rect><rect x="7" y="13" fill="#ff5b45" width="1" height="3"></rect><rect x="8" y="14" fill="#c90037" width="1" height="2"></rect><rect x="9" y="14" fill="#ff2b23" width="1" height="2"></rect><rect x="10" y="13" fill="#cbcac0" width="1" height="3"></rect><rect x="11" y="13" fill="#3d2d3c" width="1" height="3"></rect><rect x="12" y="14" fill="#ff49b6" width="1" height="2"></rect><rect x="13" y="13" fill="#bb9856" width="1" height="3"></rect><rect x="14" y="14" fill="#ffa361" width="1" height="2"></rect><rect x="15" y="14" fill="#97ae90" width="1" height="2"></rect></svg>
+                </b>
                 <b class='label'>home</b>
               </a>
             </li>
-            <li class='vertex body'>
-              <a href='/#body'>
-                <b class='icon bookcase'></b>
-                <b class='label'>body of work</b>
-              </a>
-            </li>
-            <li class='vertex happenings'>
-              <a href='/#happenings'>
-                <b class='icon calendar'>
-                  <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 16 16"><rect y="1" fill="#78F7D8" width="16" height="13"/><rect x="1.5" y="4" fill="#FFFFFF" width="1" height="1"/><rect x="3.5" y="4" fill="#FFFFFF" width="1" height="1"/><rect x="5.5" y="4" fill="#FFFFFF" width="1" height="1"/><rect x="7.5" y="4" fill="#FFFFFF" width="1" height="1"/><rect x="9.5" y="4" fill="#FFFFFF" width="1" height="1"/><rect x="11.5" y="4" fill="#FFFFFF" width="1" height="1"/><rect x="13.5" y="4" fill="#FFFFFF" width="1" height="1"/><rect x="1.5" y="6" fill="#FFFFFF" width="1" height="1"/><rect x="3.5" y="6" fill="#FFFFFF" width="1" height="1"/><rect x="5.5" y="6" fill="#FFFFFF" width="1" height="1"/><rect x="7.5" y="6" fill="#FFFFFF" width="1" height="1"/><rect x="9.5" y="6" fill="#FFFFFF" width="1" height="1"/><rect x="11.5" y="6" fill="#FFFFFF" width="1" height="1"/><rect x="13.5" y="6" fill="#FFFFFF" width="1" height="1"/><rect x="1.5" y="8" fill="#FFFFFF" width="1" height="1"/><rect x="3.5" y="8" fill="#FFFFFF" width="1" height="1"/><rect x="5.5" y="8" fill="#FFFFFF" width="1" height="1"/><rect x="7.5" y="8" fill="#FFFFFF" width="1" height="1"/><rect x="9.5" y="8" fill="#FFFFFF" width="1" height="1"/><rect x="11.5" y="8" fill="#FFFFFF" width="1" height="1"/><rect x="13.5" y="8" fill="#FFFFFF" width="1" height="1"/><rect x="1.5" y="10" fill="#FFFFFF" width="1" height="1"/><rect x="3.5" y="10" fill="#FFFFFF" width="1" height="1"/><rect x="5.5" y="10" fill="#FFFFFF" width="1" height="1"/><rect x="1.5" y="12" fill="#FFFFFF" width="1" height="1"/><rect x="3.5" y="12" fill="#FFFFFF" width="1" height="1"/><rect x="13.5" y="2" fill="#FFFFFF" width="1" height="1"/><rect x="7.5" y="10" fill="#FFFFFF" width="1" height="1"/><rect x="9.5" y="10" fill="#FFFFFF" width="1" height="1"/><rect x="11.5" y="10" fill="#FFFFFF" width="1" height="1"/><rect x="13.5" y="10" fill="#FFFFFF" width="1" height="1"/></svg>
-                </b>
-                <b class='label'>happenings</b>
-              </a>
-            </li>
-            <li class='god'>
-              <a>
-                <b class='icon god'>
-                  <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 16 16"><polyline fill="none" stroke="#000000" points="0.5,1 0.5,15.5 15.5,15.5 15.5,1.5 2.5,1.5 2.5,13.5 13.5,13.5 13.5,3.5 4.5,3.5 4.5,11.5 11.5,11.5 11.5,5.5 6.5,5.5 6.5,9.5 9.5,9.5 9.5,7.5 8,7.5 "/><polyline fill="none" stroke="#fffff" points="1.5,1 1.5,14.5 14.5,14.5 14.5,2.5 3.5,2.5 3.5,12.5 12.5,12.5 12.5,4.5 5.5,4.5 5.5,10.5 10.5,10.5 10.5,6.5 7.5,6.5 7.5,8.5 9,8.5 "/></svg>
-                </b>
-                <b class='label'>god</b>
-              </a>
-            </li>
-          </ul>
-
-          <ul class='graph_nav nav'>
             <li class='back'>
-              <a onclick='javascript: history.go(-1)'>
-                <b class='icon back over'>
-                  <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 16 16"><polyline fill="none" stroke="#0083c6" stroke-miterlimit="10" points="15.5,2.5 15.5,15.5 6.5,15.5 "/><rect x="5.5" y="0.542" fill="#0083c6" stroke="#0083c6" stroke-miterlimit="10" width="8" height="13"/><line fill="none" stroke="#0083c6" stroke-miterlimit="10" x1="6.499" y1="14.479" x2="5.5" y2="14.479"/><line fill="none" stroke="#FFFFFF" x1="7" y1="4.5" x2="12" y2="4.5"/></svg>
-                  </b>
-                <b class='icon back out'>
-                  <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 16 16"><rect x="0.5" y="1.5" fill="#0083c6" stroke="#0083c6" stroke-miterlimit="10" width="6" height="13"/><rect x="8.5" y="1.5" fill="#0083c6" stroke="#0083c6" stroke-miterlimit="10" width="7" height="13"/><polyline fill="none" stroke="#FFFFFF" points="6,3.5 2,7.5 6,11.5"/><line fill="none" stroke="#FFFFFF" x1="2" y1="7.5" x2="7" y2="7.5"/><line fill="none" stroke="#FFFFFF" x1="8" y1="8.5" x2="13" y2="8.5"/></svg>
+              <a class='' onclick='javascript: history.go(-1)'>
+                <b class='icon back'>
+                  <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 16 16"><circle fill="#0083c6" cx="8" cy="8" r="8"/><path fill="#ffffff" d="M8,1.018V6l6.697-0.003c0.191,0.637,0.294,1.312,0.294,2.012c0,0.691-0.101,1.36-0.288,1.991H8v5L1,8 L8,1.018z"/></svg>
                   </b>
                 <b class='label'>back</b>
               </a>
@@ -133,6 +113,7 @@
     <script type='text/javascript'>
       $(document).ready(function() {
         LIME.flash();
+      LIME.subnav('.nav a.drop');
       });
     </script>
   </body>
