@@ -14,6 +14,14 @@
 
 LIME.Router = Backbone.Router.extend({
 
+  // Route roadmap
+
+  // category/1234/list             - list successors
+  // category/1234/update           - show form
+  // category/1234/list/5678/relate - add new successors - limit to bucket vertex
+  // category/1234/list/5678/move   - move successors - from vertex to vertex
+
+
   routes:{
     "":"getHost",
     ":vertexType/:id":"getVertex"
