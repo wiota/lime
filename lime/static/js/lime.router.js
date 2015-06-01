@@ -75,7 +75,6 @@ LIME.Router = Backbone.Router.extend({
   },
 
   update: function(vertexType, id){
-    console.log('update');
     if(this.willRefocus(id)){
       this.listVertex(vertexType, id, 'list', null, null);
     }
@@ -83,7 +82,6 @@ LIME.Router = Backbone.Router.extend({
   },
 
   create: function(vertexType, id, newVertexType){
-    console.log('new');
     if(this.willRefocus(id)){
       this.listVertex(vertexType, id, 'list', null, null);
     }
@@ -104,7 +102,6 @@ LIME.Router = Backbone.Router.extend({
     if(LIME.focus && LIME.focus.id === id){
       return false;
     } else {
-      console.log('will refocus');
       return true;
     }
   },
