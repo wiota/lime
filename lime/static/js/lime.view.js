@@ -85,7 +85,9 @@ LIME.View.Vertex = Backbone.View.Base.extend({
   },
 
   updateForm: function(){
-    LIME.actionPanel.loadVertexForm(this.model, this.predecessor);
+    // Pass through router to enable history
+    LIME.router.navigate('#'+this.model.vertexType+'/'+this.model.id+"/update");
+    LIME.router.update(this.model.vertexType, this.model.id);
   },
 
   setCoverForm: function(){
@@ -544,7 +546,9 @@ LIME.ListingPanel = Backbone.View.Base.extend({
   },
 
   newForm: function(type){
-    LIME.actionPanel.loadVertexForm(LIME.stack.createVertex({'vertex_type': type}), this.model); // API uses underscored attribute names such as vertex_type
+    // Pass through router to enable history
+    LIME.router.navigate('#'+this.model.vertexType+'/'+this.model.id+"/create/"+type);
+    LIME.router.create(this.model.vertexType, this.model.id, type);
   },
 
   renderMenuInterface: function(){
@@ -614,22 +618,19 @@ LIME.ListingPanel = Backbone.View.Base.extend({
     // Testing
     this.listenTo(this.panelMenu, 'select', _.bind(LIME.panel.shift, LIME.panel));
 
-    this.clearMenus();
-
-    this.$viewMenu.append(this.layoutsMenu.render().el);
-    this.$viewMenu.append(this.modeMenu.render().el);
-
-
-    this.$actionMenu.append(this.addMenu.render().el);
-    // Testing
-    this.$actionMenu.append(this.panelMenu.render().el);
-  },
-
-  clearMenus: function(){
+    // Clear
     this.$viewMenu.empty();
     if(this.$actionMenu){
       this.$actionMenu.empty();
     }
+
+    // Append
+    this.$viewMenu.append(this.layoutsMenu.render().el);
+    this.$viewMenu.append(this.modeMenu.render().el);
+
+    this.$actionMenu.append(this.addMenu.render().el);
+    // Testing
+    this.$actionMenu.append(this.panelMenu.render().el);
   },
 
   renderListing: function(){

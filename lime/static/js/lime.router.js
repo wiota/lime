@@ -16,15 +16,20 @@ LIME.Router = Backbone.Router.extend({
 
   // Route roadmap
 
-  // category/1234/list             - list successors
-  // category/1234/update           - show form
-  // category/1234/list/5678/relate - add new successors - limit to bucket vertex
-  // category/1234/list/5678/move   - move successors - from vertex to vertex
-
+  // /#                               - list host
+  // /#category/1234                  - list vertex + successors
+  // /#category/1234/update           - show update form
+  // /#category/1234/create/          - show add form
+  // /#category/1234/list/5678/move   - move successors - from vertex to vertex
+  // /#category/1234/list/5678/link   - add new successors - limit to bucket vertex
 
   routes:{
-    "":"getHost",
-    ":vertexType/:id":"getVertex"
+    "":"listHost",
+    ":vertexType/:id" : "list",
+    ":vertexType/:id/update" : "update",
+    ":vertexType/:id/create/:newVertexType" : "create",
+    ":vertexType/:id/list/:bucket/move" : "move",
+    ":vertexType/:id/list/:bucket/link" : "link",
   },
 
   initialize: function(){
@@ -51,27 +56,69 @@ LIME.Router = Backbone.Router.extend({
     LIME.icon = new Iconset();
     LIME.icon.add("bookcase", '.bookcase.icon');
     LIME.icon.refresh();
-
-    // This should disappear with the forms being passed through the router
     this.on('route', function(r,p){
       LIME.icon.refresh();
-      LIME.actionPanel.closeForm();
     })
   },
 
-  // Host
-  getHost: function() {
+  // Endpoints
+  listHost: function() {
     var id = (LIME.host.get('apex'));
-    this.getVertex('host', id);
+    this.list('host', id);
   },
 
-  // Vertex
-  getVertex: function(vertexType, id){
-    LIME.focus = LIME.collection.Vertex.lookup(id, vertexType);
-    LIME.focusPanel.list(LIME.focus);
-    LIME.successorPanel.list(LIME.focus);
-    LIME.predecessorPanel.list(LIME.focus);
+  list: function(vertexType, id){
+    if(this.willRefocus(id)){
+      this.listVertex(vertexType, id, 'list', null, null);
+    }
+    LIME.actionPanel.closeForm();
+  },
 
-  }
+  update: function(vertexType, id){
+    console.log('update');
+    if(this.willRefocus(id)){
+      this.listVertex(vertexType, id, 'list', null, null);
+    }
+    LIME.actionPanel.loadVertexForm(LIME.focus, null);
+  },
+
+  create: function(vertexType, id, newVertexType){
+    console.log('new');
+    if(this.willRefocus(id)){
+      this.listVertex(vertexType, id, 'list', null, null);
+    }
+    var vertex = LIME.stack.createVertex({'vertex_type': newVertexType})
+    LIME.actionPanel.loadVertexForm(vertex, LIME.focus);
+  },
+
+  move: function(vertexType, id, bucket){
+    console.warn('Function not implemented');
+  },
+
+  link: function(vertexType, id, bucket){
+    console.warn('Function not implemented');
+  },
+
+  // Tools
+  willRefocus: function(id){
+    if(LIME.focus && LIME.focus.id === id){
+      return false;
+    } else {
+      console.log('will refocus');
+      return true;
+    }
+  },
+
+  lookupVertex: function(vertexType, id){
+    return LIME.focus = LIME.collection.Vertex.lookup(id, vertexType); // focus state set here
+  },
+
+  listVertex: function(vertexType, id){
+    vertex = this.lookupVertex(vertexType, id)
+
+    LIME.focusPanel.list(vertex);
+    LIME.successorPanel.list(vertex);
+    LIME.predecessorPanel.list(vertex);
+  },
 
 });

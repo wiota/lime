@@ -385,20 +385,6 @@ LIME.Forms['Vertex'] = Backbone.View.Base.extend({
     return this;
   },
 
-  saveAndClose: function(){
-    if(this.model.modified){
-      this.save();
-      this.listenToOnce(this.model, 'sync', this.forceClose);
-    } else {
-      this.forceClose();
-    }
-  },
-
-  forceClose: function(){
-    this.trigger('closed');
-    this.close();
-  },
-
   attributesChanged: function(changes){
     LIME.stack.modifyVertex(this.model, changes);
   },
@@ -423,6 +409,29 @@ LIME.Forms['Vertex'] = Backbone.View.Base.extend({
       LIME.stack.updateVertex(this.model);
     }
   },
+
+  saveAndClose: function(){
+    if(this.model.modified){
+      this.save();
+      this.listenToOnce(this.model, 'sync', this.forceClose);
+    } else {
+      this.forceClose();
+    }
+  },
+
+  forceClose: function(){
+    this.trigger('closed');
+    if(this.model.isNew() && this.predecessor){
+      // Pass through router to enable history
+      LIME.router.navigate('#'+this.predecessor.vertexType+'/'+this.predecessor.id);
+      LIME.router.list(this.predecessor.vertexType, this.predecessor.id);
+    } else {
+      // Pass through router to enable history
+      LIME.router.navigate('#'+this.model.vertexType+'/'+this.model.id);
+      LIME.router.list(this.model.vertexType, this.model.id);
+    }
+    this.close();
+  }
 
 });
 
@@ -572,8 +581,15 @@ LIME.ActionPanel = Backbone.View.Base.extend({
 
     this.listenTo(this.form, 'closed', this.collapseActionPanel);
 
+
     this.$el.html(this.form.el);
-    this.form.render();
+
+    if(!model.isFetched()){
+      this.listenToOnce(model, 'sync', _.bind(this.form.render, this.form));
+    } else {
+      this.form.render();
+    }
+
     this.rollDown();
   },
 
