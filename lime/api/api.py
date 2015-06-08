@@ -1,12 +1,20 @@
 import sys
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, abort
 from flask import current_app as app
 from toolbox.tools import update_document, make_response, get_custom_vertex_fields
 from toolbox.models import *
-from flask.ext.login import login_required
 from flask.ext.login import current_user
 from mongoexhaust import bsonify
+from functools import wraps
 
+
+def login_required(func):
+    @wraps(func)
+    def decorated_view(*args, **kwargs):
+        if not current_user.is_authenticated():
+            abort(401)
+        return func(*args, **kwargs)
+    return decorated_view
 
 mod = Blueprint('api', __name__, url_prefix='/api/v1')
 

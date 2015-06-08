@@ -4,8 +4,7 @@ from toolbox.models import *
 from toolbox.tools import retrieve_image
 from toolbox.emailer import ActionEmail, AdminAlertEmail, RegistrationEmail
 from toolbox.nocache import nocache
-from flask.ext.login import LoginManager
-from flask.ext.login import login_required, login_user, logout_user, current_user
+from flask.ext.login import login_user, logout_user, current_user
 from itsdangerous import URLSafeSerializer, BadSignature
 from jinja2 import TemplateNotFound
 from flask_headers import headers
