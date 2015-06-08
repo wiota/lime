@@ -103,6 +103,13 @@ def user():
 Vertex endpoints
 '''
 
+@mod.route('/<vertex_type>/', methods=['GET'])
+@login_required
+def vertices_by_type(vertex_type):
+    host = Host.by_current_user()
+    return Vertex.objects(vertex_type=vertex_type, host=host).to_bson()
+
+
 @mod.route('/<vertex_type>/<id>/', methods=['GET'])
 @login_required
 def vertex_id(vertex_type, id):
