@@ -69,18 +69,6 @@ def body():
     return Body.by_current_user().to_bson()
 
 
-# Body and happenings apex do not need special succset endpoints
-# The id of the vertex can be passed. This will future proof in
-# the case that they become de-apexed in favor of a host apex.
-#
-# @mod.route('/body/succset/', methods=['PUT'])
-# @login_required
-# def put_body_succset():
-#     body = Body.by_current_user()
-#     Body.objects.get(id=body.id).update(set__succset=request.json['succset'])
-#     return jsonify(result="success"), 200  # TODO: Should be a 204
-
-
 '''
 Happening endpoints
 '''
@@ -143,13 +131,7 @@ def post_vertex(vertex_type):
     doc.vertex_type = vertex_type
     doc.host = Host.by_current_user()
     data = {k: request.json[k] for k in doc.get_aggregate_fields() if k in request.json.keys()}
-
     update_document(doc, data).save()
-
-    # TODO: This is a hack. get_aggregate_fields should be reworked.
-    if 'cover' in request.json.keys():
-        doc.reload()
-        doc.update(set__cover=request.json['cover'])
 
     return doc.to_bson(), 200
 
@@ -159,15 +141,10 @@ def post_vertex(vertex_type):
 def put_category(vertex_type, id):
     doc = Vertex.by_id(id)
     data = {k: request.json[k] for k in doc.get_aggregate_fields() if k in request.json.keys()}
-
     update_document(doc, data).save()
 
-    # TODO: This is a hack. get_aggregate_fields should be reworked.
-    if 'cover' in request.json.keys():
-        doc.reload()
-        doc.update(set__cover=request.json['cover'])
-
     return jsonify(result="success"), 200  # TODO: Should be a 204
+
 
 '''
 Photo endpoints
