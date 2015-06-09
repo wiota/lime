@@ -198,11 +198,13 @@ def create_user():
             host.save()
 
             # Create the Body apex
-            body = Body(host=host, title=hostname)
+            title = "%s: Body" % (hostname)
+            body = Body(host=host, title=title)
             body.save()
 
             # Create the Happening apex
-            happenings = Happenings(host=host, title=hostname)
+            title = "%s: Happenings" % (hostname)
+            happenings = Happenings(host=host, title=title)
             happenings.save()
 
 
