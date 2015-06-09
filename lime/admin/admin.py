@@ -208,7 +208,7 @@ def create_user():
             happenings.save()
 
             # Create the Apex
-            apex = Apex(host=host, title=hostname, succset=[body, happenings])
+            apex = Apex(host=host, title=hostname, succset=[body, happenings], vertex_type="host", deletable=False)
             apex.save()
             host.update(set__apex=apex)
 
