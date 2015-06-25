@@ -516,6 +516,7 @@ LIME.ListingPanel = Backbone.View.Base.extend({
 
     // Set to render
     this.setType = options.setType;
+    this.menu = options.menu;
 
     // Intial view config
     this.mode = 'add_mode';
@@ -633,7 +634,6 @@ LIME.ListingPanel = Backbone.View.Base.extend({
   },
 
   renderListing: function(){
-    this.renderMenuInterface();
 
     // only render if deep
     if(!this.model.isDeep()){
@@ -649,7 +649,8 @@ LIME.ListingPanel = Backbone.View.Base.extend({
     });
 
     this.$el.append(this.listing.render().el);
-    if(this.setType == 'successor'){
+    if(this.menu === true){
+      this.renderMenuInterface();
       this.renderMenus();
     } else {
       this.switchEditMode(this.mode, null);

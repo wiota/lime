@@ -129,14 +129,15 @@ textarea {
 }
 
 #bucket_column {
-  z-index:5;
+  z-index:6;
   position:absolute;
-  right: 0;
+  right: -300px;
+  margin-right: 0;
   top:0;
   bottom:0;
-  width: 100px;
-  background-color: #67f7eb;
-  }
+  width: 600px;
+  background: url('https://s3.amazonaws.com/wiota/lime/bricks_lowc_limegrey.png') #efecdc;
+}
 
 /* -------------------------------------------------------------------  */
 /* Navigation */

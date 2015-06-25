@@ -36,6 +36,7 @@ LIME.Router = Backbone.Router.extend({
 
     // Location on graph
     LIME.focus = null;
+    LIME.bucket = null;
 
     // LIME panels
     LIME.panel = new LIME.Panel({
@@ -48,9 +49,10 @@ LIME.Router = Backbone.Router.extend({
     LIME.panel.shift('standard');
 
     LIME.focusPanel = new LIME.FocusPanel();
-    LIME.successorPanel = new LIME.ListingPanel({"setType": "successor", el: $('#succset')});
+    LIME.successorPanel = new LIME.ListingPanel({"setType": "successor", "menu": true, el: $('#succset')});
     LIME.predecessorPanel = new LIME.ListingPanel({"setType": "predecessor", el: $('#predset')});
     LIME.actionPanel = new LIME.ActionPanel();
+    LIME.bucketPanel = new LIME.ListingPanel({"setType": "successor", el: $('#bucket')});
 
     // Icons
     LIME.icon = new Iconset();
@@ -68,21 +70,21 @@ LIME.Router = Backbone.Router.extend({
   },
 
   list: function(vertexType, id){
-    if(this.willRefocus(id)){
+    if(this.sameId(LIME.focus, id)){
       this.listVertex(vertexType, id, 'list', null, null);
     }
     LIME.actionPanel.closeForm();
   },
 
   update: function(vertexType, id){
-    if(this.willRefocus(id)){
+    if(this.sameId(LIME.focus, id)){
       this.listVertex(vertexType, id, 'list', null, null);
     }
     LIME.actionPanel.loadVertexForm(LIME.focus, null);
   },
 
   create: function(vertexType, id, newVertexType){
-    if(this.willRefocus(id)){
+    if(this.sameId(LIME.focus, id)){
       this.listVertex(vertexType, id, 'list', null, null);
     }
     var vertex = LIME.stack.createVertex({'vertex_type': newVertexType})
@@ -90,7 +92,12 @@ LIME.Router = Backbone.Router.extend({
   },
 
   move: function(vertexType, id, bucket){
-    console.warn('Function not implemented');
+    if(this.sameId(LIME.focus, id)){
+      this.listVertex(vertexType, id);
+    }
+    if(this.sameId(LIME.bucket, id)){
+      this.listBucket(bucket);
+    }
   },
 
   link: function(vertexType, id, bucket){
@@ -98,8 +105,8 @@ LIME.Router = Backbone.Router.extend({
   },
 
   // Tools
-  willRefocus: function(id){
-    if(LIME.focus && LIME.focus.id === id){
+  sameId: function(existing, id){
+    if(existing && existing.id === id){
       return false;
     } else {
       return true;
@@ -119,7 +126,8 @@ LIME.Router = Backbone.Router.extend({
   },
 
   listBucket: function(id){
-
+    vertex = this.lookupVertex(null, id);
+    LIME.bucketPanel.list(vertex);
   }
 
 });
