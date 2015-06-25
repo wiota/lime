@@ -423,11 +423,12 @@ LIME.Forms['Vertex'] = Backbone.View.Base.extend({
     this.trigger('closed');
     if(this.model.isNew() && this.predecessor){
       // Pass through router to enable history
-      LIME.router.navigate('#'+this.predecessor.vertexType+'/'+this.predecessor.id);
-      LIME.router.list(this.predecessor.vertexType, this.predecessor.id);
+      // LIME.router.navigate('#'+this.predecessor.vertexType+'/'+this.predecessor.id);
+      // LIME.router.list(this.predecessor.vertexType, this.predecessor.id);
+      history.go(-1)
     } else {
       // Pass through router to enable history
-      LIME.router.navigate('#'+this.model.vertexType+'/'+this.model.id);
+      LIME.router.navigate('#'+this.model.vertexType+'/'+this.model.id, {replace: true});
       LIME.router.list(this.model.vertexType, this.model.id);
     }
     this.close();
