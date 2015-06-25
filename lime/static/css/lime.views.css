@@ -34,9 +34,9 @@
 
 .menu.open a.switch {
   opacity: 1;
-  -webkit-box-shadow: 5px 5px 15px 0px rgba(100,100,100, .3);
-  -moz-box-shadow:    5px 5px 15px 0px rgba(100,100,100, .3);
-  box-shadow:         5px 5px 15px 0px rgba(100,100,100, .3);
+  -webkit-box-shadow: 5px 5px 0 0px rgba(100,100,100, .3);
+  -moz-box-shadow:    5px 5px 0 0px rgba(100,100,100, .3);
+  box-shadow:         5px 5px 0 0px rgba(100,100,100, .3);
 }
 
 .menu .label {
@@ -62,14 +62,13 @@
   width: 100%;
   z-index: 200;
   height: 31px;
-  padding: 0 0 10px 10px;
+  padding: 0 0 0 10px;
 }
 
 .view_menu .menu {
   position: relative;
   display:block;
   float:left;
-  width: 180px;
   margin: 0 0 0 10px;
 }
 
@@ -77,18 +76,38 @@
   z-index: 201;
 }
 
-.view_menu .menu b {
+.view_menu .menu a {
+  border-style: solid;
+  border-color: #e7eded;
+  color: #222;
+  background-color: #fff;
 }
+
+.view_menu .menu b {
+  height: 16px;
+}
+
+/* switch */
 
 .view_menu a.switch {
-  display: none;
-  width: 160px;
-  padding: 7px 10px 8px;
+  display:block;
+  width: 32px;
+  height: 19px;
+  padding: 6px 10px 6px;
+  border-width: 0 1px 1px;
 }
 
+.view_menu a.switch .icon {
+  display:none;
+}
+
+/* sub */
+
 .view_menu ul {
+  position:absolute;
+  overflow: auto;
   opacity: 1;
-  width: 100%;
+  width: 212px;
   background-color: #fff;
 }
 
@@ -97,62 +116,32 @@
   text-align: left;
   width: 160px;
   padding: 0 10px;
+  margin: 10px 0;
   cursor: pointer;
   opacity: 0;
   -webkit-transition: all .1s ease-in-out;
   -moz-transition: all .1s ease-in-out;
   transition: all .1s ease-in-out;
-  border-style: solid;
-  border-color: #f5f8f8;
   border-width: 0;
   height: 0;
   overflow: hidden;
 }
 
-.view_menu li.selected a {
-  padding: 6px 10px 6px;
-  border-width: 0 1px 1px;
+.view_menu .menu:hover li a {
+  padding: 6px 20px 6px;
+  border-width: 1px;
   visibility: visible;
   height: 19px;
   opacity: 1;
 }
 
-.view_menu ul:hover {
-
-}
-
-.view_menu ul:hover li a {
-  padding: 7px 20px 8px;
-  border-width: 0 1px 1px;
-  visibility: visible;
-  height: 19px;
-  opacity: 1;
-}
-
-.view_menu ul:hover li.selected a {
-  padding: 7px 0% 8px 40px;
+.view_menu .menu:hover li.selected a {
+  padding: 6px 0 6px 40px;
   z-index: 100;
   -webkit-box-shadow: 5px 5px 0 0 rgba(100,100,100, .3);
   -moz-box-shadow:    5px 5px 0 0 rgba(100,100,100, .3);
   box-shadow:         5px 5px 0 0 rgba(100,100,100, .3);
 }
-
-.view_menu ul li.selected {
-
-}
-
-/* Layout Menu Colors ------------- */
-
-.view_menu .layout a {
-  color: #222;
-  background-color: #fff;
-}
-
-.view_menu .layout ul .selected a {
-  color: #222;
-  background: url('https://s3.amazonaws.com/wiota/lime/bricks_lowc_limegrey.png') #efecdc;
-}
-
 
 
 /* Mode Menu Colors ------------- */
@@ -186,6 +175,7 @@
 
 /* Action Menu ------------- */
 
+/*
 .action_menu {
   position: absolute;
   margin: 0;
@@ -256,7 +246,10 @@
   -moz-transform:translateX(0) rotateY(-180deg);
 }
 
+*/
+
 /* Only show action menu if in add mode */
+/*
 .add_mode .action_menu .open ul {
   pointer-events:auto;
   opacity: 1;
@@ -324,6 +317,8 @@
   background-color: #3abef3;
   text-align: center;
 }
+
+*/
 
 /* Vertex ------------------------------------- */
 

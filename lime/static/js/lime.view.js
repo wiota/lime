@@ -512,6 +512,12 @@ LIME.ListingPanel = Backbone.View.Base.extend({
     //['move_view', 'Move']
   ],
 
+  panels: [
+    ['standard', 'Standard'],
+    ['predecessor', 'Predecessor'],
+    ['successor', 'Successor']
+  ],
+
   initialize: function(options){
 
     // Set to render
@@ -521,12 +527,14 @@ LIME.ListingPanel = Backbone.View.Base.extend({
     // Intial view config
     this.mode = 'add_mode';
     this.layout = 'list_view';
+    this.panel = 'standard';
 
     // Listing
     this.listing;
 
     // Model
     this.model;
+
 
   },
 
@@ -596,18 +604,10 @@ LIME.ListingPanel = Backbone.View.Base.extend({
       radio: false
     });
 
-    // For testing
-    pS = [
-      ['standard', 'Standard'],
-      ['predecessor', 'Predecessor'],
-      ['successor', 'Successor']
-    ]
-
-    pSI = pS[0];
     this.panelMenu = new LIME.menu({
       className: 'column_width menu god',
-      schema: pS,
-      initial: pSI,
+      schema: this.panels,
+      initial: this.panel,
       label: "GOD",
       cls: "god",
       radio: true
@@ -627,10 +627,9 @@ LIME.ListingPanel = Backbone.View.Base.extend({
     // Append
     this.$viewMenu.append(this.layoutsMenu.render().el);
     this.$viewMenu.append(this.modeMenu.render().el);
+    this.$viewMenu.append(this.addMenu.render().el);
+    this.$viewMenu.append(this.panelMenu.render().el);
 
-    this.$actionMenu.append(this.addMenu.render().el);
-    // Testing
-    this.$actionMenu.append(this.panelMenu.render().el);
   },
 
   renderListing: function(){
@@ -672,14 +671,5 @@ LIME.ListingPanel = Backbone.View.Base.extend({
       this.renderListing(vertex);
     }
 
-  },
-
-  apexMenu: function(){
-    if(this.listing){
-      this.listing.close();
-    }
-    this.listing = new LIME.View.HomeMenu();
-    this.$el.append(this.listing.render().el);
-    this.clearMenus();
   }
 });

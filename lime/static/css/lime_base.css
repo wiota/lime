@@ -63,15 +63,15 @@ textarea {
 /* God */
 
 .god {
-  display:none;
+  display:none !important;
 }
 
 .godman .god {
-  display: block;
+  display: block !important;
 }
 
 .godman .man {
-  display: none;
+  display: none !important;
 }
 
 /* -------------------------------------------------------------------  */
