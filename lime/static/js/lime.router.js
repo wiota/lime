@@ -45,8 +45,8 @@ LIME.Router = Backbone.Router.extend({
 
     LIME.panel.addPreset('standard', [0, 0, 250]);
     LIME.panel.addPreset('predecessor', [0, 250, 500]);
-    LIME.panel.addPreset('successor', [0, 0, 180]);
-    LIME.panel.shift('standard');
+    LIME.panel.addPreset('successor', [0, 0, 0]);
+
 
     LIME.focusPanel = new LIME.FocusPanel();
     LIME.successorPanel = new LIME.ListingPanel({"setType": "successor", "menu": true, el: $('#succset')});
@@ -73,13 +73,17 @@ LIME.Router = Backbone.Router.extend({
     if(this.sameId(LIME.focus, id)){
       this.listVertex(vertexType, id, 'list', null, null);
     }
-    LIME.actionPanel.closeForm();
+    LIME.panel.shift('predecessor');
+    $('#bucket_column').fadeOut();
+    //LIME.actionPanel.closeForm();
   },
 
   update: function(vertexType, id){
     if(this.sameId(LIME.focus, id)){
       this.listVertex(vertexType, id, 'list', null, null);
     }
+    LIME.panel.shift('successor');
+    $('#bucket_column').fadeOut();
     LIME.actionPanel.loadVertexForm(LIME.focus, null);
   },
 
@@ -88,6 +92,8 @@ LIME.Router = Backbone.Router.extend({
       this.listVertex(vertexType, id, 'list', null, null);
     }
     var vertex = LIME.stack.createVertex({'vertex_type': newVertexType})
+    LIME.panel.shift('successor');
+    $('#bucket_column').fadeOut();
     LIME.actionPanel.loadVertexForm(vertex, LIME.focus);
   },
 
@@ -98,6 +104,9 @@ LIME.Router = Backbone.Router.extend({
     if(this.sameId(LIME.bucket, id)){
       this.listBucket(bucket);
     }
+    $('#bucket_column').fadeIn();
+    LIME.panel.shift('successor');
+
   },
 
   link: function(vertexType, id, bucket){
