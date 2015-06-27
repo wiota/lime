@@ -115,6 +115,9 @@ LIME.View.Vertex = Backbone.View.Base.extend({
   render: function(){
     var awaiting = null;
 
+    // test for rendering
+    // console.log("rendering vertex")
+
     // If item is still awaiting upload, render loading bar
     if(awaiting = this.model.awaitingUpload()){
       this.$el.html(this.awaitingTemplate(this.model.toJSON()));
@@ -180,6 +183,18 @@ LIME.View.Vertex = Backbone.View.Base.extend({
     if(!this.model.get('deletable')){
       this.$el.find('.delete').remove();
     }
+
+    // test for rendering
+    if(this.$el.hasClass('summary')){
+      // this.$el.css({transform:'translate(150%)'});
+    } else {
+      // this.$el.css({transform:'translate(200px)'});
+    }
+
+    var view = this;
+    _.delay(function(){
+      view.$el.css({transform:'translate(0px)'})
+    }, 500);
 
     return this;
   }
@@ -382,6 +397,9 @@ LIME.View.SetView = Backbone.View.Base.extend({
       return false;
     }
 
+    // test for rendering
+    // console.log('rendering set - '+ this.setType);
+
     this.$el.empty();
     if(this.setType === 'successor'){
       var set = this.model.succset;
@@ -401,6 +419,15 @@ LIME.View.SetView = Backbone.View.Base.extend({
       itemView.listenTo(item, 'change', itemView.render);
       return itemView;
     }, this);
+
+    // test for rendering
+    // this.$el.css({backgroundColor:"rgba(235,255,200,.5)"});
+    var view = this;
+
+    _.delay(function(){
+      view.$el.css({backgroundColor:"transparent"})
+    }, 500);
+
 
     return this;
   }
@@ -462,6 +489,10 @@ LIME.View.ListingView = Backbone.View.Base.extend({
   },
 
   render: function(){
+
+    // test for rendering
+    // console.log("rendering listing");
+
     if(this.setType === 'successor'){
       var set = this.model.succset;
     } else if (this.setType === 'predecessor'){
@@ -527,7 +558,6 @@ LIME.ListingPanel = Backbone.View.Base.extend({
     // Intial view config
     this.mode = 'add_mode';
     this.layout = 'list_view';
-    this.panel = 'standard';
 
     // Listing
     this.listing;
