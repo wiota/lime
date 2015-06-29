@@ -570,8 +570,9 @@ LIME.ActionPanel = Backbone.View.Base.extend({
   loadVertexForm: function(model, predecessor){
     this.closeForm();
 
+    // Set state of lens instead
     if(!model.isNew()){
-      LIME.focusPanel.$el.addClass('form_open');
+      LIME.state.subject[0].lens.focus.view.$el.addClass('form_open');
     }
 
     this.form = new LIME.Forms['Vertex']({
@@ -617,7 +618,8 @@ LIME.ActionPanel = Backbone.View.Base.extend({
   },
 
   rollUp: function(){
-    LIME.focusPanel.$el.removeClass('form_open');
+    // Set state of lens instead
+    LIME.state.subject[0].lens.focus.view.$el.removeClass('form_open');
     this.$el.removeClass('show');
   },
 

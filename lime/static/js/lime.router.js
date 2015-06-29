@@ -34,25 +34,48 @@ LIME.Router = Backbone.Router.extend({
 
   initialize: function(){
 
-    // Location on graph
-    LIME.focus = null;
-    LIME.bucket = null;
+    // Locations on graph
+    LIME.state = {
+      subject: [
+        // Subject primary
+        {
+          focus: null,
+          lens: {
+            focus: {
+              view: new LIME.FocusPanel()
+            },
+            successors: {
+              view: new LIME.ListingPanel({"setType": "successor", "menu": true, el: $('#succset')}),
+              menu: null
+            },
+            predecessors: {
+              view: new LIME.ListingPanel({"setType": "predecessor", el: $('#predset')})
+            }
+          },
+          panel: new LIME.Panel({panels: ['#predecessor_column','#focus_column', '#successor_column']})
+        },
 
-    // LIME panels
-    LIME.panel = new LIME.Panel({
-      panels: ['#predecessor_column','#focus_column', '#successor_column']
-    });
+        // Subject 1 is for moving and linking
+        {
+          focus: null,
+          lens: {
+            successors: {
+              view: new LIME.ListingPanel({"setType": "successor", el: $('#bucket')})
+            }
+          }
+        }
+      ],
+      panel: new LIME.Panel({panels: ['#subject0','#subject1']})
+    }
 
-    LIME.panel.addPreset('standard', [0, 0, 250]);
-    LIME.panel.addPreset('predecessor', [0, 250, 500]);
-    LIME.panel.addPreset('successor', [0, 0, 0]);
+    LIME.state.subject[0].panel.addPreset('standard', [0, 0, 250]);
+    LIME.state.subject[0].panel.addPreset('predecessor', [0, 250, 500]);
+    LIME.state.subject[0].panel.addPreset('successor', [0, 0, 0]);
 
+    LIME.state.panel.addPreset('single', [0, 100], "%");
+    LIME.state.panel.addPreset('double', [0, 50], "%");
 
-    LIME.focusPanel = new LIME.FocusPanel();
-    LIME.successorPanel = new LIME.ListingPanel({"setType": "successor", "menu": true, el: $('#succset')});
-    LIME.predecessorPanel = new LIME.ListingPanel({"setType": "predecessor", el: $('#predset')});
-    LIME.actionPanel = new LIME.ActionPanel();
-    LIME.bucketPanel = new LIME.ListingPanel({"setType": "successor", el: $('#bucket')});
+    LIME.actionPanel = new LIME.ActionPanel(); // will be incorporated into lens.focus.view
 
     // Icons
     LIME.icon = new Iconset();
@@ -63,6 +86,21 @@ LIME.Router = Backbone.Router.extend({
     })
   },
 
+  // Set State
+
+  setFocusState: function(index, vertex){
+    if(this.sameId(LIME.state.subject[index], vertex)){
+      LIME.state.subject[index].focus = vertex;
+      _.each(LIME.state.subject[index].lens, function(lens){
+        lens.view.list(vertex);
+      })
+    }
+  },
+
+  setLensState: function(panelPreset){
+    LIME.state.subject[0].panel.shift(panelPreset);
+  },
+
   // Endpoints
   listHost: function() {
     var id = (LIME.host.get('apex'));
@@ -70,73 +108,50 @@ LIME.Router = Backbone.Router.extend({
   },
 
   list: function(vertexType, id){
-    if(this.sameId(LIME.focus, id)){
-      this.listVertex(vertexType, id, 'list', null, null);
-    }
-    LIME.panel.shift('predecessor');
+    this.setFocusState(0, this.lookupVertex(id))
+    this.setLensState('predecessor');
     $('#bucket_column').fadeOut();
-    //LIME.actionPanel.closeForm();
   },
 
   update: function(vertexType, id){
-    if(this.sameId(LIME.focus, id)){
-      this.listVertex(vertexType, id, 'list', null, null);
-    }
-    LIME.panel.shift('successor');
+    this.setFocusState(0, this.lookupVertex(id))
+    this.setLensState('successor');
     $('#bucket_column').fadeOut();
     LIME.actionPanel.loadVertexForm(LIME.focus, null);
   },
 
   create: function(vertexType, id, newVertexType){
-    if(this.sameId(LIME.focus, id)){
-      this.listVertex(vertexType, id, 'list', null, null);
-    }
+    this.setFocusState(0, this.lookupVertex(id))
     var vertex = LIME.stack.createVertex({'vertex_type': newVertexType})
-    LIME.panel.shift('successor');
+    this.setLensState('successor');
     $('#bucket_column').fadeOut();
     LIME.actionPanel.loadVertexForm(vertex, LIME.focus);
   },
 
   move: function(vertexType, id, bucket){
-    if(this.sameId(LIME.focus, id)){
-      this.listVertex(vertexType, id);
-    }
-    if(this.sameId(LIME.bucket, id)){
-      this.listBucket(bucket);
-    }
+    this.setFocusState(0, this.lookupVertex(id))
+    this.setFocusState(1, this.lookupVertex(null, id));
     $('#bucket_column').fadeIn();
-    LIME.panel.shift('successor');
+    this.setLensState('successor');
 
   },
 
-  link: function(vertexType, id, bucket){
-    console.warn('Function not implemented');
+  link: function(id, bucket){
+    console.warn('Function not implemented ');
+    this.move(id, bucket)
   },
 
   // Tools
-  sameId: function(existing, id){
-    if(existing && existing.id === id){
+  sameId: function(currentFocus, newFocus){
+    if(currentFocus && newFocus && currentFocus.id === newFocus.id){
       return false;
     } else {
       return true;
     }
   },
 
-  lookupVertex: function(vertexType, id){
-    return LIME.focus = LIME.collection.Vertex.lookup(id, vertexType); // focus state set here
-  },
-
-  listVertex: function(vertexType, id){
-    vertex = this.lookupVertex(vertexType, id)
-
-    LIME.focusPanel.list(vertex);
-    LIME.successorPanel.list(vertex);
-    LIME.predecessorPanel.list(vertex);
-  },
-
-  listBucket: function(id){
-    vertex = this.lookupVertex(null, id);
-    LIME.bucketPanel.list(vertex);
+  // Do we need vertexType here? We don't always have it
+  lookupVertex: function(id){
+    return LIME.collection.Vertex.lookup(id); // focus state set here
   }
-
 });

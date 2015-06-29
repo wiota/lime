@@ -649,7 +649,7 @@ LIME.ListingPanel = Backbone.View.Base.extend({
     this.listenTo(this.layoutsMenu, 'select', this.switchLayout);
     this.listenTo(this.modeMenu, 'select', this.switchEditMode);
     this.listenTo(this.addMenu, 'select', this.handleNew);
-    this.listenTo(this.panelMenu, 'select', _.bind(LIME.panel.shift, LIME.panel));
+    this.listenTo(this.panelMenu, 'select', LIME.router.setLensState);
 
     // Clear
     this.$viewMenu.empty();

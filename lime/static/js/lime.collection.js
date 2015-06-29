@@ -12,8 +12,8 @@ LIME.Collection.Vertex = Backbone.Collection.extend({
 
   // This function returns a model instance and
   // initiates a deepen call on the model if necessary
-  lookup: function(id, vertexType){
-    var vertex = this.get(id) || this.getEmpty(id, vertexType);
+  lookup: function(id){
+    var vertex = this.get(id) || this.getEmpty(id);
 
     if(!vertex.isFetched() || !vertex.isDeep()){
       return vertex.deepen();
@@ -22,8 +22,8 @@ LIME.Collection.Vertex = Backbone.Collection.extend({
     }
   },
 
-  getEmpty: function(id, vertexType){
-    return LIME.stack.createVertex({'_id': id, 'vertex_type': vertexType}, {vertexType: vertexType})
+  getEmpty: function(id){
+    return LIME.stack.createVertex({'_id': id})
   }
 
 });

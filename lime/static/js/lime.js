@@ -2,8 +2,7 @@
 // LIME namespace
 // ---------------------------------------------------------------------
 
-var LIME = {
-};
+var LIME = {};
 
 LIME.start = function(){
 
