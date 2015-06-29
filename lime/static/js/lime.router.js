@@ -121,11 +121,12 @@ LIME.Router = Backbone.Router.extend({
   },
 
   create: function(vertexType, id, newVertexType){
-    this.setFocusState(0, this.lookupVertex(id))
+    var predecessor = this.lookupVertex(id);
+    this.setFocusState(0, predecessor)
     var vertex = LIME.stack.createVertex({'vertex_type': newVertexType})
     this.setLensState('successor');
     $('#bucket_column').fadeOut();
-    LIME.actionPanel.loadVertexForm(vertex, LIME.focus);
+    LIME.actionPanel.loadVertexForm(vertex, predecessor);
   },
 
   move: function(vertexType, id, bucket){
@@ -150,7 +151,6 @@ LIME.Router = Backbone.Router.extend({
     }
   },
 
-  // Do we need vertexType here? We don't always have it
   lookupVertex: function(id){
     return LIME.collection.Vertex.lookup(id); // focus state set here
   }
