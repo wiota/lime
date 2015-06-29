@@ -584,10 +584,14 @@ LIME.ListingPanel = Backbone.View.Base.extend({
     this.$el.removeClass(from)
   },
 
-  newForm: function(type){
-    // Pass through router to enable history
-    LIME.router.navigate('#'+this.model.vertexType+'/'+this.model.id+"/create/"+type);
-    LIME.router.create(this.model.vertexType, this.model.id, type);
+  handleNew: function(type){
+    if(type==='exisiting'){
+      LIME.router.navigate('#'+this.model.vertexType+'/'+this.model.id+"/list/"+this.model.id+"/"+"move");
+      LIME.router.move(this.model.vertexType, this.model.id, this.model.ids);
+    } else {
+      LIME.router.navigate('#'+this.model.vertexType+'/'+this.model.id+"/create/"+type);
+      LIME.router.create(this.model.vertexType, this.model.id, type);
+    }
   },
 
   renderMenuInterface: function(){
@@ -602,13 +606,12 @@ LIME.ListingPanel = Backbone.View.Base.extend({
     var vertexSchema = LIME.host.vertexSchema;
     var addList = [];
 
-    if(vertexType === 'happenings'){
-      addList;
-    } else {
-      _.each(vertexSchema, function(fields, vertexType){
-        addList.push([vertexType, "add "+vertexType.replace(/[-_.]/g, ' ')])
-      }, this)
-    }
+
+    _.each(vertexSchema, function(fields, vertexType){
+      addList.push([vertexType, "add "+vertexType.replace(/[-_.]/g, ' ')])
+    }, this)
+
+    addList.push(['exisiting', "add exisiting"]);
 
     this.layoutsMenu = new LIME.menu({
       className: 'layout menu',
@@ -645,7 +648,7 @@ LIME.ListingPanel = Backbone.View.Base.extend({
 
     this.listenTo(this.layoutsMenu, 'select', this.switchLayout);
     this.listenTo(this.modeMenu, 'select', this.switchEditMode);
-    this.listenTo(this.addMenu, 'select', this.newForm);
+    this.listenTo(this.addMenu, 'select', this.handleNew);
     this.listenTo(this.panelMenu, 'select', _.bind(LIME.panel.shift, LIME.panel));
 
     // Clear
