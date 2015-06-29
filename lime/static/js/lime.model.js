@@ -538,35 +538,5 @@ LIME.Model.Medium = LIME.Model.Vertex.extend({
 
   },
 
-
-
 })
 
-/* ------------------------------------------------------------------- */
-// Medium - Abstract class - do not instantiate!
-/* ------------------------------------------------------------------- */
-
-/*
-LIME.Model['Vertex.Medium'] = LIME.Model.Vertex.extend({
-  _cls: "Vertex.Medium",
-
-  initialize: function(){
-    this.formUrl = null;
-    this.set({'_cls': this._cls});
-    this.fetched = false;
-    this.deep = false;
-  }
-});
-*/
-
-/* ------------------------------------------------------------------- */
-// Photo
-/* ------------------------------------------------------------------- */
-
-/*
-LIME.Model['Vertex.Medium.Photo'] = LIME.Model['Vertex.Medium'].extend({
-  vertexType: 'photo',
-  urlRoot: "api/v1/photo/",
-  _cls: "Vertex.Medium.Photo"
-});
-*/
