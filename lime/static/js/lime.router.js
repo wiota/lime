@@ -28,52 +28,78 @@ LIME.Router = Backbone.Router.extend({
     ":vertexType/:id" : "list",
     ":vertexType/:id/update" : "update",
     ":vertexType/:id/create/:newVertexType" : "create",
-    ":vertexType/:id/list/:bucket/move" : "move",
-    ":vertexType/:id/list/:bucket/link" : "link",
+    ":vertexType/:id/list/:secondary/move" : "move",
+    ":vertexType/:id/list/:secondary/link" : "link",
   },
 
   initialize: function(){
 
     // Locations on graph
-    LIME.state = {
-      subject: [
-        // Subject primary
-        {
-          focus: null,
-          lens: {
-            focus: {
-              view: new LIME.FocusPanel()
-            },
-            successors: {
-              view: new LIME.ListingPanel({"setType": "successor", "menu": true, el: $('#succset')}),
-              menu: null
-            },
-            predecessors: {
-              view: new LIME.ListingPanel({"setType": "predecessor", el: $('#predset')})
-            }
-          },
-          panel: new LIME.Panel({panels: ['#predecessor_column','#focus_column', '#successor_column']})
-        },
-
-        // Subject 1 is for moving and linking
-        {
-          focus: null,
-          lens: {
-            successors: {
-              view: new LIME.ListingPanel({"setType": "successor", el: $('#bucket')})
-            }
-          }
+    LIME.ui = {
+      primarySubject: {
+        lens: {
+          focus: new LIME.FocusPanel({el: $('#primary_subject .focus.box')}),
+          successors: new LIME.ListingPanel({"setType": "successor", "menu": true, el: $('#primary_subject .succset')}),
+          predecessors: new LIME.ListingPanel({"setType": "predecessor", el: $('#primary_subject .predset')})
         }
-      ],
-      panel: new LIME.Panel({panels: ['#subject0','#subject1']})
+      },
+      secondarySubject: {
+        lens: {
+          successors: new LIME.ListingPanel({"setType": "successor", el: $('#secondary_subject .succset')})
+        }
+      }
     }
 
-    LIME.state.subject[0].panel.addPreset('standard', [0, 0, 250]);
-    LIME.state.subject[0].panel.addPreset('predecessor', [0, 250, 500]);
-    LIME.state.subject[0].panel.addPreset('successor', [0, 0, 0]);
+    LIME.panel = {
+      subjects: new LIME.Panel({panels: ['#primary_subject','#secondary_subject']}),
+      primarySubject: new LIME.Panel({panels: ['#primary_subject .predecessor.lens','#primary_subject .focus.lens', '#primary_subject .successor.lens']})
+    }
 
-    LIME.state.panel.addPreset('single', [0, 100], "%");
-    LIME.state.panel.addPreset('double', [0, 50], "%");
+    LIME.state = {
+      primarySubject: {
+        focus: null,
+        panelState: 'predecessor',
+        lens: {
+          focus: {
+            nav: true
+          },
+          successors: {
+            nav: false,
+            view: 'list',
+            mode: 'add'
+          },
+          predecessors: {
+            nav: false,
+            view: 'list',
+            mode: 'add'
+          }
+        }
+      },
+      secondarySubject: {
+        focus: null,
+        panelState: 'standard',
+        lens: {
+          focus: {
+            nav: false
+          },
+          successors: {
+            nav: false,
+            view: 'list',
+            mode: 'add'
+          }
+        }
+      },
+      panelState: 'single'
+    }
+
+
+
+    LIME.panel.primarySubject.addPreset('standard', [0, 0, 250]);
+    LIME.panel.primarySubject.addPreset('predecessor', [0, 250, 500]);
+    LIME.panel.primarySubject.addPreset('successor', [0, 0, 0]);
+
+    LIME.panel.subjects.addPreset('single', [0, 100], "%");
+    LIME.panel.subjects.addPreset('double', [0, 50], "%");
 
     LIME.actionPanel = new LIME.ActionPanel(); // will be incorporated into lens.focus.view
 
@@ -88,17 +114,17 @@ LIME.Router = Backbone.Router.extend({
 
   // Set State
 
-  setFocusState: function(index, vertex){
-    if(this.sameId(LIME.state.subject[index], vertex)){
-      LIME.state.subject[index].focus = vertex;
-      _.each(LIME.state.subject[index].lens, function(lens){
-        lens.view.list(vertex);
+  setFocusState: function(subject, vertex){
+    if(this.sameId(LIME.state[subject].focus, vertex)){
+      LIME.state[subject].focus = vertex;
+      _.each(LIME.ui[subject].lens, function(lens){
+        lens.list(vertex);
       })
     }
   },
 
-  setLensState: function(panelPreset){
-    LIME.state.subject[0].panel.shift(panelPreset);
+  setLensState: function(subject, panelPreset){
+    LIME.panel[subject].shift(panelPreset);
   },
 
   // Endpoints
@@ -108,38 +134,37 @@ LIME.Router = Backbone.Router.extend({
   },
 
   list: function(vertexType, id){
-    this.setFocusState(0, this.lookupVertex(id))
-    this.setLensState('predecessor');
-    $('#bucket_column').fadeOut();
+    this.setFocusState('primarySubject', this.lookupVertex(id))
+    this.setLensState('primarySubject', 'predecessor');
+    this.setLensState('subjects', 'single');
   },
 
   update: function(vertexType, id){
-    this.setFocusState(0, this.lookupVertex(id))
-    this.setLensState('successor');
-    $('#bucket_column').fadeOut();
+    this.setFocusState('primarySubject', this.lookupVertex(id))
+    this.setLensState('primarySubject', 'successor');
+    this.setLensState('subjects', 'single');
     LIME.actionPanel.loadVertexForm(LIME.focus, null);
   },
 
   create: function(vertexType, id, newVertexType){
     var predecessor = this.lookupVertex(id);
-    this.setFocusState(0, predecessor)
+    this.setFocusState('primarySubject', predecessor)
     var vertex = LIME.stack.createVertex({'vertex_type': newVertexType})
-    this.setLensState('successor');
-    $('#bucket_column').fadeOut();
+    this.setLensState('primarySubject', 'successor');
+    this.setLensState('subjects', 'single');
     LIME.actionPanel.loadVertexForm(vertex, predecessor);
   },
 
-  move: function(vertexType, id, bucket){
-    this.setFocusState(0, this.lookupVertex(id))
-    this.setFocusState(1, this.lookupVertex(null, id));
-    $('#bucket_column').fadeIn();
-    this.setLensState('successor');
-
+  move: function(vertexType, id, secondary){
+    this.setFocusState('primarySubject', this.lookupVertex(id))
+    this.setFocusState('secondarySubject', this.lookupVertex(id));
+    this.setLensState('subjects', 'double');
+    this.setLensState('primarySubject', 'successor');
   },
 
-  link: function(id, bucket){
+  link: function(id, secondary){
     console.warn('Function not implemented ');
-    this.move(id, bucket)
+    this.move(id, secondary)
   },
 
   // Tools

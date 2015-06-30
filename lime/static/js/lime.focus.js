@@ -3,8 +3,6 @@
 /* ------------------------------------------------------------------- */
 
 LIME.FocusPanel = Backbone.View.Base.extend({
-  el: $('#focus'),
-
   initialize: function(){
     this.walk = [];
     this.focusView = null;

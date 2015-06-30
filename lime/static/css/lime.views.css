@@ -2,16 +2,6 @@
 /* Listing Panel */
 /* -------------------------------------------------------------------  */
 
-#succset, #predset {
-  perspective: 5000px;
-  -webkit-perspective: 5000px;
-  -moz-perspective: 5000px;
-  -o-perspective: 5000px;
-  overflow: hidden;
-}
-
-/* ---- */
-
 .ui a {
   font-family: "Inconsolata","Monaco","Lucida Console","Courier New", "monospace";
   -webkit-font-smoothing: antialiased;
@@ -615,7 +605,7 @@
 
 /* Summary - Focus ------------------------------------- */
 
-#focus {
+.focus.box {
   margin-top: 41px;
 }
 
