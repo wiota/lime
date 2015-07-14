@@ -586,8 +586,8 @@ LIME.ListingPanel = Backbone.View.Base.extend({
 
   handleNew: function(type){
     if(type==='exisiting'){
-      LIME.router.navigate('#'+this.model.vertexType+'/'+this.model.id+"/list/"+this.model.id+"/"+"move");
-      LIME.router.move(this.model.vertexType, this.model.id, this.model.ids);
+      LIME.router.navigate('#'+this.model.vertexType+'/'+this.model.id+"/list/"+this.model.id+"/"+"link");
+      LIME.router.link(this.model.vertexType, this.model.id, this.model.id);
     } else {
       LIME.router.navigate('#'+this.model.vertexType+'/'+this.model.id+"/create/"+type);
       LIME.router.create(this.model.vertexType, this.model.id, type);
