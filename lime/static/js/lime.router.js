@@ -92,7 +92,16 @@ LIME.Router = Backbone.Router.extend({
       panelState: 'single'
     }
 
-
+    LIME.cursors = {
+      'primarySubject.focus': function(vertex){
+        _.invoke(LIME.ui.primarySubject.lens, 'list', vertex);
+      },
+      'secondarySubject.focus': function(vertex){
+        _.invoke(LIME.ui.secondarySubject.lens, 'list', vertex);
+      },
+      'panelState': _.bind(LIME.panel.subjects.shift, LIME.panel.subjects),
+      'primarySubject.panelState': _.bind(LIME.panel.primarySubject.shift, LIME.panel.primarySubject)
+    }
 
     LIME.panel.primarySubject.addPreset('standard', [0, 0, 250]);
     LIME.panel.primarySubject.addPreset('predecessor', [0, 250, 500]);
@@ -112,9 +121,49 @@ LIME.Router = Backbone.Router.extend({
     })
   },
 
-  // Set State
+  getTreeValue: function(obj, path){
+    var undefined;
+    if(obj === undefined || path.length < 1){ return false }
+    var arr = path.split('.');
+    var child = obj[arr[0]];
+    if(arr.length === 1){
+      return child;
+    } else {
+      return this.getTreeValue(child, _.rest(arr).join('.'));
+    }
+  },
 
-  setFocusState: function(subject, vertex){
+  replaceTreeValue: function(obj, path, val){
+    var undefined;
+    if(obj === undefined || path.length < 1){ return false }
+
+    var arr = path.split('.');
+    var clone = _.clone(obj);
+    var child = obj[arr[0]];
+
+    if(arr.length === 1){                                     // if path is a single prop
+      clone[arr[0]] = val;
+      return clone;
+    } else {
+      clone[arr[0]] = this.replaceTreeValue(child, _.rest(arr).join('.'), val);
+      return clone;
+    }
+  },
+
+  // Set State
+  setState: function(path, val){
+    var currentVal = this.getTreeValue(LIME.state, path);
+    var fn = LIME.cursors[path];
+    if(currentVal !== val){
+      LIME.state = this.replaceTreeValue(LIME.state, path, val);
+    }
+    if(_.isFunction(fn)){
+      fn(val);
+    }
+    console.log(LIME.state);
+  },
+
+  focusLens: function(subject, vertex){
     if(this.sameId(LIME.state[subject].focus, vertex)){
       LIME.state[subject].focus = vertex;
       _.each(LIME.ui[subject].lens, function(lens){
@@ -134,37 +183,42 @@ LIME.Router = Backbone.Router.extend({
   },
 
   list: function(vertexType, id){
-    this.setFocusState('primarySubject', this.lookupVertex(id))
-    this.setLensState('primarySubject', 'predecessor');
-    this.setLensState('subjects', 'single');
+    this.setState('primarySubject.focus', this.lookupVertex(id));
+    this.setState('panelState', 'single');
+    this.setState('primarySubject.panelState', 'predecessor');
   },
 
   update: function(vertexType, id){
-    this.setFocusState('primarySubject', this.lookupVertex(id))
-    this.setLensState('primarySubject', 'successor');
-    this.setLensState('subjects', 'single');
     LIME.actionPanel.loadVertexForm(LIME.focus, null);
+
+    this.setState('primarySubject.focus', this.lookupVertex(id));
+    this.setState('panelState', 'single');
+    this.setState('primarySubject.panelState', 'successor');
   },
 
   create: function(vertexType, id, newVertexType){
     var predecessor = this.lookupVertex(id);
-    this.setFocusState('primarySubject', predecessor)
     var vertex = LIME.stack.createVertex({'vertex_type': newVertexType})
-    this.setLensState('primarySubject', 'successor');
-    this.setLensState('subjects', 'single');
+
     LIME.actionPanel.loadVertexForm(vertex, predecessor);
+
+    this.setState('primarySubject.focus', predecessor);
+    this.setState('panelState', 'single');
+    this.setState('primarySubject.panelState', 'successor');
   },
 
   move: function(vertexType, id, secondary){
-    this.setFocusState('primarySubject', this.lookupVertex(id))
-    this.setFocusState('secondarySubject', this.lookupVertex(id));
-    this.setLensState('subjects', 'double');
-    this.setLensState('primarySubject', 'successor');
+    this.setState('primarySubject.focus', this.lookupVertex(id));
+    this.setState('secondarySubject.focus', this.lookupVertex(secondary));
+    this.setState('panelState', 'double');
+    this.setState('primarySubject.panelState', 'successor');
   },
 
-  link: function(id, secondary){
-    console.warn('Function not implemented ');
-    this.move(id, secondary)
+  link: function(vertexType, id, secondary){
+    this.setState('primarySubject.focus', this.lookupVertex(id));
+    this.setState('secondarySubject.focus', this.lookupVertex(secondary));
+    this.setState('panelState', 'double');
+    this.setState('primarySubject.panelState', 'successor');
   },
 
   // Tools
