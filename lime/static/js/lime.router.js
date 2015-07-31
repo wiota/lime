@@ -123,9 +123,7 @@ LIME.Router = Backbone.Router.extend({
     LIME.icon = new Iconset();
     LIME.icon.add("bookcase", '.bookcase.icon');
     LIME.icon.refresh();
-    this.on('route', function(r,p){
-      LIME.icon.refresh();
-    })
+    this.on('route', function(r,p){ LIME.icon.refresh(); })
   },
 
   getTreeValue: function(obj, path){
