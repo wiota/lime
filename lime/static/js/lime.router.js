@@ -92,15 +92,22 @@ LIME.Router = Backbone.Router.extend({
       panelState: 'single'
     }
 
-    LIME.cursors = {
-      'primarySubject.focus': function(vertex){
-        _.invoke(LIME.ui.primarySubject.lens, 'list', vertex);
-      },
-      'secondarySubject.focus': function(vertex){
-        _.invoke(LIME.ui.secondarySubject.lens, 'list', vertex);
-      },
-      'panelState': _.bind(LIME.panel.subjects.shift, LIME.panel.subjects),
-      'primarySubject.panelState': _.bind(LIME.panel.primarySubject.shift, LIME.panel.primarySubject)
+    // Cursors are called when
+    LIME.cursor = {}
+
+    // Lens State
+    LIME.cursor['primarySubject.focus'] = function(vertex){ _.invoke(LIME.ui.primarySubject.lens, 'list', vertex); }
+    LIME.cursor['secondarySubject.focus'] = function(vertex){ _.invoke(LIME.ui.secondarySubject.lens, 'list', vertex); }
+
+    // Panel State
+    LIME.cursor['panelState'] = _.bind(LIME.panel.subjects.shift, LIME.panel.subjects)
+    LIME.cursor['primarySubject.panelState'] = _.bind(LIME.panel.primarySubject.shift, LIME.panel.primarySubject)
+
+    // Input State
+    LIME.cursor['primarySubject.inputState'] = function(state){
+      if(state === 'update'){
+        LIME.ui.primarySubject.form.loadVertexForm(LIME.focus, null);
+      }
     }
 
     LIME.panel.primarySubject.addPreset('standard', [0, 0, 250]);
@@ -153,7 +160,7 @@ LIME.Router = Backbone.Router.extend({
   // Set State
   setState: function(path, val){
     var currentVal = this.getTreeValue(LIME.state, path);
-    var fn = LIME.cursors[path];
+    var fn = LIME.cursor[path];
     if(currentVal !== val){
       LIME.state = this.replaceTreeValue(LIME.state, path, val);
     }
