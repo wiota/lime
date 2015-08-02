@@ -7,7 +7,7 @@
   top:0;
   bottom:0;
   overflow: hidden;
-  transition: all .5s ease-out;
+  transition: all .8s ease-out;
 }
 
 #primary_subject {
@@ -16,7 +16,7 @@
 }
 
 #secondary_subject {
-  left: 0;
+  left: 100%;
   right:0;
 }
 
@@ -31,7 +31,7 @@
   -webkit-perspective: 1000px;
   -moz-perspective: 1000px;
   -o-perspective: 1000px;
-  transition: all .3s ease-out;
+  transition: all .8s ease-out;
 }
 
 #primary_subject .focus.lens {
@@ -156,10 +156,10 @@ form.succset .file_upload input {
   right: 0;
   left: 0;
   bottom: 0;
-  transition: all .2s ease-in-out;
-  -moz-transform: translateX(-100%);
-  -webkit-transform: translateX(-100%);
-  transform: translateX(-100%);
+  transition: all .8s ease-out;
+  -moz-transform: translateY(-100%);
+  -webkit-transform: translateY(-100%);
+  transform: translateY(-100%);
   perspective: 5000px;
   -webkit-perspective: 5000px;
   -moz-perspective: 5000px;
@@ -167,9 +167,9 @@ form.succset .file_upload input {
 }
 
 #action_panel.show {
-  -moz-transform: translateX(0%);
-  -webkit-transform: translateX(0%);
-  transform: translateX(0%);
+  -moz-transform: translateY(0%);
+  -webkit-transform: translateY(0%);
+  transform: translateY(0%);
 }
 
 #action_panel form {
