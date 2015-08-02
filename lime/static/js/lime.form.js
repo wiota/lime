@@ -581,6 +581,7 @@ LIME.ActionPanel = Backbone.View.Base.extend({
 
     if(!vertex.isFetched()){
       this.listenToOnce(vertex, 'sync', _.bind(this.form.render, this.form));
+      console.warn("Form render attempted before vertex was ready.")
     } else {
       this.form.render();
     }
