@@ -567,25 +567,40 @@ LIME.ActionPanel = Backbone.View.Base.extend({
     this.form = null;
   },
 
-  loadVertexForm: function(vertex, predecessor){
+  loadVertexForm: function(vertex){
     this.closeForm();
 
     this.form = new LIME.Forms['Vertex']({
-      'predecessor': predecessor,
       'model': vertex,
       'className': vertex.vertexType + ' vertex form'
     });
 
     this.listenTo(this.form, 'closed', this.collapseActionPanel);
 
-
     this.$el.html(this.form.el);
 
-    if(!vertex.isFetched() && !vertex.isNew()){
+    if(!vertex.isFetched()){
       this.listenToOnce(vertex, 'sync', _.bind(this.form.render, this.form));
     } else {
       this.form.render();
     }
+
+    this.rollDown();
+  },
+
+  loadCreateForm: function(vertex, predecessor){
+    this.closeForm();
+
+    this.form = new LIME.Forms['Vertex']({
+      'model': vertex,
+      'predecessor': predecessor,
+      'className': vertex.vertexType + ' vertex form'
+    });
+
+    this.listenTo(this.form, 'closed', this.collapseActionPanel);
+
+    this.$el.html(this.form.el);
+    this.form.render();
 
     this.rollDown();
   },
