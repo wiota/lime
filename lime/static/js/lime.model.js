@@ -71,6 +71,7 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
   typeCheck: function(){
     if(!this.vertexType && (this.isFetched() || this.isNew())){
       console.warn('Vertex ' + this.id + ' has no type: '+ this.vertexType);
+      this.vertexType = 'vertex';
       return false;
     } else {
       return true;
