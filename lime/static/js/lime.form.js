@@ -568,18 +568,18 @@ LIME.ActionPanel = Backbone.View.Base.extend({
     this.form = null;
   },
 
-  loadVertexForm: function(model, predecessor){
+  loadVertexForm: function(vertex, predecessor){
     this.closeForm();
 
-    // Set state of lens instead
-    if(!model.isNew()){
-      LIME.ui.primarySubject.lens.focus.$el.addClass('form_open');
+    if(!vertex.isDeep()){
+      this.listenToOnce(vertex, 'sync', _.bind(this.loadVertexForm, this, vertex));
+      return false;
     }
 
     this.form = new LIME.Forms['Vertex']({
       'predecessor': predecessor,
-      'model': model,
-      'className': model.vertexType + ' vertex form'
+      'model': vertex,
+      'className': vertex.vertexType + ' vertex form'
     });
 
     this.listenTo(this.form, 'closed', this.collapseActionPanel);
@@ -587,8 +587,8 @@ LIME.ActionPanel = Backbone.View.Base.extend({
 
     this.$el.html(this.form.el);
 
-    if(!model.isFetched() && !model.isNew()){
-      this.listenToOnce(model, 'sync', _.bind(this.form.render, this.form));
+    if(!vertex.isFetched() && !vertex.isNew()){
+      this.listenToOnce(vertex, 'sync', _.bind(this.form.render, this.form));
     } else {
       this.form.render();
     }
@@ -619,8 +619,6 @@ LIME.ActionPanel = Backbone.View.Base.extend({
   },
 
   rollUp: function(){
-    // Set state of lens instead
-    LIME.ui.primarySubject.lens.focus.$el.removeClass('form_open');
     this.$el.removeClass('show');
   },
 
