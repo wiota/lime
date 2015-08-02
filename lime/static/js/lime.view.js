@@ -91,7 +91,10 @@ LIME.View.Vertex = Backbone.View.Base.extend({
   },
 
   setCoverForm: function(){
-    LIME.actionPanel.loadCoverForm(this.model);
+    // Pass through router to enable history
+    // LIME.router.navigate('#'+this.model.vertexType+'/'+this.model.id+"/cover");
+    // LIME.router.cover(this.model.vertexType, this.model.id);
+    LIME.ui.primarySubject.form.loadCoverForm(this.model);
   },
 
   renderAttributes: function(){
