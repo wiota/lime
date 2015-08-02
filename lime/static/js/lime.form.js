@@ -42,17 +42,16 @@ LIME.Forms.Attributes = Backbone.View.Base.extend({
   },
 
   initialize: function(){
-    this.fieldSchema = LIME.host.vertexSchema[this.model.vertexType];
-    this.render();
     this.keys = null;
   },
 
   render: function(){
-    if(!this.fieldSchema){return false;}
+    var fieldSchema = LIME.host.vertexSchema[this.model.vertexType];
+    if(!fieldSchema){return false;}
     this.$el.empty();
 
     // Use field schema to generate form
-    this.keys = _.map(this.fieldSchema, function(field, key){
+    this.keys = _.map(fieldSchema, function(field, key){
 
       // TODO, migrate to field views
       var templateFunction = this.templates[field.type];
@@ -570,11 +569,6 @@ LIME.ActionPanel = Backbone.View.Base.extend({
 
   loadVertexForm: function(vertex, predecessor){
     this.closeForm();
-
-    if(!vertex.isDeep()){
-      this.listenToOnce(vertex, 'sync', _.bind(this.loadVertexForm, this, vertex));
-      return false;
-    }
 
     this.form = new LIME.Forms['Vertex']({
       'predecessor': predecessor,
