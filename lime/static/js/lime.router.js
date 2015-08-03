@@ -108,9 +108,6 @@ LIME.Router = Backbone.Router.extend({
 
     // Icons
     LIME.icon = new Iconset();
-    LIME.icon.add("bookcase", '.bookcase.icon');
-    LIME.icon.refresh();
-    this.on('route', function(r,p){ LIME.icon.refresh(); })
 
 
     // Inital State
@@ -205,7 +202,6 @@ LIME.Router = Backbone.Router.extend({
   },
 
   list: function(vertexType, id){
-    console.log('list');
     this.setState('primarySubject.focus', this.lookupVertex(id));
     this.setState('primarySubject.inputState', 'view');
 

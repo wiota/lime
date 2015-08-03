@@ -117,11 +117,10 @@ textarea {
 
 .nav_box {
   z-index: 300;
-  background-color: #fff;
+  background-color: rgba(255,255,255,1);
 }
 
 .nav {
-  z-index: 1000;
   padding: 0;
   margin: 0 0 0px;
   overflow: auto;
@@ -138,38 +137,31 @@ textarea {
     -webkit-box-shadow: 0px 0px 120px 0px rgba(51,51,51, 0.10);
     -moz-box-shadow:    0px 0px 120px 0px rgba(51,51,51, 0.10);
     box-shadow:         0px 0px 120px 0px rgba(51,51,51, 0.10);
-    padding-left: 10px;
   }
-
-.nav b {
-  font-weight: normal;
-  }
-
-.identification {
-  letter-spacing: -1px;
-}
 
 .subnav {
   -webkit-transition: height .3s;
   -moz-transition: height .3s;
   transition: height .3s;
-  display:block;
+  display:none;
   overflow: hidden;
   visibility: 0;
-  height: 0;
   }
 
 .subnav.open {
-  height: 63px;
+  display:block;
 }
 
 .nav li {
-  position:relative;
   cursor: pointer;
   clear:left;
   width: 100%;
   margin: 0;
   padding: 0;
+}
+
+.nav b {
+  font-weight: normal;
 }
 
 .nav li a {
@@ -214,21 +206,19 @@ textarea {
 /* Account Nav */
 
 .account_nav {
+  z-index: 200;
   border-bottom: 1px solid #f5f8f8;
 }
 
-.account_nav:hover {
-    -webkit-box-shadow: 0px 0px 120px 0px rgba(42,51,51, 0.10);
-    -moz-box-shadow:    0px 0px 120px 0px rgba(42,51,51, 0.10);
-    box-shadow:         0px 0px 120px 0px rgba(42,51,51, 0.10);
-  }
+.account_nav .subnav.open {
+  background-color: #fff;
+  z-index: 300;
 
-.account_nav li {
-  float:left;
-  position:relative;
 }
 
-
+.account_nav .identification {
+  letter-spacing: -1px;
+}
 
 .account_nav li.admin .icon svg {
   transition: all 1s ease;
@@ -239,6 +229,12 @@ textarea {
 }
 
 /* Lime Nav */
+
+.lime_nav {
+  z-index: 100;
+  padding: 4px 0;
+  border-bottom: 1px solid #f5f8f8;
+}
 
 .lime_nav li .icon {
   -webkit-transition: all .3s linear;
