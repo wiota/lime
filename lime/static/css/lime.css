@@ -146,7 +146,7 @@ form.succset .file_upload input {
 /* -------------------------------------------------------------------  */
 
 #action_panel {
-  background: url('https://s3.amazonaws.com/wiota/lime/bricks_lowc_limegrey.png') #efecdc;
+  background: url('https://s3.amazonaws.com/wiota/lime/bricks_lowc_limegrey.png') #edeeee;
   z-index: 6;
   overflow: auto;
   margin: 0;
