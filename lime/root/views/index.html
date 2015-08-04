@@ -7,6 +7,25 @@
 
   <!-- Main Nav -->
   <script type="text/template" id="lime_nav">
+    <ul class='lime_nav nav'>
+      <li class='home'>
+        <a href="{{ url_for('root.index') }}#">
+          <b class='icon bookcase'></b>
+          <b class='label'>home</b>
+        </a>
+      </li>
+      <li class='back'>
+        <a class='' onclick='javascript: history.go(-1)'>
+          <b class='icon back'>
+            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 16 16"><circle fill="#0083c6" cx="8" cy="8" r="8"/><path fill="#ffffff" d="M8,1.018V6l6.697-0.003c0.191,0.637,0.294,1.312,0.294,2.012c0,0.691-0.101,1.36-0.288,1.991H8v5L1,8 L8,1.018z"/></svg>
+            </b>
+          <b class='label'>back</b>
+        </a>
+      </li>
+    </ul>
+  </script>
+
+  <script type="text/template" id="account_nav">
     <ul class='account_nav nav'>
       <li class='identification'>
         <a class='drop'><b class='label'>{{current_user.email}}</b></a>
@@ -46,23 +65,6 @@
             </a>
           </li>
         </ul>
-      </li>
-    </ul>
-
-    <ul class='lime_nav nav'>
-      <li class='home'>
-        <a href="{{ url_for('root.index') }}#">
-          <b class='icon bookcase'></b>
-          <b class='label'>home</b>
-        </a>
-      </li>
-      <li class='back'>
-        <a class='' onclick='javascript: history.go(-1)'>
-          <b class='icon back'>
-            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 16 16"><circle fill="#0083c6" cx="8" cy="8" r="8"/><path fill="#ffffff" d="M8,1.018V6l6.697-0.003c0.191,0.637,0.294,1.312,0.294,2.012c0,0.691-0.101,1.36-0.288,1.991H8v5L1,8 L8,1.018z"/></svg>
-            </b>
-          <b class='label'>back</b>
-        </a>
       </li>
     </ul>
   </script>
@@ -304,16 +306,12 @@
   </div>
 
   <div class='focus lens'>
-
-
     <div class='focus box'></div>
-
+    <div id='action_panel'></div>
   </div>
 
   <div class='successor lens'>
     <div class='succset'></div>
-    <!-- action panel doesn't not belong in here -->
-    <div id='action_panel'></div>
   </div>
 </div>
 
@@ -333,11 +331,13 @@
   <script type="text/javascript" src='{{ url_for('static', filename='js/lime.model.js')|bust }}'></script>
   <script type="text/javascript" src='{{ url_for('static', filename='js/lime.collection.js')|bust }}'></script>
   <script type="text/javascript" src='{{ url_for('static', filename='js/lime.view.js')|bust }}'></script>
+  <script type="text/javascript" src='{{ url_for('static', filename='js/lime.nav.js')|bust }}'></script>
   <script type="text/javascript" src='{{ url_for('static', filename='js/lime.panel.js')|bust }}'></script>
   <script type="text/javascript" src='{{ url_for('static', filename='js/lime.focus.js')|bust }}'></script>
   <script type="text/javascript" src='{{ url_for('static', filename='js/lime.form.js')|bust }}'></script>
   <script type="text/javascript" src='{{ url_for('static', filename='js/lime.menu.js')|bust }}'></script>
   <script type="text/javascript" src='{{ url_for('static', filename='js/lime.stack.js')|bust }}'></script>
+
   <script type='text/javascript'>
     $(document).ready(function() {
       LIME.flash();

@@ -156,7 +156,7 @@ form.succset .file_upload input {
   right: 0;
   left: 0;
   bottom: 0;
-  transition: all .4s ease-out;
+  transition: transform .4s ease-out;
   -moz-transform: translateY(-100%);
   -webkit-transform: translateY(-100%);
   transform: translateY(-100%);

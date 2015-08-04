@@ -22,7 +22,7 @@ LIME.FocusPanel = Backbone.View.Base.extend({
       'tagName':'div'
     });
 
-    this.nav = new LIME.Nav();
+    this.nav = new LIME.Nav.LimeNav();
 
     this.$el.empty();
     this.$el.append(this.nav.render().el);
@@ -61,36 +61,3 @@ LIME.FocusPanel = Backbone.View.Base.extend({
   }
 
 });
-
-/* ------------------------------------------------------------------- */
-// LIME Nav
-/* ------------------------------------------------------------------- */
-
-
-LIME.Nav = Backbone.View.Base.extend({
-
-  className: 'nav_box',
-
-  template: _.template($('#lime_nav').html()),
-
-  initialize: function(){
-
-  },
-
-  render: function(){
-    this.$el.empty();
-
-    // Nav template
-    this.$el.html(this.template());
-
-    // Add handlers
-    LIME.subnav(this.$el.find('a.drop'))
-
-    // Render icons
-    this.$el.find('.bookcase.icon').html(LIME.icon.get('bookcase'));
-
-    return this;
-  }
-
-
-})

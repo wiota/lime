@@ -463,6 +463,11 @@ LIME.View.ListingView = Backbone.View.Base.extend({
       'className': 'succset draggable form'
     });
 
+    if(this.setType === 'predecessor'){
+      this.nav = new LIME.Nav.AccountNav();
+      this.$el.append(this.nav.render().el);
+    }
+
     // This should become add menu
     this.$instruction = $(this.emptyFlagTemplate());
     this.$instruction.hide();
@@ -493,6 +498,7 @@ LIME.View.ListingView = Backbone.View.Base.extend({
 
   render: function(){
 
+
     // test for rendering
     // console.log("rendering listing");
 
@@ -509,6 +515,8 @@ LIME.View.ListingView = Backbone.View.Base.extend({
       this.$instruction.slideUp();
     }
     _.each(this.children, function(c){c.render()}, this);
+
+
     return this;
   },
 
