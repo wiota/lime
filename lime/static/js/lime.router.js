@@ -99,6 +99,7 @@ LIME.Router = Backbone.Router.extend({
 
     // Panel Settings
     LIME.panel.primarySubject.addPreset('standard', [0, 0, 250]);
+    LIME.panel.primarySubject.addPreset('focus', [0, 0, 100], "%");
     LIME.panel.primarySubject.addPreset('predecessor', [0, 250, 500]);
     LIME.panel.primarySubject.addPreset('successor', [0, 0, 0]);
 
@@ -126,7 +127,8 @@ LIME.Router = Backbone.Router.extend({
     var fn = LIME.cursor[path] || _.noop;
     if(currentVal !== val){
       LIME.state = this.replaceTreeValue(LIME.state, path, val);
-      fn(val);
+      newVal = this.getTreeValue(LIME.state, path);
+      fn(newVal);
     }
   },
 
@@ -137,56 +139,27 @@ LIME.Router = Backbone.Router.extend({
 
   setInitialState: function(){
 
-    LIME.state = {
-      primarySubject: {
-        focus: null,
-        panelState: null,
-        inputState: null,
-        lens: {
-          focus: {
-            nav: true
-          },
-          successors: {
-            nav: false,
-            view: null,
-            mode: 'add'
-          },
-          predecessors: {
-            nav: false,
-            view: null,
-            mode: 'add'
-          }
-        }
-      },
+    LIME.state = {}
 
-      secondarySubject: {
-        focus: null,
-        panelState: null,
-        lens: {
-          focus: {
-            nav: false
-          },
-          successors: {
-            nav: false,
-            view: null,
-            mode: 'add'
-          }
-        }
-      },
+    // Input state
+    this.setState('primarySubject.inputState', 'view');
 
-      newSubject: null
-    }
+    // Nav
+    this.setState('primarySubject.lens.focus.nav', 'true');
+
+    // Menus State is not wired yet
+    // this.setState('primarySubject.lens.successors.view', 'list');
+    // this.setState('primarySubject.lens.successors.mode', 'add');
+    // this.setState('primarySubject.lens.predecessors.view', 'list');
+    // this.setState('primarySubject.lens.predecessors.mode', 'add');
+    // this.setState('secondarySubject.lens.successors.view', 'list');
+    // this.setState('secondarySubject.lens.successors.mode', 'add');
 
     // Panels
     this.setState('panelState', 'single');
     this.setState('primarySubject.panelState', 'predecessor');
     this.setState('secondarySubject.panelState', 'standard');
 
-
-    this.setState('primarySubject.inputState', 'view');
-    this.setState('primarySubject.lens.successors.view', 'list');
-    this.setState('primarySubject.lens.predecessors.view', 'list');
-    this.setState('secondarySubject.lens.successors.view', 'list');
   },
 
 
@@ -216,7 +189,7 @@ LIME.Router = Backbone.Router.extend({
 
     // Panels
     this.setState('panelState', 'single');
-    this.setState('primarySubject.panelState', 'successor');
+    this.setState('primarySubject.panelState', 'focus');
   },
 
   create: function(vertexType, id, newVertexType){
@@ -231,7 +204,7 @@ LIME.Router = Backbone.Router.extend({
 
     // Panels
     this.setState('panelState', 'single');
-    this.setState('primarySubject.panelState', 'successor');
+    this.setState('primarySubject.panelState', 'focus');
   },
 
   move: function(vertexType, id, secondary){
@@ -269,11 +242,17 @@ LIME.Router = Backbone.Router.extend({
 
   replaceTreeValue: function(obj, path, val){
     var undefined, arr, child, clone;
-    if(obj === undefined || path.length < 1){ return false }
+    if(path.length < 1){ return false }
 
     arr = path.split('.');
-    clone = _.clone(obj);
-    child = obj[arr[0]];
+    if(obj === undefined){
+      clone = {};
+      child = {};
+    } else {
+      clone =  _.clone(obj);
+      child = obj[arr[0]];
+    }
+
 
     // if shallow
     if(arr.length === 1){
