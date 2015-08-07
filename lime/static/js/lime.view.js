@@ -492,7 +492,7 @@ LIME.View.ListingView = Backbone.View.Base.extend({
   },
 
   renderAddRemove: function(){
-    console.warn('Only one vertex in the set was modified, but the whole listing was rerendered');
+    //console.warn('Only one vertex in the set was modified, but the whole listing was rerendered');
     this.render();
   },
 
