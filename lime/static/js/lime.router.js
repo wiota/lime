@@ -39,6 +39,24 @@ LIME.Router = Backbone.Router.extend({
 
   initialize: function(){
 
+
+    // Screen grid
+    LIME.panel = {
+      subjects: new LIME.Panel({panels: ['#primary_subject','#secondary_subject']}),
+      primarySubject: new LIME.Panel({panels: ['#primary_subject .predecessor.lens','#primary_subject .focus.lens', '#primary_subject .successor.lens']})
+    }
+
+    LIME.panel.primarySubject.addPreset('standard', [0, 0, 250]);
+    LIME.panel.primarySubject.addPreset('focus', [0, 0, 100], "%");
+    LIME.panel.primarySubject.addPreset('predecessor', [0, 250, 500]);
+    LIME.panel.primarySubject.addPreset('successor', [0, 0, 0]);
+
+    LIME.panel.subjects.addPreset('single', [0, 100], "%");
+    LIME.panel.subjects.addPreset('double', [0, 50], "%");
+
+
+
+
     // Subjects are selected vertices
     LIME.ui = {
       primarySubject: {
@@ -55,14 +73,6 @@ LIME.Router = Backbone.Router.extend({
         }
       }
     }
-
-
-    // Screen grid
-    LIME.panel = {
-      subjects: new LIME.Panel({panels: ['#primary_subject','#secondary_subject']}),
-      primarySubject: new LIME.Panel({panels: ['#primary_subject .predecessor.lens','#primary_subject .focus.lens', '#primary_subject .successor.lens']})
-    }
-
 
 
     // Cursors
@@ -95,17 +105,6 @@ LIME.Router = Backbone.Router.extend({
         LIME.ui.primarySubject.form.closeForm();
       }
     }
-
-
-    // Panel Settings
-    LIME.panel.primarySubject.addPreset('standard', [0, 0, 250]);
-    LIME.panel.primarySubject.addPreset('focus', [0, 0, 100], "%");
-    LIME.panel.primarySubject.addPreset('predecessor', [0, 250, 500]);
-    LIME.panel.primarySubject.addPreset('successor', [0, 0, 0]);
-
-    LIME.panel.subjects.addPreset('single', [0, 100], "%");
-    LIME.panel.subjects.addPreset('double', [0, 50], "%");
-
 
     // Icons
     LIME.icon = new Iconset();
