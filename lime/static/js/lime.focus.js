@@ -9,11 +9,14 @@
 LIME.FocusLens = Backbone.View.Base.extend({
 
   initialize: function(){
+    // Views
     this.readView = null;
     this.updateView = null;
-    this.viewStates = ['read', 'update'];
-    this.viewState = 'read';
     this.nav = new LIME.Nav.LimeNav(); // Persistent, doesn't change with render
+
+    // View State
+    this.viewStates = ['read', 'update'];
+    this.setViewState('read');
   },
 
   list: function(vertex){
