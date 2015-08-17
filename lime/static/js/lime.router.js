@@ -155,7 +155,7 @@ LIME.Router = Backbone.Router.extend({
     LIME.state = {}
 
     // Input state
-    this.setState('primarySubject.inputState', 'view');
+    this.setState('primarySubject.inputState', 'read');
 
     // Nav
     this.setState('primarySubject.lens.focus.nav', 'true');
@@ -189,7 +189,7 @@ LIME.Router = Backbone.Router.extend({
 
   list: function(vertexType, id){
     this.setState('primarySubject.focus', this.lookupVertex(id));
-    this.setState('primarySubject.inputState', 'view');
+    this.setState('primarySubject.inputState', 'read');
 
     this.setState('panelState', 'single');
     this.setState('primarySubject.panelState', 'predecessor');
