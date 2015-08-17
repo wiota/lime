@@ -638,7 +638,7 @@
   right:0;
 }
 
-.summary {
+.read_view {
   z-index: 120;
   position: relative;
   background-color: transparent;
@@ -651,21 +651,21 @@
   transform: translateX(0);
   }
 
-  .form_open .summary {
+  .form_open .read_view {
     -webkit-transform: translateX(110%);
     -moz-transform: translateX(110%);
     transform: translateX(110%);
   }
 
-  .summary .attributes {
+  .read_view .attributes {
     padding: 10px 0;
   }
 
-  .summary .attributes:hover {
+  .read_view .attributes:hover {
     cursor: text;
   }
 
-  .summary .attributes .icon {
+  .read_view .attributes .icon {
     width: 32px;
     height:32px;
     padding: 4px 0;
@@ -673,7 +673,7 @@
     float:left;
     }
 
-  .summary .attributes .attribute {
+  .read_view .attributes .attribute {
     display:block;
     font-weight: normal;
     padding: 4px 0;
@@ -684,22 +684,22 @@
     max-width: 100%;
   }
 
-  .summary .attributes .attribute.primary {
+  .read_view .attributes .attribute.primary {
     font-size: 20px;
     text-overflow: ellipsis;
     }
 
-  .summary .attribute.secondary {
+  .read_view .attribute.secondary {
     font-size: 14px;
     clear:both;
   }
 
-  .summary .cover {width: 100%;}
-  .summary .cover img {width: 100%;}
+  .read_view .cover {width: 100%;}
+  .read_view .cover img {width: 100%;}
 
   /* ui */
 
-  .summary .ui {
+  .read_view .ui {
     clear: both;
     opacity: 1;
     position:absolute;
@@ -713,11 +713,11 @@
     transition: all .2s;
     }
 
-    .summary:hover .ui {
+    .read_view:hover .ui {
       opacity: 1;
     }
 
-    .summary .ui a {
+    .read_view .ui a {
       color: #000;
       background-color:rgba(255,255,255,1);
       height: 24px;
@@ -731,58 +731,58 @@
       transition: all .2s;
     }
 
-    .summary .ui a .icon {
+    .read_view .ui a .icon {
       height: 24px;
       width: 24px;
       float:left;
     }
 
-    .summary .ui a .label {
+    .read_view .ui a .label {
       padding: 4px 10px 0;
       font-weight: normal;
       line-height: 24px;
       display:none;
     }
 
-    .summary:hover .ui a .label {
+    .read_view:hover .ui a .label {
       padding: 4px 10px 0;
       font-weight: normal;
       line-height: 24px;
       display:inline;
     }
 
-    .summary .ui a:hover {
+    .read_view .ui a:hover {
       -webkit-box-shadow: 5px 5px 15px 0px rgba(100,100,100, .3);
       -moz-box-shadow:    5px 5px 15px 0px rgba(100,100,100, .3);
       box-shadow:         5px 5px 15px 0px rgba(100,100,100, .3);
     }
 
     /* space for set cover button to sit if there is no cover photo */
-    .summary .cover {
+    .read_view .cover {
       min-height: 72px;
     }
 
-    .summary .set_cover,
-    .summary .update {
+    .read_view .set_cover,
+    .read_view .update {
       display:block;
       width: 24px;
       color: #000;
     }
 
-    .summary:hover .ui .set_cover,
-    .summary:hover .ui .update {
+    .read_view:hover .ui .set_cover,
+    .read_view:hover .ui .update {
       width: auto;
     }
 
-    .summary .ui a.get {
+    .read_view .ui a.get {
       display:none;
     }
 
-    .summary .ui a.delete {
+    .read_view .ui a.delete {
       display:none;
     }
 
-    .summary .ui a.drag_handle {
+    .read_view .ui a.drag_handle {
       display:none;
     }
 

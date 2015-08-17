@@ -31,7 +31,7 @@ LIME.Forms.templates = {
 
 LIME.Forms.Attributes = Backbone.View.Base.extend({
   tagName: 'fieldset',
-  className: 'serial_fields',
+  className: 'vertex_attributes',
   templates: LIME.Forms.templates,
 
   events: {
@@ -333,7 +333,7 @@ LIME.Forms.SaveView = Backbone.View.Base.extend({
 // Vertex - Attribute form
 /* ------------------------------------------------------------------- */
 
-LIME.Forms['Vertex'] = Backbone.View.Base.extend({
+LIME.Forms.Vertex = Backbone.View.Base.extend({
   tagName: 'form',
   events: {
     'keypress input' :'keyCheck',
@@ -428,10 +428,10 @@ LIME.Forms['Vertex'] = Backbone.View.Base.extend({
       history.go(-1);
     } else {
       // Pass through router to enable history
-      LIME.router.navigate('#'+this.model.vertexType+'/'+this.model.id, {replace: true});
-      LIME.router.list(this.model.vertexType, this.model.id);
+      //LIME.router.navigate('#'+this.model.vertexType+'/'+this.model.id, {replace: true});
+      //LIME.router.list(this.model.vertexType, this.model.id);
+      history.go(-1);
     }
-    this.close();
   }
 
 });
@@ -550,6 +550,29 @@ LIME.Forms['Succset'] = Backbone.View.Base.extend({
 
 
 /* ------------------------------------------------------------------- */
+// Succset Form
+/* ------------------------------------------------------------------- */
+
+LIME.UpdateVertex = Backbone.View.Base.extend({
+  initialize: function(){
+    this.form = null;
+  },
+
+  render: function(){
+    this.form = new LIME.Forms.Vertex({
+      'model': this.model,
+      'className': this.model.vertexType + ' vertex form'
+    });
+
+    this.appendChildView(this.form);
+    this.form.render();
+    // this.listenTo(this.form, 'closed', this.collapseActionPanel);
+    return this;
+  }
+
+})
+
+/* ------------------------------------------------------------------- */
 // Action Panel
 // This panel is the startpoint for all forms
 // It may be better to load the forms into the same container the
@@ -570,7 +593,7 @@ LIME.ActionPanel = Backbone.View.Base.extend({
   loadVertexForm: function(vertex){
     this.closeForm();
 
-    this.form = new LIME.Forms['Vertex']({
+    this.form = new LIME.Forms.Vertex({
       'model': vertex,
       'className': vertex.vertexType + ' vertex form'
     });
@@ -592,7 +615,7 @@ LIME.ActionPanel = Backbone.View.Base.extend({
   loadCreateForm: function(vertex, predecessor){
     this.closeForm();
 
-    this.form = new LIME.Forms['Vertex']({
+    this.form = new LIME.Forms.Vertex({
       'model': vertex,
       'predecessor': predecessor,
       'className': vertex.vertexType + ' vertex form'

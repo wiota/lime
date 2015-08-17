@@ -62,7 +62,7 @@ LIME.Router = Backbone.Router.extend({
       primarySubject: {
         form: new LIME.ActionPanel(), // will be incorporated into lens.focus.view
         lens: {
-          focus: new LIME.FocusPanel({el: $('#primary_subject .focus.box')}),
+          focus: new LIME.FocusLens({el: $('#primary_subject .focus.box')}),
           successors: new LIME.ListingPanel({"setType": "successor", "menu": true, el: $('#primary_subject .succset')}),
           predecessors: new LIME.ListingPanel({"setType": "predecessor", el: $('#primary_subject .predset')})
         }
@@ -93,6 +93,19 @@ LIME.Router = Backbone.Router.extend({
     // Input State
     LIME.cursor['primarySubject.inputState'] = function(state){
       if(state === 'update'){
+        LIME.ui.primarySubject.lens.focus.setViewState('update');
+      } else if (state === 'create'){
+        //var vertex = LIME.router.getState('newSubject');
+        //var predecessor = LIME.router.getState('primarySubject.focus');
+        //LIME.ui.primarySubject.form.loadCreateForm(vertex, predecessor);
+      } else if(state === 'read'){
+        LIME.ui.primarySubject.lens.focus.setViewState('read');
+      }
+    }
+
+    /*
+    LIME.cursor['primarySubject.inputState'] = function(state){
+      if(state === 'update'){
         var focus = LIME.router.getState('primarySubject.focus');
         LIME.ui.primarySubject.form.loadVertexForm(focus);
 
@@ -105,6 +118,7 @@ LIME.Router = Backbone.Router.extend({
         LIME.ui.primarySubject.form.closeForm();
       }
     }
+    */
 
     // Icons
     LIME.icon = new Iconset();

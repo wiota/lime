@@ -26,6 +26,23 @@ Backbone.View.Base = Backbone.View.extend({
     view.$el.appendTo(this.$el);
     this.children.push(view);
     return view;
+  },
+
+  renderWhenReady: function(model){
+    if(!model.isFetched()){
+      this.listenToOnce(model, 'sync', this.render);
+    } else {
+      this.render();
+    }
+  },
+
+  switchOutClass: function(className, classNameList){
+    var all, next;
+
+    all = this.$el.attr('class').split(" ");
+    next = _.filter(all, function(c){ return (_.indexOf(classNameList, c) < 0) });
+    next.push(className);
+    this.$el.attr('class', next.join(" "))
   }
 })
 
