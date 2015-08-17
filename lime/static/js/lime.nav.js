@@ -2,38 +2,13 @@
 // LIME Nav
 /* ------------------------------------------------------------------- */
 
-
-LIME.Nav = Backbone.View.Base.extend({
-
-  className: 'nav_box',
-  tagName: 'div',
-
-  render: function(){
-    this.$el.empty();
-
-
-    var accountNav = new LIME.Nav.AccountNav();
-    var limeNav = new LIME.Nav.LimeNav();
-
-    this.appendChildView(accountNav);
-    this.appendChildView(limeNav);
-
-
-    accountNav.render();
-    limeNav.render();
-    return this;
-  }
-
-});
+LIME.Nav = {}
 
 LIME.Nav.LimeNav = Backbone.View.Base.extend({
-
   className: 'nav_box',
-
   template: _.template($('#lime_nav').html()),
 
   render: function(){
-
     // Nav template
     this.$el.html(this.template());
 
@@ -45,13 +20,14 @@ LIME.Nav.LimeNav = Backbone.View.Base.extend({
 })
 
 LIME.Nav.AccountNav = Backbone.View.Base.extend({
-
   className: 'nav_box',
-
   template: _.template($('#account_nav').html()),
 
-  render: function(){
+  setEndpoint: function(endpoint){
+    this.$el.find('li.god a').attr('href', endpoint).attr('target', 'blank');
+  },
 
+  render: function(){
     // Nav template
     this.$el.html(this.template());
 

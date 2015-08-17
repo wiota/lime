@@ -30,13 +30,6 @@ LIME.FocusPanel = Backbone.View.Base.extend({
   },
 
   list: function(vertex){
-
-    if(vertex.vertexType === 'host'){
-      $('li.god a').attr('href', '/api/v1/host').attr('target', 'blank');
-    } else {
-      $('li.god a').attr('href', '/api/v1/'+vertex.vertexType+'/'+vertex.id).attr('target', 'blank');
-    }
-
     this.mapWalk(vertex);
     this.model = vertex;
 

@@ -466,6 +466,13 @@ LIME.View.ListingView = Backbone.View.Base.extend({
     if(this.setType === 'predecessor'){
       this.nav = new LIME.Nav.AccountNav();
       this.$el.append(this.nav.render().el);
+
+      // api endpoint
+      if(this.model.vertexType === 'host'){
+        this.nav.setEndpoint('/api/v1/host');
+      } else {
+        this.nav.setEndpoint('/api/v1/'+this.model.vertexType+'/'+this.model.id);
+      }
     }
 
     // This should become add menu
