@@ -2,7 +2,9 @@
 // LIME Menus
 /* ------------------------------------------------------------------- */
 
-LIME.menu = Backbone.View.Base.extend({
+
+
+LIME.Menu = Backbone.View.Base.extend({
   tagName: 'div',
   selectedClass: 'selected',
   openClass: 'open',
@@ -11,19 +13,18 @@ LIME.menu = Backbone.View.Base.extend({
 
   initialize: function(options){
     options = options || {};
-    this.radio = options.radio || false;
-    this.initial = options.initial || false;
-    this.label = options.label || "+";
-    this.cls = options.cls || "menu";
-    this.itemSchema = options.schema || [];
+    this.radio = options.radio || true;
+    this.initial = options.initial || null;
+    this.label = options.label || "";
+    this.menuOptions = options.options || [];
+    this.fn = options.fn || _.noop;
 
-    this.items = [];
     this._selected = null;
   },
 
-  indexOfCls: function(cls){
-    for (var i = 0, l = this.itemSchema.length; i < l; i++) {
-      if (this.itemSchema[i][0] === cls) {
+  indexOfClass: function(className){
+    for (var i = 0, l = this.menuOptions.length; i < l; i++) {
+      if (this.menuOptions[i][0] === className) {
         return i;
       }
     }
@@ -32,36 +33,35 @@ LIME.menu = Backbone.View.Base.extend({
 
   renderMenu: function(){
     this.byIndex = [];
-    this.byCls = {};
+    this.byClass = {};
 
-    _.each(this.itemSchema, function(item, index){
-      // array passed in to ensure order
-      var listItem = this.byCls[item[0]] = this.byIndex[index] = {};
-      listItem.cls = item[0];
-      listItem.label = item[1];
+    _.each(this.menuOptions, function(item, index){
+      var listItem;
 
-      listItem.$el = $(this.itemTemplate(listItem));
-      listItem.$el.appendTo(this.$ul);
-      listItem.$el.on('click', _.bind(this.select, this, listItem.cls));
+      listItem = this.byClass[item.className] = this.byIndex[index] = item;
+      listItem.$el = $(this.itemTemplate(listItem)).appendTo(this.$ul);
+      if(this.initial === item.className){ this.select(item.className) }
+      listItem.$el.on('click', _.bind(this.select, this, listItem.className));
     }, this);
-    if(this.initial && this.indexOfCls(this.initial)>=0){
-      this.select(this.initial);
-    }
   },
 
   render: function(){
     this.$el.empty();
+    this.$el.addClass("menu");
+
     this.$a = $(this.switchTemplate(this)).appendTo(this.$el);
-    this.$el.on('mouseenter mouseleave', _.bind(this.open, this));
-    // need touch interface
-    //this.$a.on('click', _.bind(this.open, this));
     this.$ul = $('<ul></ul>').appendTo(this.$el);
     this.renderMenu();
+
+    this.$el.on('mouseenter mouseleave', _.bind(this.toggleOpen, this));
+    // need touch interface
+    //this.$a.on('touch', _.bind(this.toggleOpen, this));
+
     this.delegateEvents();
     return this;
   },
 
-  open: function(){
+  toggleOpen: function(){
     if(this.$el.hasClass(this.openClass)){
       this.$el.removeClass(this.openClass);
     } else {
@@ -69,23 +69,41 @@ LIME.menu = Backbone.View.Base.extend({
     }
   },
 
-  select: function(cls){
-    var item = this.byCls[cls];
+  select: function(className){
+    var item = this.byClass[className];
     var deselect = null;
     // if there is something selected
     if(this._selected){
-      if(this._selected === item){
-        return false;
-      }
+      if(this._selected === item){ return false }
       this._selected.$el.removeClass(this.selectedClass);
-      deselect = this._selected.cls;
-      this.$a.removeClass(this._selected.cls)
+      this.$a.removeClass(this._selected.className)
     }
     if(this.radio){
       this._selected = item;
       item.$el.addClass(this.selectedClass);
-      this.$a.addClass(item.cls)
+      this.$a.addClass(item.className)
     }
-    this.trigger('select', item.cls, deselect);
+    this.fn(item.className);
+  }
+})
+
+LIME.Menu.MenuGroup = Backbone.View.Base.extend({
+  className: "view_menu",
+  initialize: function(options){
+    this.menus = options.menus || [];
+  },
+
+  render: function(){
+    var menuViews;
+
+    menuViews = _.map(this.menus, function(menu){
+      var menuView;
+
+      menuView = new LIME.Menu(menu).render();
+      this.appendChildView(menuView);
+      return menu;
+    }, this);
+
+    return this;
   }
 })

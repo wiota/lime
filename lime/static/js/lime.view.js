@@ -36,6 +36,14 @@ Backbone.View.Base = Backbone.View.extend({
     }
   },
 
+  renderWhenDeep: function(model){
+    if(!model.isDeep()){
+      this.listenToOnce(model, 'sync', this.render);
+    } else {
+      this.render();
+    }
+  },
+
   switchOutClass: function(className, classNameList){
     var all, next;
 
@@ -559,64 +567,120 @@ LIME.View.ListingView = Backbone.View.Base.extend({
 /* ------------------------------------------------------------------- */
 
 LIME.ListingPanel = Backbone.View.Base.extend({
-  listing: null,
-  listedModel: null,
-  listMode: null,
-  viewMode: null,
-
-  modes: [
-    ['add_mode', 'Add/Post'],
-    //['sort_mode', 'Sort/Filter'],
-    //['order_mode', 'Order/Sequence'],
-    ['remove_mode', 'Edit/Cut']
-  ],
-
-  layouts: [
-    ['list_view', 'List'],
-    ['grid_view', 'Grid'],
-    //['relate_view', 'Relate']
-    //['move_view', 'Move']
-  ],
-
-  panels: [
-    ['standard', 'Standard'],
-    ['predecessor', 'Predecessor'],
-    ['successor', 'Successor']
-  ],
-
   initialize: function(options){
-
-    // Set to render
+    // Options
     this.setType = options.setType;
     this.menu = options.menu;
 
-    // Intial view config
-    this.mode = 'add_mode';
-    this.layout = 'list_view';
+    // Views
+    this.listingView = null;
 
-    // Listing
-    this.listing;
+    // View State
+    this.layoutOptions = [
+      {'className':'list_view', 'label': 'List View', icon: 'list_view'},
+      {'className':'grid_view', 'label': 'Grid View', icon: 'grid_view'}
+    ]
+    this.setLayoutState('list_view');
 
-    // Model
-    this.model;
-
-
+    this.modeOptions = [
+      {'className':'add_mode', 'label': 'Add', icon: null},
+      {'className':'remove_mode', 'label': 'Cut', icon: null}
+    ]
+    this.setModeState('add_mode');
   },
 
-  switchLayout: function(to, from){
-    this.layout = to;
-    this.listing.set.sortInit(to);
-    this.switchClass(to,from);
+  list: function(vertex){
+    this.model = vertex;
+    this.renderWhenDeep(vertex);
   },
 
-  switchEditMode: function(to, from){
-    this.mode = to;
-    this.switchClass(to,from);
+
+
+  render: function(){
+    if(!this.model.isDeep()){ console.warn("Render attempted before model was deep.") }
+
+    this.listingView && this.listingView.close();
+    this.menuView && this.menuView.close();
+
+    // new listing
+    this.listingView = new LIME.View.ListingView({
+      'model':this.model,
+      'className': this.model.vertexType + ' vertex listing',
+      'setType': this.setType
+    });
+
+    this.menuView = new LIME.Menu.MenuGroup({
+      'model': this.model,
+      'menus': [
+        {
+          'className': 'layout_menu',
+          'label': 'Layout',
+          'options': this.layoutOptions,
+          'radio': true,
+          'initial': this.layoutState,
+          'fn': _.bind(this.setLayoutState, this)
+        },
+        {
+          'className': 'mode_menu',
+          'label': 'Mode',
+          'options': this.modeOptions,
+          'radio': true,
+          'initial': this.modeState,
+          'fn': _.bind(this.setModeState, this)
+        },
+        {
+          'className': 'add_menu',
+          'label': 'Add',
+          'options': this.getAddOptions(),
+          'fn': _.bind(this.handleNew, this)
+        }
+      ]
+    });
+
+    this.$el.append(this.listingView.render().el);
+
+    if(true){
+      this.$el.append(this.menuView.render().el);
+    }
+  }
+});
+
+LIME.SuccessorLens = Backbone.View.Base.extend({
+  initialize: function(){
+    // Views
+    this.successorView = null;
+
+    // View State
+    this.layoutOptions = [
+      {'className':'list_view', 'label': 'List View', icon: 'list_view'},
+      {'className':'grid_view', 'label': 'Grid View', icon: 'grid_view'}
+    ]
+    this.setLayoutState('list_view');
+
+    this.modeOptions = [
+      {'className':'add_mode', 'label': 'Add', icon: null},
+      {'className':'remove_mode', 'label': 'Cut', icon: null}
+    ]
+    this.setModeState('add_mode');
   },
 
-  switchClass: function(to, from){
-    this.$el.addClass(to)
-    this.$el.removeClass(from)
+  list: function(vertex){
+    this.model = vertex;
+    this.renderWhenDeep(vertex);
+  },
+
+  setLayoutState: function(layoutState){
+    if(this.layoutState !== layoutState){
+      this.layoutState = layoutState;
+      this.switchOutClass(layoutState, _.pluck(this.layoutOptions, 'className'));
+    }
+  },
+
+  setModeState: function(modeState){
+    if(this.modeState !== modeState){
+      this.modeState = modeState;
+      this.switchOutClass(modeState, _.pluck(this.modeOptions, 'className'));
+    }
   },
 
   handleNew: function(type){
@@ -629,115 +693,33 @@ LIME.ListingPanel = Backbone.View.Base.extend({
     }
   },
 
-  renderMenuInterface: function(){
-    this.$viewMenu = $("<div class='view_menu'></div>").appendTo(this.$el);
-    this.$actionMenu = $("<div class='action_menu'></div>").appendTo(this.$el);
-    return this;
+  getAddOptions: function(){
+    var schema, options;
+    schema = LIME.host.vertexSchema || {}; // || this.model.allowedSchema
+    _.extend(schema, {'exisiting':null})
+    return _.map(schema, function(fields, vertexType){
+      return {'className': vertexType, 'label': "add "+vertexType.replace(/[-_.]/g, ' '), 'icon': vertexType};
+    })
   },
+  render: function(){
+    if(!this.model.isDeep()){ console.warn("Render attempted before model was deep.") }
 
-  // This is a bloated function and possibly in the wrong spot
-  renderMenus: function(){
-    var vertexType = this.model.vertexType;
-    var vertexSchema = LIME.host.vertexSchema;
-    var addList = [];
-
-
-    _.each(vertexSchema, function(fields, vertexType){
-      addList.push([vertexType, "add "+vertexType.replace(/[-_.]/g, ' ')])
-    }, this)
-
-    addList.push(['exisiting', "add exisiting"]);
-
-    this.layoutsMenu = new LIME.menu({
-      className: 'layout menu',
-      schema: this.layouts,
-      initial: this.layout,
-      label: "View",
-      radio: true
-    });
-
-    this.modeMenu = new LIME.menu({
-      className: 'mode menu',
-      schema: this.modes,
-      initial: this.mode,
-      label: "Mode",
-      radio: true
-    });
-
-    this.addMenu = new LIME.menu({
-      className: 'add menu',
-      schema: addList,
-      label: "Add",
-      cls: "add",
-      radio: false
-    });
-
-    this.panelMenu = new LIME.menu({
-      className: 'column_width menu god',
-      schema: this.panels,
-      initial: this.panel,
-      label: "GOD",
-      cls: "god",
-      radio: true
-    });
-
-    this.listenTo(this.layoutsMenu, 'select', this.switchLayout);
-    this.listenTo(this.modeMenu, 'select', this.switchEditMode);
-    this.listenTo(this.addMenu, 'select', this.handleNew);
-    this.listenTo(this.panelMenu, 'select', LIME.router.setLensState);
-
-    // Clear
-    this.$viewMenu.empty();
-    if(this.$actionMenu){
-      this.$actionMenu.empty();
-    }
-
-    // Append
-    this.$viewMenu.append(this.layoutsMenu.render().el);
-    this.$viewMenu.append(this.modeMenu.render().el);
-    this.$viewMenu.append(this.addMenu.render().el);
-    this.$viewMenu.append(this.panelMenu.render().el);
-
-  },
-
-  renderListing: function(){
-
-    // only render if deep
-    if(!this.model.isDeep()){
-      console.warn("Listing panel render attempted before vertex was ready.")
-      return false;
-    }
+    this.listingView && this.listingView.close();
+    this.menuView && this.menuView.close();
 
     // new listing
-    this.listing = new LIME.View.ListingView({
+    this.listingView = new LIME.View.ListingView({
       'model':this.model,
       'className': this.model.vertexType + ' vertex listing',
       'setType': this.setType
     });
 
-    this.$el.append(this.listing.render().el);
-    if(this.menu === true){
-      this.renderMenuInterface();
-      this.renderMenus();
-    } else {
-      this.switchEditMode(this.mode, null);
-      this.switchLayout(this.layout, null)
-    }
+    this.menuView = new LIME.Menu.MenuGroup({
+      'model': this.model,
+      'menus': this.menus
+    });
 
-  },
-
-  list: function(vertex){
-    this.model = vertex;
-
-    if(this.listing){
-      this.listing.close();
-    }
-
-    if(!vertex.isDeep()){
-      this.listenToOnce(vertex, 'sync', _.bind(this.renderListing, this, vertex));
-    } else {
-      this.renderListing(vertex);
-    }
-
+    this.$el.append(this.listingView.render().el);
+    this.$el.append(this.menuView.render().el);
   }
-});
+})

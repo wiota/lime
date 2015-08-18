@@ -77,9 +77,10 @@
 
 .view_menu a.switch {
   display:block;
-  width: 32px;
+  width: 60px;
+  text-align: center;
   height: 19px;
-  padding: 6px 10px 6px;
+  padding: 6px 0 6px;
   border-color: #c4cbcb;
   border-style: solid;
   border-width: 0 1px 1px 1px;
@@ -147,31 +148,31 @@
 
 /* Mode Menu Colors ------------- */
 
-.view_menu .mode .icon {
+.view_menu .mode_menu .icon {
   display:none;
 }
 
-.view_menu .mode a.add_mode,
-.view_menu .mode li.selected a.add_mode {
+.view_menu .mode_menu a.add_mode,
+.view_menu .mode_menu li.selected a.add_mode {
   color: #fff;
   background: #3abef3;
 }
 
-.view_menu .mode a.sort_mode,
-.view_menu .mode li.selected a.sort_mode {
+.view_menu .mode_menu a.sort_mode,
+.view_menu .mode_menu li.selected a.sort_mode {
   color: #222;
   background: #fdfb75;
   /*background-color: #0ee0e7;*/
 }
 
-.view_menu .mode a.order_mode,
-.view_menu .mode li.selected a.order_mode {
+.view_menu .mode_menu a.order_mode,
+.view_menu .mode_menu li.selected a.order_mode {
   color: #222;
   background: #ffffff;
 }
 
-.view_menu .mode a.remove_mode,
-.view_menu .mode li.selected a.remove_mode {
+.view_menu .mode_menu a.remove_mode,
+.view_menu .mode_menu li.selected a.remove_mode {
   color: #fff;
   background: #f00;
 }
