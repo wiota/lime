@@ -63,8 +63,8 @@ LIME.Router = Backbone.Router.extend({
         form: new LIME.ActionPanel(), // will be incorporated into lens.focus.view
         lens: {
           focus: new LIME.FocusLens({el: $('#primary_subject .focus.box')}),
-          successors: new LIME.ListingPanel({"setType": "successor", "menu": true, el: $('#primary_subject .succset')}),
-          predecessors: new LIME.ListingPanel({"setType": "predecessor", el: $('#primary_subject .predset')})
+          successors: new LIME.ListingPanel({"setType": "successor", el: $('#primary_subject .successor.box')}),
+          predecessors: new LIME.ListingPanel({"setType": "predecessor", el: $('#primary_subject .predecessor.box')})
         }
       },
       secondarySubject: {

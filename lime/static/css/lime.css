@@ -61,7 +61,7 @@
   background: url('https://s3.amazonaws.com/wiota/lime/bricks_lowc_limegrey.png');
 }
 
-.succset, .predset {
+.successor.box, .predecessor.box {
   z-index: 5;
   position:absolute;
   top: 0;
