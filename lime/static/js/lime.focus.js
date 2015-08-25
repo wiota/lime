@@ -24,7 +24,7 @@ LIME.FocusLens = Backbone.View.Base.extend({
         this.coverView && this.coverView.state.set('inputState', 'read');
       } else if (inputState === 'cover'){
         this.updateView && this.updateView.state.set('inputState', 'read');
-        this.coverView && this.coverView.state.set('inputState', 'update');
+        this.coverView && this.coverView.state.set('inputState', 'cover');
       } else {
         this.updateView && this.updateView.state.set('inputState', 'read');
         this.coverView && this.coverView.state.set('inputState', 'read');
