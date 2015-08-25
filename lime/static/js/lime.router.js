@@ -118,8 +118,6 @@ LIME.Router = Backbone.Router.extend({
   },
 
   list: function(vertexType, id){
-    var start = new Date();
-    console.log("LIST START ----------------");
     // Listed Vertex
     LIME.state.set('primarySubject.focus', this.lookupVertex(id));
 
@@ -130,7 +128,6 @@ LIME.Router = Backbone.Router.extend({
     // Panel Grid
     LIME.state.set('panelState', 'single');
     LIME.state.set('primarySubject.panelState', 'predecessor');
-    console.log("LIST STOP - " + (new Date() - start))
   },
 
   update: function(vertexType, id){
@@ -205,44 +202,6 @@ LIME.Router = Backbone.Router.extend({
 
 
   // Pure Functional Tools
-
-  getTreeValue: function(obj, path){
-    var undefined, arr, child;
-    if(obj === undefined || path.length < 1){ return false }
-    arr = path.split('.');
-    child = obj[arr[0]];
-    if(arr.length === 1){
-      return child;
-    } else {
-      return this.getTreeValue(child, _.rest(arr).join('.'));
-    }
-  },
-
-  replaceTreeValue: function(obj, path, val){
-    var undefined, arr, child, clone;
-    if(path.length < 1){ return false }
-
-    arr = path.split('.');
-    if(obj === undefined){
-      clone = {};
-      child = {};
-    } else {
-      clone =  _.clone(obj);
-      child = obj[arr[0]];
-    }
-
-
-    // if shallow
-    if(arr.length === 1){
-      clone[arr[0]] = val;
-      return clone;
-    // if deep, call recursively
-    } else {
-      clone[arr[0]] = this.replaceTreeValue(child, _.rest(arr).join('.'), val);
-      return clone;
-    }
-  },
-
   sameId: function(model1, model2){
     if(model1 && model2 && model1.id === model2.id){
       return false;
