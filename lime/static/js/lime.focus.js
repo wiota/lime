@@ -1,6 +1,8 @@
 /* ------------------------------------------------------------------- */
 // LIME Focus is the notion of place or location in the graph
 //
+// Persistant UI View
+//
 // This module lists the attributes of the data model which is passed
 // to it. It contains view state as to whether the user is reading or
 // updating. There is also a navigation built into the header.
@@ -15,7 +17,7 @@ LIME.FocusLens = Backbone.View.Base.extend({
     this.nav = new LIME.Nav.LimeNav(); // Persistent, doesn't change with render
 
     // View State
-    this.viewStates = ['read', 'update'];
+    this.viewStates = ['read', 'update', 'cover'];
     this.setViewState('read');
   },
 
@@ -45,14 +47,21 @@ LIME.FocusLens = Backbone.View.Base.extend({
     });
 
     // update
-    this.updateView = new LIME.UpdateVertex({
+    this.updateView = new LIME.Forms.UpdateVertex({
       'model':this.model,
       'className': 'vertex update_view'
+    })
+
+    // update
+    this.coverView = new LIME.Forms.UpdateCover({
+      'model':this.model,
+      'className': 'vertex cover_view'
     })
 
     this.$el.empty();
     this.$el.append(this.nav.render().el);
     this.$el.append(this.readView.render().el);
+    this.$el.append(this.coverView.render().el);
     this.$el.append(this.updateView.render().el)
   }
 

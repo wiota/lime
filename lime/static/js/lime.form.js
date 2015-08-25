@@ -76,13 +76,14 @@ LIME.Forms.Attributes = Backbone.View.Base.extend({
   },
 
   focusStart: function(){
+    console.log('form focus');
     this.$el.children('input').first().focus().select();
   },
 
   // try focus guarding - also, may want to move this to form level
   focusEnd: function(evt){
     if($(evt.currentTarget).attr('tabindex') == this.keys.length){
-      this.focusStart();
+      //this.focusStart();
     }
   },
 
@@ -341,6 +342,7 @@ LIME.Forms.Vertex = Backbone.View.Base.extend({
 
   initialize: function(options){
     this.options = options || {};
+    this.isNew = options.isNew || false;
     this.predecessor = options.predecessor || null; // can be removed if new form is separate
 
     // children
@@ -421,17 +423,7 @@ LIME.Forms.Vertex = Backbone.View.Base.extend({
 
   forceClose: function(){
     this.trigger('closed');
-    if(this.model.isNew() && this.predecessor){
-      // Pass through router to enable history
-      // LIME.router.navigate('#'+this.predecessor.vertexType+'/'+this.predecessor.id);
-      // LIME.router.list(this.predecessor.vertexType, this.predecessor.id);
-      history.go(-1);
-    } else {
-      // Pass through router to enable history
-      //LIME.router.navigate('#'+this.model.vertexType+'/'+this.model.id, {replace: true});
-      //LIME.router.list(this.model.vertexType, this.model.id);
-      history.go(-1);
-    }
+    history.go(-1);
   }
 
 });
@@ -440,7 +432,7 @@ LIME.Forms.Vertex = Backbone.View.Base.extend({
 // Cover Photo Form
 /* ------------------------------------------------------------------- */
 
-LIME.Forms['Cover'] = Backbone.View.Base.extend({
+LIME.Forms.Cover = Backbone.View.Base.extend({
   tagName: 'form',
 
   initialize: function(options){
@@ -502,7 +494,7 @@ LIME.Forms['Cover'] = Backbone.View.Base.extend({
 
   forceClose: function(){
     this.trigger('closed');
-    this.close();
+    history.go(-1);
   },
 
   filesChanged: function(files){
@@ -522,7 +514,7 @@ LIME.Forms['Cover'] = Backbone.View.Base.extend({
 /* ------------------------------------------------------------------- */
 
 
-LIME.Forms['Succset'] = Backbone.View.Base.extend({
+LIME.Forms.Succset = Backbone.View.Base.extend({
   passableOptions: ['model', 'uploadLabel'],
   tagName: 'form',
 
@@ -550,10 +542,32 @@ LIME.Forms['Succset'] = Backbone.View.Base.extend({
 
 
 /* ------------------------------------------------------------------- */
-// Succset Form
+// Update Cover Form
 /* ------------------------------------------------------------------- */
 
-LIME.UpdateVertex = Backbone.View.Base.extend({
+LIME.Forms.UpdateCover = Backbone.View.Base.extend({
+  initialize: function(){
+    this.form = null;
+  },
+
+  render: function(){
+    this.form = new LIME.Forms.Cover({
+      'model': this.model,
+      'className': this.model.vertexType + ' vertex cover form'
+    });
+
+    this.appendChildView(this.form);
+    this.form.render();
+    return this;
+  }
+
+});
+
+/* ------------------------------------------------------------------- */
+// Update Vertex Form
+/* ------------------------------------------------------------------- */
+
+LIME.Forms.UpdateVertex = Backbone.View.Base.extend({
   initialize: function(){
     this.form = null;
   },
@@ -566,11 +580,54 @@ LIME.UpdateVertex = Backbone.View.Base.extend({
 
     this.appendChildView(this.form);
     this.form.render();
-    // this.listenTo(this.form, 'closed', this.collapseActionPanel);
+    return this;
+  }
+
+});
+
+/* ------------------------------------------------------------------- */
+// New Vertex Form
+/* ------------------------------------------------------------------- */
+
+LIME.Forms.CreateVertex = Backbone.View.Base.extend({
+  initialize: function(options){
+    options = options || {}
+    this.predecessor = options.predecessor || null;
+    this.viewState = options.viewState || 'read';
+    this.form = null;
+  },
+
+  setViewState: function(viewState){
+    if(this.viewState !== viewState){
+      console.log(viewState)
+      this.viewState = viewState;
+      this.switchOutClass(viewState, this.viewStates);
+      this.render();
+    }
+  },
+
+  handleSave: function(){},
+
+  render: function(){
+    this.form && this.form.close();
+
+    this.model = LIME.router.getState('newSubject');
+    if(!this.model || this.viewState === "read"){ return this }
+
+    this.form = new LIME.Forms.Vertex({
+      'model': this.model,
+      'className': this.model.vertexType + ' vertex form',
+      'predecessor': this.predecessor,
+      'isNew': true
+    });
+
+    this.appendChildView(this.form);
+    this.form.render();
     return this;
   }
 
 })
+
 
 /* ------------------------------------------------------------------- */
 // Action Panel
@@ -632,7 +689,7 @@ LIME.ActionPanel = Backbone.View.Base.extend({
   loadCoverForm: function(model){
     this.closeForm();
 
-    this.form = new LIME.Forms['Cover']({
+    this.form = new LIME.Forms.Cover({
       'className': 'cover form',
       'model': model
     });

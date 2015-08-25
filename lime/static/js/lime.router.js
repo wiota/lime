@@ -32,6 +32,7 @@ LIME.Router = Backbone.Router.extend({
     ":vertexType/:id/" : "list",
     ":vertexType/:id/list" : "list",
     ":vertexType/:id/update" : "update",
+    ":vertexType/:id/cover" : "cover",
     ":vertexType/:id/create/:newVertexType" : "create",
     ":vertexType/:id/list/:secondary/move" : "move",
     ":vertexType/:id/list/:secondary/link" : "link",
@@ -49,6 +50,7 @@ LIME.Router = Backbone.Router.extend({
     LIME.panel.primarySubject.addPreset('standard', [0, 0, 250]);
     LIME.panel.primarySubject.addPreset('focus', [0, 0, 100], "%");
     LIME.panel.primarySubject.addPreset('predecessor', [0, 250, 500]);
+    LIME.panel.primarySubject.addPreset('cover', [0, 0, 500]);
     LIME.panel.primarySubject.addPreset('successor', [0, 0, 0]);
 
     LIME.panel.subjects.addPreset('single', [0, 100], "%");
@@ -58,18 +60,18 @@ LIME.Router = Backbone.Router.extend({
 
 
     // Subjects are selected vertices
+    // UI elements already exist in the DOM
     LIME.ui = {
       primarySubject: {
-        form: new LIME.ActionPanel(), // will be incorporated into lens.focus.view
         lens: {
           focus: new LIME.FocusLens({el: $('#primary_subject .focus.box')}),
-          successors: new LIME.ListingPanel({"setType": "successor", el: $('#primary_subject .successor.box')}),
-          predecessors: new LIME.ListingPanel({"setType": "predecessor", el: $('#primary_subject .predecessor.box')})
+          successors: new LIME.SuccessorLens({el: $('#primary_subject .successor.box')}),
+          predecessors: new LIME.PredecessorLens({el: $('#primary_subject .predecessor.box')})
         }
       },
       secondarySubject: {
         lens: {
-          successors: new LIME.ListingPanel({"setType": "successor", el: $('#secondary_subject .succset')})
+          successors: new LIME.SecondaryListingLens({el: $('#secondary_subject .successor.box')})
         }
       }
     }
@@ -92,33 +94,15 @@ LIME.Router = Backbone.Router.extend({
 
     // Input State
     LIME.cursor['primarySubject.inputState'] = function(state){
-      if(state === 'update'){
-        LIME.ui.primarySubject.lens.focus.setViewState('update');
-      } else if (state === 'create'){
-        //var vertex = LIME.router.getState('newSubject');
-        //var predecessor = LIME.router.getState('primarySubject.focus');
-        //LIME.ui.primarySubject.form.loadCreateForm(vertex, predecessor);
-      } else if(state === 'read'){
-        LIME.ui.primarySubject.lens.focus.setViewState('read');
-      }
+      LIME.ui.primarySubject.lens.focus.setViewState(state);
     }
 
-    /*
-    LIME.cursor['primarySubject.inputState'] = function(state){
-      if(state === 'update'){
-        var focus = LIME.router.getState('primarySubject.focus');
-        LIME.ui.primarySubject.form.loadVertexForm(focus);
-
-      } else if (state === 'create'){
-        var vertex = LIME.router.getState('newSubject');
-        var predecessor = LIME.router.getState('primarySubject.focus');
-        LIME.ui.primarySubject.form.loadCreateForm(vertex, predecessor);
-
-      } else if(state === 'view'){
-        LIME.ui.primarySubject.form.closeForm();
-      }
+    LIME.cursor['primarySubject.successorInputState'] = function(state){
+      LIME.ui.primarySubject.lens.successors.setViewState(state);
     }
-    */
+
+    // New Subject
+    LIME.cursor['newSubject'] = function(vertex){ return false }
 
     // Icons
     LIME.icon = new Iconset();
@@ -154,19 +138,15 @@ LIME.Router = Backbone.Router.extend({
 
     LIME.state = {}
 
+    // New Subject
+    this.setState('newSubject', null);
+
     // Input state
     this.setState('primarySubject.inputState', 'read');
+    this.setState('primarySubject.successorInputState', 'read');
 
     // Nav
     this.setState('primarySubject.lens.focus.nav', 'true');
-
-    // Menus State is not wired yet
-    // this.setState('primarySubject.lens.successors.view', 'list');
-    // this.setState('primarySubject.lens.successors.mode', 'add');
-    // this.setState('primarySubject.lens.predecessors.view', 'list');
-    // this.setState('primarySubject.lens.predecessors.mode', 'add');
-    // this.setState('secondarySubject.lens.successors.view', 'list');
-    // this.setState('secondarySubject.lens.successors.mode', 'add');
 
     // Panels
     this.setState('panelState', 'single');
@@ -188,52 +168,87 @@ LIME.Router = Backbone.Router.extend({
   },
 
   list: function(vertexType, id){
+    var start = new Date();
+    console.log("LIST START ----------------");
+    // Listed Vertex
     this.setState('primarySubject.focus', this.lookupVertex(id));
-    this.setState('primarySubject.inputState', 'read');
 
+    // Input State
+    this.setState('primarySubject.inputState', 'read');
+    this.setState('primarySubject.successorInputState', 'read');
+
+    // Panel Grid
     this.setState('panelState', 'single');
     this.setState('primarySubject.panelState', 'predecessor');
+    console.log("LIST STOP - " + (new Date() - start))
   },
 
   update: function(vertexType, id){
-    var focus;
+    // Listed Vertex
     this.setState('primarySubject.focus', focus = this.lookupVertex(id));
-    this.setState('primarySubject.inputState', 'update');
 
-    // Panels
+    // Input State
+    this.setState('primarySubject.inputState', 'update');
+    this.setState('primarySubject.successorInputState', 'read');
+
+    // Panel Grid
     this.setState('panelState', 'single');
     this.setState('primarySubject.panelState', 'focus');
+  },
+
+  cover: function(vertexType, id){
+    // Listed Vertex
+    this.setState('primarySubject.focus', this.lookupVertex(id));
+
+    // Input State
+    this.setState('primarySubject.inputState', 'cover');
+    this.setState('primarySubject.successorInputState', 'read');
+
+    // Panel Grid
+    this.setState('panelState', 'single');
+    this.setState('primarySubject.panelState', 'cover');
   },
 
   create: function(vertexType, id, newVertexType){
-    var predecessor, vertex;
+    // Listed Vertex
+    this.setState('primarySubject.focus', this.lookupVertex(id));
 
-    vertex = LIME.stack.createVertex({'vertex_type': newVertexType});
-    predecessor = this.lookupVertex(id);
+    // New Subject
+    this.setState('newSubject', LIME.stack.createVertex({'vertex_type': newVertexType}));
 
-    this.setState('primarySubject.focus', predecessor);
-    this.setState('newSubject', vertex)
-    this.setState('primarySubject.inputState', 'create');
+    // Input State
+    this.setState('primarySubject.inputState', 'read');
+    this.setState('primarySubject.successorInputState', 'create');
 
-    // Panels
+    // Panel Grid
     this.setState('panelState', 'single');
-    this.setState('primarySubject.panelState', 'focus');
+    this.setState('primarySubject.panelState', 'standard');
   },
 
   move: function(vertexType, id, secondary){
+    // Listed Vertices
     this.setState('primarySubject.focus', this.lookupVertex(id));
     this.setState('secondarySubject.focus', this.lookupVertex(secondary));
 
-    // Panels
+    // Input State
+    this.setState('primarySubject.inputState', 'read');
+    this.setState('primarySubject.successorInputState', 'read');
+
+    // Panel Grid
     this.setState('panelState', 'double');
     this.setState('primarySubject.panelState', 'successor');
   },
 
   link: function(vertexType, id, secondary){
+    // Listed Vertices
     this.setState('primarySubject.focus', this.lookupVertex(id));
     this.setState('secondarySubject.focus', this.lookupVertex(secondary));
 
-    // Panels
+    // Input State
+    this.setState('primarySubject.inputState', 'read');
+    this.setState('primarySubject.successorInputState', 'read');
+
+    // Panel Grid
     this.setState('panelState', 'double');
     this.setState('primarySubject.panelState', 'successor');
   },

@@ -13,7 +13,7 @@ LIME.Menu = Backbone.View.Base.extend({
 
   initialize: function(options){
     options = options || {};
-    this.radio = options.radio || true;
+    this.radio = options.radio || false;
     this.initial = options.initial || null;
     this.label = options.label || "";
     this.menuOptions = options.options || [];
