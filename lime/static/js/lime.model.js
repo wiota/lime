@@ -208,6 +208,12 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
       return false;
     }
 
+    _.each(model.attributes, function(attribute, key){
+      if(!attribute && key != 'title'){
+        model.unset()
+      }
+    })
+
     model.modified = false;
     model.saving = true;
     options = options || {};
