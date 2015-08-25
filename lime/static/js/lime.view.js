@@ -534,8 +534,6 @@ LIME.View.ListingView = Backbone.View.Base.extend({
   },
 
   render: function(){
-
-
     // test for rendering
     // console.log("rendering listing");
 
@@ -701,9 +699,6 @@ LIME.SuccessorLens = Backbone.View.Base.extend({
   render: function(){
     if(!this.model.isDeep()){ console.warn("Render attempted before model was deep.") }
 
-    console.log('render start');
-    var start = new Date();
-
     this.successorView && this.successorView.close();
     this.menuView && this.menuView.close();
     this.createView && this.createView.close();
@@ -732,8 +727,6 @@ LIME.SuccessorLens = Backbone.View.Base.extend({
     this.$el.append(this.successorView.render().el);
     this.$el.append(this.menuView.render().el);
     this.$el.append(this.createView.render().el);
-
-    console.log(new Date() - start)
   }
 });
 
