@@ -214,6 +214,7 @@
       <a class='get' href='#body/<%- _id %>'></a>
       <a class='set_cover'><img class='icon update' src='/icon/lens.svg'><b class='label'>set cover</b></a>
       <a class='update'><img class='icon update' src='/icon/pencil.svg'><b class='label'>update</b></a>
+      <a class='delete'>cut</a>
       <a class='drag_handle'>&#8597;</a>
     </div>
   </script>
@@ -231,6 +232,7 @@
       <a class='get' href='#calendar/<%- _id %>'></a>
       <a class='set_cover'><img class='icon update' src='/icon/lens.svg'><b class='label'>set cover</b></a>
       <a class='update'><img class='icon update' src='/icon/pencil.svg'><b class='label'>update</b></a>
+      <a class='delete'>cut</a>
       <a class='drag_handle'>&#8597;</a>
     </div>
   </script>
@@ -335,6 +337,7 @@
   <script type="text/javascript" src='{{ url_for('static', filename='js/lime.form.js')|bust }}'></script>
   <script type="text/javascript" src='{{ url_for('static', filename='js/lime.menu.js')|bust }}'></script>
   <script type="text/javascript" src='{{ url_for('static', filename='js/lime.stack.js')|bust }}'></script>
+
 
   <script type='text/javascript'>
     $(document).ready(function() {
