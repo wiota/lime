@@ -44,7 +44,7 @@ Backbone.View.Base = Backbone.View.extend({
     }
   },
 
-  switchOutClass: function(className, classNameList){
+  switchOutClass: function(classNameList, className){
     var all, next;
 
     all = this.$el.attr('class').split(" ");
@@ -609,25 +609,39 @@ LIME.PredecessorLens = Backbone.View.Base.extend({
 
 LIME.SuccessorLens = Backbone.View.Base.extend({
   initialize: function(){
-    // Views
-    this.successorView = null;
+    this.state = new LIME.StateMachine();
 
-    // View State - set by router
-    this.viewStates = ['read', 'create'];
+    // Input State
+    this.inputStates = ['read', 'create'];
 
-    // Layout State - needs default
+    // Layout State
     this.layoutOptions = [
       {'className':'list_view', 'label': 'List View', icon: 'list_view'},
       {'className':'grid_view', 'label': 'Grid View', icon: 'grid_view'}
     ]
-    this.setLayoutState('list_view');
 
-    // Mode State - needs default
+    // Mode State
     this.modeOptions = [
       {'className':'add_mode', 'label': 'Add', icon: null},
       {'className':'remove_mode', 'label': 'Cut', icon: null}
     ]
-    this.setModeState('add_mode');
+
+    // Input State
+    this.state.on('inputState', function(inputState){
+      this.switchOutClass(this.inputStates, inputState);
+      this.createView && this.createView.state.set('inputState', inputState);
+    }, this);
+
+    // Layout
+    this.state.on('layout', _.bind(this.switchOutClass, this, _.pluck(this.layoutOptions, 'className')));
+
+    // Mode
+    this.state.on('mode', _.bind(this.switchOutClass, this, _.pluck(this.modeOptions, 'className')));
+
+    // Initial
+    this.state.set('layout', 'list_view');
+    this.state.set('mode', 'add_mode');
+
   },
 
   list: function(vertex){
@@ -635,32 +649,10 @@ LIME.SuccessorLens = Backbone.View.Base.extend({
     this.renderWhenDeep(vertex);
   },
 
-  setViewState: function(viewState){
-    if(this.viewState !== viewState){
-      this.viewState = viewState;
-      this.switchOutClass(viewState, this.viewStates);
-      this.createView && this.createView.setViewState(viewState);
-    }
-  },
-
-  setLayoutState: function(layoutState){
-    if(this.layoutState !== layoutState){
-      this.layoutState = layoutState;
-      this.switchOutClass(layoutState, _.pluck(this.layoutOptions, 'className'));
-    }
-  },
-
-  setModeState: function(modeState){
-    if(this.modeState !== modeState){
-      this.modeState = modeState;
-      this.switchOutClass(modeState, _.pluck(this.modeOptions, 'className'));
-    }
-  },
-
   handleNew: function(type){
     if(type==='exisiting'){
       var secondary;
-      secondary = LIME.router.getState('secondarySubject.focus') || LIME.router.lookupVertex(LIME.host.get('apex'));
+      secondary = LIME.state.get('secondarySubject.focus') || LIME.router.lookupVertex(LIME.host.get('apex'));
       LIME.router.navigate('#'+this.model.vertexType+'/'+this.model.id+"/list/"+secondary.id+"/"+"link");
       LIME.router.link(this.model.vertexType, this.model.id, this.model.id);
     } else {
@@ -669,7 +661,7 @@ LIME.SuccessorLens = Backbone.View.Base.extend({
     }
   },
 
-  getAddOptions: function(){
+  allowedVertices: function(){
     var schema, options;
     schema = LIME.host.vertexSchema || {}; // || this.model.allowedSchema
     _.extend(schema, {'exisiting':null})
@@ -678,37 +670,40 @@ LIME.SuccessorLens = Backbone.View.Base.extend({
     })
   },
 
-  getMenus: function(){
+  menuData: function(){
     return [
       {
         'className': 'layout_menu',
         'label': 'Layout',
         'options': this.layoutOptions,
         'radio': true,
-        'initial': this.layoutState,
-        'fn': _.bind(this.setLayoutState, this)
+        'initial': this.state.get('layout'),
+        'fn': _.bind(this.state.set, this.state, 'layout')
       },
       {
         'className': 'mode_menu',
         'label': 'Mode',
         'options': this.modeOptions,
         'radio': true,
-        'initial': this.modeState,
-        'fn': _.bind(this.setModeState, this)
+        'initial': this.state.get('mode'),
+        'fn': _.bind(this.state.set, this.state, 'mode')
       },
       {
         'className': 'add_menu',
         'label': 'Add',
-        'options': this.getAddOptions(),
+        'options': this.allowedVertices(),
         'fn': _.bind(this.handleNew, this)
       }
     ]
   },
 
+  // Rendered by when focus vertex is changed
   render: function(){
     if(!this.model.isDeep()){ console.warn("Render attempted before model was deep.") }
 
+    console.log('render start');
     var start = new Date();
+
     this.successorView && this.successorView.close();
     this.menuView && this.menuView.close();
     this.createView && this.createView.close();
@@ -723,7 +718,7 @@ LIME.SuccessorLens = Backbone.View.Base.extend({
     // menus
     this.menuView = new LIME.Menu.MenuGroup({
       'model': this.model,
-      'menus': this.getMenus()
+      'menus': this.menuData()
     });
 
     // create view
@@ -731,7 +726,7 @@ LIME.SuccessorLens = Backbone.View.Base.extend({
       'model': null,
       'className': 'vertex create_view',
       'predecessor': this.model,
-      'viewState': this.viewState
+      'inputState': this.state.get('inputState')
     });
 
     this.$el.append(this.successorView.render().el);

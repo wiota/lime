@@ -11,26 +11,31 @@
 LIME.FocusLens = Backbone.View.Base.extend({
 
   initialize: function(){
-    // Views
-    this.readView = null;
-    this.updateView = null;
     this.nav = new LIME.Nav.LimeNav(); // Persistent, doesn't change with render
+    this.state = new LIME.StateMachine();
+    this.inputStates = ['read', 'update', 'cover'];
 
-    // View State
-    this.viewStates = ['read', 'update', 'cover'];
-    this.setViewState('read');
+    this.state.on('inputState', function(inputState){
+      this.switchOutClass(this.inputStates, inputState);
+
+      // cascading state
+      if(inputState === 'update'){
+        this.updateView && this.updateView.state.set('inputState', 'update');
+        this.coverView && this.coverView.state.set('inputState', 'read');
+      } else if (inputState === 'cover'){
+        this.updateView && this.updateView.state.set('inputState', 'read');
+        this.coverView && this.coverView.state.set('inputState', 'update');
+      } else {
+        this.updateView && this.updateView.state.set('inputState', 'read');
+        this.coverView && this.coverView.state.set('inputState', 'read');
+      }
+
+    }, this);
   },
 
   list: function(vertex){
     this.model = vertex;
     this.renderWhenReady(vertex);
-  },
-
-  setViewState: function(viewState){
-    if(this.viewState !== viewState){
-      this.viewState = viewState;
-      this.switchOutClass(viewState, this.viewStates);
-    }
   },
 
   render: function(){
@@ -49,13 +54,15 @@ LIME.FocusLens = Backbone.View.Base.extend({
     // update
     this.updateView = new LIME.Forms.UpdateVertex({
       'model':this.model,
-      'className': 'vertex update_view'
+      'className': 'vertex update_view',
+      'inputState': this.state.get('inputState')
     })
 
     // update
     this.coverView = new LIME.Forms.UpdateCover({
       'model':this.model,
-      'className': 'vertex cover_view'
+      'className': 'vertex cover_view',
+      'inputState': this.state.get('inputState')
     })
 
     this.$el.empty();

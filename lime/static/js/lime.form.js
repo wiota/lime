@@ -546,11 +546,23 @@ LIME.Forms.Succset = Backbone.View.Base.extend({
 /* ------------------------------------------------------------------- */
 
 LIME.Forms.UpdateCover = Backbone.View.Base.extend({
-  initialize: function(){
-    this.form = null;
+  initialize: function(options){
+    this.options = options || {};
+    this.state = new LIME.StateMachine();
+    this.inputStates = ['read', 'cover'];
+
+    this.state.on('inputState', function(inputState){
+      this.switchOutClass(this.inputStates, inputState);
+      this.render();
+    }, this);
+
+    this.state.set('inputState', (options.inputState || 'read'), {silent: true});
   },
 
   render: function(){
+    this.form && this.form.close();
+
+    if(this.state.get('inputState') !== "cover"){ return this }
     this.form = new LIME.Forms.Cover({
       'model': this.model,
       'className': this.model.vertexType + ' vertex cover form'
@@ -568,11 +580,25 @@ LIME.Forms.UpdateCover = Backbone.View.Base.extend({
 /* ------------------------------------------------------------------- */
 
 LIME.Forms.UpdateVertex = Backbone.View.Base.extend({
-  initialize: function(){
-    this.form = null;
+  initialize: function(options){
+    this.options = options || {};
+
+    this.state = new LIME.StateMachine();
+    this.inputStates = ['read', 'update'];
+
+    this.state.on('inputState', function(inputState){
+      this.switchOutClass(this.inputStates, inputState);
+      this.render();
+    }, this);
+
+    this.state.set('inputState', (options.inputState || 'read'), {silent: true});
   },
 
   render: function(){
+    this.form && this.form.close();
+
+    if(this.state.get('inputState') !== "update"){ return this }
+
     this.form = new LIME.Forms.Vertex({
       'model': this.model,
       'className': this.model.vertexType + ' vertex form'
@@ -593,17 +619,16 @@ LIME.Forms.CreateVertex = Backbone.View.Base.extend({
   initialize: function(options){
     options = options || {}
     this.predecessor = options.predecessor || null;
-    this.viewState = options.viewState || 'read';
-    this.form = null;
-  },
 
-  setViewState: function(viewState){
-    if(this.viewState !== viewState){
-      console.log(viewState)
-      this.viewState = viewState;
-      this.switchOutClass(viewState, this.viewStates);
+    this.state = new LIME.StateMachine();
+    this.inputStates = ['read', 'update'];
+
+    this.state.on('inputState', function(inputState){
+      this.switchOutClass(this.inputStates, inputState);
       this.render();
-    }
+    }, this);
+
+    this.state.set('inputState', (options.inputState || 'read'), {silent: true});
   },
 
   handleSave: function(){},
@@ -611,8 +636,9 @@ LIME.Forms.CreateVertex = Backbone.View.Base.extend({
   render: function(){
     this.form && this.form.close();
 
-    this.model = LIME.router.getState('newSubject');
-    if(!this.model || this.viewState === "read"){ return this }
+    // use new subject - set by router
+    this.model = LIME.state.get('newSubject');
+    if(!this.model || this.state.get('inputState') !== "create"){ return this }
 
     this.form = new LIME.Forms.Vertex({
       'model': this.model,
