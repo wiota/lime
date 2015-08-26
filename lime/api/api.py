@@ -148,6 +148,11 @@ def post_vertex(vertex_type):
     data = {k: request.json[k] for k in doc.get_aggregate_fields() if k in request.json.keys()}
     update_document(doc, data).save()
 
+    # TODO: This is a hack. get_aggregate_fields should be reworked.
+    if 'cover' in request.json.keys():
+        doc.reload()
+        doc.update(set__cover=request.json['cover'])
+
     return doc.to_bson(), 200
 
 
@@ -157,6 +162,11 @@ def put_category(vertex_type, id):
     doc = Vertex.by_id(id)
     data = {k: request.json[k] for k in doc.get_aggregate_fields() if k in request.json.keys()}
     update_document(doc, data).save()
+
+    # TODO: This is a hack. get_aggregate_fields should be reworked.
+    if 'cover' in request.json.keys():
+        doc.reload()
+        doc.update(set__cover=request.json['cover'])
 
     return jsonify(result="success"), 200  # TODO: Should be a 204
 
