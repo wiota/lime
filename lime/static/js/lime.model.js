@@ -90,7 +90,7 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
     var attr;
     this.modified = true;
     attr = model.changedAttributes();
-    if(!_.isEmpty()){
+    if(!_.isEmpty(attr)){
       this.trigger('attributesChanged', {'attr':attr});
     }
   },
