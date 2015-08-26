@@ -441,7 +441,7 @@ LIME.Forms.Cover = Backbone.View.Base.extend({
     this.fileUpload = new LIME.Forms.FileUploadView();
     this.saveView = new LIME.Forms.SaveView();
 
-    this.listenTo(this.model, 'summaryChanged', this.render)
+    this.listenTo(this.model, 'attributesChanged', this.render)
     _.bindAll(this, 'close', 'noCover');
   },
 

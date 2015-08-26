@@ -82,7 +82,7 @@ LIME.View.Vertex = Backbone.View.Base.extend({
     this.predecessor = options.predecessor || false;
 
     // id
-    this.$el.attr('id', "_id_"+this.model.id);
+    this.$el.attr('id', this.model.cid);
 
     // customTemplate templates (for leaves, host, and legacy body / happenings)
     this.$tmp = $('#'+ this.model.vertexType+'_in_set');
@@ -99,7 +99,7 @@ LIME.View.Vertex = Backbone.View.Base.extend({
     this.awaitingTemplate = _.template($('#awaiting').html());
     this.barTemplate = _.template($('#upload').html());
 
-    this.listenTo(this.model, 'summaryChanged', this.render);
+    this.listenTo(this.model, 'attributesChanged', this.render);
   },
 
 
@@ -417,21 +417,17 @@ LIME.View.SetView = Backbone.View.Base.extend({
   },
 
   update: function(event, ui){
-    var ids = _.map(this.$el.children(), function(li){return li.id.slice(4)})
+    var ids = _.map(this.$el.children(), function(li){return li.id})
     this.model.setSuccset(ids);
   },
 
   // targeted add remove rendering will go here
 
   render: function(){
-    // if model needs to be refetched for dereferenced succset
     if(!this.model.isDeep()){
       console.warn("Set render attempted before vertex was ready.")
       return false;
     }
-
-    // test for rendering
-    // console.log('rendering set - '+ this.setType);
 
     this.$el.empty();
     if(this.setType === 'successor'){
@@ -452,15 +448,6 @@ LIME.View.SetView = Backbone.View.Base.extend({
       itemView.listenTo(item, 'change', itemView.render);
       return itemView;
     }, this);
-
-    // test for rendering
-    // this.$el.css({backgroundColor:"rgba(235,255,200,.5)"});
-    var view = this;
-
-    _.delay(function(){
-      view.$el.css({backgroundColor:"transparent"})
-    }, 500);
-
 
     return this;
   }
@@ -522,9 +509,11 @@ LIME.View.ListingView = Backbone.View.Base.extend({
     if(this.setType === 'successor'){
       this.listenTo(this.model, 'successorAdd', this.renderAddRemove);
       this.listenTo(this.model, 'successorRemove', this.renderAddRemove);
+      this.listenTo(this.model, 'successorOrder', this.render);
     } else if (this.setType === 'predecessor'){
       this.listenTo(this.model, 'predecessorAdd', this.renderAddRemove);
       this.listenTo(this.model, 'predecessorRemove', this.renderAddRemove);
+      this.listenTo(this.model, 'predecessorOrder', this.render);
     }
   },
 

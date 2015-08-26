@@ -86,13 +86,12 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
     return this.url() + 'succset/';
   },
 
-  // This can be updated now that referenced fields are not in the attribute set
   triggerEvents: function(model, options){
+    var attr;
     this.modified = true;
-    var attr = model.changedAttributes()
-    var summary_attr = _.omit(attr, 'succset');
-    if(!_.isEmpty(summary_attr)){
-      this.trigger('summaryChanged', {'attr':summary_attr});
+    attr = model.changedAttributes();
+    if(!_.isEmpty()){
+      this.trigger('attributesChanged', {'attr':attr});
     }
   },
 
@@ -144,7 +143,7 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
   },
 
   awaitingUpload: function(){
-    // Would like to compose
+    // should compose
     var awaiting = _.pick(this.attributes, function(val, key){ return this.isFile(key); }, this)
     awaiting = _.map(awaiting, function(val, key){ return [key, val]; }, this);
 
@@ -265,7 +264,8 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
     // timestamp
     var arr = file.name.split('.');
     var ext = arr.pop();
-    var name = LIME.fileSafe(arr.join('.')) + '_' + Date.now() + '.' + ext;
+    var timestamp = new Date().valueOf();
+    var name = LIME.fileSafe(arr.join('.')) + '_' + timestamp + '.' + ext;
 
     // S3 uploader
     var uploader = new LIME.Uploader();
@@ -386,7 +386,19 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
   // Server request for reordering
   saveSuccset: function(options){
     var model = this;
+
     var idList = _.pluck(this.succset, 'id');
+
+    // Prevent new unidentified succset references
+    var newSuccessors = _.filter(this.succset, function(successor){
+      return successor.isNew()
+    })
+    if(newSuccessors.length > 0){
+      this.stopListening(this.awaitingSuccessor, 'sync', this.saveSuccset)
+      this.awaitingSuccessor = newSuccessors[0];
+      this.listenToOnce(this.awaitingSuccessor, 'sync', this.saveSuccset);
+      return false
+    }
 
     options = options || {};
 
@@ -416,21 +428,22 @@ LIME.Model.Vertex= LIME.Model.Base.extend({
   },
 
   // Local modification - initiates server request
+  // Possible place for optimization, although seems to work quite fast
   setSuccset: function(idList){
     var undefined;
     // inefficient algorithm
     var update = _.map(idList, function(id, index, list){
-      var obj = _.findWhere(this.succset, {'id': id});
+      var obj = _.findWhere(this.succset, {'cid': id});
       return obj;
     }, this);
 
-    this.succset = update;
-
     // Prevent null saves
     if(_.indexOf(this.succset, undefined)<0){
+      this.succset = update;
       this.saveSuccset();
     } else {
       console.warn('Succsessor set contains null values.');
+      this.trigger('successorOrder');
     }
   },
 
