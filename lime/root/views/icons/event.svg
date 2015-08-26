@@ -1,0 +1,9 @@
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 16 16">
+
+  <rect y="1" fill="#78F7D8" width="16" height="13"/>
+{% set off = range(0,7) | random() %}
+{% set days = range(29,32) | random() %}
+{% for d in range(0,days)%}
+  <rect x="{{ 1 + 2*((d + off) % 7) }}" y="{{ 2 + 2*(((d + off) / 7) - ((d + off) /7) % 1) }}" fill="#FFFFFF" width="1" height="1"/>
+{% endfor %}
+</svg>

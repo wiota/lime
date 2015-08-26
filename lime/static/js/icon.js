@@ -1,7 +1,6 @@
 function Iconset(){
 
   var Icon = this;
-  var icons = [];
 
   // Colors --------------------------------------------------------------
 
@@ -72,16 +71,9 @@ function Iconset(){
   var openTag = '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 16 16">'
   var closeTag = '</svg>';
 
-
-  this.add = function(icon, selector){
-    icons.push({icon:icon, selector:selector});
-  };
-
-  this.refresh = function(){
-    _.each(icons, function(icondict, index, list){
-      $(icondict.selector).html(openTag + iconlib[icondict.icon]() + closeTag);
-    }, this)
-  };
+  this.get = function(icon){
+    return openTag + iconlib[icon]() + closeTag
+  }
 
   this.invertColor = function(color){
     var t1 = '0123456789abcdef#'

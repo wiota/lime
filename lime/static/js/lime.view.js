@@ -26,6 +26,31 @@ Backbone.View.Base = Backbone.View.extend({
     view.$el.appendTo(this.$el);
     this.children.push(view);
     return view;
+  },
+
+  renderWhenReady: function(model){
+    if(!model.isFetched()){
+      this.listenToOnce(model, 'sync', this.render);
+    } else {
+      this.render();
+    }
+  },
+
+  renderWhenDeep: function(model){
+    if(!model.isDeep()){
+      this.listenToOnce(model, 'sync', this.render);
+    } else {
+      this.render();
+    }
+  },
+
+  switchOutClass: function(classNameList, className){
+    var all, next;
+
+    all = this.$el.attr('class').split(" ");
+    next = _.filter(all, function(c){ return (_.indexOf(classNameList, c) < 0) });
+    next.push(className);
+    this.$el.attr('class', next.join(" "))
   }
 })
 
@@ -33,13 +58,13 @@ Backbone.View.Base = Backbone.View.extend({
 // Vertex View
 // What is custom to this view?
 // Information Heirarchy = Field order
+// Vertex must be fetched with type before initializing
 /* ------------------------------------------------------------------- */
 
 LIME.View.Vertex = Backbone.View.Base.extend({
   events:{
     'click .delete':'delete',
     'click .update':'updateForm',
-    // 'click .ui': 'updateForm', // causes cover form button to fail
     'click .title':'toggleMeta',
     'click .set_cover':'setCoverForm'
   },
@@ -57,7 +82,7 @@ LIME.View.Vertex = Backbone.View.Base.extend({
     this.predecessor = options.predecessor || false;
 
     // id
-    this.$el.attr('id', "_id_"+this.model.id);
+    this.$el.attr('id', this.model.cid);
 
     // customTemplate templates (for leaves, host, and legacy body / happenings)
     this.$tmp = $('#'+ this.model.vertexType+'_in_set');
@@ -74,7 +99,7 @@ LIME.View.Vertex = Backbone.View.Base.extend({
     this.awaitingTemplate = _.template($('#awaiting').html());
     this.barTemplate = _.template($('#upload').html());
 
-    this.listenTo(this.model, 'summaryChanged', this.render);
+    this.listenTo(this.model, 'attributesChanged', this.render);
   },
 
 
@@ -91,22 +116,30 @@ LIME.View.Vertex = Backbone.View.Base.extend({
   },
 
   setCoverForm: function(){
-    LIME.actionPanel.loadCoverForm(this.model);
+    // Pass through router to enable history
+    // LIME.router.navigate('#'+this.model.vertexType+'/'+this.model.id+"/cover");
+    // LIME.router.cover(this.model.vertexType, this.model.id);
+    LIME.router.navigate('#'+this.model.vertexType+'/'+this.model.id+"/cover");
+    LIME.router.cover(this.model.vertexType, this.model.id);
   },
 
   renderAttributes: function(){
     _.each(LIME.host.vertexSchema[this.model.vertexType], function(field, key){
-      this.renderAttribute(field.name, key);
+      this.renderAttribute(field, key);
     }, this)
   },
 
   renderAttribute: function(field, order){
     var clsList = ['primary','secondary','tertiary', 'quaternary', 'quinary', 'senary', 'septenary', 'octonary', 'nonary', 'denary']
-    if(_.has(this.model.attributes, field)){
-      if(this.model.isFile(field)){
+    if(_.has(this.model.attributes, field.name)){
+      if(this.model.isFile(field.name)){
         this.$attributes.append("<b class='attribute "+clsList[order]+"'>Loading</b>");
       } else {
-        this.$attributes.append("<b class='attribute "+clsList[order]+"'>"+this.model.get(field)+"</b>");
+        if(field.type === 'datetime'){
+          this.$attributes.append("<b class='attribute "+clsList[order]+"'>"+(new Date(this.model.get(field.name)).toLocaleDateString())+"</b>");
+        } else {
+          this.$attributes.append("<b class='attribute "+clsList[order]+"'>"+this.model.get(field.name)+"</b>");
+        }
       }
     }
   },
@@ -114,6 +147,9 @@ LIME.View.Vertex = Backbone.View.Base.extend({
   // This render function is becoming bloated
   render: function(){
     var awaiting = null;
+
+    // test for rendering
+    // console.log("rendering vertex")
 
     // If item is still awaiting upload, render loading bar
     if(awaiting = this.model.awaitingUpload()){
@@ -180,6 +216,18 @@ LIME.View.Vertex = Backbone.View.Base.extend({
     if(!this.model.get('deletable')){
       this.$el.find('.delete').remove();
     }
+
+    // test for rendering
+    if(this.$el.hasClass('summary')){
+      // this.$el.css({transform:'translate(150%)'});
+    } else {
+      // this.$el.css({transform:'translate(200px)'});
+    }
+
+    var view = this;
+    _.delay(function(){
+      view.$el.css({transform:'translate(0px)'})
+    }, 500);
 
     return this;
   }
@@ -369,14 +417,13 @@ LIME.View.SetView = Backbone.View.Base.extend({
   },
 
   update: function(event, ui){
-    var ids = _.map(this.$el.children(), function(li){return li.id.slice(4)})
+    var ids = _.map(this.$el.children(), function(li){return li.id})
     this.model.setSuccset(ids);
   },
 
   // targeted add remove rendering will go here
 
   render: function(){
-    // if model needs to be refetched for dereferenced succset
     if(!this.model.isDeep()){
       console.warn("Set render attempted before vertex was ready.")
       return false;
@@ -428,10 +475,22 @@ LIME.View.ListingView = Backbone.View.Base.extend({
     // children
     this.set = new LIME.View.SetView({model:this.model, setType: this.setType})
 
-    this.upload = new LIME.Forms['Succset']({
+    this.upload = new LIME.Forms.Succset({
       'model': this.model,
       'className': 'succset draggable form'
     });
+
+    if(this.setType === 'predecessor'){
+      this.nav = new LIME.Nav.AccountNav();
+      this.$el.append(this.nav.render().el);
+
+      // api endpoint
+      if(this.model.vertexType === 'host'){
+        this.nav.setEndpoint('/api/v1/host');
+      } else {
+        this.nav.setEndpoint('/api/v1/'+this.model.vertexType+'/'+this.model.id);
+      }
+    }
 
     // This should become add menu
     this.$instruction = $(this.emptyFlagTemplate());
@@ -450,18 +509,23 @@ LIME.View.ListingView = Backbone.View.Base.extend({
     if(this.setType === 'successor'){
       this.listenTo(this.model, 'successorAdd', this.renderAddRemove);
       this.listenTo(this.model, 'successorRemove', this.renderAddRemove);
+      this.listenTo(this.model, 'successorOrder', this.render);
     } else if (this.setType === 'predecessor'){
       this.listenTo(this.model, 'predecessorAdd', this.renderAddRemove);
       this.listenTo(this.model, 'predecessorRemove', this.renderAddRemove);
+      this.listenTo(this.model, 'predecessorOrder', this.render);
     }
   },
 
   renderAddRemove: function(){
-    console.warn('Only one vertex in the set was modified, but the whole listing was rerendered');
+    //console.warn('Only one vertex in the set was modified, but the whole listing was rerendered');
     this.render();
   },
 
   render: function(){
+    // test for rendering
+    // console.log("rendering listing");
+
     if(this.setType === 'successor'){
       var set = this.model.succset;
     } else if (this.setType === 'predecessor'){
@@ -475,6 +539,8 @@ LIME.View.ListingView = Backbone.View.Base.extend({
       this.$instruction.slideUp();
     }
     _.each(this.children, function(c){c.render()}, this);
+
+
     return this;
   },
 
@@ -488,198 +554,202 @@ LIME.View.ListingView = Backbone.View.Base.extend({
 });
 
 /* ------------------------------------------------------------------- */
-// Listing Panel
-// This panel should be rendered once per set
+// Predecessor Lens
+//
+// Persistant UI View
 /* ------------------------------------------------------------------- */
 
-LIME.ListingPanel = Backbone.View.Base.extend({
-  listing: null,
-  listedModel: null,
-  listMode: null,
-  viewMode: null,
-
-  modes: [
-    ['add_mode', 'Add/Post'],
-    //['sort_mode', 'Sort/Filter'],
-    //['order_mode', 'Order/Sequence'],
-    ['remove_mode', 'Edit/Cut']
-  ],
-
-  layouts: [
-    ['list_view', 'List'],
-    ['grid_view', 'Grid'],
-    //['relate_view', 'Relate']
-    //['move_view', 'Move']
-  ],
-
+LIME.PredecessorLens = Backbone.View.Base.extend({
   initialize: function(options){
-
-    // Set to render
-    this.setType = options.setType;
-
-    // Intial view config
-    this.mode = 'add_mode';
-    this.layout = 'list_view';
-
-    // Listing
-    this.listing;
-
-    // Model
-    this.model;
-
+    // Views
+    this.predecessorView = null;
   },
 
-  switchLayout: function(to, from){
-    this.layout = to;
-    this.listing.set.sortInit(to);
-    this.switchClass(to,from);
+  list: function(vertex){
+    this.model = vertex;
+    this.renderWhenDeep(vertex);
   },
 
-  switchEditMode: function(to, from){
-    this.mode = to;
-    this.switchClass(to,from);
-  },
 
-  switchClass: function(to, from){
-    this.$el.addClass(to)
-    this.$el.removeClass(from)
-  },
+  render: function(){
+    if(!this.model.isDeep()){ console.warn("Render attempted before model was deep.") }
 
-  newForm: function(type){
-    // Pass through router to enable history
-    LIME.router.navigate('#'+this.model.vertexType+'/'+this.model.id+"/create/"+type);
-    LIME.router.create(this.model.vertexType, this.model.id, type);
-  },
-
-  renderMenuInterface: function(){
-    this.$viewMenu = $("<div class='view_menu'></div>").appendTo(this.$el);
-    this.$actionMenu = $("<div class='action_menu'></div>").appendTo(this.$el);
-    return this;
-  },
-
-  // This is a bloated function and possibly in the wrong spot
-  renderMenus: function(){
-    var vertexType = this.model.vertexType;
-    var vertexSchema = LIME.host.vertexSchema;
-    var addList = [];
-
-    if(vertexType === 'happenings'){
-      addList;
-    } else {
-      _.each(vertexSchema, function(fields, vertexType){
-        addList.push([vertexType, "add "+vertexType.replace(/[-_.]/g, ' ')])
-      }, this)
-    }
-
-    this.layoutsMenu = new LIME.menu({
-      className: 'layout menu',
-      schema: this.layouts,
-      initial: this.layout,
-      label: "View",
-      radio: true
-    });
-
-    this.modeMenu = new LIME.menu({
-      className: 'mode menu',
-      schema: this.modes,
-      initial: this.mode,
-      label: "Mode",
-      radio: true
-    });
-
-    this.addMenu = new LIME.menu({
-      className: 'add menu',
-      schema: addList,
-      label: "Add",
-      cls: "add",
-      radio: false
-    });
-
-    // For testing
-    pS = [
-      ['standard', 'Standard'],
-      ['predecessor', 'Predecessor'],
-      ['successor', 'Successor']
-    ]
-
-    pSI = pS[0];
-    this.panelMenu = new LIME.menu({
-      className: 'column_width menu god',
-      schema: pS,
-      initial: pSI,
-      label: "GOD",
-      cls: "god",
-      radio: true
-    });
-
-    this.listenTo(this.layoutsMenu, 'select', this.switchLayout);
-    this.listenTo(this.modeMenu, 'select', this.switchEditMode);
-    this.listenTo(this.addMenu, 'select', this.newForm);
-    // Testing
-    this.listenTo(this.panelMenu, 'select', _.bind(LIME.panel.shift, LIME.panel));
-
-    // Clear
-    this.$viewMenu.empty();
-    if(this.$actionMenu){
-      this.$actionMenu.empty();
-    }
-
-    // Append
-    this.$viewMenu.append(this.layoutsMenu.render().el);
-    this.$viewMenu.append(this.modeMenu.render().el);
-
-    this.$actionMenu.append(this.addMenu.render().el);
-    // Testing
-    this.$actionMenu.append(this.panelMenu.render().el);
-  },
-
-  renderListing: function(){
-    this.renderMenuInterface();
-
-    // only render if deep
-    if(!this.model.isDeep()){
-      console.warn("Listing panel render attempted before vertex was ready.")
-      return false;
-    }
+    this.predecessorView && this.predecessorView.close();
 
     // new listing
-    this.listing = new LIME.View.ListingView({
+    this.predecessorView = new LIME.View.ListingView({
       'model':this.model,
       'className': this.model.vertexType + ' vertex listing',
-      'setType': this.setType
+      'setType': 'predecessor'
     });
 
-    this.$el.append(this.listing.render().el);
-    if(this.setType == 'successor'){
-      this.renderMenus();
-    } else {
-      this.switchEditMode(this.mode, null);
-      this.switchLayout(this.layout, null)
-    }
+    this.$el.addClass('list_view', 'add_mode');
+    this.$el.append(this.predecessorView.render().el);
+  }
+});
+
+/* ------------------------------------------------------------------- */
+// Successor Lens
+//
+// Persistant UI View
+/* ------------------------------------------------------------------- */
+
+LIME.SuccessorLens = Backbone.View.Base.extend({
+  initialize: function(){
+    this.state = new LIME.StateMachine();
+
+    // Input State
+    this.inputStates = ['read', 'create'];
+
+    // Layout State
+    this.layoutOptions = [
+      {'className':'list_view', 'label': 'List View', icon: 'list_view'},
+      {'className':'grid_view', 'label': 'Grid View', icon: 'grid_view'}
+    ]
+
+    // Mode State
+    this.modeOptions = [
+      {'className':'add_mode', 'label': 'Add', icon: null},
+      {'className':'remove_mode', 'label': 'Cut', icon: null}
+    ]
+
+    // Input State
+    this.state.on('inputState', function(inputState){
+      this.switchOutClass(this.inputStates, inputState);
+      this.createView && this.createView.state.set('inputState', inputState);
+    }, this);
+
+    // Layout
+    this.state.on('layout', _.bind(this.switchOutClass, this, _.pluck(this.layoutOptions, 'className')));
+
+    // Mode
+    this.state.on('mode', _.bind(this.switchOutClass, this, _.pluck(this.modeOptions, 'className')));
+
+    // Initial
+    this.state.set('layout', 'list_view');
+    this.state.set('mode', 'add_mode');
 
   },
 
   list: function(vertex){
     this.model = vertex;
-
-    if(this.listing){
-      this.listing.close();
-    }
-
-    if(!vertex.isDeep()){
-      this.listenToOnce(vertex, 'sync', _.bind(this.renderListing, this, vertex));
-    } else {
-      this.renderListing(vertex);
-    }
-
+    this.renderWhenDeep(vertex);
   },
 
-  apexMenu: function(){
-    if(this.listing){
-      this.listing.close();
+  handleNew: function(type){
+    if(type==='exisiting'){
+      var secondary;
+      secondary = LIME.state.get('secondarySubject.focus') || LIME.router.lookupVertex(LIME.host.get('apex'));
+      LIME.router.navigate('#'+this.model.vertexType+'/'+this.model.id+"/list/"+secondary.id+"/"+"link");
+      LIME.router.link(this.model.vertexType, this.model.id, this.model.id);
+    } else {
+      LIME.router.navigate('#'+this.model.vertexType+'/'+this.model.id+"/create/"+type);
+      LIME.router.create(this.model.vertexType, this.model.id, type);
     }
-    this.listing = new LIME.View.HomeMenu();
-    this.$el.append(this.listing.render().el);
-    this.clearMenus();
+  },
+
+  allowedVertices: function(){
+    var schema, options;
+    schema = LIME.host.vertexSchema || {}; // || this.model.allowedSchema
+    _.extend(schema, {'exisiting':null})
+    return _.map(schema, function(fields, vertexType){
+      return {'className': vertexType, 'label': "add "+vertexType.replace(/[-_.]/g, ' '), 'icon': vertexType};
+    })
+  },
+
+  menuData: function(){
+    return [
+      {
+        'className': 'layout_menu',
+        'label': 'Layout',
+        'options': this.layoutOptions,
+        'radio': true,
+        'initial': this.state.get('layout'),
+        'fn': _.bind(this.state.set, this.state, 'layout')
+      },
+      {
+        'className': 'mode_menu',
+        'label': 'Mode',
+        'options': this.modeOptions,
+        'radio': true,
+        'initial': this.state.get('mode'),
+        'fn': _.bind(this.state.set, this.state, 'mode')
+      },
+      {
+        'className': 'add_menu',
+        'label': 'Add',
+        'options': this.allowedVertices(),
+        'fn': _.bind(this.handleNew, this)
+      }
+    ]
+  },
+
+  // Rendered by when focus vertex is changed
+  render: function(){
+    if(!this.model.isDeep()){ console.warn("Render attempted before model was deep.") }
+
+    this.successorView && this.successorView.close();
+    this.menuView && this.menuView.close();
+    this.createView && this.createView.close();
+
+    // listing
+    this.successorView = new LIME.View.ListingView({
+      'model':this.model,
+      'className': this.model.vertexType + ' vertex listing',
+      'setType': 'successor'
+    });
+
+    // menus
+    this.menuView = new LIME.Menu.MenuGroup({
+      'model': this.model,
+      'menus': this.menuData()
+    });
+
+    // create view
+    this.createView = new LIME.Forms.CreateVertex({
+      'model': null,
+      'className': 'vertex create_view',
+      'predecessor': this.model,
+      'inputState': this.state.get('inputState')
+    });
+
+    this.$el.append(this.successorView.render().el);
+    this.$el.append(this.menuView.render().el);
+    this.$el.append(this.createView.render().el);
+  }
+});
+
+
+/* ------------------------------------------------------------------- */
+// Predecessor Lens
+//
+// Persistant UI View
+/* ------------------------------------------------------------------- */
+
+LIME.SecondaryListingLens = Backbone.View.Base.extend({
+  initialize: function(options){
+    // Views
+    this.secondaryListingView = null;
+  },
+
+  list: function(vertex){
+    this.model = vertex;
+    this.renderWhenDeep(vertex);
+  },
+
+  render: function(){
+    if(!this.model.isDeep()){ console.warn("Render attempted before model was deep.") }
+
+    this.secondaryListingView && this.secondaryListingView.close();
+
+    // new listing
+    this.secondaryListingView = new LIME.View.ListingView({
+      'model':this.model,
+      'className': this.model.vertexType + ' vertex listing',
+      'setType': 'successor'
+    });
+
+    this.$el.addClass('list_view', 'add_mode');
+    this.$el.append(this.secondaryListingView.render().el);
   }
 });

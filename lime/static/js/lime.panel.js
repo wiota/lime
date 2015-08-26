@@ -41,7 +41,7 @@ LIME.Panel = Backbone.View.Base.extend({
           "bottom": 0,
           "left": (val) + units,
           // account for border
-          "width": this.clamp(0, (next - val - 1), null) + units,
+          "width": this.clamp(0, (next - val), null) + units,
         }
       } else {
         css = {

@@ -12,110 +12,207 @@
 // lime.icon.js
 /* ------------------------------------------------------------------- */
 
+// Handles the notion of application state
+// Keep graph state in the models
+
 LIME.Router = Backbone.Router.extend({
-
-  // Route roadmap
-
-  // /#                               - list host
-  // /#category/1234                  - list vertex + successors
-  // /#category/1234/update           - show update form
-  // /#category/1234/create/          - show add form
-  // /#category/1234/list/5678/move   - move successors - from vertex to vertex
-  // /#category/1234/list/5678/link   - add new successors - limit to bucket vertex
 
   routes:{
     "":"listHost",
     ":vertexType/:id" : "list",
+    ":vertexType/:id/" : "list",
+    ":vertexType/:id/list" : "list",
     ":vertexType/:id/update" : "update",
+    ":vertexType/:id/cover" : "cover",
     ":vertexType/:id/create/:newVertexType" : "create",
-    ":vertexType/:id/list/:bucket/move" : "move",
-    ":vertexType/:id/list/:bucket/link" : "link",
+    ":vertexType/:id/list/:secondary/move" : "move",
+    ":vertexType/:id/list/:secondary/link" : "link",
   },
 
   initialize: function(){
 
-    // Location on graph
-    LIME.focus = null;
+    // Screen grid
+    LIME.panel = {
+      subjects: new LIME.Panel({panels: ['#primary_subject','#secondary_subject']}),
+      primarySubject: new LIME.Panel({panels: ['#primary_subject .predecessor.lens','#primary_subject .focus.lens', '#primary_subject .successor.lens']})
+    }
 
-    // LIME panels
-    LIME.panel = new LIME.Panel({
-      panels: ['#predecessor_column','#focus_column', '#successor_column']
-    });
+    LIME.panel.primarySubject.addPreset('standard', [0, 0, 250]);
+    LIME.panel.primarySubject.addPreset('focus', [0, 0, 100], "%");
+    LIME.panel.primarySubject.addPreset('predecessor', [0, 250, 500]);
+    LIME.panel.primarySubject.addPreset('cover', [0, 0, 500]);
+    LIME.panel.primarySubject.addPreset('successor', [0, 0, 0]);
 
-    LIME.panel.addPreset('standard', [0, 0, 250]);
-    LIME.panel.addPreset('predecessor', [0, 250, 500]);
-    LIME.panel.addPreset('successor', [0, 0, 180]);
-    LIME.panel.shift('standard');
+    LIME.panel.subjects.addPreset('single', [0, 100], "%");
+    LIME.panel.subjects.addPreset('double', [0, 50], "%");
 
-    LIME.focusPanel = new LIME.FocusPanel();
-    LIME.successorPanel = new LIME.ListingPanel({"setType": "successor", el: $('#succset')});
-    LIME.predecessorPanel = new LIME.ListingPanel({"setType": "predecessor", el: $('#predset')});
-    LIME.actionPanel = new LIME.ActionPanel();
+
+    // Subjects are selected vertices
+    // UI elements already exist in the DOM
+    var ui = LIME.ui = {
+      primarySubject: {
+        lens: {
+          focus: new LIME.FocusLens({el: $('#primary_subject .focus.box')}),
+          successors: new LIME.SuccessorLens({el: $('#primary_subject .successor.box')}),
+          predecessors: new LIME.PredecessorLens({el: $('#primary_subject .predecessor.box')})
+        }
+      },
+      secondarySubject: {
+        lens: {
+          successors: new LIME.SecondaryListingLens({el: $('#secondary_subject .successor.box')})
+        }
+      }
+    }
+
+    // LIME State Machine
+    LIME.state = new LIME.StateMachine();
+
+    // Lens State
+    LIME.state.on('primarySubject.focus', function(vertex){ _.invoke(ui.primarySubject.lens, 'list', vertex); });
+    LIME.state.on('secondarySubject.focus', function(vertex){ _.invoke(ui.secondarySubject.lens, 'list', vertex); });
+
+    // Panel State
+    LIME.state.on('panelState', _.bind(LIME.panel.subjects.shift, LIME.panel.subjects));
+    LIME.state.on('primarySubject.panelState', _.bind(LIME.panel.primarySubject.shift, LIME.panel.primarySubject));
+
+    // Input State
+    LIME.state.on('primarySubject.inputState', _.bind(ui.primarySubject.lens.focus.state.set, ui.primarySubject.lens.focus.state, 'inputState'));
+    LIME.state.on('primarySubject.successorInputState', _.bind(ui.primarySubject.lens.successors.state.set, ui.primarySubject.lens.successors.state, 'inputState'));
+
+    // New Subject
+    LIME.state.on('newSubject', _.noop);
+
+    this.setInitialState();
 
     // Icons
     LIME.icon = new Iconset();
-    LIME.icon.add("bookcase", '.bookcase.icon');
-    LIME.icon.refresh();
-    this.on('route', function(r,p){
-      LIME.icon.refresh();
-    })
+
   },
 
+  // Unsure of these instructions
+  setInitialState: function(){
+
+    // New Subject
+    LIME.state.set('newSubject', null);
+
+    // Nav
+    LIME.state.set('primarySubject.lens.focus.nav', 'true');
+
+    // Panels
+    LIME.state.set('panelState', 'single');
+    LIME.state.set('primarySubject.panelState', 'predecessor');
+    LIME.state.set('secondarySubject.panelState', 'standard');
+
+  },
+
+
   // Endpoints
+  // There should be an endpoint for every application state that needs a url.
+  // Maybe there should be an endpoint for every possible applicaton state.
+  // Question: Should browser history handle the application state entirely?
+  //   Should syncing state be there?
+
   listHost: function() {
     var id = (LIME.host.get('apex'));
     this.list('host', id);
   },
 
   list: function(vertexType, id){
-    if(this.willRefocus(id)){
-      this.listVertex(vertexType, id, 'list', null, null);
-    }
-    LIME.actionPanel.closeForm();
+    // Listed Vertex
+    LIME.state.set('primarySubject.focus', this.lookupVertex(id));
+
+    // Input State
+    LIME.state.set('primarySubject.inputState', 'read');
+    LIME.state.set('primarySubject.successorInputState', 'read');
+
+    // Panel Grid
+    LIME.state.set('panelState', 'single');
+    LIME.state.set('primarySubject.panelState', 'predecessor');
   },
 
   update: function(vertexType, id){
-    if(this.willRefocus(id)){
-      this.listVertex(vertexType, id, 'list', null, null);
-    }
-    LIME.actionPanel.loadVertexForm(LIME.focus, null);
+    // Listed Vertex
+    LIME.state.set('primarySubject.focus', focus = this.lookupVertex(id));
+
+    // Input State
+    LIME.state.set('primarySubject.inputState', 'update');
+    LIME.state.set('primarySubject.successorInputState', 'read');
+
+    // Panel Grid
+    LIME.state.set('panelState', 'single');
+    LIME.state.set('primarySubject.panelState', 'focus');
+  },
+
+  cover: function(vertexType, id){
+    // Listed Vertex
+    LIME.state.set('primarySubject.focus', this.lookupVertex(id));
+
+    // Input State
+    LIME.state.set('primarySubject.inputState', 'cover');
+    LIME.state.set('primarySubject.successorInputState', 'read');
+
+    // Panel Grid
+    LIME.state.set('panelState', 'single');
+    LIME.state.set('primarySubject.panelState', 'cover');
   },
 
   create: function(vertexType, id, newVertexType){
-    if(this.willRefocus(id)){
-      this.listVertex(vertexType, id, 'list', null, null);
-    }
-    var vertex = LIME.stack.createVertex({'vertex_type': newVertexType})
-    LIME.actionPanel.loadVertexForm(vertex, LIME.focus);
+    // Listed Vertex
+    LIME.state.set('primarySubject.focus', this.lookupVertex(id));
+
+    // New Subject
+    LIME.state.set('newSubject', LIME.stack.createVertex({'vertex_type': newVertexType}));
+
+    // Input State
+    LIME.state.set('primarySubject.inputState', 'read');
+    LIME.state.set('primarySubject.successorInputState', 'create');
+
+    // Panel Grid
+    LIME.state.set('panelState', 'single');
+    LIME.state.set('primarySubject.panelState', 'standard');
   },
 
-  move: function(vertexType, id, bucket){
-    console.warn('Function not implemented');
+  move: function(vertexType, id, secondary){
+    // Listed Vertices
+    LIME.state.set('primarySubject.focus', this.lookupVertex(id));
+    LIME.state.set('secondarySubject.focus', this.lookupVertex(secondary));
+
+    // Input State
+    LIME.state.set('primarySubject.inputState', 'read');
+    LIME.state.set('primarySubject.successorInputState', 'read');
+
+    // Panel Grid
+    LIME.state.set('panelState', 'double');
+    LIME.state.set('primarySubject.panelState', 'successor');
   },
 
-  link: function(vertexType, id, bucket){
-    console.warn('Function not implemented');
+  link: function(vertexType, id, secondary){
+    // Listed Vertices
+    LIME.state.set('primarySubject.focus', this.lookupVertex(id));
+    LIME.state.set('secondarySubject.focus', this.lookupVertex(secondary));
+
+    // Input State
+    LIME.state.set('primarySubject.inputState', 'read');
+    LIME.state.set('primarySubject.successorInputState', 'read');
+
+    // Panel Grid
+    LIME.state.set('panelState', 'double');
+    LIME.state.set('primarySubject.panelState', 'successor');
   },
 
-  // Tools
-  willRefocus: function(id){
-    if(LIME.focus && LIME.focus.id === id){
+
+  // Pure Functional Tools
+  sameId: function(model1, model2){
+    if(model1 && model2 && model1.id === model2.id){
       return false;
     } else {
       return true;
     }
   },
 
-  lookupVertex: function(vertexType, id){
-    return LIME.focus = LIME.collection.Vertex.lookup(id, vertexType); // focus state set here
-  },
 
-  listVertex: function(vertexType, id){
-    vertex = this.lookupVertex(vertexType, id)
-
-    LIME.focusPanel.list(vertex);
-    LIME.successorPanel.list(vertex);
-    LIME.predecessorPanel.list(vertex);
-  },
-
+  // Helpers
+  lookupVertex: function(id){
+    return LIME.collection.Vertex.lookup(id);
+  }
 });

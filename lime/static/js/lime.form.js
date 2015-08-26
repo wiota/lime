@@ -31,7 +31,7 @@ LIME.Forms.templates = {
 
 LIME.Forms.Attributes = Backbone.View.Base.extend({
   tagName: 'fieldset',
-  className: 'serial_fields',
+  className: 'vertex_attributes',
   templates: LIME.Forms.templates,
 
   events: {
@@ -42,17 +42,16 @@ LIME.Forms.Attributes = Backbone.View.Base.extend({
   },
 
   initialize: function(){
-    this.fieldSchema = LIME.host.vertexSchema[this.model.vertexType];
-    this.render();
     this.keys = null;
   },
 
   render: function(){
-    if(!this.fieldSchema){return false;}
+    var fieldSchema = LIME.host.vertexSchema[this.model.vertexType];
+    if(!fieldSchema){return false;}
     this.$el.empty();
 
     // Use field schema to generate form
-    this.keys = _.map(this.fieldSchema, function(field, key){
+    this.keys = _.map(fieldSchema, function(field, key){
 
       // TODO, migrate to field views
       var templateFunction = this.templates[field.type];
@@ -77,13 +76,14 @@ LIME.Forms.Attributes = Backbone.View.Base.extend({
   },
 
   focusStart: function(){
+    console.log('form focus');
     this.$el.children('input').first().focus().select();
   },
 
   // try focus guarding - also, may want to move this to form level
   focusEnd: function(evt){
     if($(evt.currentTarget).attr('tabindex') == this.keys.length){
-      this.focusStart();
+      //this.focusStart();
     }
   },
 
@@ -334,7 +334,7 @@ LIME.Forms.SaveView = Backbone.View.Base.extend({
 // Vertex - Attribute form
 /* ------------------------------------------------------------------- */
 
-LIME.Forms['Vertex'] = Backbone.View.Base.extend({
+LIME.Forms.Vertex = Backbone.View.Base.extend({
   tagName: 'form',
   events: {
     'keypress input' :'keyCheck',
@@ -342,6 +342,7 @@ LIME.Forms['Vertex'] = Backbone.View.Base.extend({
 
   initialize: function(options){
     this.options = options || {};
+    this.isNew = options.isNew || false;
     this.predecessor = options.predecessor || null; // can be removed if new form is separate
 
     // children
@@ -402,8 +403,9 @@ LIME.Forms['Vertex'] = Backbone.View.Base.extend({
     }
     this.saveView.saving();
 
-    // Should I use a different form for new models here?
+    // Should I use a different form for new models here? YES
     if(this.model.isNew()){
+      if(!this.predecessor){ console.warn('Problem identifying predecessor') }
       LIME.stack.addToGraph([this.model],[[this.predecessor, this.model]])
     } else {
       LIME.stack.updateVertex(this.model);
@@ -421,16 +423,7 @@ LIME.Forms['Vertex'] = Backbone.View.Base.extend({
 
   forceClose: function(){
     this.trigger('closed');
-    if(this.model.isNew() && this.predecessor){
-      // Pass through router to enable history
-      LIME.router.navigate('#'+this.predecessor.vertexType+'/'+this.predecessor.id);
-      LIME.router.list(this.predecessor.vertexType, this.predecessor.id);
-    } else {
-      // Pass through router to enable history
-      LIME.router.navigate('#'+this.model.vertexType+'/'+this.model.id);
-      LIME.router.list(this.model.vertexType, this.model.id);
-    }
-    this.close();
+    history.go(-1);
   }
 
 });
@@ -439,7 +432,7 @@ LIME.Forms['Vertex'] = Backbone.View.Base.extend({
 // Cover Photo Form
 /* ------------------------------------------------------------------- */
 
-LIME.Forms['Cover'] = Backbone.View.Base.extend({
+LIME.Forms.Cover = Backbone.View.Base.extend({
   tagName: 'form',
 
   initialize: function(options){
@@ -448,7 +441,7 @@ LIME.Forms['Cover'] = Backbone.View.Base.extend({
     this.fileUpload = new LIME.Forms.FileUploadView();
     this.saveView = new LIME.Forms.SaveView();
 
-    this.listenTo(this.model, 'summaryChanged', this.render)
+    this.listenTo(this.model, 'attributesChanged', this.render)
     _.bindAll(this, 'close', 'noCover');
   },
 
@@ -501,7 +494,7 @@ LIME.Forms['Cover'] = Backbone.View.Base.extend({
 
   forceClose: function(){
     this.trigger('closed');
-    this.close();
+    history.go(-1);
   },
 
   filesChanged: function(files){
@@ -521,7 +514,7 @@ LIME.Forms['Cover'] = Backbone.View.Base.extend({
 /* ------------------------------------------------------------------- */
 
 
-LIME.Forms['Succset'] = Backbone.View.Base.extend({
+LIME.Forms.Succset = Backbone.View.Base.extend({
   passableOptions: ['model', 'uploadLabel'],
   tagName: 'form',
 
@@ -549,6 +542,120 @@ LIME.Forms['Succset'] = Backbone.View.Base.extend({
 
 
 /* ------------------------------------------------------------------- */
+// Update Cover Form
+/* ------------------------------------------------------------------- */
+
+LIME.Forms.UpdateCover = Backbone.View.Base.extend({
+  initialize: function(options){
+    this.options = options || {};
+    this.state = new LIME.StateMachine();
+    this.inputStates = ['read', 'cover'];
+
+    this.state.on('inputState', function(inputState){
+      this.switchOutClass(this.inputStates, inputState);
+      this.render();
+    }, this);
+
+    this.state.set('inputState', (options.inputState || 'read'), {silent: true});
+  },
+
+  render: function(){
+    this.form && this.form.close();
+
+    if(this.state.get('inputState') !== "cover"){ return this }
+    this.form = new LIME.Forms.Cover({
+      'model': this.model,
+      'className': this.model.vertexType + ' vertex cover form'
+    });
+
+    this.appendChildView(this.form);
+    this.form.render();
+    return this;
+  }
+
+});
+
+/* ------------------------------------------------------------------- */
+// Update Vertex Form
+/* ------------------------------------------------------------------- */
+
+LIME.Forms.UpdateVertex = Backbone.View.Base.extend({
+  initialize: function(options){
+    this.options = options || {};
+
+    this.state = new LIME.StateMachine();
+    this.inputStates = ['read', 'update'];
+
+    this.state.on('inputState', function(inputState){
+      this.switchOutClass(this.inputStates, inputState);
+      this.render();
+    }, this);
+
+    this.state.set('inputState', (options.inputState || 'read'), {silent: true});
+  },
+
+  render: function(){
+    this.form && this.form.close();
+
+    if(this.state.get('inputState') !== "update"){ return this }
+
+    this.form = new LIME.Forms.Vertex({
+      'model': this.model,
+      'className': this.model.vertexType + ' vertex form'
+    });
+
+    this.appendChildView(this.form);
+    this.form.render();
+    return this;
+  }
+
+});
+
+/* ------------------------------------------------------------------- */
+// New Vertex Form
+/* ------------------------------------------------------------------- */
+
+LIME.Forms.CreateVertex = Backbone.View.Base.extend({
+  initialize: function(options){
+    options = options || {}
+    this.predecessor = options.predecessor || null;
+
+    this.state = new LIME.StateMachine();
+    this.inputStates = ['read', 'update'];
+
+    this.state.on('inputState', function(inputState){
+      this.switchOutClass(this.inputStates, inputState);
+      this.render();
+    }, this);
+
+    this.state.set('inputState', (options.inputState || 'read'), {silent: true});
+  },
+
+  handleSave: function(){},
+
+  render: function(){
+    this.form && this.form.close();
+
+    // use new subject - set by router
+    this.model = LIME.state.get('newSubject');
+    if(!this.model || this.state.get('inputState') !== "create"){ return this }
+
+    this.form = new LIME.Forms.Vertex({
+      'model': this.model,
+      'className': this.model.vertexType + ' vertex form',
+      'predecessor': this.predecessor,
+      'isNew': true
+    });
+
+    this.appendChildView(this.form);
+    this.form.render();
+    return this;
+  }
+
+})
+
+
+/* ------------------------------------------------------------------- */
 // Action Panel
 // This panel is the startpoint for all forms
 // It may be better to load the forms into the same container the
@@ -566,26 +673,21 @@ LIME.ActionPanel = Backbone.View.Base.extend({
     this.form = null;
   },
 
-  loadVertexForm: function(model, predecessor){
+  loadVertexForm: function(vertex){
     this.closeForm();
 
-    if(!model.isNew()){
-      LIME.focusPanel.$el.addClass('form_open');
-    }
-
-    this.form = new LIME.Forms['Vertex']({
-      'predecessor': predecessor,
-      'model': model,
-      'className': model.vertexType + ' vertex form'
+    this.form = new LIME.Forms.Vertex({
+      'model': vertex,
+      'className': vertex.vertexType + ' vertex form'
     });
 
     this.listenTo(this.form, 'closed', this.collapseActionPanel);
 
-
     this.$el.html(this.form.el);
 
-    if(!model.isFetched() && !model.isNew()){
-      this.listenToOnce(model, 'sync', _.bind(this.form.render, this.form));
+    if(!vertex.isFetched()){
+      this.listenToOnce(vertex, 'sync', _.bind(this.form.render, this.form));
+      console.warn("Form render attempted before vertex was ready.")
     } else {
       this.form.render();
     }
@@ -593,10 +695,27 @@ LIME.ActionPanel = Backbone.View.Base.extend({
     this.rollDown();
   },
 
+  loadCreateForm: function(vertex, predecessor){
+    this.closeForm();
+
+    this.form = new LIME.Forms.Vertex({
+      'model': vertex,
+      'predecessor': predecessor,
+      'className': vertex.vertexType + ' vertex form'
+    });
+
+    this.listenTo(this.form, 'closed', this.collapseActionPanel);
+
+    this.$el.html(this.form.el);
+    this.form.render();
+
+    this.rollDown();
+  },
+
   loadCoverForm: function(model){
     this.closeForm();
 
-    this.form = new LIME.Forms['Cover']({
+    this.form = new LIME.Forms.Cover({
       'className': 'cover form',
       'model': model
     });
@@ -616,7 +735,6 @@ LIME.ActionPanel = Backbone.View.Base.extend({
   },
 
   rollUp: function(){
-    LIME.focusPanel.$el.removeClass('form_open');
     this.$el.removeClass('show');
   },
 

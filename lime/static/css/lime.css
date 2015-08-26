@@ -1,76 +1,78 @@
 /* -------------------------------------------------------------------  */
-/* Path Panel */
+/* Lens Default Layout */
 /* -------------------------------------------------------------------  */
 
-#path_panel {
-  /* navigation column - lime_base.css */
-  }
-
-
-/* -------------------------------------------------------------------  */
-/* Request Panel */
-/* -------------------------------------------------------------------  */
-
-#request_panel {
-  display:none;
-  background-color: #cfc;
+.subject {
+  position: fixed;
+  top:0;
+  bottom:0;
+  overflow: hidden;
+  transition: all .4s ease-out;
 }
 
-/* -------------------------------------------------------------------  */
-/* Listing Panel */
-/* -------------------------------------------------------------------  */
+#primary_subject {
+  left:0;
+  width:50%;
+}
 
-#succset, #predset {
+#secondary_subject {
+  left: 100%;
+  right:0;
+}
+
+.lens {
+  overflow: auto;
+  position:absolute;
+  top: 0;
+  bottom:0;
+  margin: 0;
+  padding: 0;
+  perspective: 1000px;
+  -webkit-perspective: 1000px;
+  -moz-perspective: 1000px;
+  -o-perspective: 1000px;
+  transition: all .4s ease-out;
+}
+
+#primary_subject .focus.lens {
+  z-index: 2;
+  width: 250px;
+  left: 250px;
+  border-right: 1px solid #f5f8f8;
+}
+
+#primary_subject .successor.lens {
+  z-index: 4;
+  right: 0;
+  left: 250px;
+}
+
+#primary_subject .predecessor.lens {
+  z-index: 4;
+  left: 0;
+  width: 250px;
+  border-right: 1px solid #c4cbcb;
+}
+
+#secondary_subject .successor.lens {
+  z-index:6;
+  left:0;
+  right:0;
+  background: url('https://s3.amazonaws.com/wiota/lime/bricks_lowc_limegrey.png');
+}
+
+.successor.box, .predecessor.box {
   z-index: 5;
   position:absolute;
   top: 0;
   right: 0;
   left: 0;
   bottom: 0;
-  /* display column - lime_base.css */
   }
 
-
 /* -------------------------------------------------------------------  */
-/* Action Panel */
+/* Form - Succset */
 /* -------------------------------------------------------------------  */
-
-#action_panel {
-
-  background: url('https://s3.amazonaws.com/wiota/lime/bricks_lowc_limegrey.png') #efecdc;
-  z-index: 6;
-  overflow: auto;
-  margin: 0;
-  padding: 0 0% 0 4%;
-  position:absolute;
-  top: 0;
-  right: 0;
-  left: 0;
-  bottom: 0;
-  transition: all .2s ease-in-out;
-  -moz-transform: translateX(-100%);
-  -webkit-transform: translateX(-100%);
-  transform: translateX(-100%);
-  }
-
-#action_panel.show {
-  -moz-transform: translateX(0%);
-  -webkit-transform: translateX(0%);
-  transform: translateX(0%);
-}
-
-/* -------------------------------------------------------------------  */
-/* Path Panel */
-/* -------------------------------------------------------------------  */
-
-
-.path .vertex.link a {
-  display:block;
-  cursor: pointer;
-  padding: 2% 0 2% 16%;
-}
-
-/* Succset form ------------------------------------- */
 
 form.succset {
   z-index: 210;
@@ -140,65 +142,93 @@ form.succset .file_upload input {
 
 
 /* -------------------------------------------------------------------  */
-/* Action Panel */
+/* Vertex Form */
 /* -------------------------------------------------------------------  */
 
-#action_panel {
+.focus.box .update_view .form,
+.focus.box .cover_view .form,
+.successor.box .create_view .form {
+  background: url('https://s3.amazonaws.com/wiota/lime/bricks_lowc_limegrey.png') #edeeee;
+  z-index: 400;
+  overflow: auto;
+  margin: 0;
+  padding: 0 0% 0 4%;
+  position:absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  transition: transform .4s ease-out;
+  -moz-transform: translateY(-100%);
+  -webkit-transform: translateY(-100%);
+  transform: translateY(-100%);
   perspective: 5000px;
   -webkit-perspective: 5000px;
   -moz-perspective: 5000px;
   -o-perspective: 5000px;
 }
 
-#action_panel form {
+.focus.box.update .update_view .form,
+.focus.box.cover .cover_view .form {
+  -moz-transform: translateY(0%);
+  -webkit-transform: translateY(0%);
+  transform: translateY(0%);
+}
+
+.successor.box.create .vertex.form {
+  -moz-transform: translateY(0%);
+  -webkit-transform: translateY(0%);
+  transform: translateY(0%);
+}
+
+.vertex.form form {
   margin: 0;
   overflow: visible;
   }
 
-
-#action_panel label {
+.vertex.form label {
   font-size: 11px;
   }
 
-#action_panel .input {
-  transition: all .1s ease;
+.vertex.form .input {
+  transition: all .1s ease-out;
   border-style:none;
   padding: 1%;
   border-top: 1px solid #d8e8e8;
   font-size: 16px;
   }
 
-#action_panel .input:focus {
+.vertex.form .input:focus {
   outline: none;
   box-shadow: -5px 5px 0px #ccc;
   /* border-left: 5px dotted #82db8a; */
 }
 
-#action_panel .input.changed {
+.vertex.form .input.changed {
   outline: none;
   box-shadow: -5px 5px 0px #82db8a;
 }
 
-#action_panel textarea {
+.vertex.form textarea {
   height: 10em;
 }
 
-#action_panel label.title {
+.vertex.form label.title {
   display:none;
   }
 
-#action_panel .input#title {
+.vertex.form .input#title {
   padding: 1% 0;
   width: 95%;
   font-size: 34px;
   background-color: transparent;
   border-top: none;
   }
-#action_panel .input#title:focus {
+.vertex.form .input#title:focus {
   box-shadow: none;
 }
 
-#action_panel .god_attributes {
+.vertex.form .god_attributes {
   position:relative;
   width: 440px;
   height: 160px;
@@ -206,7 +236,7 @@ form.succset .file_upload input {
   background: #fff url('http://s3.amazonaws.com/wiota/lime/marquee.gif');
 }
 
-#action_panel .god_attributes .head {
+.vertex.form .god_attributes .head {
   display: block;
   margin: 1% 0;
   text-align: left;
@@ -218,34 +248,34 @@ form.succset .file_upload input {
 
 }
 
-#action_panel .god_attributes .icon{
+.vertex.form .god_attributes .icon{
   display:inline;
   margin-right: 10px;
   width: 16px;
   height: 16px;
 }
 
-#action_panel .god_attributes input:disabled {
+.vertex.form .god_attributes input:disabled {
   opacity: .5;
   border-top:none;
   padding-left: 0;
 }
 
-#action_panel .god_attributes label.checkbox {
+.vertex.form .god_attributes label.checkbox {
   display:inline-block;
 }
 
-#action_panel .god_attributes input[type=checkbox] {
+.vertex.form .god_attributes input[type=checkbox] {
   margin: 0;
 }
 
-#action_panel .save_view {
+.vertex.form .save_view {
   width: 500px;
 }
 
-/* Buttons */
+/* Save Buttons */
 
-#action_panel .input.button {
+.vertex.form .input.button {
   font-family: "Inconsolata","Monaco","Lucida Console","Courier New", "monospace";
   position:relative;
   font-weight: normal;
@@ -257,7 +287,7 @@ form.succset .file_upload input {
   width: 250px;
   }
 
-#action_panel .input.save {
+.vertex.form .input.save {
   z-index: 500;
   transform-origin: 0% 50%;
   -webkit-transform-origin: 0% 50%;
@@ -269,86 +299,67 @@ form.succset .file_upload input {
   -o-transition: all .4s ease-out;
 }
 
-#action_panel .input.cancel,
-#action_panel .input.close {
+.vertex.form .input.cancel,
+.vertex.form .input.close {
   z-index: 501;
   font-family: "Inconsolata","Monaco","Lucida Console","Courier New", "monospace";
-  transition: transform .2s ease-in-out;
-  -webkit-transition: transform .2s ease-in-out;
-  -moz-transition: transform .2s ease-in-out;
-  -o-transition: transform .2s ease-in-out;
+  transition: transform .2s ease-out;
+  -webkit-transition: transform .2s ease-out;
+  -moz-transition: transform .2s ease-out;
+  -o-transition: transform .2s ease-out;
   transform:translateX(0) rotateY(0deg);
   -webkit-transform:translateX(0) rotateY(0deg);
   -moz-transform:translateX(0) rotateY(0deg);
   -o-transform:translateX(0) rotateY(0deg);
 }
 
-#action_panel .input.save {
+.vertex.form .input.save {
   color: #82db8a;
   background-color: #fff;
 }
 
-#action_panel .unsaved .input.save:hover {
+.vertex.form .unsaved .input.save:hover {
   background-color: #82db8a; color: #fff;
   box-shadow: -5px 5px 0px #ccc;
 }
 
-#action_panel .unsaved .input.save {background-color: #fff;}
-#action_panel .saving .input.save {background-color: #82db8a; color: #fff;cursor: wait;}
-#action_panel .saved .input.save,
-#action_panel .unpersisted .input.save {color: #fff; background-color: #b4c1c1;cursor: auto;
+.vertex.form .unsaved .input.save {background-color: #fff;}
+.vertex.form .saving .input.save {background-color: #82db8a; color: #fff;cursor: wait;}
+.vertex.form .saved .input.save,
+.vertex.form .unpersisted .input.save {color: #fff; background-color: #b4c1c1;cursor: auto;
   transform:translateX(0) rotateY(180deg);
   -webkit-transform:translateX(0) rotateY(180deg);
   -moz-transform:translateX(0) rotateY(180deg);
   -o-transform:translateX(0) rotateY(180deg);
   }
-#action_panel .error .input.save {background-color: #eac828; color: #fff;}
+.vertex.form .error .input.save {background-color: #eac828; color: #fff;}
 
 
 
-#action_panel .input.cancel,
-#action_panel .input.close {
+.vertex.form .input.cancel,
+.vertex.form .input.close {
   color: #000;
   background-color: #fff;
 }
 
-#action_panel .input.cancel:hover,
-#action_panel .input.close:hover {
+.vertex.form .input.cancel:hover,
+.vertex.form .input.close:hover {
   color: #000;
   box-shadow: -5px 5px 0px #ccc;
   }
 
-#action_panel .error .input.close:hover {background-color: #eac828; color: #fff;}
+.vertex.form .error .input.close:hover {background-color: #eac828; color: #fff;}
 
-#action_panel .cover_display {
-  position: relative;
-  width: 250px;
-}
+/* Cover */
 
-#action_panel .cover_display img {
-  display:block;
-  max-width: 100%;
-}
-
-#action_panel .input.remove_cover {
-  display:block;
-  position:absolute;
-  top: 0;
-  right: 0;
-  background-color: #f00;
-  color: #fff;
-}
-
-/* File Upload */
-
-#action_panel .file_upload {
+.vertex.form .file_upload {
   width: 250px;
   padding: 0% 0% 30%;
   margin: 0%;
   position:relative;
 }
 
-#action_panel .files_container {
+.vertex.form .files_container {
   position:absolute;
   top: 0;
   left: 0;
@@ -360,7 +371,7 @@ form.succset .file_upload input {
   padding: 1%;
 }
 
-#action_panel .vertex.photo.form .files {
+.vertex.form .vertex.photo.form .files {
   position: absolute;
   top:0;
   left:0;
@@ -369,26 +380,26 @@ form.succset .file_upload input {
   height: 100%
 }
 
-#action_panel .file_upload.over .files_container {
+.vertex.form .file_upload.over .files_container {
   border: 1px solid #a3afaf;
   -webkit-box-shadow: inset 0px 0px 18px 0px rgba(42, 44, 57, 0.5);
   -moz-box-shadow: inset 0px 0px 18px 0px rgba(42, 44, 57, 0.5);
   box-shadow: inset 0px 0px 18px 0px rgba(42, 44, 57, 0.5);
 }
 
-#action_panel .files_container .message {
+.vertex.form .files_container .message {
   font-size: 20px;
   font-style: normal;
   color: #000;
   position:relative;
 }
 
-#action_panel .over .files_container .message {
+.vertex.form .over .files_container .message {
   top: 1px;
   left: 1px;
 }
 
-#action_panel .file_upload input {
+.vertex.form .file_upload input {
   position:absolute;
   bottom: 0;
   left: 0;
@@ -396,5 +407,24 @@ form.succset .file_upload input {
   display: none;
   font-size: 14px;
   font-family: Helvetica, Arial, 'san-serif';
+}
+
+.vertex.form .cover_display {
+  position: relative;
+  width: 250px;
+}
+
+.vertex.form .cover_display img {
+  display:block;
+  max-width: 100%;
+}
+
+.vertex.form .input.remove_cover {
+  display:block;
+  position:absolute;
+  top: 0;
+  right: 0;
+  background-color: #f00;
+  color: #fff;
 }
 
