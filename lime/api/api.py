@@ -209,10 +209,10 @@ def add_edge():
     edges = request.json["edges"]
     for source_id, sink_id in zip(edges, edges[1:]):
         source = Vertex.by_id(source_id)
-        succset = [sink_id] + source.succset
-        source.update(set__succset=succset)
         sink = Vertex.by_id(sink_id)
-        predset = [source_id] + sink.predset
+        succset = [sink] + source.succset
+        source.update(set__succset=succset)
+        predset = [source] + sink.predset
         sink.update(set__predset=predset)
     return jsonify(result="success"), 200  # TODO: Should be a 204
 
@@ -223,7 +223,7 @@ def delete_edge():
     edges = request.json["edges"]
     for source_id, sink_id in zip(edges, edges[1:]):
         source = Vertex.by_id(source_id)
-        source.update(pull__succset=sink_id)
         sink = Vertex.by_id(sink_id)
-        sink.update(pull__predset=source_id)
+        source.update(pull__succset=sink)
+        sink.update(pull__predset=source)
     return jsonify(result="success"), 200  # TODO: Should be a 204
