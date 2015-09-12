@@ -52,13 +52,14 @@ app.config['HEROKU_RELEASE_NAME'] = os.environ.get('HEROKU_RELEASE_NAME', 'dev')
 # Get the URL for the database from the environment
 MONGO_URL = os.environ.get('MONGOHQ_URL')
 
-# MongoEngine configuration
-app.config["MONGODB_SETTINGS"] = {
-    "DB": urlparse(MONGO_URL).path[1:],
-    "host": MONGO_URL}
+if MONGO_URL:
+    # MongoEngine configuration
+    app.config["MONGODB_SETTINGS"] = {
+        "DB": urlparse(MONGO_URL).path[1:],
+        "host": MONGO_URL}
 
-# MongoEngine DB
-db = MongoEngine(app)
+    # MongoEngine DB
+    db = MongoEngine(app)
 
 api.config = app.config
 app.register_blueprint(api.mod)
