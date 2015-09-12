@@ -1,0 +1,4 @@
+-r _default.txt
+mongomock==3.0.0
+py==1.4.30
+pytest==2.7.2
