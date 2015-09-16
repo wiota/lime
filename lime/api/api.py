@@ -7,8 +7,6 @@ from flask.ext.login import current_user
 from mongoexhaust import bsonify
 from functools import wraps
 
-from bson.dbref import DBRef
-
 def login_required(func):
     @wraps(func)
     def decorated_view(*args, **kwargs):
@@ -130,8 +128,8 @@ def vertex_id(vertex_type, id):
 def put_succset(vertex_type, id):
     vertex = Vertex.by_id(id)
     # This is a hack due to updated MongoEngine. ObjectIDs as strings must be
-    # converted into DBRefs for validation to work.
-    succset = [DBRef('vertex', succ_id) for succ_id in request.json['succset']]
+    # converted into actual documents for validation to work.
+    succset = [Vertex.by_id(succ_id) for succ_id in request.json['succset']]
     Vertex.objects.get(id=vertex.id).update(set__succset=succset)
     return jsonify(result="success"), 200  # TODO: Should be a 204
 
