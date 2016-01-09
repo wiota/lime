@@ -287,11 +287,30 @@
 
     <div class='attributes'>
       <img class='icon tree' src='/icon/default_icon.svg'>
-      <b class='title'>Youtube id <%- vid %></b>
+      <b class='attribute primary'>#<%- vid %></b>
     </div>
 
     <div class='ui'>
       <a class='get' target='_blank' href='https://www.youtube.com/watch?v=<%- vid %>'></a>
+      <a class='delete'>cut</a>
+      <a class='drag_handle'>&#8597;</a>
+    </div>
+  </script>
+
+   <!-- Vimeo  -->
+  <script type="text/template" id="vimeo_in_set">
+
+    <div class='cover'>
+      <img src='https://i.vimeocdn.com/video/<%- vid %>_130x73.jpg'>
+    </div>
+
+    <div class='attributes'>
+      <img class='icon tree' src='/icon/default_icon.svg'>
+      <b class='attribute primary'>#<%- vid %></b>
+    </div>
+
+    <div class='ui'>
+      <a class='get' target='_blank' href='https://vimeo.com/<%- vid %>'></a>
       <a class='delete'>cut</a>
       <a class='drag_handle'>&#8597;</a>
     </div>
