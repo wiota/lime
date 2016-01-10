@@ -423,6 +423,10 @@
   font-size: 12px;
 }
 
+.set .attribute.tertiary {
+  font-size: 10px;
+}
+
 .set .attribute img {
   display:block;
   max-width: 100%;

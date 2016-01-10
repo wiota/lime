@@ -1,0 +1,20 @@
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 16 16">
+<linearGradient id="SVGID_1_" gradientUnits="userSpaceOnUse" x1="1.6094" y1="-1.127" x2="14.3911" y2="17.1272">
+	<stop  offset="0" style="stop-color:#E42C26"/>
+	<stop  offset="1" style="stop-color:#B41217"/>
+</linearGradient>
+<rect fill="url(#SVGID_1_)" width="16" height="16"/>
+
+<polygon fill="#E42C26" points="6.76,9.42 10.002,7.74 6.76,6.049 "/>
+
+		<defs>
+			<rect id="SVGID_3_" x="6.76" y="6.049" width="3.242" height="1.898"/>
+		</defs>
+		<clipPath id="SVGID_4_">
+			<use xlink:href="#SVGID_3_"  overflow="visible"/>
+		</clipPath>
+		<polygon clip-path="url(#SVGID_4_)" fill-rule="evenodd" clip-rule="evenodd" fill="#3B1211" points="6.76,6.049 9.604,7.947 
+			10.002,7.74 		"/>
+	
+<path fill="#FFFFFF" d="M13.881,5.464c0,0-0.117-0.828-0.478-1.191c-0.456-0.478-0.968-0.48-1.202-0.508 c-1.68-0.122-4.199-0.122-4.199-0.122H7.997c0,0-2.519,0-4.199,0.122c-0.234,0.027-0.746,0.03-1.203,0.508 C2.236,4.637,2.119,5.464,2.119,5.464s-0.12,0.971-0.12,1.942v0.91c0,0.972,0.12,1.942,0.12,1.942s0.117,0.827,0.477,1.191 c0.457,0.479,1.057,0.464,1.324,0.514C4.879,12.056,8,12.084,8,12.084s2.521-0.004,4.201-0.125c0.234-0.028,0.746-0.03,1.202-0.509 c0.36-0.364,0.478-1.191,0.478-1.191S14,9.288,14,8.316v-0.91C14,6.436,13.881,5.464,13.881,5.464 M6.761,9.42L6.76,6.049 l3.242,1.691L6.761,9.42z"/>
+	</svg>
