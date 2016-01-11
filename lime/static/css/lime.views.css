@@ -388,17 +388,13 @@
   .set li.with_cover .attributes .attribute {
   }
 
-.set li .attributes .icon {
+.set li .icon {
   width: 16px;
   height:16px;
-  padding: 4px 0;
+  padding: 0 0 4px 0;
   margin-right: 4px;
   float:left;
 }
-
-  .set li.with_cover .icon {
-    padding: 4px;
-  }
 
 .set .attributes {
   transition: all .5s;
@@ -407,12 +403,16 @@
 .set .attributes .attribute {
   display:block;
   font-weight: normal;
-  padding: 4px;
+  padding: 4px 0;
   font-size: 10px;
   line-height: 1.3em;
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 100%;
+}
+
+.set .attributes .attribute:first-child {
+  padding: 0 0 4px;
 }
 
 .set .attribute.primary {
@@ -423,11 +423,23 @@
   font-size: 12px;
 }
 
-.set .attribute.tertiary {
-  font-size: 10px;
+.set .type {
+  display:block;
+  font-weight: normal;
+  padding: 2px 0 0;
+  line-height: 1.3em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  font-family: "Inconsolata","Monaco","Lucida Console","Courier New", "monospace";
+  color: #888;
+  font-style: italic;
+  font-size: 12px;
+  min-height: 1em;
 }
 
-.set .attribute img {
+.set .attribute img,
+.set .type img {
   display:block;
   max-width: 100%;
 }
@@ -444,8 +456,8 @@
 
 .list_view .set li {
   width: auto;
-  margin: 0 10px 10px 20px;
-  padding: 10px 0 0;
+  margin: 0 10px 10px 24px;
+  padding: 4px 0 0;
   font-size: 16px;
   border-top: 1px solid #e3e9ea;
   min-height: 1em;
@@ -493,6 +505,9 @@
   font-size: 16px;
   overflow: hidden;
 }
+  .grid_view .set .attributes .attribute {
+    padding: 4px;
+  }
 
   .grid_view .set li.dragged {
     border-top: none;
@@ -526,13 +541,14 @@
     overflow: hidden;
   }
 
-  .grid_view .set li .attributes .icon {
+  .grid_view .set li .icon {
     width: 16px;
     height:16px;
     padding: 4px;
     margin-right: 4px;
     float:left;
   }
+
 
 /* ui ------------------------------------- */
 
@@ -644,10 +660,12 @@
 }
 
 .read_view {
+  border-top: 1px solid #e3e9ea;
+  padding: 4px 0 0;
   z-index: 120;
   position: relative;
   background-color: transparent;
-  margin: 0 5% 5%;
+  margin: 0 5% 0;
   -webkit-transition: all .4s;
   -moz-transition: all .4s;
   transition: all .4s;
@@ -670,10 +688,11 @@
     cursor: text;
   }
 
-  .read_view .attributes .icon {
-    width: 32px;
-    height:32px;
-    padding: 4px 0;
+  .read_view .icon {
+
+    width: 20px;
+    height:20px;
+    padding: 0;
     margin-right: 4px;
     float:left;
     }
@@ -697,6 +716,21 @@
   .read_view .attribute.secondary {
     font-size: 14px;
     clear:both;
+  }
+
+  .read_view .type {
+    display:block;
+    font-weight: normal;
+    padding: 0 0 4px;
+    line-height: 1.3em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    font-family: "Inconsolata","Monaco","Lucida Console","Courier New", "monospace";
+    color: #888;
+    font-style: italic;
+    font-size: 14px;
+    min-height: 1em;
   }
 
   .read_view .cover {width: 100%;}
@@ -727,10 +761,9 @@
       background-color:rgba(255,255,255,1);
       height: 24px;
       display:block;
-      float:left;
-      clear:both;
-      padding: 4px 4px 4px 0;
-      margin: 4px 4px 0 0;
+      float:right;
+      padding: 0;
+      margin: 2px;
       -webkit-transition: all .2s;
       -moz-transition: all .2s;
       transition: all .2s;
@@ -740,23 +773,21 @@
       height: 24px;
       width: 24px;
       float:left;
+      margin: 0;
     }
 
     .read_view .ui a .label {
-      padding: 4px 10px 0;
+      padding: 4px 10px;
       font-weight: normal;
       line-height: 24px;
-      display:none;
+      position:absolute;
+      bottom: 100%;
+      right:0;
+      display: none;
     }
 
-    .read_view:hover .ui a .label {
-      padding: 4px 10px 0;
-      font-weight: normal;
-      line-height: 24px;
-      display:inline;
-    }
-
-    .read_view .ui a:hover {
+    .read_view .ui a:hover .label {
+      display:block;
       -webkit-box-shadow: 5px 5px 15px 0px rgba(100,100,100, .3);
       -moz-box-shadow:    5px 5px 15px 0px rgba(100,100,100, .3);
       box-shadow:         5px 5px 15px 0px rgba(100,100,100, .3);
@@ -764,14 +795,6 @@
 
     /* space for set cover button to sit if there is no cover photo */
     .read_view .cover {
-      min-height: 72px;
-    }
-
-    .read_view .set_cover,
-    .read_view .update {
-      display:block;
-      width: 24px;
-      color: #000;
     }
 
     .read_view:hover .ui .set_cover,

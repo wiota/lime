@@ -2,8 +2,6 @@
 // LIME Menus
 /* ------------------------------------------------------------------- */
 
-
-
 LIME.Menu = Backbone.View.Base.extend({
   tagName: 'div',
   selectedClass: 'selected',

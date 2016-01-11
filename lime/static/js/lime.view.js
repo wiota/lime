@@ -195,8 +195,8 @@ LIME.View.Vertex = Backbone.View.Base.extend({
     this.$attributes = this.$el.children('.attributes');
     this.$cover = this.$el.children('.cover');
     this.$type = this.$el.children('.type');
-    
-    this.$type.html(this.model.vertexType)
+
+    this.$type.append("("+this.model.vertexType+")")
 
     if(!this.customTemplate){
       this.renderAttributes();

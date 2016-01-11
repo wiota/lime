@@ -97,12 +97,12 @@
 
   <!-- Vertex - default vertex view, used for both in set and summary -->
   <script type="text/template" id="vertex_template">
-    <div class='cover'></div>
 
-    <div class='tertiary type attribute'></div>
-    <div class='attributes'>
+    <div class='type'>
       <img class='icon <%- vertex_type %>' src='/icon/<%- vertex_type %>.svg'>
     </div>
+    <div class='cover'></div>
+    <div class='attributes'></div>
 
     <div class='ui'>
       <a class='get' href='#<%- vertex_type %>/<%- _id %>'></a>
@@ -187,10 +187,11 @@
 
   <!-- Host  -->
   <script type="text/template" id="host_in_set">
+    <div class='type'>
+      <img class='icon host' src='/icon/book.svg'>
+    </div>
     <div class='cover'></div>
-
     <div class='attributes'>
-      <img class='icon host' src='/icon/home.svg'>
       <b class='attribute primary'><%- title %></b>
     </div>
 
@@ -204,12 +205,11 @@
 
   <!-- Body  -->
   <script type="text/template" id="body_in_set">
-    <div class='cover'></div>
-
-    <div class='attributes'>
+    <div class='type'>
       <img class='icon body' src='/icon/body.svg'>
-      <b class='attribute primary'>Body of Work</b>
     </div>
+    <div class='cover'></div>
+    <div class='attributes'></div>
 
     <div class='ui'>
       <a class='get' href='#body/<%- _id %>'></a>
@@ -222,12 +222,11 @@
 
     <!-- Happenings  -->
   <script type="text/template" id="calendar_in_set">
-    <div class='cover'></div>
-
-    <div class='attributes'>
+    <div class='type'>
       <img class='icon calendar' src='/icon/calendar.svg'>
-      <b class='attribute primary'>Happenings</b>
     </div>
+    <div class='cover'></div>
+    <div class='attributes'></div>
 
     <div class='ui'>
       <a class='get' href='#calendar/<%- _id %>'></a>
@@ -257,16 +256,18 @@
 
   <!-- Audio  -->
   <script type="text/template" id="audio_in_set">
+    <div class='type'>
 
+    </div>
     <!-- no cover -->
 
     <div class='attributes'>
-      <img class='icon audio' src='/icon/audio.svg'>
-      <b class='attribute primary'><%- title %></b>
       <audio src="<%- href %>" controls >
         <p>Your browser does not support the <code>audio</code> element </p>
         <a href="<%- href %>"><%- title %></a>
       </audio>
+      <b class='attribute primary'><%- title %></b>
+
 
 
     </div>
@@ -280,6 +281,9 @@
   <!-- Youtube  -->
   <script type="text/template" id="youtube_in_set">
 
+    <div class='type'>
+      <img class='icon' src='/icon/youtube.svg'>
+    </div>
     <div class='cover'>
       <img src='https://img.youtube.com/vi/<%- vid %>/1.jpg'>
       <img src='https://img.youtube.com/vi/<%- vid %>/2.jpg'>
@@ -287,7 +291,6 @@
     </div>
 
     <div class='attributes'>
-      <img class='icon tree' src='/icon/youtube.svg'>
       <b class='attribute primary'>#<%- vid %></b>
     </div>
 
@@ -300,6 +303,9 @@
 
    <!-- Vimeo  -->
   <script type="text/template" id="vimeo_in_set">
+    <div class='type'>
+      <img class='icon' src='/icon/vimeo.svg'>
+    </div>
 
     <!-- Need vimeo thumbnail from api
     <div class='cover'>
@@ -308,7 +314,6 @@
     -->
 
     <div class='attributes'>
-      <img class='icon tree' src='/icon/vimeo.svg'>
       <b class='attribute primary'>#<%- vid %></b>
     </div>
 
