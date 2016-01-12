@@ -252,8 +252,8 @@
 
       // Grab Offset
       this.item.grabOffset = {
-        left: event.offsetX + marginLeft,
-        top: event.offsetY + marginTop
+        left: e.offsetX + marginLeft,
+        top: e.offsetY + marginTop
       }
 
       this.setPointer(e)
