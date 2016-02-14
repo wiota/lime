@@ -1,4 +1,5 @@
 import os
+import sys
 from flask_sslify import SSLify
 from flask import Flask, request, render_template, flash
 from urlparse import urlparse
@@ -98,8 +99,10 @@ def load_user(userid):
 
     return AnonymousUser()
 
-if not app.debug:
-    @app.errorhandler(Exception)
-    def catch_all(exception):
+@app.errorhandler(Exception)
+def catch_all(exception):
+    if not (app.debug or app.testing):
         tb = traceback.format_exc()
         LimeExceptionEmail(exception, tb).send()
+    else:
+        raise exception, None, sys.exc_info()[2]
