@@ -1,8 +1,6 @@
 FROM ubuntu:14.04
 MAINTAINER Wiota Co
 
-COPY . /opt/lime/
-
 RUN apt-get update && apt-get install -y \
     build-essential \
     python-dev \
@@ -14,6 +12,8 @@ RUN apt-get update && apt-get install -y \
     python-lxml
 
 EXPOSE 80
+
+COPY . /opt/lime/
 
 WORKDIR /opt/lime
 
