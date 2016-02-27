@@ -1,11 +1,14 @@
 import sys
+from functools import wraps
+
 from flask import Blueprint, request, jsonify, abort
 from flask import current_app as app
+from flask.ext.login import current_user
+import opengraph
+
 from toolbox.tools import update_document, make_response, get_custom_vertex_fields
 from toolbox.models import *
-from flask.ext.login import current_user
 from mongoexhaust import bsonify
-from functools import wraps
 
 def login_required(func):
     @wraps(func)
@@ -147,7 +150,35 @@ def post_vertex(vertex_type):
     doc = Vertex()
     doc.vertex_type = vertex_type
     doc.host = Host.by_current_user()
-    data = {k: request.json[k] for k in doc.get_aggregate_fields() if k in request.json.keys()}
+
+    data = {}
+
+    # Get the field which is an OpenGraphURLField, or None
+    # There should only be one! (Or, more often, none)
+    # If this is throwing an exception, you might have more than one in the
+    # CustomVertex schema
+    og_url_field, = doc.get_typed_fields(OpenGraphURLField) or [None]
+
+    # If there is an OpenGraphURLField, get it and add the data to the vertex
+    if og_url_field:
+        og_url = request.json[og_url_field]
+        og_fields = { # Prefix keys with og:
+            'og:{}'.format(k): v
+            for k, v in opengraph.OpenGraph(url=og_url).items()
+        }
+        og_mapping = doc.get_og_mapping()
+        data.update({
+            name: og_fields.get(og_key)
+            for name, og_key in og_mapping.items()
+        })
+
+    # Add the data from the request
+    data.update({
+        k: request.json[k]
+        for k in doc.get_aggregate_fields()
+        if k in request.json.keys()
+    })
+
     update_document(doc, data).save()
 
     # TODO: This is a hack. get_aggregate_fields should be reworked.

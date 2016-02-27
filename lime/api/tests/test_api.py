@@ -1,7 +1,10 @@
 import unittest
+from mock import patch
 import pytest
 import json
 from random import shuffle
+
+from lime.api import api
 
 
 def _post_json(app, endpoint, data):
@@ -68,17 +71,18 @@ class APITestCase(unittest.TestCase):
 
         import os
         os.environ['SECRET_KEY'] = "SECRET_KEY"
+        os.environ['FLASK_DEBUG'] = "TRUE"
 
         import lime
         from flask.ext.mongoengine import MongoEngine
         lime.db = MongoEngine(lime.app)
-        lime.app.debug = True
+        lime.app.testing = True
 
         import toolbox
         testuser = toolbox.models.User(email="testuser@testuser.com")
         testuser.save()
-        testhost = toolbox.models.Host(bucketname="testbucket", hostname="testhost.com", owners=[testuser])
-        testhost.save()
+        self.testhost = toolbox.models.Host(bucketname="testbucket", hostname="testhost.com", owners=[testuser])
+        self.testhost.save()
 
         auth_user = AuthenticatedUser(testuser)
         lime.api.current_user = auth_user
@@ -96,6 +100,83 @@ class APITestCase(unittest.TestCase):
         response, result = _post_json(self.app, '/text/', data)
         assert response.status_code == 200
         assert all(item in result.items() for item in data.items())
+
+
+    def test_create_custom_vertex(self):
+        self.testhost.custom_vertex_fields = {
+            "work": [
+                {
+                    "name": "title",
+                    "verbose_name": "Title",
+                    "field_type": "StringField",
+                    "required": False,
+                    "_cls": "CustomVertexField"
+                },
+                {
+                    "name": "description",
+                    "verbose_name": "Description",
+                    "field_type": "LongStringField",
+                    "required": False,
+                    "_cls": "CustomVertexField"
+                }
+            ],
+        }
+        self.testhost.save()
+        data = {
+            "title": "custom",
+            "description": "A custom description field",
+            "vertex_type": "work"
+        }
+        response, result = _post_json(self.app, "/work/", data)
+        assert response.status_code == 200
+        assert all(item in result.items() for item in data.items())
+
+
+    @patch('lime.api.opengraph.OpenGraph')
+    def test_create_opengraph_custom_vertex(self, mock_og):
+        self.testhost.custom_vertex_fields = {
+            "vimeo": [
+                {
+                    "name": "title",
+                    "verbose_name": "Title",
+                    "field_type": "StringField",
+                    "og": "og:title",
+                    "_cls": "CustomVertexField",
+                }, {
+                    "name": "url",
+                    "verbose_name": "URL",
+                    "field_type": "URLField",
+                    "_cls": "OpenGraphURLField",
+                }, {
+                    "name": "embed",
+                    "og": "og:video:url",
+                    "_cls": "VertexField",
+                }, {
+                    "name": "thumbnail",
+                    "og": "og:image",
+                    "_cls": "VertexField",
+                }
+            ]
+        }
+        self.testhost.save()
+        data = {
+            "title": "the original title",
+            "url": "http://vimeo.com/some-video",
+            "vertex_type": "vimeo",
+        }
+        og_fields = {
+            "title": "My Vimeo Video",
+            "video:url": "http://embed.vimeo.com/some-video",
+            "image": "http://image.vimeo.com/some-video",
+        }
+        mock_og.return_value = og_fields
+
+        response, result = _post_json(self.app, "/vimeo/", data)
+        assert response.status_code == 200
+        assert result['url'] == data['url'] # should not change
+        assert result['title'] == data['title'] # should not change
+        assert result['embed'] == og_fields['video:url']
+        assert result['thumbnail'] == og_fields['image']
 
 
     def test_delete_edge(self):
@@ -167,3 +248,6 @@ class APITestCase(unittest.TestCase):
 
         assert len(final_succset) == 2
         assert v2['_id'] not in final_succset
+
+if __name__ == "__main__":
+    unittest.main()
